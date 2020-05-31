@@ -12,11 +12,13 @@ export class EntradaPage implements OnInit {
 
   pesquisa
   veiculo: Veiculo = new Veiculo()
-
+  
   constructor(
     private modalCtrl: ModalController,
     private patio: PatioService
-  ) { }
+  ) { 
+    this.veiculo.Entrada = new Date();
+  }
 
   ngOnInit() {
   }
@@ -34,6 +36,14 @@ export class EntradaPage implements OnInit {
     .catch(() => {
       alert('Não foi possível inserir o veículo')
     })
+  }
+
+  get dataFormatada() {
+    return this.veiculo.Entrada.getDate() + '/' +
+      (this.veiculo.Entrada.getMonth() + 1) + '/' +
+      this.veiculo.Entrada.getFullYear() + ' - ' +
+      this.veiculo.Entrada.getHours() + ':' +
+      this.veiculo.Entrada.getMinutes()
   }
 
   selecionarTipoVeiculo(tipoVeiculo) {

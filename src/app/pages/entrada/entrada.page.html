@@ -10,21 +10,10 @@
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="ion-text-center">
-        <h3>18:00 - 01/01/2001</h3>
+        <h2>{{ dataFormatada }}</h2>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
-        <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
-        Placa do veículo
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size-xs="12">
-        <ion-input autocorrect="off" placeholder="Placa" type="text" [(ngModel)]="veiculo.Placa"></ion-input>
-      </ion-col>
-    </ion-row>
-    <ion-row (click)="lerCodigoBarras()">
       <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-icon class="iconeSubTitulo" name="pricetag"></ion-icon>
         Tipo do veículo
@@ -45,6 +34,33 @@
         <div class="divTipoVeiculo" [ngClass]="{'tipoVeiculoSelecionado': veiculo.TipoVeiculo == 3}">
           <img src='../../../assets/img/veiculos/3.png' />
         </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
+        Dados do veículo
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="5" class="separadorCampo">
+        <p class="tituloCampoFormulario">Placa</p>
+        <ion-input autocorrect="off" type="text" [(ngModel)]="veiculo.Placa"></ion-input>
+      </ion-col>
+      <ion-col size-xs="7" class="separadorCampoLateral">
+        <p class="tituloCampoFormulario">Modelo</p>
+        <ion-input autocorrect="off" type="text" [(ngModel)]="veiculo.Modelo"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
+        Observações (opcional)
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12">
+        <ion-textarea rows="6" auto-grow placeholder="Descreva qualquer observação referente ao veículo..." [(ngModel)]="veiculo.Observacoes" (ionBlur)="alterarObservacao()"></ion-textarea>
       </ion-col>
     </ion-row>
   </ion-grid>

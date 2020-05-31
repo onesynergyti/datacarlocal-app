@@ -36,12 +36,26 @@ export class PatioService extends ServiceBaseService {
     })
   }
 
-  public registrarSaida() {
-    this.database.dbApp.addTransaction(tx => {})
+  registrarSaida(veiculo, valor, dataPagamento, formaPagamento) {
+    return this.database.dbApp.transaction(tx => {
+      // Inclui o movimento financeiro
+      let sqlInclusao = 'insert into movimentos (Data, Descricao, Valor, FormaPagamento) values (?, ?, ?, ?)';
+      const tipoVeiculo = veiculo.TipoVeiculo == 1 ? 'moto' : veiculo.TipoVeiculo == 2 ? 'automóvel pequeno' : 'automóvel grande'
+      let dataInclusao = [dataPagamento, 'Aluguel de vaga para ' + tipoVeiculo, valor, formaPagamento];
+      tx.executeSql(sqlInclusao, dataInclusao, () => {alert('inseriu movimento')}, (erro) => {alert(JSON.stringify(erro))})
+
+      // Exclui o carro do pátio
+      let sqlExclusao = 'delete from veiculos where Placa = ?';
+      let dataExclusao = [veiculo.Placa];
+      tx.executeSql(sqlExclusao, dataExclusao, () => {alert('inseriu movimento')}, (erro) => {alert(JSON.stringify(erro))})
+    })
+    .finally(() => {
+      this.ocultarProcessamento()
+    })
   }
 
   public lista(): Promise<any> {
-    let sql = 'SELECT Placa, Entrada, TipoVeiculo from veiculos';
+    let sql = 'SELECT * from veiculos';
     return this.database.dbApp.executeSql(sql, [])
     .then(data => {
       if (data.rows.length > 0) {

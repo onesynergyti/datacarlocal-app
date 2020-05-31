@@ -81,7 +81,7 @@ export class HomePage {
       }, {
         text: 'Saída de Veículo',
         role: 'destructive',
-        icon: 'log-in-outline',
+        icon: 'log-out-outline',
         handler: () => {
           this.leituraQrCode()
         }
@@ -99,6 +99,20 @@ export class HomePage {
     .finally(() => {
       this.carregandoVeiculos = false
     })
+  }
+
+  dataFormatada(veiculo: Veiculo) {
+    try {
+      const data = new Date(veiculo.Entrada)
+      return data.getDate() + '/' +
+      (data.getMonth() + 1) + '/' +
+      data.getFullYear() + ' - ' +
+      data.getHours() + ':' +
+      data.getMinutes()
+    }
+    catch(erro) {
+      alert(erro)
+    }
   }
 
   get listaFiltrada() {

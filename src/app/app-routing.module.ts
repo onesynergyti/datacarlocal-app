@@ -23,6 +23,10 @@ const routes: Routes = [
     path: 'saida',
     loadChildren: () => import('./pages/saida/saida.module').then( m => m.SaidaPageModule)
   },
+  {
+    path: 'movimento',
+    loadChildren: () => import('./pages/movimento/movimento.module').then( m => m.MovimentoPageModule)
+  },
 ];
 
 @NgModule({
