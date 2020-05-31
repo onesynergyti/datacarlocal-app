@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end" *ngIf=!ocultarConclusao>
+      <ion-button (click)="confirmar()">
+        <ion-icon class="iconeConfirmar" slot="icon-only" name="checkmark-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancelar()">
+        <ion-icon class="iconeCancelar" slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-label id="titulo" slot="start">{{ titulo }}</ion-label>
+  </ion-toolbar>
+</ion-header>

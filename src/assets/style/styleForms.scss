@@ -1,0 +1,73 @@
+ion-segment{
+    --background: white;
+}
+
+ion-toggle {
+    margin-top: 8px;
+}
+
+p {
+    margin: 0px;
+    padding: 0px;
+}
+
+.espacadorCampo {
+    margin-bottom: 10px;
+}
+
+.separadorCampo {
+    border-width: 0px;
+    border-bottom: 1px solid var(--ion-color-light);
+    padding-bottom: 5px;
+}
+
+.separadorCampoLateral {
+    border-width: 0px;
+    border-bottom: 1px solid var(--ion-color-light);
+    border-left: 1px solid var(--ion-color-light);
+    padding-bottom: 5px;
+}
+
+.margemBasica {
+    margin: 5px;
+}
+
+.paddingBasico {
+    padding: 5px;
+}
+
+.paddingMedio {
+    padding: 10px;
+}
+
+.margemMedia {
+    padding: 10px;
+}
+
+.editIcone {
+    position: absolute;
+    right: 15px;
+    bottom: 5px;
+    font-size: 20px;
+}
+
+.editIconeListaPadrao {
+    position: absolute;
+    right: 15px;
+    bottom: 8px;
+    font-size: 20px;
+}
+
+.tituloCampoFormulario {
+    font-size: 13px;  
+    font-weight: bold;  
+}
+
+.valorCampoFormulario {
+    font-size: 15px;
+    line-height: 35px;
+}
+
+.linhaToogle {
+    line-height: 48px;
+}

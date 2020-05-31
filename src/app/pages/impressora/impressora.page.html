@@ -1,0 +1,11 @@
+<app-header titulo="Impressora"></app-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let dispositivo of dispositivos">
+      <ion-label (click)="selecionarDispositivo(dispositivo)">{{ dispositivo.name }}</ion-label>
+      <ion-label *ngIf="dispositivoConectado != null && dispositivoConectado.id === dispositivo.id"> (Conectado)</ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-button (click)="testarImpressora()">teste</ion-button>
+</ion-content>

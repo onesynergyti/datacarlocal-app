@@ -1,0 +1,35 @@
+body {
+    color: var(--text-color-default);
+}
+
+ion-card{
+    margin: 5px 5px 10px 5px;
+    color: var(--text-color-default);
+}
+
+ion-card-header {
+    min-height: 35px;
+    font-size: 12px;    
+    font-weight: bold;
+    padding: 3px;
+    text-transform: uppercase;
+    line-height: 29px;
+}
+
+ion-item{
+    --inner-padding-end: 10px;
+    --inner-padding-start: 10px;
+    --inner-padding-top: 5px;
+    --inner-padding-bottom: 5px;
+    --padding-start:0px;
+    --padding-end:0px;
+    --padding-bottom:0px;
+    --padding-top:0px;
+} 
+
+ion-alert
+{
+    --background        : #2c3e50 !important;
+    --ion-text-color    : white !important;
+    --ion-color-step-550: white !important;
+}

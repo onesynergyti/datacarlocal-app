@@ -1,0 +1,7 @@
+{
+  "name": "estacionamento-lite",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

@@ -1,0 +1,173 @@
+h6 {
+    font-size: 10px;
+    font-weight: bold;
+    margin: 0px;
+    margin-bottom: 2px;
+}
+
+h5 {
+    font-size: 11px;
+    line-height: 14px;
+    margin: 0px;
+    margin-bottom: 2px;
+}
+
+h4 {
+    font-weight: bold;
+    font-size: 13px;
+    margin: 0px;
+    margin-bottom: 2px;
+}
+
+ion-list {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.margemInferiorLista:last-child {
+    margin-bottom: 80px;
+}
+
+.fontCorPrimaria {
+    color: var(--ion-color-primary)
+}
+
+.fontCorSecundaria {
+    color: var(--ion-color-secondary)
+}
+
+.fontCorSucesso {
+    color: var(--ion-color-success)
+}
+
+.fontCorAlerta {
+    color: var(--ion-color-warning)
+}
+
+.fontCorPerigo {
+    color: var(--ion-color-danger)
+}
+
+.textoItemListaPadrao {
+    font-size: 14px;
+    line-height: 30px;
+}
+
+.paddingTextoItemPadrao {
+    margin-left: 30px;
+}
+
+.iconeSelecao {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 60px;
+    text-align: center;
+}
+
+.iconeAcao {
+    font-size: 17px;
+    opacity: 0.7;
+}
+
+.identacaoSimples {
+    margin-left: 5px;
+}
+
+.espacoSimples {
+    margin-top: 5px;
+}
+
+.spinnerCentro {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.textoLimitado { 
+    max-width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; 
+}
+
+.rodapeDestaque {
+    background-color: var(--ion-color-light);    
+    color: var(--ion-color-light-contrast);
+}
+
+.separadorSuperior {
+    border-width: 0px;
+    border-top-width: 1px;
+    border-style: solid;
+    border-color: var(--ion-color-light);
+}
+
+.separadorInferior {
+    border-width: 0px;
+    border-bottom-width: 1px;
+    border-style: solid;
+    border-color: var(--ion-color-light);
+}
+
+.titulo {    
+    position: relative;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    font-size: 13px;
+}
+
+
+.subTitulo {    
+    position: relative;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    font-size: 11px;
+}
+
+.textoOrientacao {
+    position: relative;
+    text-transform: uppercase;
+    text-align: center;
+    font-style: italic;
+    width: 100%;
+    font-size: 11px;
+    color: white;
+}
+
+.iconeSubTitulo {
+    position: absolute;
+    left: 10px;
+    top: 2px;
+    font-size: 20px;
+    color: var(--ion-color-secondary);
+}
+
+.iconeTitulo {
+    position: absolute;
+    left: 10px;
+    top: 4px;
+    font-size: 20px;
+    color: var(white);
+}
+
+.iconeItemPadrao {
+    position: absolute;
+    left: 10px;
+    top: 2px;
+    margin-top: 8px;
+    color: var(--ion-color-secondary);
+    font-size: 18px;
+}
+
+.fundoLigth {    
+    background-color: var(--ion-color-light);
+}
+
+.fundoSecundario {    
+    background-color: var(--ion-color-secondary);
+    color: white;
+}
