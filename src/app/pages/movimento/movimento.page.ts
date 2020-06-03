@@ -16,8 +16,8 @@ export class MovimentoPage implements OnInit {
   }
 
   exibirMovimentos() {
-    this.movimentos.lista().then(lista => 
-      alert(JSON.stringify(lista)))
+/*    this.movimentos.lista().then(lista => 
+      alert(JSON.stringify(lista)))*/
   }
 
 }

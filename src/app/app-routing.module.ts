@@ -13,19 +13,31 @@ const routes: Routes = [
   },
   {
     path: 'impressora',
-    loadChildren: () => import('./pages/impressora/impressora.module').then( m => m.ImpressoraPageModule)
+    loadChildren: () => import('./pages/configuracoes/impressora/impressora.module').then( m => m.ImpressoraPageModule)
   },
   {
     path: 'entrada',
-    loadChildren: () => import('./pages/entrada/entrada.module').then( m => m.EntradaPageModule)
+    loadChildren: () => import('./pages/home/entrada/entrada.module').then( m => m.EntradaPageModule)
   },
   {
     path: 'saida',
-    loadChildren: () => import('./pages/saida/saida.module').then( m => m.SaidaPageModule)
+    loadChildren: () => import('./pages/home/saida/saida.module').then( m => m.SaidaPageModule)
   },
   {
     path: 'movimento',
     loadChildren: () => import('./pages/movimento/movimento.module').then( m => m.MovimentoPageModule)
+  },
+  {
+    path: 'servicos',
+    loadChildren: () => import('./pages/configuracoes/servicos/servicos.module').then( m => m.ServicosPageModule)
+  },
+  {
+    path: 'configuracoes',
+    loadChildren: () => import('./pages/configuracoes/configuracoes.module').then( m => m.ConfiguracoesPageModule)
+  },
+  {
+    path: 'configuracoes-estacionamento',
+    loadChildren: () => import('./pages/configuracoes-estacionamento/configuracoes-estacionamento.module').then( m => m.ConfiguracoesEstacionamentoPageModule)
   },
 ];
 

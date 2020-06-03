@@ -1,0 +1,103 @@
+<app-header-modal titulo="Entrada de veículo" (onConfirmar)="concluir()" (onCancelar)="cancelar()"></app-header-modal>
+
+<ion-content>
+  <ion-grid *ngIf="veiculo != null">
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
+        Horário da entrada
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="ion-text-center">
+        <h2>{{ dataFormatada }}</h2>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="pricetag"></ion-icon>
+        Dados do veículo
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="5" class="separadorCampo">
+        <p class="tituloCampoFormulario">Placa</p>
+        <ion-input autocorrect="off" type="text" [(ngModel)]="veiculo.Placa"></ion-input>
+      </ion-col>
+      <ion-col size-xs="7" class="separadorCampoLateral">
+        <p class="tituloCampoFormulario">Modelo</p>
+        <ion-input autocorrect="off" type="text" [(ngModel)]="veiculo.Modelo"></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="3" (click)="selecionarTipoVeiculo(1)" class="ion-no-margin ion-no-padding">
+        <div class="divTipoVeiculo" [ngClass]="{'tipoVeiculoSelecionado': veiculo.TipoVeiculo == 1}">
+          <img src='../../../assets/img/veiculos/1.png' />
+        </div>
+      </ion-col>
+      <ion-col size-xs="3" (click)="selecionarTipoVeiculo(2)" class="ion-no-margin ion-no-padding">
+        <div class="divTipoVeiculo" [ngClass]="{'tipoVeiculoSelecionado': veiculo.TipoVeiculo == 2}">
+          <img src='../../../assets/img/veiculos/2.png' />
+        </div>
+      </ion-col>
+      <ion-col size-xs="3" (click)="selecionarTipoVeiculo(3)" class="ion-no-margin ion-no-padding">
+        <div class="divTipoVeiculo" [ngClass]="{'tipoVeiculoSelecionado': veiculo.TipoVeiculo == 3}">
+          <img src='../../../assets/img/veiculos/3.png' />
+        </div>
+      </ion-col>
+      <ion-col size-xs="3" (click)="selecionarTipoVeiculo(4)" class="ion-no-margin ion-no-padding">
+        <div class="divTipoVeiculo" [ngClass]="{'tipoVeiculoSelecionado': veiculo.TipoVeiculo == 4}">
+          <img src='../../../assets/img/veiculos/3.png' />
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
+        Serviços
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="veiculo.Servicos != null && veiculo.Servicos.length > 0">
+      <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
+        <ion-list [@listAnimation]="veiculo.Servicos.length" lines="full">
+          <ion-item-sliding id="servico.Id" *ngFor="let servico of veiculo.Servicos">
+            <ion-item>
+              <h4 class="textoLimitado">{{ servico.Nome }}</h4>
+              <h5>{{ servico.Preco != 0 ? servico.Preco : '' }}</h5>              
+              <ion-note slot="end">
+                <ion-toggle color="primary" [(ngModel)]="servico.Executado"></ion-toggle>
+              </ion-note>
+            </ion-item>
+        
+            <ion-item-options side="end">
+              <ion-item-option color="danger" (click)="excluir(veiculo)">
+                <ion-icon slot="icon-only" name="trash"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="veiculo.Servicos == null || veiculo.Servicos.length == 0">
+      <ion-col size-xs="12">
+        <h5>Nenhum serviço adicionado</h5>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12">
+        <ion-button expand="block" (click)="adicionarServico()">Adicionar Serviço</ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
+        Observações (opcional)
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="separadorCampo">
+        <ion-textarea rows="2" auto-grow placeholder="Informações adicionais do veículo..." [(ngModel)]="veiculo.Observacoes" (ionBlur)="alterarObservacao()"></ion-textarea>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

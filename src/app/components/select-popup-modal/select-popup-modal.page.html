@@ -1,0 +1,14 @@
+<app-header-modal titulo={{titulo}} ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+
+<ion-searchbar autocorrect="off" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
+
+<ion-content>
+  <ion-grid [@listAnimation]="listaFiltrada.length">
+    <ion-row>
+      <ion-col size-xs="12" *ngFor="let item of listaFiltrada" class="separadorCampo textoItemListaPadrao textoLimitado" (click)="concluir(item)">
+        <ion-label class="paddingTextoItemPadrao">{{ item[keyField] }}</ion-label>
+        <ion-icon *ngIf="icone != null" class="iconeItemPadrao" name={{icone}}></ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

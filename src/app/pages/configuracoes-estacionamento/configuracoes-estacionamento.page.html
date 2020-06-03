@@ -1,0 +1,14 @@
+<app-header titulo="Estacionamento" ocultarRetorno="true"></app-header>
+
+<ion-content>
+  <ion-grid *ngIf="configuracoes != null">
+    <ion-row>
+      <ion-col size-xs="10">
+        <h4>Utiliza estacionamento</h4>
+      </ion-col>
+      <ion-col size-xs="2">
+        <ion-toggle color="primary" [(ngModel)]="configuracoes.UtilizaEstacionamento"></ion-toggle>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

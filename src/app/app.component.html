@@ -7,9 +7,13 @@
     </ion-header>
     <ion-content>
       <ion-list>
-        <ion-menu-toggle>
+        <ion-menu-toggle>          
+          <ion-item (click)="navegar('home')">Pátio</ion-item>
+          <ion-item (click)="navegar('configuracoes-estacionamento')">Estacionamento</ion-item>
+          <ion-item (click)="navegar('configuracoes')">Configurações</ion-item>
           <ion-item (click)="navegar('impressora')">Impressora</ion-item>
           <ion-item (click)="navegar('movimento')">Movimento</ion-item>
+          <ion-item (click)="navegar('servicos')">Serviços</ion-item>
           <ion-item>Menu Item</ion-item>
           <ion-button menuclose (click)="logout()">Sair</ion-button>
         </ion-menu-toggle>

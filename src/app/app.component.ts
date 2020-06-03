@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 import { Platform, NavController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { DatabaseService } from './dbproviders/database.service'
-import { SQLiteObject } from '@ionic-native/sqlite/ngx';
+import { DatabaseService } from './dbproviders/database.service';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +14,8 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private navController: NavController
+    private navController: NavController,
+    private databaseProvider: DatabaseService
   ) {
     this.initializeApp();
   }
@@ -23,7 +23,15 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
-      this.splashScreen.hide()
+      alert('vai iniciar o app')
+      this.databaseProvider.DB.then((db) => {
+        this.databaseProvider.criarTabelas(db)
+        this.splashScreen.hide()
+      })
+      .catch((erro) => {
+        alert('Não foi possível iniciar o aplicativo. Tente novamente. ' + JSON.stringify(erro))
+        navigator['app'].exitApp();
+      })
     });
   }
 

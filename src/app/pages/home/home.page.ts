@@ -3,12 +3,13 @@ import { Veiculo } from '../../models/veiculo';
 import { PatioService } from '../../dbproviders/patio.service';
 import { AdMobFree, AdMobFreeBannerConfig, AdMobFreeInterstitialConfig, AdMobFreeRewardVideoConfig } from '@ionic-native/admob-free/ngx';
 import { ModalController, ActionSheetController } from '@ionic/angular';
-import { EntradaPage } from '../entrada/entrada.page';
+import { EntradaPage } from './entrada/entrada.page';
 import { BluetoothService } from '../../services/bluetooth.service';
 import { Utils } from 'src/app/utils/utils';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
-import { SaidaPage } from '../saida/saida.page';
+import { SaidaPage } from './saida/saida.page';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { DatabaseService } from 'src/app/dbproviders/database.service';
 
 @Component({
   selector: 'app-home',
@@ -39,13 +40,14 @@ export class HomePage {
   pesquisa = ''
 
   constructor(
-    private patio: PatioService,
+    private providerPatio: PatioService,
     private admobFree: AdMobFree,
     private modalController: ModalController,
     private bluetooth: BluetoothService,
     private utils: Utils,
     private actionSheetController: ActionSheetController,
-    private barcodeScanner: BarcodeScanner
+    private barcodeScanner: BarcodeScanner,
+    private databaseProvider: DatabaseService
   ) {
     document.addEventListener(this.admobFree.events.REWARD_VIDEO_REWARD, (result) => {
       this.pontos++
@@ -67,6 +69,7 @@ export class HomePage {
 
   ionViewDidEnter() {
     this.atualizarPatio()
+    this.showBannerAd()
   }
 
   async abrirMenuOperacao() {
@@ -93,8 +96,12 @@ export class HomePage {
   atualizarPatio() {
     this.veiculos = []
     this.carregandoVeiculos = true
-    this.patio.lista().then((lista: any) => {
+    this.providerPatio.lista().then((lista: any) => {
       this.veiculos = lista
+    })    
+    // Em caso de erro
+    .catch((erro) => {
+      alert(JSON.stringify(erro))
     })
     .finally(() => {
       this.carregandoVeiculos = false
@@ -102,17 +109,12 @@ export class HomePage {
   }
 
   dataFormatada(veiculo: Veiculo) {
-    try {
-      const data = new Date(veiculo.Entrada)
-      return data.getDate() + '/' +
-      (data.getMonth() + 1) + '/' +
-      data.getFullYear() + ' - ' +
-      data.getHours() + ':' +
-      data.getMinutes()
-    }
-    catch(erro) {
-      alert(erro)
-    }
+    const data = new Date(veiculo.Entrada)
+    return data.getDate() + '/' +
+    (data.getMonth() + 1) + '/' +
+    data.getFullYear() + ' - ' +
+    data.getHours() + ':' +
+    data.getMinutes()
   }
 
   get listaFiltrada() {
@@ -123,22 +125,25 @@ export class HomePage {
   }
 
   async excluir(veiculo) {
-    await this.patio.exibirProcessamento('Excluindo veículo...')
-    this.patio.excluir(veiculo.Placa)
+/*    await this.providerPatio.exibirProcessamento('Excluindo veículo...')
+    this.providerPatio.excluir(veiculo.Placa)
     .then(retorno => {
       this.veiculos.splice(this.veiculos.indexOf(veiculo), 1)
     })
     .catch(() => {
       this.utils.mostrarToast('Não foi possível excluir o veículo.', 'danger')
-    })
+    })*/
   }
 
-  async cadastrarEntrada() {
+  async cadastrarEntrada(veiculo = null) {
     const modal = await this.modalController.create({
       component: EntradaPage,
+      componentProps: {
+        'veiculo': veiculo
+      }
     });
 
-    modal.onWillDismiss().then((retorno) => {
+    modal.onDidDismiss().then((retorno) => {
       let veiculo = retorno.data
       if (veiculo != null) {        
         this.veiculos.push(veiculo)
@@ -202,9 +207,7 @@ export class HomePage {
         //id: "ca-app-pub-3940256099942544/6300978111"
     };
     this.admobFree.interstitial.config(interstitialConfig);
-    this.admobFree.interstitial.prepare().then(() => {
-      alert('ganhou pontos')
-    }).catch(e => alert(e));
+    this.admobFree.interstitial.prepare().then(() => { })
   }  
 
   showRewardVideoAds(){
@@ -215,35 +218,17 @@ export class HomePage {
     };
     this.admobFree.rewardVideo.config(RewardVideoConfig);    
 
-    this.admobFree.rewardVideo.prepare().then(() => {
-      alert('ganhou pontos')
-    }).catch(e => alert(e));
-  }  
+    this.admobFree.rewardVideo.prepare().then(() => {})
+  }
 
   showBannerAd() {
     let bannerConfig: AdMobFreeBannerConfig = {
-        isTesting: true, // Remove in production
-        autoShow: true//,
-        //id: "ca-app-pub-3940256099942544/6300978111"
+        isTesting: false,
+        autoShow: true,
+        id: "ca-app-pub-2818472978128447/8556213188"
     };
     this.admobFree.banner.config(bannerConfig);
 
-    this.admobFree.banner.prepare().then(() => {
-      alert('ganhou pontos')
-    }).catch(e => alert(e));
+    this.admobFree.banner.prepare().then(() => { })
   }  
-
-  inserirVeiculo() {
-    let veiculo = new Veiculo()
-    veiculo.Placa = this.placa
-
-    this.patio.adicionar(veiculo)
-    .then(valor => {
-      alert('inseriu')
-    })
-    .catch(erro => {
-      alert(erro)
-      alert(JSON.stringify(erro))
-    })
-  }
 }

@@ -21,6 +21,11 @@
               <h5>{{ veiculo.Observacoes }}</h5>
             </ion-col>
           </ion-row>
+          <ion-row>
+            <ion-col size='12' *ngFor="let servico of veiculo.Servicos">
+              {{ servico.Nome }}
+            </ion-col>
+          </ion-row>
         </ion-grid>
         <ion-note slot="end">
           <img id="imgTipoVeiculo" src="{{ '../../../assets/img/veiculos/' + veiculo.TipoVeiculo + '.png' }}" />

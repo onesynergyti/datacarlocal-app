@@ -17,7 +17,7 @@ export class MovimentoService extends ServiceBaseService {
     super(loadingController)
   }
 
-  public lista(): Promise<any> {
+/*  public lista(): Promise<any> {
     let sql = 'SELECT * from movimentos';
     return this.database.dbApp.executeSql(sql, [])
     .then(data => {
@@ -36,5 +36,5 @@ export class MovimentoService extends ServiceBaseService {
     .finally(() => {
       this.ocultarProcessamento()
     })
-  }
+  }*/
 }

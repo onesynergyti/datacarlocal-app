@@ -6,8 +6,8 @@ import { HomePage } from './home.page';
 
 import { HomePageRoutingModule } from './home-routing.module';
 import { ComponentsModule } from '../../components/components.module';
-import { EntradaPage } from '../entrada/entrada.page';
-import { SaidaPage } from '../saida/saida.page';
+import { EntradaPage } from './entrada/entrada.page';
+import { SaidaPage } from './saida/saida.page';
 
 
 @NgModule({
