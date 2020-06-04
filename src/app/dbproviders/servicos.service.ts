@@ -59,7 +59,6 @@ export class ServicosService extends ServiceBaseService {
             let servicos: any[] = [];
             for (var i = 0; i < data.rows.length; i++) {
               var servico = data.rows.item(i);
-              servico.Servicos = JSON.parse(servico.Servicos)
               servicos.push(servico);
             }
             resolve(servicos)

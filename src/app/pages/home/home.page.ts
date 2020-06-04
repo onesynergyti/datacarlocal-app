@@ -7,9 +7,9 @@ import { EntradaPage } from './entrada/entrada.page';
 import { BluetoothService } from '../../services/bluetooth.service';
 import { Utils } from 'src/app/utils/utils';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
-import { SaidaPage } from './saida/saida.page';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { DatabaseService } from 'src/app/dbproviders/database.service';
+import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
+import { ServicoVeiculo } from 'src/app/models/servico-veiculo';
 
 @Component({
   selector: 'app-home',
@@ -47,7 +47,7 @@ export class HomePage {
     private utils: Utils,
     private actionSheetController: ActionSheetController,
     private barcodeScanner: BarcodeScanner,
-    private databaseProvider: DatabaseService
+    private configuracoesService: ConfiguracoesService
   ) {
     document.addEventListener(this.admobFree.events.REWARD_VIDEO_REWARD, (result) => {
       this.pontos++
@@ -58,7 +58,7 @@ export class HomePage {
       if (this.veiculoFalhaImpressao != null) {
         // Se houve sucesso na conexão faz a impressão
         if (dispositivo != null) 
-          this.bluetooth.imprimirRecibo(this.veiculoFalhaImpressao)
+          this.veiculoFalhaImpressao.Excluir ? this.bluetooth.imprimirReciboSaida(this.veiculoFalhaImpressao.Veiculo) : this.bluetooth.imprimirReciboEntrada(this.veiculoFalhaImpressao.Veiculo)
         else 
           this.utils.mostrarToast('Houve uma falha na tentativa de impressão. Verifique sua impressora', 'warning')
       }
@@ -101,7 +101,7 @@ export class HomePage {
     })    
     // Em caso de erro
     .catch((erro) => {
-      alert(JSON.stringify(erro))
+      alert(JSON.stringify('Não foi possível carregar os veículos do pátio.'))
     })
     .finally(() => {
       this.carregandoVeiculos = false
@@ -136,25 +136,67 @@ export class HomePage {
   }
 
   async cadastrarEntrada(veiculo = null) {
+    let inclusao = false
+    let veiculoEdicao: Veiculo
+
+    // Define os parâmetros iniciais se não houver veículo indicado para edição
+    if (veiculo == null) {
+      inclusao = true
+
+      veiculoEdicao = new Veiculo()      
+      veiculoEdicao.Id = 0
+
+      // Define a data de entrada
+      veiculoEdicao.Entrada = new Date();
+
+      // Define serviços de estacionamento
+      if (this.configuracoesService.configuracoes.UtilizaEstacionamento) {
+        let servico = new ServicoVeiculo()
+        servico.Id = 0
+        servico.Nome = 'Estacionamento'
+        servico.Preco = 0
+        veiculoEdicao.Servicos.push(servico)
+      }      
+    }
+    else {
+      veiculoEdicao = JSON.parse(JSON.stringify(veiculo))
+      veiculoEdicao.Entrada = new Date(veiculoEdicao.Entrada)
+    }
+
     const modal = await this.modalController.create({
       component: EntradaPage,
       componentProps: {
-        'veiculo': veiculo
+        'veiculo': veiculoEdicao,
+        'inclusao': inclusao
       }
     });
 
-    modal.onDidDismiss().then((retorno) => {
-      let veiculo = retorno.data
-      if (veiculo != null) {        
-        this.veiculos.push(veiculo)
-        this.utils.mostrarToast('Entrada registrada com sucesso', 'success')
-        // Se existe configuração de impressora
+    modal.onWillDismiss().then((retorno) => {
+      if (retorno.data != null) {        
+        let veiculo = retorno.data.Veiculo
+        
+        // Atualiza a listagem com as alterações
+        const veiculoLocalizado = this.veiculos.find(itemAtual => itemAtual.Placa === veiculo.Placa)
+        
+        if (retorno.data.Excluir) 
+          this.veiculos.splice(this.veiculos.indexOf(veiculoLocalizado), 1)
+        else if (veiculoLocalizado != null) 
+          this.veiculos[this.veiculos.indexOf(veiculoLocalizado)] = veiculo
+        else
+          this.veiculos.push(veiculo)
+
+        if (retorno.data.Excluir)
+          this.utils.mostrarToast('Saída registrada com sucesso', 'success')
+        else
+          this.utils.mostrarToast('Entrada registrada com sucesso', 'success')
+
+        // Trata a impressão do recibo
         if (this.bluetooth.dispositivoSalvo != null) {
           this.bluetooth.validarConexao().then((conexao) => {
             if (conexao)
-              this.bluetooth.imprimirRecibo(veiculo)
+              retorno.data.Excluir ? this.bluetooth.imprimirReciboSaida : this.bluetooth.imprimirReciboEntrada(veiculo)
             else {
-              this.veiculoFalhaImpressao = veiculo
+              this.veiculoFalhaImpressao = retorno.data
               // Tenta conectar novamente para imprimir se conseguir
               // Veja onDefinirDispositivo no construtor
               // Aguarda 5 segundos para que o usuário possa visualizar a mensagem de sucesso no registro
@@ -173,31 +215,13 @@ export class HomePage {
       if (barcodeData != null) {
         let veiculo = this.veiculos.find(itemAtual => this.utils.stringPura(itemAtual.Placa) == this.utils.stringPura(barcodeData.text))
         if (veiculo != null)
-          this.registrarSaida(veiculo)
+          this.cadastrarEntrada(veiculo)
         else
           this.utils.mostrarToast('Não localizamos o código informado.', 'danger')
         }
      }).catch(err => {
       this.utils.mostrarToast('Não localizamos o código informado.', 'danger')
      });
-  }
-
-  async registrarSaida(veiculo) {
-    const modal = await this.modalController.create({
-      component: SaidaPage,
-      componentProps: {
-        'veiculo': veiculo
-      }
-    });
-
-    modal.onWillDismiss().then((retorno) => {
-      let veiculoSaida = retorno.data
-      if (veiculoSaida != null) {
-        this.veiculos.splice(this.veiculos.indexOf(veiculo), 1)
-      }
-    })
-
-    return await modal.present(); 
   }
    
   showInterstitialAds(){

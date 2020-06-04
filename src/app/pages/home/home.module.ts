@@ -18,7 +18,7 @@ import { SaidaPage } from './saida/saida.page';
     HomePageRoutingModule,
     ComponentsModule    
   ],
-  entryComponents: [EntradaPage, SaidaPage],
-  declarations: [HomePage, EntradaPage, SaidaPage]
+  entryComponents: [EntradaPage],
+  declarations: [HomePage, EntradaPage]
 })
 export class HomePageModule {}

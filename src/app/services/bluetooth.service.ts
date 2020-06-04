@@ -101,7 +101,12 @@ export class BluetoothService extends ServiceBaseService {
     })
   }
 
-  imprimirRecibo(veiculo) {
+  imprimirReciboEntrada(veiculo) {
+    this.bluetoothSerial.write(this.qrCode(veiculo.Placa));
+    this.bluetoothSerial.write(veiculo.Placa + '\n');
+  }
+
+  imprimirReciboSaida(veiculo) {
     this.bluetoothSerial.write(this.qrCode(veiculo.Placa));
     this.bluetoothSerial.write(veiculo.Placa + '\n');
   }

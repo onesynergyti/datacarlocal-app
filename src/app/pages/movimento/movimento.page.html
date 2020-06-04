@@ -1,9 +1,18 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>movimento</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header titulo="Movimentos"></app-header>
 
 <ion-content>
-  <ion-button (click)="exibirMovimentos()">Exibir Movimento</ion-button>
-</ion-content>
+  <ion-content *ngIf="!carregandoMovimentos">
+    <ion-list [@listAnimation]="movimentos.length" lines="full">
+      <ion-item-sliding id="movimento.Id" *ngFor="let movimento of movimentos">
+        <ion-item>
+          {{ movimento.Id }}
+        </ion-item>
+    
+        <ion-item-options side="end">
+          <ion-item-option color="danger">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </ion-content>

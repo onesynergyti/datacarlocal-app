@@ -9,7 +9,7 @@
 <ion-content *ngIf="!carregandoVeiculos">
   <ion-list [@listAnimation]="listaFiltrada.length" lines="full">
     <ion-item-sliding id="veiculo.Placa" *ngFor="let veiculo of listaFiltrada">
-      <ion-item (click)="registrarSaida(veiculo)">
+      <ion-item (click)="cadastrarEntrada(veiculo)">
         <ion-grid class="ion-no-padding ion-no-margin">
           <ion-row>
             <ion-col size-xs="6">

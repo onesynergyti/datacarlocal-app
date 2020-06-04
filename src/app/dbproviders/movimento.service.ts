@@ -17,24 +17,33 @@ export class MovimentoService extends ServiceBaseService {
     super(loadingController)
   }
 
-/*  public lista(): Promise<any> {
-    let sql = 'SELECT * from movimentos';
-    return this.database.dbApp.executeSql(sql, [])
-    .then(data => {
-      if (data.rows.length > 0) {
-        let veiculos: any[] = [];
-        for (var i = 0; i < data.rows.length; i++) {
-          var veiculo = data.rows.item(i);
-          veiculos.push(veiculo);                
-        }
-        return veiculos;
-      } else {
-        return [];
-      }
+  public lista(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let sql = 'SELECT * from movimentos';
+      this.database.DB.then(db => {
+        db.executeSql(sql, [])
+        .then(data => {
+          if (data.rows.length > 0) {
+            let movimentos: any[] = [];
+            for (var i = 0; i < data.rows.length; i++) {
+              var movimento = data.rows.item(i);
+              movimentos.push(movimento);
+            }
+            resolve(movimentos)
+          } else {
+            resolve([])
+          }
+        })
+        .catch((erro) => {
+          reject(erro)
+        })
+      })
+      .catch((erro) => {
+        reject(erro)
+      })
+      .finally(() => {
+        this.ocultarProcessamento()
+      })
     })
-    .catch((e) => console.error(e))
-    .finally(() => {
-      this.ocultarProcessamento()
-    })
-  }*/
+  }
 }

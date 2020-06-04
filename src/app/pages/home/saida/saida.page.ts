@@ -32,7 +32,7 @@ export class SaidaPage {
       this.modalCtrl.dismiss(this.veiculo)
     })
     .catch((erro) => {
-      alert(erro)
+      alert(JSON.stringify(erro))
     })
   }
 

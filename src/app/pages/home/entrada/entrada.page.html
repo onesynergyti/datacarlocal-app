@@ -57,6 +57,11 @@
         Serviços
       </ion-col>
     </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
+        <ion-button expand="block" (click)="adicionarServico()">Adicionar Serviço</ion-button>
+      </ion-col>
+    </ion-row>
     <ion-row *ngIf="veiculo.Servicos != null && veiculo.Servicos.length > 0">
       <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
         <ion-list [@listAnimation]="veiculo.Servicos.length" lines="full">
@@ -84,11 +89,6 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="12">
-        <ion-button expand="block" (click)="adicionarServico()">Adicionar Serviço</ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
         Observações (opcional)
@@ -101,3 +101,6 @@
     </ion-row>
   </ion-grid>
 </ion-content>
+<ion-footer *ngIf="!inclusao">
+  <ion-button expand="block" color="danger" (click)="registrarSaida()">Registrar saída</ion-button>
+</ion-footer>

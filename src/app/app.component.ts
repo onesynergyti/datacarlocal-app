@@ -23,10 +23,14 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
-      alert('vai iniciar o app')
       this.databaseProvider.DB.then((db) => {
-        this.databaseProvider.criarTabelas(db)
-        this.splashScreen.hide()
+        this.databaseProvider.criarTabelas(db).then(() => {
+          this.splashScreen.hide()
+        })
+        .catch((erro) => {
+          alert('Não foi possível iniciar o aplicativo. Tente novamente. ' + JSON.stringify(erro))
+          navigator['app'].exitApp();
+        })
       })
       .catch((erro) => {
         alert('Não foi possível iniciar o aplicativo. Tente novamente. ' + JSON.stringify(erro))

@@ -7,6 +7,7 @@ import { ServicosService } from 'src/app/dbproviders/servicos.service';
 import { ServicoVeiculo } from 'src/app/models/servico-veiculo';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
+import { SaidaPage } from '../saida/saida.page';
 
 @Component({
   selector: 'app-entrada',
@@ -30,34 +31,18 @@ import { trigger, transition, query, style, stagger, animate } from '@angular/an
 export class EntradaPage implements OnInit {
 
   pesquisa
-  inclusao: boolean
+  inclusao
   veiculo: Veiculo
   
   constructor(
     private modalCtrl: ModalController,
     private patioProvider: PatioService,
     private servicosProvider: ServicosService,
-    private configuracoesService: ConfiguracoesService,
-    public navParams: NavParams
+    public navParams: NavParams,
+    private modalController: ModalController
   ) { 
-    this.inclusao = navParams.get('veiculo') == null
-    this.veiculo = this.inclusao ? new Veiculo() : navParams.get('veiculo')
-
-    // Inicia valores quando for um novo veículo
-    if (this.inclusao) {
-      // Define a data de entrada
-      this.veiculo.Entrada = new Date();
-
-      // Define serviços de estacionamento
-      if (this.configuracoesService.configuracoes.UtilizaEstacionamento) {
-        let servico = new ServicoVeiculo()
-        servico.Id = 0
-        servico.Nome = 'Estacionamento'
-        servico.Preco = 0
-        this.veiculo.Servicos.push(servico)
-      }      
-    }
-    alert(this.veiculo != null)
+    this.veiculo = navParams.get('veiculo')
+    this.inclusao = navParams.get('inclusao')
   }
 
   ngOnInit() {
@@ -100,9 +85,9 @@ export class EntradaPage implements OnInit {
 
   async concluir() {
     await this.patioProvider.exibirProcessamento('Registrando entrada...')
-    this.patioProvider.adicionar(this.veiculo)
+    this.patioProvider.salvar(this.veiculo, this.inclusao)
     .then(() => {
-      this.modalCtrl.dismiss(this.veiculo)
+      this.modalCtrl.dismiss({ Excluir: false, Veiculo: this.veiculo })
     })
     .catch(() => {
       alert('Não foi possível inserir o veículo')
@@ -119,6 +104,30 @@ export class EntradaPage implements OnInit {
 
   selecionarTipoVeiculo(tipoVeiculo) {
     this.veiculo.TipoVeiculo = tipoVeiculo
-    alert(JSON.stringify(this.veiculo))
+  }
+
+  async finalizarSaida() {
+    await this.patioProvider.exibirProcessamento('Atualizando listagem...')
+    // Precisa do settimeout para ocultar a tela corretamente
+    setTimeout(() => {
+      this.patioProvider.ocultarProcessamento()
+      this.modalCtrl.dismiss({ Excluir: true, Veiculo: this.veiculo })
+    }, 300);
+  }
+
+  async registrarSaida() {
+    const modal = await this.modalController.create({
+      component: SaidaPage,
+      componentProps: {
+        'veiculo': this.veiculo
+      }
+    });
+
+    modal.onWillDismiss().then((retorno) => {
+      if (retorno.data)
+        this.finalizarSaida()
+    })
+
+    return await modal.present(); 
   }
 }

@@ -8,6 +8,7 @@ import { EntradaPageRoutingModule } from './entrada-routing.module';
 
 import { EntradaPage } from './entrada.page';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { SaidaPage } from '../saida/saida.page';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { ComponentsModule } from 'src/app/components/components.module';
     EntradaPageRoutingModule,
     ComponentsModule
   ],
-  declarations: [EntradaPage]
+  entryComponents: [SaidaPage],
+  declarations: [EntradaPage, SaidaPage]
 })
 export class EntradaPageModule {}
