@@ -13,17 +13,12 @@ import { ComponentsModule } from 'src/app/components/components.module';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
-import { SelectPopupModalPage } from './components/select-popup-modal/select-popup-modal.page';
 import { PipeModule } from './pipes/pipe.module';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    SelectPopupModalPage
-  ],
-  entryComponents: [
-    SelectPopupModalPage
   ],
   imports: [
     BrowserModule,

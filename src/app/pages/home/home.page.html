@@ -1,6 +1,7 @@
-<app-header titulo="Pátio" ocultarRetorno="true"></app-header>
-
-<ion-searchbar autocorrect="off" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
+<ion-header>
+  <app-header titulo="Pátio" ocultarRetorno="true"></app-header>
+  <ion-searchbar autocorrect="off" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
+</ion-header>
 
 <ion-content *ngIf="carregandoVeiculos">
   <ion-spinner class="spinnerCentro"></ion-spinner>
@@ -13,15 +14,37 @@
         <div class="cartao">
           <ion-grid>
             <ion-row>
-              <ion-col size-xs="12" class="fundoSecundario fontCorSecundaria tituloCartao ion-text-center"> 
+              <ion-col size-xs="12" class="fundoPrimario tituloCartao ion-text-center"> 
                 <h3>{{ veiculo.Placa }}</h3>
               </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size-xs="12" class="subTitulo fundoLigth">
+                <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
+                Dados do veículo
+              </ion-col>
+            </ion-row>
+            <ion-row>
               <ion-col size-xs="8">
                 <h5 class="espacadorCampo">{{ veiculo.Entrada | date:"dd/MM/yyyy - HH:mm" }}</h5>
                 <h4 class="textoLimitado">{{ veiculo.Modelo ? veiculo.Modelo : 'Modelo não informado' }}</h4>
               </ion-col>
               <ion-col size-xs="4" class="ion-text-right">
                 <img id="imgTipoVeiculo" src="{{ '../../../assets/img/veiculos/' + veiculo.TipoVeiculo + '.png' }}" />
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size-xs="12" class="subTitulo fundoLigth">
+                <ion-icon class="iconeSubTitulo" name="call"></ion-icon>
+                Contato
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size-xs="7">
+                <h4 class="textoLimitado">{{ veiculo.Nome }}</h4>
+              </ion-col>
+              <ion-col size-xs="5">
+                <h4>{{ veiculo.Telefone }}</h4>
               </ion-col>
             </ion-row>
             <ion-row>
@@ -34,8 +57,8 @@
               <ion-col size="10">
                 <h4 class="textoLimitado">{{ servico.Nome }}</h4>
               </ion-col>
-              <ion-col size="2">
-                <ion-icon class="ion-text-right" name="construct"></ion-icon>
+              <ion-col size="2" class="ion-text-right">
+                <ion-icon name="construct"></ion-icon>
               </ion-col>
             </ion-row>
           </ion-grid>

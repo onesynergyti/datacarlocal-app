@@ -170,7 +170,7 @@ ion-list {
     left: 10px;
     top: 2px;
     font-size: 20px;
-    color: var(--ion-color-secondary);
+    color: var(--ion-color-primary);
 }
 
 .iconeTitulo {
@@ -196,5 +196,10 @@ ion-list {
 
 .fundoSecundario {    
     background-color: var(--ion-color-secondary);
+    color: white;
+}
+
+.fundoPrimario {    
+    background-color: var(--ion-color-primary);
     color: white;
 }

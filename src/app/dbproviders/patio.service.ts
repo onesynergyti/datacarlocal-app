@@ -25,12 +25,12 @@ export class PatioService extends ServiceBaseService {
 
     // Se for inclusão
     if (inclusao) {
-      sql = 'insert into veiculos (Placa, Modelo, TipoVeiculo, Entrada, Telefone, Observacoes, Servicos) values (?, ?, ?, ?, ?, ?, ?)';
-      data = [veiculo.Placa, veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Telefone, veiculo.Observacoes, JSON.stringify(veiculo.Servicos)];
+      sql = 'insert into veiculos (Placa, Modelo, TipoVeiculo, Entrada, Telefone, Nome, Observacoes, Servicos) values (?, ?, ?, ?, ?, ?, ?, ?)';
+      data = [veiculo.Placa, veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos)];
     }
     else {
-      sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Telefone = ?, Observacoes = ?, Servicos = ? where Placa = ?';
-      data = [veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Telefone, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.Placa];
+      sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Telefone = ?, Nome = ?, Observacoes = ?, Servicos = ? where Placa = ?';
+      data = [veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.Placa];
     }
 
     return new Promise((resolve, reject) => {

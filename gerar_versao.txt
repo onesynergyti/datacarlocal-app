@@ -1,0 +1,14 @@
+//Acesse a pasta do aplicativo
+
+// Gera versão release
+ionic cordova build android --prod --release -- -- --packageType=bundle
+
+// Assina o apk bundle
+"C:\Program Files\Java\jdk1.8.0_231\bin\jarsigner.exe" -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore reuz_datacarlocal.keystore "C:\Users\Claudio Camargos\Documents\Projetos\datacarlocal-app\platforms\android\app\build\outputs\bundle\release\app.aab" reuz_datacarlocal
+Senha: O_t_u_j6_1_7_
+
+// Compacta o arquivo bundle
+"C:\Users\Claudio Camargos\AppData\Local\Android\Sdk\build-tools\29.0.2\zipalign" -v 4 "C:\Users\Claudio Camargos\Documents\Projetos\datacarlocal-app\platforms\android\app\build\outputs\bundle\release\app.aab" "C:\Users\Claudio Camargos\Documents\Projetos\datacarlocal-app\platforms\android\app\build\outputs\bundle\release\datacarlite.aab"
+
+// O arquivo byndle é gerado em
+C:\Users\Claudio Camargos\Documents\Projetos\datacarlocal-app\platforms\android\app\build\outputs\bundle\release\app.aab

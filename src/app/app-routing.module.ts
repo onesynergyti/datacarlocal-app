@@ -16,14 +16,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/configuracoes/impressora/impressora.module').then( m => m.ImpressoraPageModule)
   },
   {
-    path: 'entrada',
-    loadChildren: () => import('./pages/home/entrada/entrada.module').then( m => m.EntradaPageModule)
-  },
-  {
-    path: 'saida',
-    loadChildren: () => import('./pages/home/saida/saida.module').then( m => m.SaidaPageModule)
-  },
-  {
     path: 'movimento',
     loadChildren: () => import('./pages/movimento/movimento.module').then( m => m.MovimentoPageModule)
   },

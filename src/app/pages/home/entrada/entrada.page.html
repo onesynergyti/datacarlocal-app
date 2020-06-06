@@ -15,6 +15,26 @@
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="call"></ion-icon>
+        Contato do cliente
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="7">
+        <ion-item>
+          <ion-label position="floating">Nome</ion-label>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="veiculo.Nome"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size-xs="5">
+        <ion-item>
+          <ion-label position="floating">Telefone</ion-label>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="veiculo.Telefone"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
         Dados do veículo
       </ion-col>
@@ -83,7 +103,7 @@
             </ion-item>
         
             <ion-item-options side="end">
-              <ion-item-option color="danger" (click)="excluir(veiculo)">
+              <ion-item-option color="danger">
                 <ion-icon slot="icon-only" name="trash"></ion-icon>
               </ion-item-option>
             </ion-item-options>
@@ -111,7 +131,7 @@
       <ion-col size-xs="12">
         <ion-item>
           <ion-label position="floating">Informações adicionais</ion-label>
-          <ion-textarea rows="2" auto-grow [(ngModel)]="veiculo.Observacoes" (ionBlur)="alterarObservacao()"></ion-textarea>
+          <ion-textarea rows="1" auto-grow [(ngModel)]="veiculo.Observacoes"></ion-textarea>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -120,11 +140,28 @@
 <ion-footer>
   <ion-grid>
     <ion-row>
-      <ion-col size-xs="{{ inclusao ? 12 : 6 }}">
-        <ion-button expand="block" color="success" (click)="concluir()">Salvar</ion-button>
+      <ion-col size-xs="12" *ngIf="inclusao">
+        <ion-button expand="block" color="success" (click)="concluir()">
+          <ion-icon slot="start" name="checkmark"></ion-icon>
+          Salvar
+        </ion-button>
       </ion-col>
-      <ion-col size-xs="6" *ngIf="!inclusao">
-        <ion-button expand="block" color="danger" (click)="registrarSaida()">Pagamento</ion-button>
+      <ion-col size-xs="5" *ngIf="!inclusao">
+        <ion-button expand="block" color="success" (click)="concluir()">
+          <ion-icon slot="start" name="checkmark"></ion-icon>
+          Salvar
+        </ion-button>
+      </ion-col>
+      <ion-col size-xs="5" *ngIf="!inclusao">        
+        <ion-button expand="block" color="danger" (click)="registrarSaida()">
+          <ion-icon slot="start" name="checkmark-done"></ion-icon>
+          Finalizar
+        </ion-button>
+      </ion-col>
+      <ion-col size-xs="2" *ngIf="!inclusao">
+        <ion-button expand="block" color="danger">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
