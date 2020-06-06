@@ -10,7 +10,7 @@
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="ion-text-center">
-        <h2>{{ dataSaida }}</h2>
+        <h2>{{ saida | date:"dd/MM/yyyy - HH:mm" }}</h2>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -55,12 +55,17 @@
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="ion-text-center">
-        <h1>R$ 3,50</h1>
+        <h1>{{ preco | decimalPipe:"R$ " }}</h1>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="ion-text-center">
+        <h1>Minutos {{ minutos }}</h1>
       </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="full" color="danger" (click)="concluir()">Confirmar Saída</ion-button>
+  <ion-button expand="full" color="danger" (click)="concluir()">Finalizar</ion-button>
 </ion-footer>

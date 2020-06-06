@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
-import { Platform } from '@ionic/angular';
+import { Platform, LoadingController } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
+import { ServiceBaseService } from '../services/service-base.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DatabaseService {
+export class DatabaseService extends ServiceBaseService {
 
   constructor(
+    public loadingController: LoadingController,
     private sqlite: SQLite,
-  ) { }  
+  ) { 
+    super(loadingController)
+  }  
 
   public criarTabelas(db: SQLiteObject) {
     
@@ -18,8 +22,8 @@ export class DatabaseService {
       db.transaction(tx => {
         let promisesTx = []
         promisesTx.push(new Promise((resolve, reject) => { tx.executeSql('CREATE TABLE IF NOT EXISTS servicos (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT NOT NULL, PrecoMoto REAL, PrecoVeiculoPequeno REAL, PrecoVeiculoMedio REAL, PrecoVeiculoGrande REAL)', [], () => resolve(), (erro) => reject(erro))} ))
-        promisesTx.push(new Promise((resolve, reject) => { tx.executeSql('CREATE TABLE IF NOT EXISTS veiculos (Placa TEXT primary key NOT NULL, Modelo TEXT, TipoVeiculo integer NOT NULL, Entrada DATE NOT NULL, Observacoes TEXT, Servicos TEXT)', [], () => resolve(), (erro) => reject(erro))} ))
-        promisesTx.push(new Promise((resolve, reject) => { tx.executeSql('CREATE TABLE IF NOT EXISTS movimentos (Id integer primary key AUTOINCREMENT NOT NULL, Data DATE, Descricao TEXT, Valor REAL, TipoVeiculo integer, FormaPagamento integer, Veiculo TEXT)', [], () => resolve(), (erro) => reject(erro))} ))
+        promisesTx.push(new Promise((resolve, reject) => { tx.executeSql('CREATE TABLE IF NOT EXISTS veiculos (Placa TEXT primary key NOT NULL, Modelo TEXT, TipoVeiculo integer NOT NULL, Entrada DATE NOT NULL, Telefone TEXT, Observacoes TEXT, Servicos TEXT, Pendente integer)', [], () => resolve(), (erro) => reject(erro))} ))
+        promisesTx.push(new Promise((resolve, reject) => { tx.executeSql('CREATE TABLE IF NOT EXISTS movimentos (Id integer primary key AUTOINCREMENT NOT NULL, Data DATE, Descricao TEXT, TipoVeiculo integer, ValorDinheiro REAL, ValorDebito REAL, ValorCredito REAL, Veiculo TEXT)', [], () => resolve(), (erro) => reject(erro))} ))
         promisesTx.push(new Promise((resolve, reject) => { tx.executeSql('CREATE TABLE IF NOT EXISTS movimentosServicos (IdMovimento integer NOT NULL, IdServico integer NOT NULL, Nome TEXT NOT NULL, Valor REAL NOT NULL, PRIMARY KEY (IdMovimento, IdServico))', [], () => resolve(), (erro) => reject(erro))} ))
         promisesTx.push(new Promise((resolve, reject) => { tx.executeSql('CREATE TABLE IF NOT EXISTS mensalistas (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT, Valor REAL, UltimoPagamento DATE, DiaVencimento integer)', [], () => resolve(), (erro) => reject(erro))} ))
 

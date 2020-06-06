@@ -7,5 +7,7 @@ export class Veiculo {
   Entrada: Date
   TipoVeiculo: number
   Observacoes: string
+  Telefone: string
   Servicos: ServicoVeiculo[] = []
+  Pendente: boolean
 }

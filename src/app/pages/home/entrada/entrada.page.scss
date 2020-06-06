@@ -2,6 +2,7 @@
 @import "../../../../assets/style/styleForms.scss";
 
 .divTipoVeiculo {
+  margin-top: 14px;
   padding: 5%;
   text-align: center;
   border-radius: 5px;
@@ -9,5 +10,8 @@
 
 .tipoVeiculoSelecionado {
   background-color: var(--ion-color-light-shade);
-  border: 1px solid black;
+}
+
+.divServico {
+  width: 100%;
 }

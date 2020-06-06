@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
 import { PatioService } from 'src/app/dbproviders/patio.service';
+import { CalculadoraEstacionamentoService } from 'src/app/services/calculadora-estacionamento.service';
+import { Veiculo } from 'src/app/models/veiculo';
 
 @Component({
   selector: 'app-saida',
@@ -9,16 +11,23 @@ import { PatioService } from 'src/app/dbproviders/patio.service';
 })
 export class SaidaPage {
 
-  veiculo
-  saida
+  veiculo: Veiculo
+  saida: Date
+  preco: number
+  minutos: number
 
   constructor(
     private modalCtrl: ModalController,
     public navParams: NavParams,
-    private patio: PatioService
+    private patio: PatioService,
+    private calculadoraEstacionamentoService: CalculadoraEstacionamentoService
   ) { 
     this.veiculo = navParams.get('veiculo')
     this.saida = new Date();
+
+    this.preco = this.calculadoraEstacionamentoService.calcularPrecos(this.veiculo.Entrada, this.saida, this.veiculo.TipoVeiculo)
+    this.minutos = this.calculadoraEstacionamentoService.calcularMinutos(this.veiculo.Entrada, this.saida)
+
   }
 
   cancelar() {
@@ -27,21 +36,12 @@ export class SaidaPage {
 
   async concluir() {
     await this.patio.exibirProcessamento('Registrando saida...')
-    this.patio.registrarSaida(this.veiculo, 10, this.saida, 1)
+    this.patio.registrarSaida(this.veiculo, 10, 10, 10, this.saida, 1)
     .then(() => {
       this.modalCtrl.dismiss(this.veiculo)
     })
     .catch((erro) => {
       alert(JSON.stringify(erro))
     })
-  }
-
-  get dataSaida() {
-    return this.saida.getDate() + '/' +
-      (this.saida.getMonth() + 1) + '/' +
-      this.saida.getFullYear() + ' - ' +
-      this.saida.getHours() + ':' +
-      this.saida.getMinutes()
-  }
-  
+  }  
 }

@@ -14,6 +14,7 @@ import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import { SelectPopupModalPage } from './components/select-popup-modal/select-popup-modal.page';
+import { PipeModule } from './pipes/pipe.module';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { SelectPopupModalPage } from './components/select-popup-modal/select-pop
     IonicModule.forRoot(), 
     AppRoutingModule,
     ComponentsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    PipeModule.forRoot()
   ],
   providers: [
     StatusBar,

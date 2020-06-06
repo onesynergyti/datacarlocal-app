@@ -31,6 +31,11 @@ export class Utils {
     }
 
     stringPura(texto) {
-      return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+      return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
+    }
+
+    completarZeros(numero, tamanho) {
+      var s = "000000000" + numero;
+      return s.substr(s.length-tamanho);
     }
 }

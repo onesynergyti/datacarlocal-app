@@ -5,10 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { EntradaPageRoutingModule } from './entrada-routing.module';
-
 import { EntradaPage } from './entrada.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { SaidaPage } from '../saida/saida.page';
+import { PipeModule } from 'src/app/pipes/pipe.module';
+
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { SaidaPage } from '../saida/saida.page';
     FormsModule,
     IonicModule,
     EntradaPageRoutingModule,
-    ComponentsModule
+    ComponentsModule,
+    PipeModule.forRoot()
   ],
   entryComponents: [SaidaPage],
   declarations: [EntradaPage, SaidaPage]

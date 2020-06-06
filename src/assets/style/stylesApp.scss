@@ -45,6 +45,11 @@ ion-list {
     padding-bottom: 0px;
 }
 
+.divTipoVeiculo {
+    text-align: center;
+    padding: 5% 20% 5% 20%;
+}
+  
 .margemInferiorLista:last-child {
     margin-bottom: 80px;
 }
@@ -147,6 +152,7 @@ ion-list {
     text-align: center;
     width: 100%;
     font-size: 11px;
+    color: var(--ion-color-primary)
 }
 
 .textoOrientacao {

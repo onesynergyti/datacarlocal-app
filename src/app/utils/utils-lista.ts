@@ -18,7 +18,7 @@ export class UtilsLista {
 
       // Atualiza o elemento na lista conforme o resultado da pesquisa
       if (index >= 0) 
-        lista.splice(index, 1, item)
+        lista[index] = item
       else
         lista.push(item)
     }

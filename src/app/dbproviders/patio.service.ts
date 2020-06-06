@@ -25,12 +25,12 @@ export class PatioService extends ServiceBaseService {
 
     // Se for inclusão
     if (inclusao) {
-      sql = 'insert into veiculos (Placa, Modelo, TipoVeiculo, Entrada, Observacoes, Servicos) values (?, ?, ?, ?, ?, ?)';
-      data = [veiculo.Placa, veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Observacoes, JSON.stringify(veiculo.Servicos)];
+      sql = 'insert into veiculos (Placa, Modelo, TipoVeiculo, Entrada, Telefone, Observacoes, Servicos) values (?, ?, ?, ?, ?, ?, ?)';
+      data = [veiculo.Placa, veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Telefone, veiculo.Observacoes, JSON.stringify(veiculo.Servicos)];
     }
     else {
-      sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Observacoes = ?, Servicos = ? where Placa = ?';
-      data = [veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.Placa];
+      sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Telefone = ?, Observacoes = ?, Servicos = ? where Placa = ?';
+      data = [veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Telefone, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.Placa];
     }
 
     return new Promise((resolve, reject) => {
@@ -58,7 +58,7 @@ export class PatioService extends ServiceBaseService {
     })
   }*/
 
-  registrarSaida(veiculo, valor, dataPagamento, formaPagamento) {
+  registrarSaida(veiculo, valorDinheiro, valorDebito, valorCredito, dataPagamento, formaPagamento) {
     return new Promise((resolve, reject) => {
       this.database.DB.then(db => {
         db.transaction(tx => {
@@ -68,8 +68,8 @@ export class PatioService extends ServiceBaseService {
           tx.executeSql(sqlExclusao, dataExclusao, () => {
             alert('excluiu veículo')
             // Inclui o movimento financeiro
-            const sqlInclusao = 'insert into movimentos (Data, Descricao, Valor, TipoVeiculo, FormaPagamento, Veiculo) values (?, ?, ?, ?, ?, ?)';
-            const dataInclusao = [dataPagamento, 'Receita', valor, veiculo.TipoVeiculo, formaPagamento, JSON.stringify(veiculo)];
+            const sqlInclusao = 'insert into movimentos (Data, Descricao, TipoVeiculo, ValorDinheiro, ValorDebito, ValorCredito, Veiculo) values (?, ?, ?, ?, ?, ?, ?)';
+            const dataInclusao = [dataPagamento, 'Receita', veiculo.TipoVeiculo, valorDinheiro, valorDebito, valorCredito, JSON.stringify(veiculo)];
             tx.executeSql(sqlInclusao, dataInclusao, (tx, result) => {
 
               // Insere todos os movimentos
@@ -104,7 +104,7 @@ export class PatioService extends ServiceBaseService {
 
   public lista(): Promise<any> {
     return new Promise((resolve, reject) => {
-      let sql = "SELECT Placa, Modelo, TipoVeiculo, Entrada, Observacoes, Servicos as Servicos from veiculos v";
+      let sql = "SELECT * from veiculos v";
       this.database.DB.then(db => {
         db.executeSql(sql, [])
         .then(data => {

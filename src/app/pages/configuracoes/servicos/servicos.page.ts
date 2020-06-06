@@ -5,6 +5,8 @@ import { ServicosService } from 'src/app/dbproviders/servicos.service';
 import { ModalController } from '@ionic/angular';
 import { CadastroServicoPage } from './cadastro-servico/cadastro-servico.page';
 import { Servico } from 'src/app/models/servico';
+import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
+import { UtilsLista } from 'src/app/utils/utils-lista';
 
 @Component({
   selector: 'app-servicos',
@@ -30,35 +32,49 @@ export class ServicosPage implements OnInit {
   carregandoServicos = false
   pesquisa = ''
   servicos = []
+  configuracoes
 
   constructor(
     private utils: Utils,
+    private utilsLista: UtilsLista,
     private providerServicos: ServicosService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private configuracoesService: ConfiguracoesService
   ) { }
 
   ngOnInit() {
   }
 
   ionViewDidEnter() {
+    this.configuracoes = this.configuracoesService.configuracoes
     this.atualizarServicos()
   }
 
+  ionViewWillLeave() {
+    this.configuracoesService.configuracoes = this.configuracoes
+  }
+
   atualizarServicos() {
-    /*this.servicos = []
+    this.servicos = []
     this.carregandoServicos = true
     this.providerServicos.lista().then((lista: any) => {
       this.servicos = lista
+    })    
+    // Em caso de erro
+    .catch(() => {
+      alert(JSON.stringify('Não foi possível carregar os veículos do pátio.'))
     })
     .finally(() => {
       this.carregandoServicos = false
-    })*/
+    })
   }
 
   async cadastrarServico(servico = null) {
     let servicoEdicao
     if (servico == null) 
       servicoEdicao = new Servico()
+    else 
+      servicoEdicao = JSON.parse(JSON.stringify(servico))    
 
     const modal = await this.modalController.create({
       component: CadastroServicoPage,
@@ -68,6 +84,9 @@ export class ServicosPage implements OnInit {
     });
 
     modal.onWillDismiss().then((retorno) => {
+      if (retorno.data != null) {
+        this.utilsLista.atualizarLista(this.servicos, retorno.data)
+      }
     })
 
     return await modal.present(); 
@@ -80,8 +99,8 @@ export class ServicosPage implements OnInit {
   get listaFiltrada() {
     if (this.pesquisa == '')
       return this.servicos
-
-    return this.servicos.filter(itemAtual => this.utils.stringPura(itemAtual.Nome).includes(this.utils.stringPura(this.pesquisa)))
+    else
+      return this.servicos.filter(itemAtual => this.utils.stringPura(itemAtual.Nome).includes(this.utils.stringPura(this.pesquisa)))
   }
 
 }

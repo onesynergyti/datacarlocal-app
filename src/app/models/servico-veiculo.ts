@@ -1,6 +1,9 @@
 export class ServicoVeiculo {
   Id: number
   Nome: string
-  Preco: number
+  PrecoMoto: number
+  PrecoVeiculoPequeno: number
+  PrecoVeiculoMedio: number
+  PrecoVeiculoGrande: number
   Executado: boolean
 }

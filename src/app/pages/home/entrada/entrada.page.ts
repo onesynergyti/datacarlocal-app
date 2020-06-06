@@ -5,9 +5,9 @@ import { PatioService } from 'src/app/dbproviders/patio.service';
 import { SelectPopupModalPage } from 'src/app/components/select-popup-modal/select-popup-modal.page';
 import { ServicosService } from 'src/app/dbproviders/servicos.service';
 import { ServicoVeiculo } from 'src/app/models/servico-veiculo';
-import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
 import { SaidaPage } from '../saida/saida.page';
+import { Utils } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-entrada',
@@ -33,13 +33,15 @@ export class EntradaPage implements OnInit {
   pesquisa
   inclusao
   veiculo: Veiculo
+  avaliouFormulario = false
   
   constructor(
     private modalCtrl: ModalController,
     private patioProvider: PatioService,
     private servicosProvider: ServicosService,
     public navParams: NavParams,
-    private modalController: ModalController
+    private modalController: ModalController,
+    public utils: Utils
   ) { 
     this.veiculo = navParams.get('veiculo')
     this.inclusao = navParams.get('inclusao')
@@ -59,6 +61,16 @@ export class EntradaPage implements OnInit {
     }))    
   }
 
+  precoServico(servico: ServicoVeiculo) {
+    switch(this.veiculo.TipoVeiculo) {
+      case 1: return servico.PrecoMoto
+      case 2: return servico.PrecoVeiculoPequeno
+      case 3: return servico.PrecoVeiculoMedio
+      case 4: return servico.PrecoVeiculoGrande
+      default: return '0'
+    }
+  }
+
   async selecionarServico(servicos) {
     const modal = await this.modalCtrl.create({
       component: SelectPopupModalPage,
@@ -74,8 +86,12 @@ export class EntradaPage implements OnInit {
       let servico = retorno.data
       if (servico != null) {
         let servicoVeiculo = new ServicoVeiculo()
+        servicoVeiculo.Id = servico.Id
         servicoVeiculo.Nome = servico.Nome
-        servicoVeiculo.Preco = servico.PrecoMoto
+        servicoVeiculo.PrecoMoto = servico.PrecoMoto
+        servicoVeiculo.PrecoVeiculoPequeno = servico.PrecoVeiculoPequeno
+        servicoVeiculo.PrecoVeiculoMedio = servico.PrecoVeiculoMedio
+        servicoVeiculo.PrecoVeiculoGrande = servico.PrecoVeiculoGrande
         this.veiculo.Servicos.push(servicoVeiculo)
       }
     })
@@ -84,22 +100,23 @@ export class EntradaPage implements OnInit {
   }
 
   async concluir() {
-    await this.patioProvider.exibirProcessamento('Registrando entrada...')
-    this.patioProvider.salvar(this.veiculo, this.inclusao)
-    .then(() => {
-      this.modalCtrl.dismiss({ Excluir: false, Veiculo: this.veiculo })
-    })
-    .catch(() => {
-      alert('Não foi possível inserir o veículo')
-    })
-  }
+    this.avaliouFormulario = true
 
-  get dataFormatada() {
-    return this.veiculo.Entrada.getDate() + '/' +
-      (this.veiculo.Entrada.getMonth() + 1) + '/' +
-      this.veiculo.Entrada.getFullYear() + ' - ' +
-      this.veiculo.Entrada.getHours() + ':' +
-      this.veiculo.Entrada.getMinutes()
+    const valido = this.veiculo.Placa && this.veiculo.TipoVeiculo;
+
+    if (!valido) {
+      this.utils.mostrarToast('Preencha os campos corretamente', 'danger')
+    }
+    else {
+      await this.patioProvider.exibirProcessamento('Registrando entrada...')
+      this.patioProvider.salvar(this.veiculo, this.inclusao)
+      .then(() => {
+        this.modalCtrl.dismiss({ Excluir: false, Veiculo: this.veiculo })
+      })
+      .catch(() => {
+        alert('Não foi possível inserir o veículo')
+      })
+    }
   }
 
   selecionarTipoVeiculo(tipoVeiculo) {

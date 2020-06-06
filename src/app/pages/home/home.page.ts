@@ -49,9 +49,7 @@ export class HomePage {
     private barcodeScanner: BarcodeScanner,
     private configuracoesService: ConfiguracoesService
   ) {
-    document.addEventListener(this.admobFree.events.REWARD_VIDEO_REWARD, (result) => {
-      this.pontos++
-    });     
+    //this.showBannerAd()
 
     this.bluetooth.onDefinirDispositivo.subscribe((dispositivo) => {
       // Verifica se houve uma falha na impressão para tentar reimprimir
@@ -69,7 +67,6 @@ export class HomePage {
 
   ionViewDidEnter() {
     this.atualizarPatio()
-    this.showBannerAd()
   }
 
   async abrirMenuOperacao() {
@@ -154,7 +151,6 @@ export class HomePage {
         let servico = new ServicoVeiculo()
         servico.Id = 0
         servico.Nome = 'Estacionamento'
-        servico.Preco = 0
         veiculoEdicao.Servicos.push(servico)
       }      
     }
@@ -185,10 +181,15 @@ export class HomePage {
         else
           this.veiculos.push(veiculo)
 
-        if (retorno.data.Excluir)
-          this.utils.mostrarToast('Saída registrada com sucesso', 'success')
+        if (retorno.data.Excluir) {
+          // Exibe uma propagando na saída do veículo
+          setTimeout(() => {
+            this.showInterstitialAds()
+          }, 3000);
+          this.utils.mostrarToast('Conslusão dos serviços realizada com sucesso', 'success')
+        }
         else
-          this.utils.mostrarToast('Entrada registrada com sucesso', 'success')
+          this.utils.mostrarToast(inclusao ? 'Veículo adicionado com sucesso' : 'Alteração realizada com sucesso', 'success')
 
         // Trata a impressão do recibo
         if (this.bluetooth.dispositivoSalvo != null) {
@@ -200,7 +201,7 @@ export class HomePage {
               // Tenta conectar novamente para imprimir se conseguir
               // Veja onDefinirDispositivo no construtor
               // Aguarda 5 segundos para que o usuário possa visualizar a mensagem de sucesso no registro
-              setTimeout(() => { this.bluetooth.conectarDispositivo(this.bluetooth.dispositivoSalvo) }, 5000);
+              setTimeout(() => { this.bluetooth.conectarDispositivo(this.bluetooth.dispositivoSalvo) }, 2000);
             }
           })
         }
@@ -226,24 +227,13 @@ export class HomePage {
    
   showInterstitialAds(){
     let interstitialConfig: AdMobFreeInterstitialConfig = {
-        isTesting: true, // Remove in production
-        autoShow: true//,
-        //id: "ca-app-pub-3940256099942544/6300978111"
+        isTesting: false,
+        autoShow: true,
+        id: "ca-app-pub-2818472978128447/7475351211"
     };
     this.admobFree.interstitial.config(interstitialConfig);
     this.admobFree.interstitial.prepare().then(() => { })
   }  
-
-  showRewardVideoAds(){
-    let RewardVideoConfig: AdMobFreeRewardVideoConfig = {
-        isTesting: true, // Remove in production
-        autoShow: true//,
-        //id: "ca-app-pub-3940256099942544/6300978111"
-    };
-    this.admobFree.rewardVideo.config(RewardVideoConfig);    
-
-    this.admobFree.rewardVideo.prepare().then(() => {})
-  }
 
   showBannerAd() {
     let bannerConfig: AdMobFreeBannerConfig = {
@@ -253,6 +243,13 @@ export class HomePage {
     };
     this.admobFree.banner.config(bannerConfig);
 
-    this.admobFree.banner.prepare().then(() => { })
+    this.admobFree.banner.prepare()
+    .then(() => { })
+    // Em caso de erro tenta novamente em 10 minutos
+    .catch(() => {
+      setTimeout(() => {
+        this.showBannerAd()
+      }, 600000);
+    })
   }  
 }

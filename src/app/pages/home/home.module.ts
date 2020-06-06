@@ -8,6 +8,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 import { ComponentsModule } from '../../components/components.module';
 import { EntradaPage } from './entrada/entrada.page';
 import { SaidaPage } from './saida/saida.page';
+import { PipeModule } from 'src/app/pipes/pipe.module';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { SaidaPage } from './saida/saida.page';
     FormsModule,
     IonicModule,
     HomePageRoutingModule,
-    ComponentsModule    
+    ComponentsModule,
+    PipeModule.forRoot() 
   ],
   entryComponents: [EntradaPage],
   declarations: [HomePage, EntradaPage]
