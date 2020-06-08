@@ -32,6 +32,33 @@
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
+        Serviços
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="veiculo.Servicos != null && veiculo.Servicos.length > 0">
+      <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
+        <ion-list [@listAnimation]="veiculo.Servicos.length" lines="full">
+          <ion-item-sliding id="servico.Id" *ngFor="let servico of veiculo.Servicos">
+            <ion-item>
+              <h3 class="textoLimitado espacadorCampo">{{ servico.Nome }}</h3>
+              <ion-note slot="end">
+                <h3 *ngIf="veiculo.TipoVeiculo && servico.Id">{{ veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h3>
+                <h3 *ngIf="!servico.Id">{{ preco | decimalPipe:"R$ " }}</h3>
+              </ion-note>
+            </ion-item>
+        
+            <ion-item-options side="end">
+              <ion-item-option color="danger">
+                <ion-icon slot="icon-only" name="trash"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
         Forma de pagamento
       </ion-col>
@@ -45,22 +72,6 @@
       </ion-col>
       <ion-col size-xs="4" class="ion-text-center">
         Cartão de débito
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
-        <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
-        Valor da permanência
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size-xs="12" class="ion-text-center">
-        <h1>{{ preco | decimalPipe:"R$ " }}</h1>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size-xs="12" class="ion-text-center">
-        <h1>Minutos {{ minutos }}</h1>
       </ion-col>
     </ion-row>
   </ion-grid>

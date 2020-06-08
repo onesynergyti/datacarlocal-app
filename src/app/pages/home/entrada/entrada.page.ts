@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, NavParams } from '@ionic/angular';
+import { ModalController, NavParams, AlertController } from '@ionic/angular';
 import { Veiculo } from 'src/app/models/veiculo';
 import { PatioService } from 'src/app/dbproviders/patio.service';
 import { SelectPopupModalPage } from 'src/app/components/select-popup-modal/select-popup-modal.page';
@@ -30,6 +30,7 @@ import { Utils } from 'src/app/utils/utils';
 })
 export class EntradaPage implements OnInit {
 
+  pagina = 'veiculo'
   pesquisa
   inclusao
   veiculo: Veiculo
@@ -41,7 +42,8 @@ export class EntradaPage implements OnInit {
     private servicosProvider: ServicosService,
     public navParams: NavParams,
     private modalController: ModalController,
-    public utils: Utils
+    public utils: Utils,
+    private alertController: AlertController
   ) { 
     this.veiculo = navParams.get('veiculo')
     this.inclusao = navParams.get('inclusao')
@@ -59,16 +61,6 @@ export class EntradaPage implements OnInit {
     this.servicosProvider.lista().then((servicos => {
       this.selecionarServico(servicos)
     }))    
-  }
-
-  precoServico(servico: ServicoVeiculo) {
-    switch(this.veiculo.TipoVeiculo) {
-      case 1: return servico.PrecoMoto
-      case 2: return servico.PrecoVeiculoPequeno
-      case 3: return servico.PrecoVeiculoMedio
-      case 4: return servico.PrecoVeiculoGrande
-      default: return '0'
-    }
   }
 
   async selecionarServico(servicos) {
@@ -102,7 +94,10 @@ export class EntradaPage implements OnInit {
   async concluir() {
     this.avaliouFormulario = true
 
-    const valido = this.veiculo.Placa && this.veiculo.TipoVeiculo;
+    const valido = this.veiculo.Placa && 
+      this.veiculo.TipoVeiculo && 
+      (!this.veiculo.EntregaAgendada || (this.veiculo.EntregaAgendada && this.veiculo.PossuiServicoAgendavel)) // Agendamento exige um serviço que permita previsão
+      this.veiculo.Servicos != null && this.veiculo.Servicos.length > 0
 
     if (!valido) {
       this.utils.mostrarToast('Preencha os campos corretamente', 'danger')
@@ -111,12 +106,17 @@ export class EntradaPage implements OnInit {
       await this.patioProvider.exibirProcessamento('Registrando entrada...')
       this.patioProvider.salvar(this.veiculo, this.inclusao)
       .then(() => {
-        this.modalCtrl.dismiss({ Excluir: false, Veiculo: this.veiculo })
+        this.modalCtrl.dismiss({ Operacao: 'entrada', Veiculo: this.veiculo })
       })
       .catch(() => {
         alert('Não foi possível inserir o veículo')
       })
     }
+  }
+
+  definirPrevisaoEntrega() {
+    if (this.veiculo.PrevisaoEntrega == null)
+      this.veiculo.PrevisaoEntrega = new Date()
   }
 
   selecionarTipoVeiculo(tipoVeiculo) {
@@ -128,23 +128,43 @@ export class EntradaPage implements OnInit {
     // Precisa do settimeout para ocultar a tela corretamente
     setTimeout(() => {
       this.patioProvider.ocultarProcessamento()
-      this.modalCtrl.dismiss({ Excluir: true, Veiculo: this.veiculo })
+      this.modalCtrl.dismiss({ Operacao: 'excluir', Veiculo: this.veiculo })
     }, 300);
   }
 
   async registrarSaida() {
-    const modal = await this.modalController.create({
-      component: SaidaPage,
-      componentProps: {
-        'veiculo': this.veiculo
-      }
+    if (this.veiculo.PossuiServicosPendentes) 
+      this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve excluir ou finalizar antes de realizar o pagamento.', 'danger', 3000)      
+    else {
+      const modal = await this.modalController.create({
+        component: SaidaPage,
+        componentProps: {
+          'veiculo': this.veiculo
+        }
+      });
+  
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data)
+          this.finalizarSaida()
+      })
+  
+      return await modal.present(); 
+    }
+  }
+
+  selecionarDataPrevisao() {
+    this.utils.selecionarData(this.veiculo.PrevisaoEntrega ? new Date(this.veiculo.PrevisaoEntrega) : new Date())
+    .then(data => {
+      data.setHours(new Date(this.veiculo.PrevisaoEntrega).getHours())
+      data.setMinutes(new Date(this.veiculo.PrevisaoEntrega).getMinutes())
+      this.veiculo.PrevisaoEntrega = data
     });
+  }
 
-    modal.onWillDismiss().then((retorno) => {
-      if (retorno.data)
-        this.finalizarSaida()
-    })
-
-    return await modal.present(); 
+  selecionarHoraPrevisao() {
+    this.utils.selecionarHora(new Date(this.veiculo.PrevisaoEntrega))
+    .then(hora => {
+      this.veiculo.PrevisaoEntrega = hora
+    });
   }
 }

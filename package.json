@@ -24,6 +24,7 @@
     "@ionic-native/barcode-scanner": "^5.26.0",
     "@ionic-native/bluetooth-serial": "^5.26.0",
     "@ionic-native/core": "^5.0.7",
+    "@ionic-native/date-picker": "^5.26.0",
     "@ionic-native/splash-screen": "^5.0.0",
     "@ionic-native/sqlite": "^5.26.0",
     "@ionic-native/sqlite-porter": "^5.26.0",
@@ -34,8 +35,10 @@
     "cordova-browser": "6.0.0",
     "cordova-plugin-admob-free": "^0.27.0",
     "cordova-plugin-bluetooth-serial": "^0.4.7",
+    "cordova-plugin-datepicker": "^0.9.3",
     "cordova-promise-polyfill": "0.0.2",
     "cordova-sqlite-storage": "^5.0.0",
+    "ion2-calendar": "^3.0.0-rc.0",
     "phonegap-plugin-barcodescanner": "^8.1.0",
     "rxjs": "~6.5.1",
     "tslib": "^1.10.0",
@@ -88,7 +91,8 @@
       "cordova-plugin-bluetooth-serial": {},
       "phonegap-plugin-barcodescanner": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
-      }
+      },
+      "cordova-plugin-datepicker": {}
     },
     "platforms": [
       "android",

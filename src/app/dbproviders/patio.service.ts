@@ -25,12 +25,12 @@ export class PatioService extends ServiceBaseService {
 
     // Se for inclusão
     if (inclusao) {
-      sql = 'insert into veiculos (Placa, Modelo, TipoVeiculo, Entrada, Telefone, Nome, Observacoes, Servicos) values (?, ?, ?, ?, ?, ?, ?, ?)';
-      data = [veiculo.Placa, veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos)];
+      sql = 'insert into veiculos (Placa, Modelo, TipoVeiculo, Entrada, Telefone, Nome, Observacoes, Servicos, EntregaAgendada, PrevisaoEntrega) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+      data = [veiculo.Placa, veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, veiculo.PrevisaoEntrega];
     }
     else {
-      sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Telefone = ?, Nome = ?, Observacoes = ?, Servicos = ? where Placa = ?';
-      data = [veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.Placa];
+      sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Telefone = ?, Nome = ?, Observacoes = ?, Servicos = ?, EntregaAgendada = ?, PrevisaoEntrega = ? where Placa = ?';
+      data = [veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, veiculo.PrevisaoEntrega, veiculo.Placa];
     }
 
     return new Promise((resolve, reject) => {
@@ -113,7 +113,7 @@ export class PatioService extends ServiceBaseService {
             for (var i = 0; i < data.rows.length; i++) {
               var veiculo = data.rows.item(i);
               veiculo.Servicos = JSON.parse(veiculo.Servicos)
-              veiculos.push(veiculo);
+              veiculos.push(new Veiculo(veiculo));
             }
             resolve(veiculos)
           } else {

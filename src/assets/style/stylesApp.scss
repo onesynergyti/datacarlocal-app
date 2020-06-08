@@ -1,6 +1,5 @@
 h6 {
     font-size: 10px;
-    font-weight: bold;
     margin: 0px;
     margin-bottom: 2px;
 }
@@ -13,28 +12,24 @@ h5 {
 }
 
 h4 {
-    font-weight: bold;
     font-size: 13px;
     margin: 0px;
     margin-bottom: 2px;
 }
 
 h3 {
-    font-weight: bold;
     font-size: 15px;
     margin: 0px;
     margin-bottom: 2px;
 }
 
 h2 {
-    font-weight: bold;
     font-size: 18px;
     margin: 0px;
     margin-bottom: 2px;
 }
 
 h1 {
-    font-weight: bold;
     font-size: 23px;
     margin: 0px;
     margin-bottom: 2px;
@@ -43,6 +38,10 @@ h1 {
 ion-list {
     padding-top: 0px;
     padding-bottom: 0px;
+}
+
+.negrito {
+    font-weight: bold;
 }
 
 .divTipoVeiculo {
@@ -170,7 +169,6 @@ ion-list {
     left: 10px;
     top: 2px;
     font-size: 20px;
-    color: var(--ion-color-primary);
 }
 
 .iconeTitulo {
@@ -201,5 +199,20 @@ ion-list {
 
 .fundoPrimario {    
     background-color: var(--ion-color-primary);
+    color: white;
+}
+
+.fundoPerigo {    
+    background-color: var(--ion-color-danger);
+    color: white;
+}
+
+.fundoAlerta {    
+    background-color: var(--ion-color-warning);
+    color: black;
+}
+
+.fundoSucesso {    
+    background-color: var(--ion-color-success);
     color: white;
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AlertController, ToastController } from '@ionic/angular';
+import { DatePicker } from '@ionic-native/date-picker/ngx';
 
 @Injectable({
     providedIn: 'root'
@@ -7,35 +8,52 @@ import { AlertController, ToastController } from '@ionic/angular';
   
 export class Utils {
 
-    constructor (
-      private alertCtrl: AlertController,
-      public toastController: ToastController
-    ) { }
+  constructor (
+    private alertCtrl: AlertController,
+    public toastController: ToastController,
+    private datePicker: DatePicker
+  ) { }
 
-    async alerta(titulo, mensagem) {
-        const alert = await this.alertCtrl.create({
-        message: mensagem,
-        subHeader: titulo,
-        buttons: ['Ok']
-       });
-       await alert.present(); 
-    }
-
-    async mostrarToast(mensagem, cor) {
-      const toast = await this.toastController.create({
-        message: mensagem,
-        duration: 2000,
-        color: cor
+  async alerta(titulo, mensagem) {
+      const alert = await this.alertCtrl.create({
+      message: mensagem,
+      subHeader: titulo,
+      buttons: ['Ok']
       });
-      toast.present();
-    }
+      await alert.present(); 
+  }
 
-    stringPura(texto) {
-      return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
-    }
+  async mostrarToast(mensagem, cor, tempo = 2000) {
+    const toast = await this.toastController.create({
+      message: mensagem,
+      duration: tempo,
+      color: cor
+    });
+    toast.present();
+  }
 
-    completarZeros(numero, tamanho) {
-      var s = "000000000" + numero;
-      return s.substr(s.length-tamanho);
-    }
+  stringPura(texto) {
+    return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
+  }
+
+  completarZeros(numero, tamanho) {
+    var s = "000000000" + numero;
+    return s.substr(s.length-tamanho);
+  }
+
+  selecionarData(data = null) {
+    return this.datePicker.show({
+      date: data ? data : new Date(),
+      mode: 'date',
+      androidTheme: this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT
+    })
+  }  
+
+  selecionarHora(hora = null) {
+    return this.datePicker.show({      
+      date: hora ? hora : new Date(),
+      mode: 'time',
+      androidTheme: this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT
+    })
+  }  
 }

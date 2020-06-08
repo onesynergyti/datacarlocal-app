@@ -17,6 +17,10 @@
               <ion-col size-xs="12" class="fundoPrimario tituloCartao ion-text-center"> 
                 <h3>{{ veiculo.Placa }}</h3>
               </ion-col>
+              <ion-col size-xs="12" *ngIf="veiculo.EntregaAgendada == true" class="subTitulo" [ngClass]="{'fundoAlerta': veiculo.PossuiServicosPendentes && veiculo.MinutosRestantes < 60 && veiculo.MinutosRestantes > 15, 'fundoPerigo':  veiculo.PossuiServicosPendentes && veiculo.MinutosRestantes <= 15}" >
+                <ion-icon class="iconeSubTitulo" name="timer"></ion-icon>
+                Agendado para {{ veiculo.PrevisaoEntrega | date:"dd/MM/yyyy - HH:mm" }}
+              </ion-col>
             </ion-row>
             <ion-row>
               <ion-col size-xs="12" class="subTitulo fundoLigth">
@@ -26,20 +30,20 @@
             </ion-row>
             <ion-row>
               <ion-col size-xs="8">
-                <h5 class="espacadorCampo">{{ veiculo.Entrada | date:"dd/MM/yyyy - HH:mm" }}</h5>
+                <h4 class="espacadorCampo negrito">Entrou em {{ veiculo.Entrada | date:"dd/MM/yyyy - HH:mm" }}</h4>
                 <h4 class="textoLimitado">{{ veiculo.Modelo ? veiculo.Modelo : 'Modelo não informado' }}</h4>
               </ion-col>
               <ion-col size-xs="4" class="ion-text-right">
                 <img id="imgTipoVeiculo" src="{{ '../../../assets/img/veiculos/' + veiculo.TipoVeiculo + '.png' }}" />
               </ion-col>
             </ion-row>
-            <ion-row>
+            <ion-row *ngIf="veiculo.Telefone || veiculo.Nome">
               <ion-col size-xs="12" class="subTitulo fundoLigth">
                 <ion-icon class="iconeSubTitulo" name="call"></ion-icon>
                 Contato
               </ion-col>
             </ion-row>
-            <ion-row>
+            <ion-row *ngIf="veiculo.Telefone || veiculo.Nome">
               <ion-col size-xs="7">
                 <h4 class="textoLimitado">{{ veiculo.Nome }}</h4>
               </ion-col>
@@ -47,7 +51,7 @@
                 <h4>{{ veiculo.Telefone }}</h4>
               </ion-col>
             </ion-row>
-            <ion-row>
+            <ion-row *ngIf="veiculo.Servicos && veiculo.Servicos.length > 0">
               <ion-col size-xs="12" class="subTitulo fundoLigth">
                 <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
                 Serviços do veículo
@@ -58,13 +62,27 @@
                 <h4 class="textoLimitado">{{ servico.Nome }}</h4>
               </ion-col>
               <ion-col size="2" class="ion-text-right">
-                <ion-icon name="construct"></ion-icon>
+                <ion-icon *ngIf="servico.Executado" class="fontCorSucesso" name="checkmark-circle"></ion-icon>
+                <ion-icon *ngIf="!servico.Executado && servico.Id" [ngClass]="{'fontCorAlerta': veiculo.MinutosRestantes < 60 && veiculo.MinutosRestantes > 15, 'fontCorPerigo': veiculo.MinutosRestantes <= 15}" name="alert-circle"></ion-icon>
+                <ion-icon *ngIf="!servico.Id" name="timer"></ion-icon>
               </ion-col>
             </ion-row>
           </ion-grid>
         </div>
-      </ion-item>
-  
+      </ion-item>      
+
+      <ion-item-options side="start">
+        <ion-item-option color="success" (click)="registrarSaida(veiculo)">
+          <ion-icon slot="icon-only" name="checkmark-circle"></ion-icon>
+        </ion-item-option>
+        <ion-item-option  color="warning" (click)="imprimirReciboEntrada(veiculo)">
+          <ion-icon slot="icon-only" name="print"></ion-icon>
+        </ion-item-option>
+        <ion-item-option  *ngIf="veiculo.Telefone != null && veiculo.Telefone.length >= 10" color="success" (click)="abrirWhatsapp(veiculo)">
+          <ion-icon slot="icon-only" name="logo-whatsapp"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+
       <ion-item-options side="end">
         <ion-item-option color="danger" (click)="excluir(veiculo)">
           <ion-icon slot="icon-only" name="trash"></ion-icon>

@@ -10,6 +10,7 @@ import { trigger, transition, query, style, stagger, animate } from '@angular/an
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { ServicoVeiculo } from 'src/app/models/servico-veiculo';
+import { SaidaPage } from './saida/saida.page';
 
 @Component({
   selector: 'app-home',
@@ -36,58 +37,21 @@ export class HomePage {
   veiculos = []
   placa
   pontos = 0
-  veiculoFalhaImpressao = null
   pesquisa = ''
 
   constructor(
     private providerPatio: PatioService,
     private admobFree: AdMobFree,
     private modalController: ModalController,
-    private bluetooth: BluetoothService,
+    public bluetooth: BluetoothService,
     private utils: Utils,
     private actionSheetController: ActionSheetController,
     private barcodeScanner: BarcodeScanner,
     private configuracoesService: ConfiguracoesService
-  ) {
-    //this.showBannerAd()
-
-    this.bluetooth.onDefinirDispositivo.subscribe((dispositivo) => {
-      // Verifica se houve uma falha na impressão para tentar reimprimir
-      if (this.veiculoFalhaImpressao != null) {
-        // Se houve sucesso na conexão faz a impressão
-        if (dispositivo != null) 
-          this.veiculoFalhaImpressao.Excluir ? this.bluetooth.imprimirReciboSaida(this.veiculoFalhaImpressao.Veiculo) : this.bluetooth.imprimirReciboEntrada(this.veiculoFalhaImpressao.Veiculo)
-        else 
-          this.utils.mostrarToast('Houve uma falha na tentativa de impressão. Verifique sua impressora', 'warning')
-      }
-      // Limpa o registro de falha, pois só tenta reimprimir uma vez
-      this.veiculoFalhaImpressao = null
-    })
-  }
+  ) { }
 
   ionViewDidEnter() {
     this.atualizarPatio()
-  }
-
-  async abrirMenuOperacao() {
-    const actionSheet = await this.actionSheetController.create({
-      header: 'Operação',
-      buttons: [{
-        text: 'Entrada de Veículo',
-        icon: 'log-in-outline',
-        handler: () => {
-          this.cadastrarEntrada()
-        }
-      }, {
-        text: 'Saída de Veículo',
-        role: 'destructive',
-        icon: 'log-out-outline',
-        handler: () => {
-          this.leituraQrCode()
-        }
-      }]
-    });
-    await actionSheet.present();
   }
 
   atualizarPatio() {
@@ -103,15 +67,6 @@ export class HomePage {
     .finally(() => {
       this.carregandoVeiculos = false
     })
-  }
-
-  dataFormatada(veiculo: Veiculo) {
-    const data = new Date(veiculo.Entrada)
-    return data.getDate() + '/' +
-    (data.getMonth() + 1) + '/' +
-    data.getFullYear() + ' - ' +
-    data.getHours() + ':' +
-    data.getMinutes()
   }
 
   get listaFiltrada() {
@@ -132,6 +87,13 @@ export class HomePage {
     })*/
   }
 
+  abrirWhatsapp(veiculo) {
+    if (veiculo.Telefone && veiculo.Telefone.length >= 10)
+      veiculo.enviarMensagemWhatsapp(veiculo.Telefone)
+    else
+      this.utils.mostrarToast('Não foi registrado o contato para esse veículo', 'danger')
+  }
+
   async cadastrarEntrada(veiculo = null) {
     let inclusao = false
     let veiculoEdicao: Veiculo
@@ -141,10 +103,6 @@ export class HomePage {
       inclusao = true
 
       veiculoEdicao = new Veiculo()      
-      veiculoEdicao.Id = 0
-
-      // Define a data de entrada
-      veiculoEdicao.Entrada = new Date();
 
       // Define serviços de estacionamento
       if (this.configuracoesService.configuracoes.UtilizaEstacionamento) {
@@ -154,10 +112,8 @@ export class HomePage {
         veiculoEdicao.Servicos.push(servico)
       }      
     }
-    else {
-      veiculoEdicao = JSON.parse(JSON.stringify(veiculo))
-      veiculoEdicao.Entrada = new Date(veiculoEdicao.Entrada)
-    }
+    else 
+      veiculoEdicao = new Veiculo(veiculo)    
 
     const modal = await this.modalController.create({
       component: EntradaPage,
@@ -168,63 +124,77 @@ export class HomePage {
     });
 
     modal.onWillDismiss().then((retorno) => {
-      if (retorno.data != null) {        
-        let veiculo = retorno.data.Veiculo
-        
-        // Atualiza a listagem com as alterações
-        const veiculoLocalizado = this.veiculos.find(itemAtual => itemAtual.Placa === veiculo.Placa)
-        
-        if (retorno.data.Excluir) 
-          this.veiculos.splice(this.veiculos.indexOf(veiculoLocalizado), 1)
-        else if (veiculoLocalizado != null) 
-          this.veiculos[this.veiculos.indexOf(veiculoLocalizado)] = veiculo
-        else
-          this.veiculos.push(veiculo)
-
-        if (retorno.data.Excluir) {
-          // Exibe uma propagando na saída do veículo
-          setTimeout(() => {
-            this.showInterstitialAds()
-          }, 3000);
-          this.utils.mostrarToast('Conslusão dos serviços realizada com sucesso', 'success')
-        }
-        else
-          this.utils.mostrarToast(inclusao ? 'Veículo adicionado com sucesso' : 'Alteração realizada com sucesso', 'success')
-
-        // Trata a impressão do recibo
-        if (this.bluetooth.dispositivoSalvo != null) {
-          this.bluetooth.validarConexao().then((conexao) => {
-            if (conexao)
-              retorno.data.Excluir ? this.bluetooth.imprimirReciboSaida : this.bluetooth.imprimirReciboEntrada(veiculo)
-            else {
-              this.veiculoFalhaImpressao = retorno.data
-              // Tenta conectar novamente para imprimir se conseguir
-              // Veja onDefinirDispositivo no construtor
-              // Aguarda 5 segundos para que o usuário possa visualizar a mensagem de sucesso no registro
-              setTimeout(() => { this.bluetooth.conectarDispositivo(this.bluetooth.dispositivoSalvo) }, 2000);
-            }
-          })
-        }
-      }
+      this.avaliarRetornoVeiculo(retorno, inclusao)
     })
 
     return await modal.present(); 
   }
 
+  avaliarRetornoVeiculo(retorno, inclusao) {
+    if (retorno.data != null) {        
+      let veiculo = retorno.data.Veiculo
+      
+      // Atualiza a listagem com as alterações
+      const veiculoLocalizado = this.veiculos.find(itemAtual => itemAtual.Placa === veiculo.Placa)
+      
+      if (retorno.data.Operacao == 'excluir') 
+        this.veiculos.splice(this.veiculos.indexOf(veiculoLocalizado), 1)
+      else if (veiculoLocalizado != null) 
+        this.veiculos[this.veiculos.indexOf(veiculoLocalizado)] = veiculo
+      else {
+        // Se for inclusão imprime o recibo
+        this.veiculos.push(veiculo)
+        this.bluetooth.imprimirRecibo(retorno.data.Excluir)
+      }
+
+      if (retorno.data.Operacao == 'excluir') {
+        // Exibe uma propagando na saída do veículo
+        setTimeout(() => {
+          this.showInterstitialAds()
+        }, 3000);
+        this.utils.mostrarToast('Conclusão dos serviços realizada com sucesso', 'success')
+      }
+      else
+        this.utils.mostrarToast(inclusao ? 'Veículo adicionado com sucesso' : 'Alteração realizada com sucesso', 'success')        
+    }
+  }
+
   async leituraQrCode() {
     this.barcodeScanner.scan().then(barcodeData => {      
-      if (barcodeData != null) {
+      if (barcodeData.text != '') {
         let veiculo = this.veiculos.find(itemAtual => this.utils.stringPura(itemAtual.Placa) == this.utils.stringPura(barcodeData.text))
         if (veiculo != null)
           this.cadastrarEntrada(veiculo)
         else
           this.utils.mostrarToast('Não localizamos o código informado.', 'danger')
-        }
-     }).catch(err => {
-      this.utils.mostrarToast('Não localizamos o código informado.', 'danger')
-     });
+      }
+    })
+  }
+
+  async imprimirReciboEntrada(veiculo) {
+    await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
+    this.bluetooth.imprimirRecibo(veiculo)
   }
    
+  async registrarSaida(veiculo) {
+    if (veiculo.PossuiServicosPendentes) 
+      this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve finalizar todos os serviços ou excluir antes de realizar o pagamento.', 'danger', 3000)
+    else {
+      const modal = await this.modalController.create({
+        component: SaidaPage,
+        componentProps: {
+          'veiculo': veiculo
+        }
+      });
+  
+      modal.onWillDismiss().then((retorno) => {
+        this.avaliarRetornoVeiculo(retorno, false)
+      })
+  
+      return await modal.present(); 
+    }
+  }
+
   showInterstitialAds(){
     let interstitialConfig: AdMobFreeInterstitialConfig = {
         isTesting: false,

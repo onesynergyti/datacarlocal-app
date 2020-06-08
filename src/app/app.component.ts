@@ -52,7 +52,11 @@ export class AppComponent {
   }
 
   showRewardVideoAds(url){
-    let RewardVideoConfig: AdMobFreeRewardVideoConfig = {
+    this.databaseProvider.ocultarProcessamento()
+    this.enderecoNavegacao = url
+    this.navController.navigateForward(this.enderecoNavegacao)
+
+/*    let RewardVideoConfig: AdMobFreeRewardVideoConfig = {
         isTesting: false, 
         autoShow: true,
         id: "ca-app-pub-2818472978128447/7966305809"
@@ -68,7 +72,7 @@ export class AppComponent {
     })
     .finally(() => {
       this.databaseProvider.ocultarProcessamento()
-    })
+    })*/
   }
 
   async navegar(url) {   

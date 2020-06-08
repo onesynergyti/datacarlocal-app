@@ -26,6 +26,7 @@ export class SaidaPage {
     this.saida = new Date();
 
     this.preco = this.calculadoraEstacionamentoService.calcularPrecos(this.veiculo.Entrada, this.saida, this.veiculo.TipoVeiculo)
+    alert(this.preco)
     this.minutos = this.calculadoraEstacionamentoService.calcularMinutos(this.veiculo.Entrada, this.saida)
 
   }
@@ -38,7 +39,7 @@ export class SaidaPage {
     await this.patio.exibirProcessamento('Registrando saida...')
     this.patio.registrarSaida(this.veiculo, 10, 10, 10, this.saida, 1)
     .then(() => {
-      this.modalCtrl.dismiss(this.veiculo)
+      this.modalCtrl.dismiss({ Operacao: 'excluir', Veiculo: this.veiculo })
     })
     .catch((erro) => {
       alert(JSON.stringify(erro))

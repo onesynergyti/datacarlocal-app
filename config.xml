@@ -5,6 +5,7 @@
     <author email="ti@reuztecnologia.com" href="http://www.reuztecnologia.com/">Reuz Tecnologia</author>
     <content src="index.html" />
     <access origin="*" />
+    <access launch-external="yes" origin="whatsapp//*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />

@@ -1,7 +1,18 @@
 <app-header-modal titulo="Cadastro de veículo" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
 
+<ion-segment scrollable [(ngModel)]="pagina">
+  <ion-segment-button value="veiculo">
+    <ion-icon name="car-sport" class="espacadorCampo"></ion-icon>
+    Veiculo
+  </ion-segment-button>
+  <ion-segment-button value="servicos">
+    <ion-icon name="construct" class="espacadorCampo"></ion-icon>
+    Serviços
+  </ion-segment-button>
+</ion-segment>
+
 <ion-content>
-  <ion-grid *ngIf="veiculo != null">
+  <ion-grid *ngIf="veiculo != null && pagina == 'veiculo'">
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-icon class="iconeSubTitulo" name="calendar"></ion-icon>
@@ -21,13 +32,13 @@
     </ion-row>
     <ion-row>
       <ion-col size-xs="7">
-        <ion-item>
+        <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">Nome</ion-label>
           <ion-input autocorrect="off" type="text" [(ngModel)]="veiculo.Nome"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="5">
-        <ion-item>
+        <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">Telefone</ion-label>
           <ion-input autocorrect="off" type="text" [(ngModel)]="veiculo.Telefone"></ion-input>
         </ion-item>
@@ -41,11 +52,11 @@
     </ion-row>
     <ion-row>
       <ion-col size-xs="6">
-        <ion-item>
+        <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating" [ngClass]="{'fontCorPerigo': avaliouFormulario && !veiculo.Placa}" >Placa</ion-label>
           <ion-input autocorrect="off" type="text" [(ngModel)]="veiculo.Placa"></ion-input>
         </ion-item>
-        <ion-item>
+        <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">Modelo</ion-label>
           <ion-input autocorrect="off" type="text" [(ngModel)]="veiculo.Modelo"></ion-input>
         </ion-item>
@@ -82,8 +93,28 @@
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="reader"></ion-icon>
+        Observações (opcional)
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12">
+        <ion-item>
+          <ion-label position="floating">Informações adicionais</ion-label>
+          <ion-textarea rows="1" auto-grow [(ngModel)]="veiculo.Observacoes"></ion-textarea>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid *ngIf="veiculo != null && pagina == 'servicos'">
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
-        Serviços
+        Serviços contratados
+      </ion-col>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && (veiculo.Servicos == null || veiculo.Servicos.length == 0)" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Adicione um serviço
       </ion-col>
     </ion-row>
     <ion-row *ngIf="veiculo.Servicos != null && veiculo.Servicos.length > 0">
@@ -93,7 +124,7 @@
             <ion-item>
               <div class="divServico">
                 <h3 class="textoLimitado espacadorCampo">{{ servico.Nome }}</h3>
-                <h5 *ngIf="veiculo.TipoVeiculo && servico.Id">{{ precoServico(servico) | decimalPipe:"R$ " }}</h5>                
+                <h5 *ngIf="veiculo.TipoVeiculo && servico.Id">{{ veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h5>                
                 <h5 *ngIf="!veiculo.TipoVeiculo && servico.Id">Selecione o tipo de veículo</h5>                
                 <h5 *ngIf="!servico.Id">Preço calculado na saída</h5>
               </div>
@@ -118,35 +149,69 @@
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
-        <ion-button expand="block" (click)="adicionarServico()">Adicionar Serviço</ion-button>
+        <ion-button expand="block" (click)="adicionarServico()">
+          <ion-icon name="add-circle"></ion-icon>
+          Adicionar Serviço
+        </ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
-        <ion-icon class="iconeSubTitulo" name="reader"></ion-icon>
-        Observações (opcional)
+        <ion-icon class="iconeSubTitulo" name="timer"></ion-icon>
+        Previsão de entrega
+      </ion-col>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && veiculo.EntregaAgendada && !veiculo.PossuiServicoAgendavel && veiculo.Servicos != null && veiculo.Servicos.length > 0" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Adicione um serviço para agendamento
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="12">
+      <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
         <ion-item>
-          <ion-label position="floating">Informações adicionais</ion-label>
-          <ion-textarea rows="1" auto-grow [(ngModel)]="veiculo.Observacoes"></ion-textarea>
+          Agendar entrega dos serviços
+          <ion-toggle color="primary" [(ngModel)]="veiculo.EntregaAgendada" (ionChange)="definirPrevisaoEntrega()"></ion-toggle>
+        </ion-item>        
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="veiculo.EntregaAgendada == true">
+      <ion-col size-xs="12" class="ion-text-center" (click)="selecionarPrevisao()">
+        <ion-item (click)="selecionarDataPrevisao()">
+          <ion-label>Data</ion-label>
+          <ion-label>{{ veiculo.PrevisaoEntrega | date:"dd/MM/yyyy" }}</ion-label>
+        </ion-item>
+        <ion-item (click)="selecionarHoraPrevisao()">
+          <ion-label>Hora</ion-label>
+          <ion-label>{{ veiculo.PrevisaoEntrega | date:"HH:mm" }}</ion-label>
         </ion-item>
       </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
-<ion-footer>
-  <ion-grid>
+<ion-footer>  
+  <ion-grid>    
     <ion-row>
-      <ion-col size-xs="12" *ngIf="inclusao">
-        <ion-button expand="block" color="success" (click)="concluir()">
-          <ion-icon slot="start" name="checkmark"></ion-icon>
-          Salvar
-        </ion-button>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && !veiculo.Placa" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Informe a placa do veículo
       </ion-col>
-      <ion-col size-xs="5" *ngIf="!inclusao">
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && !veiculo.TipoVeiculo" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Informe o tipo do veículo
+      </ion-col>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && veiculo.EntregaAgendada && !veiculo.PossuiServicoAgendavel" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Adicione um serviço para agendamento
+      </ion-col>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && (veiculo.Servicos == null || veiculo.Servicos.length == 0)" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Adicione um serviço
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid class="ion-no-padding ion-no-margin">
+    <ion-row>
+      <ion-col>
         <ion-button expand="block" color="success" (click)="concluir()">
           <ion-icon slot="start" name="checkmark"></ion-icon>
           Salvar
