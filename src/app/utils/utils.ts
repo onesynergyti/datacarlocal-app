@@ -41,6 +41,14 @@ export class Utils {
     return s.substr(s.length-tamanho);
   }
 
+  completarCaracter(texto, tamanho, caracter = ' ') {
+    let textoFormatado = texto
+    for (let i = 1; i <= tamanho - texto.length; i++) {
+      textoFormatado = caracter + textoFormatado
+    }
+    return textoFormatado
+  }
+
   selecionarData(data = null) {
     return this.datePicker.show({
       date: data ? data : new Date(),

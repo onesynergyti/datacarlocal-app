@@ -11,6 +11,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { ServicoVeiculo } from 'src/app/models/servico-veiculo';
 import { SaidaPage } from './saida/saida.page';
+import { Movimento } from 'src/app/models/movimento';
 
 @Component({
   selector: 'app-home',
@@ -48,7 +49,9 @@ export class HomePage {
     private actionSheetController: ActionSheetController,
     private barcodeScanner: BarcodeScanner,
     private configuracoesService: ConfiguracoesService
-  ) { }
+  ) { 
+    this.showBannerAd()
+  }
 
   ionViewDidEnter() {
     this.atualizarPatio()
@@ -100,6 +103,7 @@ export class HomePage {
 
     // Define os parâmetros iniciais se não houver veículo indicado para edição
     if (veiculo == null) {
+      // Trata mensagens e ações quando for ateração ou inclusão de novo veículo
       inclusao = true
 
       veiculoEdicao = new Veiculo()      
@@ -130,21 +134,36 @@ export class HomePage {
     return await modal.present(); 
   }
 
-  avaliarRetornoVeiculo(retorno, inclusao) {
+  async avaliarRetornoVeiculo(retorno, inclusao) {
     if (retorno.data != null) {        
-      let veiculo = retorno.data.Veiculo
+      alert('chegou aqui' + JSON.stringify(retorno))
+      // A saída do veículo retorna o movimento completo
+      let veiculo = retorno.data.Operacao == 'excluir' ? retorno.data.Movimento.Veiculo : retorno.data.Veiculo
       
       // Atualiza a listagem com as alterações
       const veiculoLocalizado = this.veiculos.find(itemAtual => itemAtual.Placa === veiculo.Placa)
-      
-      if (retorno.data.Operacao == 'excluir') 
+
+      // Saída de veículo, exclui o item
+      if (retorno.data.Operacao == 'excluir') {
+        alert('vai excluir')
         this.veiculos.splice(this.veiculos.indexOf(veiculoLocalizado), 1)
-      else if (veiculoLocalizado != null) 
+        if (this.bluetooth.dispositivoSalvo != null) {
+          await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
+          this.bluetooth.imprimirRecibo(retorno.data.Movimento, 'saida')
+        }
+      }
+      // Alteração do veículo, altera o item
+      else if (veiculoLocalizado != null) {
         this.veiculos[this.veiculos.indexOf(veiculoLocalizado)] = veiculo
+      }
+      // Inclusão do veículo, adiciona o item
       else {
         // Se for inclusão imprime o recibo
         this.veiculos.push(veiculo)
-        this.bluetooth.imprimirRecibo(retorno.data.Excluir)
+        if (this.bluetooth.dispositivoSalvo != null) { 
+          await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
+          this.bluetooth.imprimirRecibo(retorno.data.Veiculo)
+        }
       }
 
       if (retorno.data.Operacao == 'excluir') {
@@ -180,10 +199,14 @@ export class HomePage {
     if (veiculo.PossuiServicosPendentes) 
       this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve finalizar todos os serviços ou excluir antes de realizar o pagamento.', 'danger', 3000)
     else {
+      let movimento = new Movimento()
+      movimento.Data = new Date
+      movimento.Veiculo = veiculo
+
       const modal = await this.modalController.create({
         component: SaidaPage,
         componentProps: {
-          'veiculo': veiculo
+          'movimento': movimento
         }
       });
   

@@ -32,26 +32,37 @@ export class Veiculo {
   }
 
   get PossuiServicoAgendavel() {
-    const item = this.Servicos.find(itemAtual => itemAtual.Id != 0) 
-    return item != null
+    return this.Servicos.find(itemAtual => itemAtual.Id != 0) 
+  }
+
+  get PossuiServicoEstacionamento() {
+    return this.Servicos.find(itemAtual => itemAtual.Id == 0) 
   }
 
   get PossuiServicosPendentes() {
     return this.Servicos.find(itemAtual => !itemAtual.Executado && itemAtual.Id) != null 
   }
 
-  precoServico(servico: ServicoVeiculo) {
+  precoServico(servico: ServicoVeiculo): number{
     switch(this.TipoVeiculo) {
       case 1: return servico.PrecoMoto
       case 2: return servico.PrecoVeiculoPequeno
       case 3: return servico.PrecoVeiculoMedio
       case 4: return servico.PrecoVeiculoGrande
-      default: return '0'
+      default: return 0
     }
+  }
+
+  get TotalServicos() {
+    return this.Servicos.reduce((acumulador: number, itemAtual) => acumulador + itemAtual.Id ? this.precoServico(itemAtual) : 0, 0)
   }
 
   enviarMensagemWhatsapp(celular, mensagem = '') {
     celular = celular.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
     window.location.href=`https://api.whatsapp.com/send?phone=55${celular}&text=${mensagem.replace(' ', '%20')}`;
+  }
+
+  excluirServico(servico) {
+    this.Servicos.splice(this.Servicos.indexOf(servico), 1)
   }
 }

@@ -8,6 +8,7 @@ import { MovimentoPageRoutingModule } from './movimento-routing.module';
 
 import { MovimentoPage } from './movimento.page';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { PipeModule } from 'src/app/pipes/pipe.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { ComponentsModule } from 'src/app/components/components.module';
     FormsModule,
     IonicModule,
     MovimentoPageRoutingModule,
-    ComponentsModule
+    ComponentsModule,
+    PipeModule.forRoot() 
   ],
   declarations: [MovimentoPage]
 })

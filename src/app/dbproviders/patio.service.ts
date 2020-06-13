@@ -5,6 +5,8 @@ import { ServiceBaseService } from '../services/service-base.service';
 import { Utils } from '../utils/utils';
 import { LoadingController } from '@ionic/angular';
 import { rejects } from 'assert';
+import { Movimento } from '../models/movimento';
+import { DatePipe } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -58,23 +60,22 @@ export class PatioService extends ServiceBaseService {
     })
   }*/
 
-  registrarSaida(veiculo, valorDinheiro, valorDebito, valorCredito, dataPagamento, formaPagamento) {
+  registrarSaida(movimento: Movimento) {
     return new Promise((resolve, reject) => {
       this.database.DB.then(db => {
         db.transaction(tx => {
           // Exclui o carro do pátio
           const sqlExclusao = 'delete from veiculos where Placa = ?';
-          const dataExclusao = [veiculo.Placa];
+          const dataExclusao = [movimento.Veiculo.Placa];
           tx.executeSql(sqlExclusao, dataExclusao, () => {
-            alert('excluiu veículo')
             // Inclui o movimento financeiro
             const sqlInclusao = 'insert into movimentos (Data, Descricao, TipoVeiculo, ValorDinheiro, ValorDebito, ValorCredito, Veiculo) values (?, ?, ?, ?, ?, ?, ?)';
-            const dataInclusao = [dataPagamento, 'Receita', veiculo.TipoVeiculo, valorDinheiro, valorDebito, valorCredito, JSON.stringify(veiculo)];
+            const dataInclusao = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm'), 'Receita', movimento.Veiculo.TipoVeiculo, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, JSON.stringify(movimento.Veiculo)];
             tx.executeSql(sqlInclusao, dataInclusao, (tx, result) => {
 
               // Insere todos os movimentos
               let promisesTx = []
-              veiculo.Servicos.map(itemAtual => {
+              movimento.Veiculo.Servicos.map(itemAtual => {
                 promisesTx.push(
                   new Promise((resolve, reject) => {
                     const sqlInclusaoServico = 'insert into movimentosServicos (IdMovimento, IdServico, Nome, Valor) values (?, ?, ?, ?)';
@@ -83,9 +84,7 @@ export class PatioService extends ServiceBaseService {
                   })
                 )      
               })
-              alert('iniciando execução das promessas')                
               Promise.all(promisesTx).then(() => { 
-                alert('finalizou')
                 resolve() 
               }, 
               (erro) => { reject(erro) })

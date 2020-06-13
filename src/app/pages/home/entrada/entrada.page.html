@@ -1,15 +1,16 @@
-<app-header-modal titulo="Cadastro de veículo" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
-
-<ion-segment scrollable [(ngModel)]="pagina">
-  <ion-segment-button value="veiculo">
-    <ion-icon name="car-sport" class="espacadorCampo"></ion-icon>
-    Veiculo
-  </ion-segment-button>
-  <ion-segment-button value="servicos">
-    <ion-icon name="construct" class="espacadorCampo"></ion-icon>
-    Serviços
-  </ion-segment-button>
-</ion-segment>
+<ion-header>
+  <app-header-modal titulo="Cadastro de veículo" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+  <ion-segment scrollable [(ngModel)]="pagina">
+    <ion-segment-button value="veiculo">
+      <ion-icon name="car-sport" class="espacadorCampo"></ion-icon>
+      Veiculo
+    </ion-segment-button>
+    <ion-segment-button value="servicos">
+      <ion-icon name="construct" class="espacadorCampo"></ion-icon>
+      Serviços
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
 
 <ion-content>
   <ion-grid *ngIf="veiculo != null && pagina == 'veiculo'">
@@ -134,7 +135,7 @@
             </ion-item>
         
             <ion-item-options side="end">
-              <ion-item-option color="danger">
+              <ion-item-option color="danger" (click)="excluirServico(servico)">
                 <ion-icon slot="icon-only" name="trash"></ion-icon>
               </ion-item-option>
             </ion-item-options>

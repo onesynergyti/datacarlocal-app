@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
 import { PatioService } from 'src/app/dbproviders/patio.service';
 import { CalculadoraEstacionamentoService } from 'src/app/services/calculadora-estacionamento.service';
-import { Veiculo } from 'src/app/models/veiculo';
+import { Utils } from 'src/app/utils/utils';
+import { Movimento } from 'src/app/models/movimento';
 
 @Component({
   selector: 'app-saida',
@@ -11,24 +12,16 @@ import { Veiculo } from 'src/app/models/veiculo';
 })
 export class SaidaPage {
 
-  veiculo: Veiculo
-  saida: Date
-  preco: number
-  minutos: number
+  movimento: Movimento
 
   constructor(
     private modalCtrl: ModalController,
     public navParams: NavParams,
     private patio: PatioService,
-    private calculadoraEstacionamentoService: CalculadoraEstacionamentoService
+    private calculadoraEstacionamentoService: CalculadoraEstacionamentoService,
+    private utils: Utils
   ) { 
-    this.veiculo = navParams.get('veiculo')
-    this.saida = new Date();
-
-    this.preco = this.calculadoraEstacionamentoService.calcularPrecos(this.veiculo.Entrada, this.saida, this.veiculo.TipoVeiculo)
-    alert(this.preco)
-    this.minutos = this.calculadoraEstacionamentoService.calcularMinutos(this.veiculo.Entrada, this.saida)
-
+    this.movimento = navParams.get('movimento')
   }
 
   cancelar() {
@@ -36,13 +29,37 @@ export class SaidaPage {
   }
 
   async concluir() {
-    await this.patio.exibirProcessamento('Registrando saida...')
-    this.patio.registrarSaida(this.veiculo, 10, 10, 10, this.saida, 1)
-    .then(() => {
-      this.modalCtrl.dismiss({ Operacao: 'excluir', Veiculo: this.veiculo })
-    })
-    .catch((erro) => {
-      alert(JSON.stringify(erro))
-    })
+    if (this.totalPago < this.total)
+      this.utils.mostrarToast('O valor pago não foi suficiente.', 'danger')
+    else if (this.troco > this.movimento.ValorDinheiro) {
+      this.utils.mostrarToast('O valor pago em dinheiro não permite troco.', 'danger')
+    }
+    else {
+      await this.patio.exibirProcessamento('Registrando saida...')
+      this.patio.registrarSaida(this.movimento)
+      .then(() => {
+        this.modalCtrl.dismiss({ Operacao: 'excluir', Movimento: this.movimento })
+      })
+      .catch((erro) => {
+        alert(JSON.stringify(erro))
+      })
+    }
   }  
+
+  get precoEstacionamento() {
+    return this.movimento.Veiculo.PossuiServicoEstacionamento ? this.calculadoraEstacionamentoService.calcularPrecos(this.movimento.Veiculo.Entrada, this.movimento.Data, this.movimento.Veiculo.TipoVeiculo) : 0
+  }
+
+  get total() {
+    return this.movimento.Veiculo.TotalServicos + this.precoEstacionamento
+  }
+
+  get totalPago() {
+    return this.movimento.ValorCredito + this.movimento.ValorDebito + this.movimento.ValorDinheiro
+  }
+
+  get troco() {
+    const troco = this.totalPago - this.total
+    return troco > 0 ? troco : 0
+  }
 }

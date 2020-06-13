@@ -4,13 +4,13 @@
   <ion-grid>
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
-        <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
+        <ion-icon class="iconeSubTitulo" name="timer"></ion-icon>
         Horário da saída
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="ion-text-center">
-        <h2>{{ saida | date:"dd/MM/yyyy - HH:mm" }}</h2>
+        <h2>{{ movimento.Data | date:"dd/MM/yyyy - HH:mm" }}</h2>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -21,13 +21,11 @@
     </ion-row>
     <ion-row>
       <ion-col size-xs="8">
-        <h2 class="fontCorPrimaria espacadorCampo">{{ veiculo.Placa }}</h2>
-        <h3 class="espacadorCampo">{{ veiculo.Modelo }}</h3>
+        <h4 class="espacadorCampo negrito">Entrou em {{ movimento.Veiculo.Entrada | date:"dd/MM/yyyy - HH:mm" }}</h4>
+        <h4 class="textoLimitado">{{ movimento.Veiculo.Modelo ? movimento.Veiculo.Modelo : 'Modelo não informado' }}</h4>
       </ion-col>
-      <ion-col size-xs="4">
-        <div id="divTipoVeiculo">
-          <img src="{{ '../../../assets/img/veiculos/' + veiculo.TipoVeiculo + '.png' }}" />
-        </div>
+      <ion-col size-xs="4" class="ion-text-right">
+        <img id="imgTipoVeiculo" src="{{ '../../../assets/img/veiculos/' + movimento.Veiculo.TipoVeiculo + '.png' }}" />
       </ion-col>
     </ion-row>
     <ion-row>
@@ -36,15 +34,15 @@
         Serviços
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="veiculo.Servicos != null && veiculo.Servicos.length > 0">
+    <ion-row *ngIf="movimento.Veiculo.Servicos != null && movimento.Veiculo.Servicos.length > 0">
       <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
-        <ion-list [@listAnimation]="veiculo.Servicos.length" lines="full">
-          <ion-item-sliding id="servico.Id" *ngFor="let servico of veiculo.Servicos">
+        <ion-list [@listAnimation]="movimento.Veiculo.Servicos.length" lines="full">
+          <ion-item-sliding id="servico.Id" *ngFor="let servico of movimento.Veiculo.Servicos">
             <ion-item>
               <h3 class="textoLimitado espacadorCampo">{{ servico.Nome }}</h3>
               <ion-note slot="end">
-                <h3 *ngIf="veiculo.TipoVeiculo && servico.Id">{{ veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h3>
-                <h3 *ngIf="!servico.Id">{{ preco | decimalPipe:"R$ " }}</h3>
+                <h3 *ngIf="movimento.Veiculo.TipoVeiculo && servico.Id">{{ movimento.Veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h3>
+                <h3 *ngIf="!servico.Id">{{ precoEstacionamento | decimalPipe:"R$ " }}</h3>
               </ion-note>
             </ion-item>
         
@@ -58,25 +56,83 @@
       </ion-col>
     </ion-row>
     <ion-row>
+      <ion-col class="fundoPrimario">
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <h2 class="negrito ion-text-left">Total</h2>
+            </ion-col>
+            <ion-col class="ion-text-right">
+              <h2 class="negrito">{{ total | decimalPipe:"R$ " }}</h2>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-col>
+    </ion-row>
+    <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
-        <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
+        <ion-icon class="iconeSubTitulo" name="wallet"></ion-icon>
         Forma de pagamento
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="4" class="ion-text-center">
-        Dinheiro
+      <ion-col class="ion-text-center">
+        <ion-icon name="cash-outline"></ion-icon>        
+        <h4>Dinheiro</h4>
+        <ion-item>
+          <ion-label position="floating">R$</ion-label>
+          <ion-input autocorrect="off" type="number" [(ngModel)]="movimento.ValorDinheiro"></ion-input>
+        </ion-item>
       </ion-col>
-      <ion-col size-xs="4" class="ion-text-center">
-        Cartão de crédito
+      <ion-col class="ion-text-center">
+        <ion-icon name="card-outline"></ion-icon>
+        <h4>Débito</h4>
+        <ion-item>
+          <ion-label position="floating">R$</ion-label>
+          <ion-input autocorrect="off" type="number" [(ngModel)]="movimento.ValorDebito"></ion-input>
+        </ion-item>
       </ion-col>
-      <ion-col size-xs="4" class="ion-text-center">
-        Cartão de débito
+      <ion-col class="ion-text-center">
+        <ion-icon name="card-outline"></ion-icon>
+        <h4>Crédito</h4>
+        <ion-item>
+          <ion-label position="floating">R$</ion-label>
+          <ion-input autocorrect="off" type="number" [(ngModel)]="movimento.ValorCredito"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>    
+    <ion-row>
+      <ion-col class="fundoSecundario">
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <h2 class="negrito ion-text-left">Troco</h2>
+            </ion-col>
+            <ion-col class="ion-text-right">
+              <h2 class="negrito">{{ troco | decimalPipe:"R$ " }}</h2>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="full" color="danger" (click)="concluir()">Finalizar</ion-button>
+  <ion-grid class="ion-no-padding ion-no-margin">
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="success" (click)="concluir()">
+          <ion-icon slot="start" name="checkmark-done"></ion-icon>
+          Finalizar
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button expand="block" color="danger">
+          <ion-icon slot="start" name="document-attach"></ion-icon>
+          Receber depois
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-footer>

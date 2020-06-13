@@ -8,6 +8,7 @@ import { ServicoVeiculo } from 'src/app/models/servico-veiculo';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
 import { SaidaPage } from '../saida/saida.page';
 import { Utils } from 'src/app/utils/utils';
+import { Movimento } from 'src/app/models/movimento';
 
 @Component({
   selector: 'app-entrada',
@@ -123,12 +124,36 @@ export class EntradaPage implements OnInit {
     this.veiculo.TipoVeiculo = tipoVeiculo
   }
 
-  async finalizarSaida() {
+  async excluirServico(servico) {
+    const alert = await this.alertController.create({
+      header: 'Excluir serviço?',
+      message: `Tem certeza que deseja excluir o serviço <string>${servico.Nome}</strong>`,
+      buttons: [
+        {
+          text: 'Não',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Sim',
+          handler: () => {
+            this.veiculo.excluirServico(servico)
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async finalizarSaida(retorno) {
     await this.patioProvider.exibirProcessamento('Atualizando listagem...')
     // Precisa do settimeout para ocultar a tela corretamente
     setTimeout(() => {
       this.patioProvider.ocultarProcessamento()
-      this.modalCtrl.dismiss({ Operacao: 'excluir', Veiculo: this.veiculo })
+      this.modalCtrl.dismiss({ Operacao: 'excluir', Movimento: retorno.Movimento })
     }, 300);
   }
 
@@ -136,16 +161,21 @@ export class EntradaPage implements OnInit {
     if (this.veiculo.PossuiServicosPendentes) 
       this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve excluir ou finalizar antes de realizar o pagamento.', 'danger', 3000)      
     else {
+      let movimento = new Movimento()
+      movimento.Veiculo = this.veiculo
+      movimento.Data = new Date()
+      movimento.Descricao = 'Cobrança de veículo'
+      
       const modal = await this.modalController.create({
         component: SaidaPage,
         componentProps: {
-          'veiculo': this.veiculo
+          'movimento': movimento
         }
       });
   
       modal.onWillDismiss().then((retorno) => {
         if (retorno.data)
-          this.finalizarSaida()
+          this.finalizarSaida(retorno.data)
       })
   
       return await modal.present(); 
