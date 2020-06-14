@@ -1,4 +1,5 @@
-export class PrecosEstacionamento {
+export class ConfiguracaoEstacionamento {
+  ServicoEstacionamentoAutomatico: boolean
   MinutosCarencia: number
   UtilizaFracao15Minutos: boolean
   UtilizaFracao30Minutos: boolean

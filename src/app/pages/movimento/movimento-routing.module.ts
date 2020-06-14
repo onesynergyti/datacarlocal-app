@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: MovimentoPage
+  },
+  {
+    path: 'cadastro-movimento',
+    loadChildren: () => import('./cadastro-movimento/cadastro-movimento.module').then( m => m.CadastroMovimentoPageModule)
   }
 ];
 

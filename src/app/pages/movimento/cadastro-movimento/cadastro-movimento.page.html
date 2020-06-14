@@ -1,0 +1,49 @@
+<ion-header>
+  <app-header-modal titulo="Cadastro de movimento" cor="{{ debito ? 'danger' : 'success' }}" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-icon name="cash-outline"></ion-icon>        
+        <h4>Dinheiro</h4>
+        <ion-item>
+          <ion-label position="floating">R$</ion-label>
+          <ion-input autocorrect="off" type="number" [(ngModel)]="movimento.ValorDinheiro"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col class="ion-text-center">
+        <ion-icon name="card-outline"></ion-icon>
+        <h4>Débito</h4>
+        <ion-item>
+          <ion-label position="floating">R$</ion-label>
+          <ion-input autocorrect="off" type="number" [(ngModel)]="movimento.ValorDebito"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col class="ion-text-center">
+        <ion-icon name="card-outline"></ion-icon>
+        <h4>Crédito</h4>
+        <ion-item>
+          <ion-label position="floating">R$</ion-label>
+          <ion-input autocorrect="off" type="number" [(ngModel)]="movimento.ValorCredito"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>    
+    <ion-row>
+      <ion-col>
+        <ion-item class="ion-no-margin ion-no-padding">
+          <ion-label position="floating">Descrição</ion-label>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="movimento.Descricao"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="block" color="success" (click)="concluir()">
+    <ion-icon slot="start" name="checkmark-done"></ion-icon>
+    Salvar
+  </ion-button>
+</ion-footer>

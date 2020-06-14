@@ -36,8 +36,10 @@ export class ServicosService extends ServiceBaseService {
     return new Promise((resolve, reject) => {
       this.database.DB.then(db => {
         db.executeSql(sql, data)
-        .then(() => {
-          resolve()
+        .then((row: any) => {
+          if (!servico.Id) 
+            servico.Id = row.insertId
+          resolve(servico)
         })
         .catch((erro) => {
           reject(erro)

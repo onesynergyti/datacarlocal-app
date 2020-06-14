@@ -25,14 +25,14 @@
   </ion-segment>
 </ion-header>
 
-<ion-content >
+<ion-content #contentMovimentos>
   <div [ngClass]="{'invisivel': pagina == 'graficos'}">
     <ion-list [@listAnimation]="movimentos.length" lines="full">
       <ion-item-sliding id="movimento.Id" *ngFor="let movimento of movimentos; let i = index">
         <ion-header *ngIf=exibirCabecalhoData(i) size-xs="12" class="ion-no-margin ion-no-padding subTitulo fundoPrimario">
           <h3>{{ movimento.Data | date:"dd/MM/yyyy" }}</h3>
         </ion-header>
-        <ion-item>
+        <ion-item (click)="cadastrarMovimento(movimento)">
           <ion-grid class="ion-no-margin ion-no-padding ">
             <ion-row>
               <ion-col size-xs="8">
@@ -52,6 +52,12 @@
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
+    <ion-infinite-scroll *ngIf="!finalizouCarregamento" threshold="100px" (ionInfinite)="atualizarMovimentos($event)">
+      <ion-infinite-scroll-content
+        loadingSpinner="bubbles"
+        loadingText="Carregando...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </div>
 
   <div [ngClass]="{'invisivel': pagina == 'movimentos'}">
@@ -93,13 +99,13 @@
     <ion-grid class="ion-no-padding ion-no-margin">
       <ion-row>
         <ion-col>
-          <ion-button expand="block" color="success">
+          <ion-button expand="block" color="success" (click)="cadastrarMovimento()">
             <ion-icon slot="start" name="add-circle"></ion-icon>
             Receita
           </ion-button>
         </ion-col>
         <ion-col>        
-          <ion-button expand="block" color="danger" (click)="registrarSaida()">
+          <ion-button expand="block" color="danger" (click)="cadastrarMovimento(null, true)">
             <ion-icon slot="start" name="add-circle"></ion-icon>
             Despesa
           </ion-button>

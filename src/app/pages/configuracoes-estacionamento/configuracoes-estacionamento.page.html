@@ -17,34 +17,34 @@
       <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
         <ion-item>
           <ion-label position="floating">Minutos de carência para iniciar cobrança</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.MinutosCarencia"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.MinutosCarencia"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-item>
-          <ion-toggle color="primary" [(ngModel)]="configuracoes.PrecosEstacionamento.UtilizaPrimeirosMinutos"></ion-toggle>
+          <ion-toggle color="primary" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.UtilizaPrimeirosMinutos"></ion-toggle>
           <h4>Cobrar preço fixo nos minutos iniciais</h4>
         </ion-item>        
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="configuracoes.PrecosEstacionamento.UtilizaPrimeirosMinutos">
+    <ion-row *ngIf="configuracoes.ConfiguracaoEstacionamento.UtilizaPrimeirosMinutos">
       <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
         <ion-item>
           <ion-label position="floating">Minutos iniciais da cobrança</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.QuantidadePrimeirosMinutos"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.QuantidadePrimeirosMinutos"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="configuracoes.PrecosEstacionamento.UtilizaPrimeirosMinutos">
+    <ion-row *ngIf="configuracoes.ConfiguracaoEstacionamento.UtilizaPrimeirosMinutos">
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
         <div class="divTipoVeiculo">
           <img src='../../../../../assets/img/veiculos/1.png' />
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.PrimeirosMinutosMoto"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.PrimeirosMinutosMoto"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -53,7 +53,7 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.PrimeirosMinutosCarroPequeno"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.PrimeirosMinutosCarroPequeno"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -62,7 +62,7 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.PrimeirosMinutosCarroMedio"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.PrimeirosMinutosCarroMedio"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -71,26 +71,26 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.PrimeirosMinutosCarroGrande"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.PrimeirosMinutosCarroGrande"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>    
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-item>
-          <ion-toggle color="primary" [(ngModel)]="configuracoes.PrecosEstacionamento.UtilizaFracao15Minutos"></ion-toggle>
+          <ion-toggle color="primary" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.UtilizaFracao15Minutos"></ion-toggle>
           <h4>Cobrar fração de 15 minutos</h4>
         </ion-item>                
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="configuracoes.PrecosEstacionamento.UtilizaFracao15Minutos">
+    <ion-row *ngIf="configuracoes.ConfiguracaoEstacionamento.UtilizaFracao15Minutos">
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
         <div class="divTipoVeiculo">
           <img src='../../../../../assets/img/veiculos/1.png' />
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.Fracao15MinutosMoto"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.Fracao15MinutosMoto"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -99,7 +99,7 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.Fracao15MinutosCarroPequeno"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.Fracao15MinutosCarroPequeno"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -108,7 +108,7 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.Fracao15MinutosCarroMedio"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.Fracao15MinutosCarroMedio"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -117,26 +117,26 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.Fracao15MinutosCarroGrande"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.Fracao15MinutosCarroGrande"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-item>
-          <ion-toggle color="primary" [(ngModel)]="configuracoes.PrecosEstacionamento.UtilizaFracao30Minutos"></ion-toggle>
+          <ion-toggle color="primary" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.UtilizaFracao30Minutos"></ion-toggle>
           <h4>Cobrar fração de 30 minutos</h4>
         </ion-item>                        
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="configuracoes.PrecosEstacionamento.UtilizaFracao30Minutos">
+    <ion-row *ngIf="configuracoes.ConfiguracaoEstacionamento.UtilizaFracao30Minutos">
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
         <div class="divTipoVeiculo">
           <img src='../../../../../assets/img/veiculos/1.png' />
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.Fracao30MinutosMoto"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.Fracao30MinutosMoto"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -145,7 +145,7 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.Fracao30MinutosCarroPequeno"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.Fracao30MinutosCarroPequeno"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -154,7 +154,7 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.Fracao30MinutosCarroMedio"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.Fracao30MinutosCarroMedio"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -163,26 +163,26 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.Fracao30MinutosCarroGrande"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.Fracao30MinutosCarroGrande"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-item>
-          <ion-toggle color="primary" [(ngModel)]="configuracoes.PrecosEstacionamento.UtilizaHora"></ion-toggle>
+          <ion-toggle color="primary" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.UtilizaHora"></ion-toggle>
           <h4>Cobrar valor por hora adicional</h4>
         </ion-item>                                
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="configuracoes.PrecosEstacionamento.UtilizaHora">
+    <ion-row *ngIf="configuracoes.ConfiguracaoEstacionamento.UtilizaHora">
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
         <div class="divTipoVeiculo">
           <img src='../../../../../assets/img/veiculos/1.png' />
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.HoraMoto"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.HoraMoto"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -191,7 +191,7 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.HoraCarroPequeno"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.HoraCarroPequeno"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -200,7 +200,7 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.HoraCarroMedio"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.HoraCarroMedio"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -209,26 +209,26 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.HoraCarroGrande"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.HoraCarroGrande"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-item>
-          <ion-toggle color="primary" [(ngModel)]="configuracoes.PrecosEstacionamento.UtilizaDiaria"></ion-toggle>
+          <ion-toggle color="primary" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.UtilizaDiaria"></ion-toggle>
           <h4>Cobrar valor por dia</h4>
         </ion-item>                                        
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="configuracoes.PrecosEstacionamento.UtilizaDiaria">
+    <ion-row *ngIf="configuracoes.ConfiguracaoEstacionamento.UtilizaDiaria">
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
         <div class="divTipoVeiculo">
           <img src='../../../../../assets/img/veiculos/1.png' />
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.DiariaMoto"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.DiariaMoto"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -237,7 +237,7 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.DiariaCarroPequeno"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.DiariaCarroPequeno"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -246,7 +246,7 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.DiariaCarroMedio"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.DiariaCarroMedio"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -255,7 +255,7 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.PrecosEstacionamento.DiariaCarroGrande"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.ConfiguracaoEstacionamento.DiariaCarroGrande"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>

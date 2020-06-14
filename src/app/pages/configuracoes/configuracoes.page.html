@@ -1,22 +1,50 @@
 <app-header titulo="Configurações" ocultarRetorno="true"></app-header>
 
 <ion-content>
-  <ion-list *ngIf="configuracoes != null">
-    <ion-item>
-      <ion-label position="floating">CNPJ</ion-label>
-      <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estabelecimento.Documento"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Nome do estabelecimento</ion-label>
-      <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estabelecimento.Nome"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Endereco</ion-label>
-      <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estabelecimento.Endereco"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Telefone</ion-label>
-      <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estabelecimento.Telefone"></ion-input>
-    </ion-item>
-  </ion-list>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="calendar"></ion-icon>
+        Dados da empresa
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-no-padding">
+        <ion-list *ngIf="configuracoes != null">
+          <ion-item>
+            <ion-label position="floating">CNPJ</ion-label>
+            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estabelecimento.Documento"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Nome do estabelecimento</ion-label>
+            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estabelecimento.Nome"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Endereco</ion-label>
+            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estabelecimento.Endereco"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Telefone</ion-label>
+            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estabelecimento.Telefone"></ion-input>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="receipt"></ion-icon>
+        Informações do recibo
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-no-padding">
+        <ion-list *ngIf="configuracoes != null">
+          <ion-item>
+            <ion-label>CNPJ</ion-label>
+            <ion-toggle color="primary" [(ngModel)]="configuracoes.Recibo.ExibirCNPJ"></ion-toggle>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

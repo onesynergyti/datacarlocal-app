@@ -9,6 +9,7 @@ import { MovimentoPageRoutingModule } from './movimento-routing.module';
 import { MovimentoPage } from './movimento.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { PipeModule } from 'src/app/pipes/pipe.module';
+import { CadastroMovimentoPage } from './cadastro-movimento/cadastro-movimento.page';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { PipeModule } from 'src/app/pipes/pipe.module';
     ComponentsModule,
     PipeModule.forRoot() 
   ],
-  declarations: [MovimentoPage]
+  entryComponents: [CadastroMovimentoPage],
+  declarations: [MovimentoPage, CadastroMovimentoPage]
 })
 export class MovimentoPageModule {}

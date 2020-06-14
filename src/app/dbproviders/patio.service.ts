@@ -69,11 +69,11 @@ export class PatioService extends ServiceBaseService {
           const dataExclusao = [movimento.Veiculo.Placa];
           tx.executeSql(sqlExclusao, dataExclusao, () => {
             // Inclui o movimento financeiro
-            const sqlInclusao = 'insert into movimentos (Data, Descricao, TipoVeiculo, ValorDinheiro, ValorDebito, ValorCredito, Veiculo) values (?, ?, ?, ?, ?, ?, ?)';
-            const dataInclusao = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm'), 'Receita', movimento.Veiculo.TipoVeiculo, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, JSON.stringify(movimento.Veiculo)];
+            const sqlInclusao = 'insert into movimentos (Data, Descricao, ValorDinheiro, ValorDebito, ValorCredito, Veiculo) values (?, ?, ?, ?, ?, ?)';
+            const dataInclusao = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss'), movimento.Descricao, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, JSON.stringify(movimento.Veiculo)];
             tx.executeSql(sqlInclusao, dataInclusao, (tx, result) => {
 
-              // Insere todos os movimentos
+              // Insere todos os serviços do movimentos
               let promisesTx = []
               movimento.Veiculo.Servicos.map(itemAtual => {
                 promisesTx.push(

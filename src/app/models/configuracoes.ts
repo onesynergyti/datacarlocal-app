@@ -1,11 +1,11 @@
-import { PrecosEstacionamento } from './precos-estacionamento'
+import { ConfiguracaoEstacionamento as ConfiguracaoEstacionamento } from './configuracao-estacionamento'
 import { Estabelecimento } from './estabelecimento'
+import { ConfiguracaoRecibo } from './configuracao-recibo'
 
 export class Configuracoes {
-  CaractersImpressao: number = 32
   UtilizaEstacionamento: boolean
-  ServicoEstacionamentoAutomatico: boolean
   UtilizaServicos: boolean
+  Recibo: ConfiguracaoRecibo = new ConfiguracaoRecibo()
   Estabelecimento: Estabelecimento = new Estabelecimento()
-  PrecosEstacionamento: PrecosEstacionamento = new PrecosEstacionamento()
+  Estacionamento: ConfiguracaoEstacionamento = new ConfiguracaoEstacionamento()
 }

@@ -9,6 +9,7 @@ export class HeaderModalComponent implements OnInit {
 
   @Input() titulo: string
   @Input() ocultarConclusao: boolean = false
+  @Input() cor: string = 'primary'
   @Output() onConfirmar: EventEmitter<any> = new EventEmitter<any>();
   @Output() onCancelar: EventEmitter<any> = new EventEmitter<any>();
 

@@ -8,7 +8,7 @@ export class UtilsLista {
 
   constructor () { }
 
-  atualizarLista(lista: any[], item: any) {    
+  atualizarLista(lista: any[], item: any, inserirInicio = false) {    
     if (item != null) {
       // Garante a criação do objeto da lista
       if (lista == null) 
@@ -19,8 +19,12 @@ export class UtilsLista {
       // Atualiza o elemento na lista conforme o resultado da pesquisa
       if (index >= 0) 
         lista[index] = item
-      else
-        lista.push(item)
+      else {
+        if (inserirInicio)
+          lista.unshift(item)
+        else
+          lista.push(item)
+      }
     }
   }
 

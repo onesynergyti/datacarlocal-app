@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ConfiguracoesService } from './configuracoes.service';
-import { PrecosEstacionamento } from '../models/precos-estacionamento';
-import { partition } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +11,7 @@ export class CalculadoraEstacionamentoService {
   ) { }
 
   valorDiaria(tipoVeiculo): number {
-    const precos = this.configuracoesService.configuracoes.PrecosEstacionamento
+    const precos = this.configuracoesService.configuracoes.Estacionamento
 
     switch (tipoVeiculo) {
       case 1:
@@ -28,7 +26,7 @@ export class CalculadoraEstacionamentoService {
   }
 
   valorFracao15Minutos(tipoVeiculo): number {
-    const precos = this.configuracoesService.configuracoes.PrecosEstacionamento
+    const precos = this.configuracoesService.configuracoes.Estacionamento
 
     switch (tipoVeiculo) {
       case 1:
@@ -43,7 +41,7 @@ export class CalculadoraEstacionamentoService {
   }
 
   valorFracao30Minutos(tipoVeiculo): number {
-    const precos = this.configuracoesService.configuracoes.PrecosEstacionamento
+    const precos = this.configuracoesService.configuracoes.Estacionamento
 
     switch (tipoVeiculo) {
       case 1:
@@ -58,7 +56,7 @@ export class CalculadoraEstacionamentoService {
   }
 
   valorHora(tipoVeiculo): number {
-    const precos = this.configuracoesService.configuracoes.PrecosEstacionamento
+    const precos = this.configuracoesService.configuracoes.Estacionamento
 
     switch (tipoVeiculo) {
       case 1:
@@ -73,7 +71,7 @@ export class CalculadoraEstacionamentoService {
   }
 
   valorMinutosIniciais(tipoVeiculo): number {
-    const precos = this.configuracoesService.configuracoes.PrecosEstacionamento
+    const precos = this.configuracoesService.configuracoes.Estacionamento
 
     switch (tipoVeiculo) {
       case 1:
@@ -92,7 +90,7 @@ export class CalculadoraEstacionamentoService {
   }
 
   calcularPrecos(inicio, fim, tipoVeiculo) {
-    const precos = this.configuracoesService.configuracoes.PrecosEstacionamento
+    const precos = this.configuracoesService.configuracoes.Estacionamento
     let precoDiarias: number = 0.0
     let precoFracionado: number = 0.0
 

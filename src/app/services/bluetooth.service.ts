@@ -188,7 +188,7 @@ export class BluetoothService extends ServiceBaseService {
       }
     })
   }
-
+  
   get dispositivoSalvo(): any {
     return JSON.parse(localStorage.getItem('impressoraConectada'))
   }
@@ -293,8 +293,8 @@ export class BluetoothService extends ServiceBaseService {
 
   imprimirReciboEntrada(veiculo: Veiculo) {
     let configuracao = this.configuracoes.configuracoes
-    if (configuracao.CaractersImpressao == null)
-      configuracao.CaractersImpressao = 32 // Tamanho considerado padrão para impressoras de pequeno porte
+    if (configuracao.Recibo.CaractersImpressao == null)
+      configuracao.Recibo.CaractersImpressao = 32 // Tamanho considerado padrão para impressoras de pequeno porte
         
     this.bluetoothSerial.write('\x1C\x2E\x1B\x74\x10'); // UTF-8
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_CT);
@@ -308,7 +308,7 @@ export class BluetoothService extends ServiceBaseService {
     this.bluetoothSerial.write(new DatePipe('en-US').transform(veiculo.Entrada, 'dd/MM/yyyy HH:mm'));
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
-    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.CaractersImpressao, '-'));
+    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_2HEIGHT);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
     this.bluetoothSerial.write(configuracao.Estabelecimento.Nome);
@@ -323,7 +323,7 @@ export class BluetoothService extends ServiceBaseService {
     this.bluetoothSerial.write(configuracao.Estabelecimento.Endereco);
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
-    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.CaractersImpressao, '-'));
+    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
     this.bluetoothSerial.write(this.CMD.EOL);
     if (veiculo.PossuiServicoAgendavel) {
       this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
@@ -334,17 +334,17 @@ export class BluetoothService extends ServiceBaseService {
       this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_LT);
       veiculo.Servicos.forEach(servico => {
         if (servico.Id) {
-          this.bluetoothSerial.write(servico.Nome.substr(0, configuracao.CaractersImpressao - 12));
-          this.bluetoothSerial.write(this.utils.completarCaracter(veiculo.precoServico(servico).toFixed(2).replace('.', ','), configuracao.CaractersImpressao - servico.Nome.substr(0, configuracao.CaractersImpressao - 12).length));
+          this.bluetoothSerial.write(servico.Nome.substr(0, configuracao.Recibo.CaractersImpressao - 12));
+          this.bluetoothSerial.write(this.utils.completarCaracter(veiculo.precoServico(servico).toFixed(2).replace('.', ','), configuracao.Recibo.CaractersImpressao - servico.Nome.substr(0, configuracao.Recibo.CaractersImpressao - 12).length));
           this.bluetoothSerial.write(this.CMD.EOL);  
         }
       });
       this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
       this.bluetoothSerial.write('TOTAL');
-      this.bluetoothSerial.write(this.utils.completarCaracter(veiculo.TotalServicos.toFixed(2).replace('.', ','), configuracao.CaractersImpressao - 'TOTAL'.length));
+      this.bluetoothSerial.write(this.utils.completarCaracter(veiculo.TotalServicos.toFixed(2).replace('.', ','), configuracao.Recibo.CaractersImpressao - 'TOTAL'.length));
       this.bluetoothSerial.write(this.CMD.EOL);
       this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
-      this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.CaractersImpressao, '-'));
+      this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
       this.bluetoothSerial.write(this.CMD.EOL);
     }
 
@@ -354,7 +354,7 @@ export class BluetoothService extends ServiceBaseService {
       this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_CT);
       this.bluetoothSerial.write('ESTACIONAMENTO COBRADO POR TEMPO');
       this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
-      this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.CaractersImpressao, '-'));
+      this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
     }
 
     this.bluetoothSerial.write(this.CMD.EOL);
@@ -366,7 +366,7 @@ export class BluetoothService extends ServiceBaseService {
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.qrCode(veiculo.Placa));
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
-    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.CaractersImpressao, '-'));
+    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
@@ -381,8 +381,8 @@ export class BluetoothService extends ServiceBaseService {
 
   imprimirReciboSaida(movimento: Movimento) {
     let configuracao = this.configuracoes.configuracoes
-    if (configuracao.CaractersImpressao == null)
-      configuracao.CaractersImpressao = 32 // Tamanho considerado padrão para impressoras de pequeno porte
+    if (configuracao.Recibo.CaractersImpressao == null)
+      configuracao.Recibo.CaractersImpressao = 32 // Tamanho considerado padrão para impressoras de pequeno porte
         
     this.bluetoothSerial.write('\x1C\x2E\x1B\x74\x10'); // UTF-8
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_CT);
@@ -396,7 +396,7 @@ export class BluetoothService extends ServiceBaseService {
     this.bluetoothSerial.write(new DatePipe('en-US').transform(movimento.Data, 'dd/MM/yyyy HH:mm'));
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
-    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.CaractersImpressao, '-'));
+    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_2HEIGHT);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
     this.bluetoothSerial.write(configuracao.Estabelecimento.Nome);
@@ -411,7 +411,7 @@ export class BluetoothService extends ServiceBaseService {
     this.bluetoothSerial.write(configuracao.Estabelecimento.Endereco);
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
-    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.CaractersImpressao, '-'));
+    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
@@ -420,19 +420,19 @@ export class BluetoothService extends ServiceBaseService {
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_LT);
     movimento.Veiculo.Servicos.forEach(servico => {
-        this.bluetoothSerial.write(servico.Nome.substr(0, configuracao.CaractersImpressao - 12));
+        this.bluetoothSerial.write(servico.Nome.substr(0, configuracao.Recibo.CaractersImpressao - 12));
         if (servico.Id)
-          this.bluetoothSerial.write(this.utils.completarCaracter(movimento.Veiculo.precoServico(servico).toFixed(2).replace('.', ','), configuracao.CaractersImpressao - servico.Nome.substr(0, configuracao.CaractersImpressao - 12).length));
+          this.bluetoothSerial.write(this.utils.completarCaracter(movimento.Veiculo.precoServico(servico).toFixed(2).replace('.', ','), configuracao.Recibo.CaractersImpressao - servico.Nome.substr(0, configuracao.Recibo.CaractersImpressao - 12).length));
         else
-          this.bluetoothSerial.write(this.utils.completarCaracter(this.calculadoraEstacionamentoService.calcularPrecos(movimento.Veiculo.Entrada, movimento.Data, movimento.Veiculo.TipoVeiculo).toFixed(2).replace('.', ','), configuracao.CaractersImpressao - servico.Nome.substr(0, configuracao.CaractersImpressao - 12).length));
+          this.bluetoothSerial.write(this.utils.completarCaracter(this.calculadoraEstacionamentoService.calcularPrecos(movimento.Veiculo.Entrada, movimento.Data, movimento.Veiculo.TipoVeiculo).toFixed(2).replace('.', ','), configuracao.Recibo.CaractersImpressao - servico.Nome.substr(0, configuracao.Recibo.CaractersImpressao - 12).length));
         this.bluetoothSerial.write(this.CMD.EOL);  
     })
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
     this.bluetoothSerial.write('TOTAL');
-    this.bluetoothSerial.write(this.utils.completarCaracter((movimento.Veiculo.TotalServicos + this.calculadoraEstacionamentoService.calcularPrecos(movimento.Veiculo.Entrada, movimento.Data, movimento.Veiculo.TipoVeiculo)).toFixed(2).replace('.', ','), configuracao.CaractersImpressao - 'TOTAL'.length));
+    this.bluetoothSerial.write(this.utils.completarCaracter((movimento.Veiculo.TotalServicos + this.calculadoraEstacionamentoService.calcularPrecos(movimento.Veiculo.Entrada, movimento.Data, movimento.Veiculo.TipoVeiculo)).toFixed(2).replace('.', ','), configuracao.Recibo.CaractersImpressao - 'TOTAL'.length));
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
-    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.CaractersImpressao, '-'));
+    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
     this.bluetoothSerial.write(this.CMD.EOL);    
     this.bluetoothSerial.write('VOLTE SEMPRE');
     this.bluetoothSerial.write(this.CMD.FEED_CONTROL_SEQUENCES.CTL_LF);
