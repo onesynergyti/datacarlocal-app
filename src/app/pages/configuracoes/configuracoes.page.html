@@ -1,14 +1,26 @@
-<app-header titulo="Configurações" ocultarRetorno="true"></app-header>
+<ion-header>
+  <app-header titulo="Configurações"></app-header>
+  <ion-segment scrollable [(ngModel)]="pagina">
+    <ion-segment-button value="empresa">
+      <ion-icon name="business" class="espacadorCampo"></ion-icon>
+      Empresa
+    </ion-segment-button>
+    <ion-segment-button value="recibo">
+      <ion-icon name="receipt" class="espacadorCampo"></ion-icon>
+      Recibo
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
 
 <ion-content>
   <ion-grid>
-    <ion-row>
+    <ion-row *ngIf="pagina == 'empresa'">
       <ion-col size-xs="12" class="subTitulo fundoLigth">
-        <ion-icon class="iconeSubTitulo" name="calendar"></ion-icon>
+        <ion-icon class="iconeSubTitulo" name="business"></ion-icon>
         Dados da empresa
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row *ngIf="pagina == 'empresa'">
       <ion-col class="ion-no-padding">
         <ion-list *ngIf="configuracoes != null">
           <ion-item>
@@ -30,17 +42,17 @@
         </ion-list>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row *ngIf="pagina == 'recibo'">
       <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-icon class="iconeSubTitulo" name="receipt"></ion-icon>
         Informações do recibo
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row *ngIf="pagina == 'recibo'">
       <ion-col class="ion-no-padding">
         <ion-list *ngIf="configuracoes != null">
           <ion-item>
-            <ion-label>CNPJ</ion-label>
+            <ion-label>Exibir CNPJ</ion-label>
             <ion-toggle color="primary" [(ngModel)]="configuracoes.Recibo.ExibirCNPJ"></ion-toggle>
           </ion-item>
         </ion-list>

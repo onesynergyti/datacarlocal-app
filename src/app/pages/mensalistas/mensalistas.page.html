@@ -1,0 +1,40 @@
+<ion-header>
+  <app-header titulo="Mensalistas"></app-header>
+</ion-header>
+
+<ion-content>
+  <div>
+    <ion-list [@listAnimation]="mensalistas.length" lines="full">
+      <ion-item-sliding id="mensalista.Id" *ngFor="let mensalista of mensalistas">
+        <ion-item (click)="cadastrarMensalista(mensalista)">
+          <ion-grid class="ion-no-margin ion-no-padding ">
+            <ion-row>
+              <ion-col>
+                {{ mensalista.Nome }}
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+    
+        <ion-item-options side="end">
+          <ion-item-option color="danger">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-grid class="ion-no-padding ion-no-margin">
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="success" (click)="cadastrarMensalista()">
+          <ion-icon slot="start" name="add-circle"></ion-icon>
+          Adicionar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>  
+</ion-footer>

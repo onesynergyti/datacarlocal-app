@@ -26,7 +26,7 @@ export class ConfiguracoesService {
     if (valor.Estabelecimento == null)
       valor.Estabelecimento = new Estabelecimento()
 
-    return retorno == null ? new Configuracoes() : JSON.parse(retorno)
+    return valor
 }
 
   set configuracoes(configuracoes: Configuracoes) {

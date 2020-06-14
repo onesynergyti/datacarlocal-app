@@ -10,6 +10,7 @@ import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 export class ConfiguracoesPage implements OnInit {
 
   configuracoes: Configuracoes
+  pagina = 'empresa'
 
   constructor(
     private configuracoesService: ConfiguracoesService
