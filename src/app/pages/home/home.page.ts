@@ -12,6 +12,7 @@ import { ServicoVeiculo } from 'src/app/models/servico-veiculo';
 import { SaidaPage } from './saida/saida.page';
 import { Movimento } from 'src/app/models/movimento';
 import { PropagandasService } from 'src/app/services/propagandas.service';
+import { CalculadoraEstacionamentoService } from 'src/app/services/calculadora-estacionamento.service';
 
 @Component({
   selector: 'app-home',
@@ -47,7 +48,8 @@ export class HomePage {
     private utils: Utils,
     private barcodeScanner: BarcodeScanner,
     private configuracoesService: ConfiguracoesService,
-    public propagandaService: PropagandasService
+    public propagandaService: PropagandasService,
+    private calculadoraEstacionamentoService: CalculadoraEstacionamentoService
   ) { }
 
   ionViewDidEnter() {
@@ -133,32 +135,41 @@ export class HomePage {
 
   async avaliarRetornoVeiculo(retorno, inclusao) {
     if (retorno.data != null) {        
-      // A saída do veículo retorna o movimento completo
-      let veiculo = retorno.data.Operacao == 'excluir' ? retorno.data.Movimento.Veiculo : retorno.data.Veiculo
+      alert(JSON.stringify(retorno))
       
-      // Atualiza a listagem com as alterações
-      const veiculoLocalizado = this.veiculos.find(itemAtual => itemAtual.Placa === veiculo.Placa)
-
-      // Saída de veículo, exclui o item
+      // Saída de veículo, exclui o item 
+      // ESSE CASO CONSIDERA QUE PODEM TER MÚLTIPLOS PAGAMENTOS
       if (retorno.data.Operacao == 'excluir') {
-        alert('vai excluir')
-        this.veiculos.splice(this.veiculos.indexOf(veiculoLocalizado), 1)
+        // A saída do veículo retorna o movimento completo
+        const veiculos = retorno.data.Movimento.Veiculos
+
+        // Exclui os veículos
+        veiculos.slice().forEach(veiculoAtual => {
+          this.veiculos.splice(this.veiculos.indexOf(this.veiculos.find(itemAtual => itemAtual.Placa === veiculoAtual.Placa)), 1)
+        });
+        
         if (this.bluetooth.dispositivoSalvo != null) {
           await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
           this.bluetooth.imprimirRecibo(retorno.data.Movimento, 'saida')
         }
       }
-      // Alteração do veículo, altera o item
-      else if (veiculoLocalizado != null) {
-        this.veiculos[this.veiculos.indexOf(veiculoLocalizado)] = veiculo
-      }
-      // Inclusão do veículo, adiciona o item
+      // Alteração do veículo, altera o item 
+      // ESSE CASO CONSIDERA QUE SÓ PODE TER UM VEÍCULO ALTERADO
       else {
-        // Se for inclusão imprime o recibo
-        this.veiculos.push(veiculo)
-        if (this.bluetooth.dispositivoSalvo != null) { 
-          await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
-          this.bluetooth.imprimirRecibo(retorno.data.Veiculo)
+        const veiculo = retorno.data.Veiculo
+        const veiculoLocalizado = this.veiculos.find(itemAtual => itemAtual.Placa === veiculo.Placa)
+
+        if (veiculoLocalizado != null) {
+          this.veiculos[this.veiculos.indexOf(veiculoLocalizado)] = veiculo
+        }
+        // Inclusão do veículo, adiciona o item
+        else {
+          // Se for inclusão imprime o recibo
+          this.veiculos.push(veiculo)
+          if (this.bluetooth.dispositivoSalvo != null) { 
+            await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
+            this.bluetooth.imprimirRecibo(retorno.data.Veiculo)
+          }
         }
       }
 
@@ -195,9 +206,18 @@ export class HomePage {
     if (veiculo.PossuiServicosPendentes) 
       this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve finalizar todos os serviços ou excluir antes de realizar o pagamento.', 'danger', 3000)
     else {
+      veiculo.Saida = new Date()
+      let servicoEstacionamento = veiculo.PossuiServicoEstacionamento
+      if (servicoEstacionamento) {
+        servicoEstacionamento.PrecoMoto = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 1)
+        servicoEstacionamento.PrecoVeiculoPequeno = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 2)
+        servicoEstacionamento.PrecoVeiculoMedio = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 3)
+        servicoEstacionamento.PrecoVeiculoGrande = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 4)
+      }
       let movimento = new Movimento()
-      movimento.Data = new Date
       movimento.Veiculos.push(veiculo)
+      movimento.Data = new Date()
+      movimento.Descricao = 'Cobrança de veículo'
 
       const modal = await this.modalController.create({
         component: SaidaPage,

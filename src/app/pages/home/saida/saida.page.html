@@ -1,11 +1,11 @@
 <app-header-modal titulo="Saída de veículo" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
 
 <ion-content>
-  <ion-grid>
+  <ion-grid *ngIf="movimento != null">
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-icon class="iconeSubTitulo" name="timer"></ion-icon>
-        Horário da saída
+        Data do pagamento
       </ion-col>
     </ion-row>
     <ion-row>
@@ -34,7 +34,7 @@
           <ion-item *ngFor="let servico of veiculo.Servicos">
             <h3 class="textoLimitado espacadorCampo">{{ servico.Nome }}</h3>
             <ion-note slot="end">
-              <h3>{{ movimento.Veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h3>
+              <h3>{{ veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h3>
             </ion-note>
           </ion-item>
         </ion-list>
@@ -48,7 +48,7 @@
               <h2 class="negrito ion-text-left">Total</h2>
             </ion-col>
             <ion-col class="ion-text-right">
-              <h2 class="negrito">{{ total | decimalPipe:"R$ " }}</h2>
+              <h2 class="negrito">{{ movimento.TotalServicos | decimalPipe:"R$ " }}</h2>
             </ion-col>
           </ion-row>
         </ion-grid>

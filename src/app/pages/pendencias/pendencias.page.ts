@@ -3,11 +3,10 @@ import { trigger, transition, query, style, stagger, animate } from '@angular/an
 import { PatioService } from 'src/app/dbproviders/patio.service';
 import { ModalController } from '@ionic/angular';
 import { Utils } from 'src/app/utils/utils';
-import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
-import { Movimento } from 'src/app/models/movimento';
-import { SaidaPage } from '../home/saida/saida.page';
 import { PropagandasService } from 'src/app/services/propagandas.service';
 import { BluetoothService } from 'src/app/services/bluetooth.service';
+import { SaidaPage } from '../home/saida/saida.page';
+import { Movimento } from 'src/app/models/movimento';
 
 @Component({
   selector: 'app-pendencias',
@@ -32,7 +31,7 @@ export class PendenciasPage implements OnInit {
 
   veiculos = []
   carregandoVeiculos = false
-  pesquisa
+  pesquisa = ''
 
   constructor(
     private providerPatio: PatioService,
@@ -45,11 +44,16 @@ export class PendenciasPage implements OnInit {
   ngOnInit() {
   }
 
-  atualizarPatio() {
+  ionViewDidEnter() {
+    this.atualizarPendencias()
+  }
+
+  atualizarPendencias() {
     this.veiculos = []
     this.carregandoVeiculos = true
     this.providerPatio.lista(false, true).then((lista: any) => {
       this.veiculos = lista
+      alert(JSON.stringify(lista))
     })    
     // Em caso de erro
     .catch((erro) => {
@@ -87,68 +91,51 @@ export class PendenciasPage implements OnInit {
 
   async avaliarRetornoVeiculo(retorno, inclusao) {
     if (retorno.data != null) {        
-      // A saída do veículo retorna o movimento completo
-      let veiculo = retorno.data.Operacao == 'excluir' ? retorno.data.Movimento.Veiculo : retorno.data.Veiculo
+      alert(JSON.stringify(retorno))
       
-      // Atualiza a listagem com as alterações
-      const veiculoLocalizado = this.veiculos.find(itemAtual => itemAtual.Placa === veiculo.Placa)
-
-      // Saída de veículo, exclui o item
+      // Saída de veículo, exclui o item 
+      // ESSE CASO CONSIDERA QUE PODEM TER MÚLTIPLOS PAGAMENTOS
       if (retorno.data.Operacao == 'excluir') {
-        alert('vai excluir')
-        this.veiculos.splice(this.veiculos.indexOf(veiculoLocalizado), 1)
+        // A saída do veículo retorna o movimento completo
+        const veiculos = retorno.data.Movimento.Veiculos
+
+        // Exclui os veículos
+        veiculos.slice().forEach(veiculoAtual => {
+          this.veiculos.splice(this.veiculos.indexOf(this.veiculos.find(itemAtual => itemAtual.Placa === veiculoAtual.Placa)), 1)
+        });
+        
         if (this.bluetooth.dispositivoSalvo != null) {
           await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
           this.bluetooth.imprimirRecibo(retorno.data.Movimento, 'saida')
         }
-      }
-      // Alteração do veículo, altera o item
-      else if (veiculoLocalizado != null) {
-        this.veiculos[this.veiculos.indexOf(veiculoLocalizado)] = veiculo
-      }
-      // Inclusão do veículo, adiciona o item
-      else {
-        // Se for inclusão imprime o recibo
-        this.veiculos.push(veiculo)
-        if (this.bluetooth.dispositivoSalvo != null) { 
-          await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
-          this.bluetooth.imprimirRecibo(retorno.data.Veiculo)
-        }
-      }
 
-      if (retorno.data.Operacao == 'excluir') {
         // Exibe uma propagando na saída do veículo
         setTimeout(() => {
           this.propagandaService.showInterstitialAds()
         }, 3000);
-        this.utils.mostrarToast('Conclusão dos serviços realizada com sucesso', 'success')
+
+        this.utils.mostrarToast('Pagamento dos serviços realizada com sucesso', 'success')
       }
-      else
-        this.utils.mostrarToast(inclusao ? 'Veículo adicionado com sucesso' : 'Alteração realizada com sucesso', 'success')        
     }
   }
 
-  async registrarSaida(veiculo) {
-/*    if (veiculo.PossuiServicosPendentes) 
-      this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve finalizar todos os serviços ou excluir antes de realizar o pagamento.', 'danger', 3000)
-    else {
-      let movimento = new Movimento()
-      movimento.Data = new Date
-      movimento.Veiculo = veiculo
+  async registrarSaida(veiculos) {
+    let movimento = new Movimento()
+    movimento.Data = new Date
+    movimento.Veiculos = veiculos
 
-      const modal = await this.modalController.create({
-        component: SaidaPage,
-        componentProps: {
-          'movimento': movimento
-        }
-      });
-  
-      modal.onWillDismiss().then((retorno) => {
-        this.avaliarRetornoVeiculo(retorno, false)
-      })
-  
-      return await modal.present(); 
-    }*/
+    const modal = await this.modalController.create({
+      component: SaidaPage,
+      componentProps: {
+        'movimento': movimento
+      }
+    });
+
+    modal.onWillDismiss().then((retorno) => {
+      this.avaliarRetornoVeiculo(retorno, false)
+    })
+
+    return await modal.present(); 
   }
 
 }

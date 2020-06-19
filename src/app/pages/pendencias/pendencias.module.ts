@@ -7,13 +7,17 @@ import { IonicModule } from '@ionic/angular';
 import { PendenciasPageRoutingModule } from './pendencias-routing.module';
 
 import { PendenciasPage } from './pendencias.page';
+import { ComponentsModule } from 'src/app/components/components.module';
+import { PipeModule } from 'src/app/pipes/pipe.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    PendenciasPageRoutingModule
+    PendenciasPageRoutingModule,
+    ComponentsModule,
+    PipeModule.forRoot()
   ],
   declarations: [PendenciasPage]
 })

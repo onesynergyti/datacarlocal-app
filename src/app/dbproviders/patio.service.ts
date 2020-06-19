@@ -25,16 +25,14 @@ export class PatioService extends ServiceBaseService {
     let sql
     let data
 
-    alert(JSON.stringify(veiculo))
-
     // Se for inclusão
     if (!veiculo.Id) {
       sql = 'insert into veiculos (Placa, Modelo, TipoVeiculo, Entrada, Saida, Telefone, Nome, Observacoes, Servicos, EntregaAgendada, PrevisaoEntrega, Ativo) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
       data = [veiculo.Placa, veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Saida, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, veiculo.PrevisaoEntrega, veiculo.Ativo];
     }
     else {
-      sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Telefone = ?, Nome = ?, Observacoes = ?, Servicos = ?, EntregaAgendada = ?, PrevisaoEntrega = ?, Ativo = ? where Id = ?';
-      data = [veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, veiculo.PrevisaoEntrega, veiculo.Ativo, veiculo.Id];
+      sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Saida = ?, Telefone = ?, Nome = ?, Observacoes = ?, Servicos = ?, EntregaAgendada = ?, PrevisaoEntrega = ?, Ativo = ? where Id = ?';
+      data = [veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Saida, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, veiculo.PrevisaoEntrega, veiculo.Ativo, veiculo.Id];
     }
 
     return new Promise((resolve, reject) => {
@@ -69,20 +67,21 @@ export class PatioService extends ServiceBaseService {
       this.database.DB.then(db => {
         db.transaction(tx => {
           // Exclui o carro do pátio
-          const sqlExclusao = 'delete from veiculos where Id in (?)';
           let ids = ''
           movimento.Veiculos.forEach(itemAtual => {
             if (ids != '')
               ids += ','
             ids += itemAtual.Id
           });
-          const dataExclusao = [ids];
-          tx.executeSql(sqlExclusao, dataExclusao, () => {
+          const sqlExclusao = 'delete from veiculos where Id in ' + '(' +  ids + ')';
+          alert(JSON.stringify(ids))
+          tx.executeSql(sqlExclusao, [], () => {
             // Inclui o movimento financeiro
             const sqlInclusao = 'insert into movimentos (Data, Descricao, ValorDinheiro, ValorDebito, ValorCredito, Veiculo) values (?, ?, ?, ?, ?, ?)';
             const dataInclusao = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss'), movimento.Descricao, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, JSON.stringify(movimento.Veiculos)];
             tx.executeSql(sqlInclusao, dataInclusao, (tx, result) => {
               let promisesTx = []
+              // Inclui detalhamento do movimento consolidado dos serviços
               movimento.servicosConsolidados.forEach(itemAtual => {
                 promisesTx.push(
                   new Promise((resolve, reject) => {
@@ -118,15 +117,13 @@ export class PatioService extends ServiceBaseService {
       if (!exibirInativos)
         complementoSQL += " and Ativo = 'true'"
               
-      let sql = "SELECT * from veiculos v where 1=1" + complementoSQL;
-      alert(sql)
+      const sql = "SELECT * from veiculos v where 1=1" + complementoSQL;
       this.database.DB.then(db => {
         db.executeSql(sql, [])
         .then(data => {
           if (data.rows.length > 0) {
             let veiculos: any[] = [];
             for (var i = 0; i < data.rows.length; i++) {
-              alert(JSON.stringify(data.rows.item(i)))
               var veiculo = data.rows.item(i);
               veiculo.Servicos = JSON.parse(veiculo.Servicos)
               veiculos.push(new Veiculo(veiculo));

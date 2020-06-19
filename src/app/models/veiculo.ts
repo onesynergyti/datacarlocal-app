@@ -60,7 +60,7 @@ export class Veiculo {
   }
 
   get TotalServicos() {
-    return this.Servicos.reduce((acumulador: number, itemAtual) => acumulador + itemAtual.Id ? this.precoServico(itemAtual) : 0, 0)
+    return this.Servicos.reduce((acumulador: number, itemAtual) => acumulador + this.precoServico(itemAtual), 0)
   }
 
   enviarMensagemWhatsapp(celular, mensagem = '') {

@@ -32,18 +32,25 @@ export class Movimento {
 
     this.Veiculos.forEach(veiculoAtual => {
       veiculoAtual.Servicos.forEach(servicoAtual => {
-        let servicoLocalizado = servicos.find(servicoAtual => servicoAtual.Id = servicoAtual.Id)
+        let servicoLocalizado = servicos.find(servicoAtualConsolidado => servicoAtualConsolidado.Id == servicoAtual.Id)
+        alert(JSON.stringify(servicoLocalizado))
         // Se não existir o serviço cria
         if (servicoLocalizado == null) {
-          servicos.push(servicoLocalizado)
+          alert('inserindo')
+          servicos.push(servicoAtual)
         }
         // Se existir atualiza o valor
         else {
-          servicoLocalizado.Valor = servicoLocalizado.Valor + veiculoAtual.precoServico(servicoAtual)
+          alert('editando')
+          servicoLocalizado.PrecoMoto = servicoLocalizado.PrecoMoto + servicoAtual.PrecoMoto
+          servicoLocalizado.PrecoVeiculoPequeno = servicoLocalizado.PrecoVeiculoPequeno + servicoAtual.PrecoVeiculoPequeno
+          servicoLocalizado.PrecoVeiculoMedio = servicoLocalizado.PrecoVeiculoMedio + servicoAtual.PrecoVeiculoMedio
+          servicoLocalizado.PrecoVeiculoGrande = servicoLocalizado.PrecoVeiculoGrande + servicoAtual.PrecoVeiculoGrande
         }
       })
     });
 
+    alert('serviços: ' + JSON.stringify(servicos))
     return servicos
   }
 
