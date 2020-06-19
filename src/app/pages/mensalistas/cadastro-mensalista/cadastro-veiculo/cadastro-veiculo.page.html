@@ -1,0 +1,23 @@
+<ion-header>
+  <app-header-modal titulo="Cadastro de veículo" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+</ion-header>
+
+<ion-content>
+  <ion-grid *ngIf="veiculo != null">
+    <ion-row>
+      <ion-col>
+        <ion-item class="ion-no-margin ion-no-padding">
+          <ion-label position="floating">Placa</ion-label>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="veiculo.Placa"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="block" color="success" (click)="concluir()">
+    <ion-icon slot="start" name="checkmark-done"></ion-icon>
+    Salvar
+  </ion-button>
+</ion-footer>

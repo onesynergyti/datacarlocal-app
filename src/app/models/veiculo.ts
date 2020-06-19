@@ -1,9 +1,11 @@
 import { ServicoVeiculo } from './servico-veiculo'
 
 export class Veiculo {
+  Id: number = 0
   Placa: string
   Modelo: string
   Entrada: Date = new Date()
+  Saida: Date
   TipoVeiculo: number
   Observacoes: string
   Telefone: string
@@ -11,12 +13,15 @@ export class Veiculo {
   Servicos: ServicoVeiculo[] = []
   EntregaAgendada: boolean
   PrevisaoEntrega: Date
+  Ativo: boolean = true
 
   constructor(veiculo: Veiculo = null) {
     if (veiculo != null) {
+      this.Id = veiculo.Id
       this.Placa = veiculo.Placa 
       this.Modelo = veiculo.Modelo
       this.Entrada = veiculo.Entrada ? new Date(veiculo.Entrada) : new Date()
+      this.Saida = veiculo.Saida
       this.TipoVeiculo = veiculo.TipoVeiculo
       this.Observacoes = veiculo.Observacoes
       this.Telefone = veiculo.Telefone
@@ -24,6 +29,7 @@ export class Veiculo {
       this.Servicos = veiculo.Servicos != null ? veiculo.Servicos.slice() : []
       this.EntregaAgendada = veiculo.EntregaAgendada
       this.PrevisaoEntrega = veiculo.PrevisaoEntrega ? new Date(veiculo.PrevisaoEntrega) : null
+      this.Ativo = veiculo.Ativo
     }
   }
 

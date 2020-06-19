@@ -5,6 +5,8 @@ import { IonicModule } from '@ionic/angular';
 import { MensalistasPageRoutingModule } from './mensalistas-routing.module';
 import { MensalistasPage } from './mensalistas.page';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { CadastroMensalistaPage } from './cadastro-mensalista/cadastro-mensalista.page';
+import { CadastroVeiculoPage } from './cadastro-mensalista/cadastro-veiculo/cadastro-veiculo.page';
 
 @NgModule({
   imports: [
@@ -14,6 +16,7 @@ import { ComponentsModule } from 'src/app/components/components.module';
     MensalistasPageRoutingModule,
     ComponentsModule
   ],
-  declarations: [MensalistasPage]
+  entryComponents: [CadastroMensalistaPage, CadastroVeiculoPage],
+  declarations: [MensalistasPage, CadastroMensalistaPage, CadastroVeiculoPage]
 })
 export class MensalistasPageModule {}

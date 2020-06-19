@@ -9,6 +9,7 @@ import { trigger, transition, query, style, stagger, animate } from '@angular/an
 import { SaidaPage } from '../saida/saida.page';
 import { Utils } from 'src/app/utils/utils';
 import { Movimento } from 'src/app/models/movimento';
+import { CalculadoraEstacionamentoService } from 'src/app/services/calculadora-estacionamento.service';
 
 @Component({
   selector: 'app-entrada',
@@ -44,7 +45,8 @@ export class EntradaPage implements OnInit {
     public navParams: NavParams,
     private modalController: ModalController,
     public utils: Utils,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private calculadoraEstacionamentoService: CalculadoraEstacionamentoService
   ) { 
     this.veiculo = navParams.get('veiculo')
     this.inclusao = navParams.get('inclusao')
@@ -105,9 +107,9 @@ export class EntradaPage implements OnInit {
     }
     else {
       await this.patioProvider.exibirProcessamento('Registrando entrada...')
-      this.patioProvider.salvar(this.veiculo, this.inclusao)
-      .then(() => {
-        this.modalCtrl.dismiss({ Operacao: 'entrada', Veiculo: this.veiculo })
+      this.patioProvider.salvar(this.veiculo)
+      .then((veiculo) => {
+        this.modalCtrl.dismiss({ Operacao: 'entrada', Veiculo: veiculo })
       })
       .catch(() => {
         alert('Não foi possível inserir o veículo')
@@ -161,6 +163,14 @@ export class EntradaPage implements OnInit {
     if (this.veiculo.PossuiServicosPendentes) 
       this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve excluir ou finalizar antes de realizar o pagamento.', 'danger', 3000)      
     else {
+      this.veiculo.Saida = new Date()
+      let servicoEstacionamento = this.veiculo.PossuiServicoEstacionamento
+      if (servicoEstacionamento) {
+        servicoEstacionamento.PrecoMoto = this.calculadoraEstacionamentoService.calcularPrecos(this.veiculo.Entrada, this.veiculo.Saida, 1)
+        servicoEstacionamento.PrecoVeiculoPequeno = this.calculadoraEstacionamentoService.calcularPrecos(this.veiculo.Entrada, this.veiculo.Saida, 2)
+        servicoEstacionamento.PrecoVeiculoMedio = this.calculadoraEstacionamentoService.calcularPrecos(this.veiculo.Entrada, this.veiculo.Saida, 3)
+        servicoEstacionamento.PrecoVeiculoGrande = this.calculadoraEstacionamentoService.calcularPrecos(this.veiculo.Entrada, this.veiculo.Saida, 4)
+      }
       let movimento = new Movimento()
       movimento.Veiculo = this.veiculo
       movimento.Data = new Date()

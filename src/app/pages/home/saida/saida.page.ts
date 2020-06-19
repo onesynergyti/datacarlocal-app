@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
 import { PatioService } from 'src/app/dbproviders/patio.service';
-import { CalculadoraEstacionamentoService } from 'src/app/services/calculadora-estacionamento.service';
 import { Utils } from 'src/app/utils/utils';
 import { Movimento } from 'src/app/models/movimento';
 
@@ -18,7 +17,6 @@ export class SaidaPage {
     private modalCtrl: ModalController,
     public navParams: NavParams,
     private patio: PatioService,
-    private calculadoraEstacionamentoService: CalculadoraEstacionamentoService,
     private utils: Utils
   ) { 
     this.movimento = navParams.get('movimento')
@@ -46,12 +44,20 @@ export class SaidaPage {
     }
   }  
 
-  get precoEstacionamento() {
-    return this.movimento.Veiculo.PossuiServicoEstacionamento ? this.calculadoraEstacionamentoService.calcularPrecos(this.movimento.Veiculo.Entrada, this.movimento.Data, this.movimento.Veiculo.TipoVeiculo) : 0
-  }
+  async concluirDepois() {
+    await this.patio.exibirProcessamento('Acumulando pagamento...')
+    this.movimento.Veiculo.Ativo = false
+    this.patio.salvar(this.movimento.Veiculo)
+    .then(() => {
+      this.modalCtrl.dismiss({ Operacao: 'excluir', Movimento: this.movimento })
+    })
+    .catch((erro) => {
+      alert(JSON.stringify(erro))
+    })
+  }  
 
   get total() {
-    return this.movimento.Veiculo.TotalServicos + this.precoEstacionamento
+    return this.movimento.Veiculo.TotalServicos
   }
 
   get totalPago() {

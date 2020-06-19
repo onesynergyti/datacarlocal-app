@@ -108,9 +108,7 @@ export class MovimentoPage implements OnInit {
 
     modal.onWillDismiss().then((retorno) => {
       if (retorno.data != null)
-      {
         this.utilsLista.atualizarLista(this.movimentos, retorno.data, true)
-      }
     })
 
     return await modal.present(); 

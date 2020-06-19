@@ -21,25 +21,29 @@ export class PatioService extends ServiceBaseService {
     super(loadingController)
   }
 
-  public salvar(veiculo: Veiculo, inclusao) {
+  public salvar(veiculo: Veiculo) {
     let sql
     let data
 
+    alert(JSON.stringify(veiculo))
+
     // Se for inclusão
-    if (inclusao) {
-      sql = 'insert into veiculos (Placa, Modelo, TipoVeiculo, Entrada, Telefone, Nome, Observacoes, Servicos, EntregaAgendada, PrevisaoEntrega) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-      data = [veiculo.Placa, veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, veiculo.PrevisaoEntrega];
+    if (!veiculo.Id) {
+      sql = 'insert into veiculos (Placa, Modelo, TipoVeiculo, Entrada, Saida, Telefone, Nome, Observacoes, Servicos, EntregaAgendada, PrevisaoEntrega, Ativo) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+      data = [veiculo.Placa, veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Saida, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, veiculo.PrevisaoEntrega, veiculo.Ativo];
     }
     else {
-      sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Telefone = ?, Nome = ?, Observacoes = ?, Servicos = ?, EntregaAgendada = ?, PrevisaoEntrega = ? where Placa = ?';
-      data = [veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, veiculo.PrevisaoEntrega, veiculo.Placa];
+      sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Telefone = ?, Nome = ?, Observacoes = ?, Servicos = ?, EntregaAgendada = ?, PrevisaoEntrega = ?, Ativo = ? where Id = ?';
+      data = [veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, veiculo.PrevisaoEntrega, veiculo.Ativo, veiculo.Id];
     }
 
     return new Promise((resolve, reject) => {
       this.database.DB.then(db => {
         db.executeSql(sql, data)
-        .then(() => {
-          resolve()
+        .then((row: any) => {
+          if (!veiculo.Id) 
+            veiculo.Id = row.insertId
+          resolve(veiculo)
         })
         .catch((erro) => {
           reject(erro)
@@ -65,8 +69,8 @@ export class PatioService extends ServiceBaseService {
       this.database.DB.then(db => {
         db.transaction(tx => {
           // Exclui o carro do pátio
-          const sqlExclusao = 'delete from veiculos where Placa = ?';
-          const dataExclusao = [movimento.Veiculo.Placa];
+          const sqlExclusao = 'delete from veiculos where Id = ?';
+          const dataExclusao = [movimento.Veiculo.Id];
           tx.executeSql(sqlExclusao, dataExclusao, () => {
             // Inclui o movimento financeiro
             const sqlInclusao = 'insert into movimentos (Data, Descricao, ValorDinheiro, ValorDebito, ValorCredito, Veiculo) values (?, ?, ?, ?, ?, ?)';
@@ -101,15 +105,23 @@ export class PatioService extends ServiceBaseService {
     })
   }
 
-  public lista(): Promise<any> {
+  public lista(exibirAtivos = true, exibirInativos = false): Promise<any> {
     return new Promise((resolve, reject) => {
-      let sql = "SELECT * from veiculos v";
+      let complementoSQL = ""
+      if (!exibirAtivos)
+        complementoSQL += " and Ativo = 'false'"
+      if (!exibirInativos)
+        complementoSQL += " and Ativo = 'true'"
+              
+      let sql = "SELECT * from veiculos v where 1=1" + complementoSQL;
+      alert(sql)
       this.database.DB.then(db => {
         db.executeSql(sql, [])
         .then(data => {
           if (data.rows.length > 0) {
             let veiculos: any[] = [];
             for (var i = 0; i < data.rows.length; i++) {
+              alert(JSON.stringify(data.rows.item(i)))
               var veiculo = data.rows.item(i);
               veiculo.Servicos = JSON.parse(veiculo.Servicos)
               veiculos.push(new Veiculo(veiculo));

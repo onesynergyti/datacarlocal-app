@@ -41,8 +41,7 @@
             <ion-item>
               <h3 class="textoLimitado espacadorCampo">{{ servico.Nome }}</h3>
               <ion-note slot="end">
-                <h3 *ngIf="movimento.Veiculo.TipoVeiculo && servico.Id">{{ movimento.Veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h3>
-                <h3 *ngIf="!servico.Id">{{ precoEstacionamento | decimalPipe:"R$ " }}</h3>
+                <h3>{{ movimento.Veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h3>
               </ion-note>
             </ion-item>
         
@@ -128,7 +127,7 @@
         </ion-button>
       </ion-col>
       <ion-col>
-        <ion-button expand="block" color="danger">
+        <ion-button expand="block" color="danger" (click)="concluirDepois()">
           <ion-icon slot="start" name="document-attach"></ion-icon>
           Receber depois
         </ion-button>

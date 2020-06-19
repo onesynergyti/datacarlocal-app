@@ -18,7 +18,7 @@ export class MensalistasService extends ServiceBaseService {
     super(loadingController)
   }
 
-  public lista(inicio: Date, fim: Date): Promise<any> {
+  public lista(): Promise<any> {
     return new Promise((resolve, reject) => {
       const sql = "SELECT * from mensalistas";
       const data = []
@@ -30,7 +30,7 @@ export class MensalistasService extends ServiceBaseService {
             for (var i = 0; i < data.rows.length; i++) {
               var mensalista = data.rows.item(i);
               mensalista.Veiculos = JSON.parse(mensalista.Veiculos)
-              mensalista.push(new Mensalista(mensalista));
+              mensalistas.push(new Mensalista(mensalista));
             }
             resolve(mensalistas)
           } else {
@@ -54,14 +54,16 @@ export class MensalistasService extends ServiceBaseService {
     let sql
     let data  
 
+    alert(JSON.stringify(mensalista))
+
     // Caso seja inclusão
     if (mensalista.Id == null || mensalista.Id == 0) {
-      sql = 'insert into mensalista (Nome, Documento, Valor, Telefone, Email, Ativo, Veiculos) values (?, ?, ?, ?, ?, ?, ?)'
+      sql = 'insert into mensalistas (Nome, Documento, Valor, Telefone, Email, Ativo, Veiculos) values (?, ?, ?, ?, ?, ?, ?)'
       data = [mensalista.Nome, mensalista.Documento, mensalista.Valor, mensalista.Telefone, mensalista.Email, mensalista.Ativo, JSON.stringify(mensalista.Veiculos)]
     }
     // Caso seja edição
     else {
-      sql = 'update movimentos set Nome = ?, Documento = ?, Valor = ?, Telefone = ?, Email = ?, Ativo = ?, Veiculos = ? where Id = ?'
+      sql = 'update mensalistas set Nome = ?, Documento = ?, Valor = ?, Telefone = ?, Email = ?, Ativo = ?, Veiculos = ? where Id = ?'
       data = [mensalista.Nome, mensalista.Documento, mensalista.Valor, mensalista.Telefone, mensalista.Email, mensalista.Ativo, JSON.stringify(mensalista.Veiculos), mensalista.Id]
     }
 

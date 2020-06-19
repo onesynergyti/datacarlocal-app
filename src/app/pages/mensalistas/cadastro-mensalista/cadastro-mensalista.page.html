@@ -1,9 +1,63 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>cadastroMensalista</ion-title>
-  </ion-toolbar>
+  <app-header-modal titulo="Cadastro de mensalista" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
 </ion-header>
 
 <ion-content>
-
+  <ion-grid *ngIf="mensalista != null">
+    <ion-row>
+      <ion-col>
+        <ion-item class="ion-no-margin ion-no-padding">
+          <ion-label position="floating">Nome</ion-label>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="mensalista.Nome"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
+        Veículos liberados
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="mensalista.Veiculos != null && mensalista.Veiculos.length > 0">
+      <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
+        <ion-list [@listAnimation]="mensalista.Veiculos.length" lines="full">
+          <ion-item-sliding id="veiculo.Placa" *ngFor="let veiculo of mensalista.Veiculos">
+            <ion-item>
+              <div>
+                <h3 class="textoLimitado espacadorCampo">{{ veiculo.Placa }}</h3>
+              </div>
+              <ion-note slot="end">
+              </ion-note>
+            </ion-item>
+        
+            <ion-item-options side="end">
+              <ion-item-option color="danger">
+                <ion-icon slot="icon-only" name="trash"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="mensalista.Veiculos == null || mensalista.Veiculos.length == 0">
+      <ion-col size-xs="12">
+        <h5>Nenhum veículo adicionado</h5>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
+        <ion-button expand="block" (click)="cadastrarVeiculo()">
+          <ion-icon name="add-circle"></ion-icon>
+          Adicionar Veículo
+        </ion-button>
+      </ion-col>
+    </ion-row>    
+  </ion-grid>
 </ion-content>
+
+<ion-footer>
+  <ion-button expand="block" color="success" (click)="concluir()">
+    <ion-icon slot="start" name="checkmark-done"></ion-icon>
+    Salvar
+  </ion-button>
+</ion-footer>
