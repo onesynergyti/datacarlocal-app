@@ -20,37 +20,23 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="8">
-        <h4 class="espacadorCampo negrito">Entrou em {{ movimento.Veiculo.Entrada | date:"dd/MM/yyyy - HH:mm" }}</h4>
-        <h4 class="textoLimitado">{{ movimento.Veiculo.Modelo ? movimento.Veiculo.Modelo : 'Modelo não informado' }}</h4>
-      </ion-col>
-      <ion-col size-xs="4" class="ion-text-right">
-        <img id="imgTipoVeiculo" src="{{ '../../../assets/img/veiculos/' + movimento.Veiculo.TipoVeiculo + '.png' }}" />
-      </ion-col>
-    </ion-row>
-    <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
         Serviços
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="movimento.Veiculo.Servicos != null && movimento.Veiculo.Servicos.length > 0">
-      <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
-        <ion-list [@listAnimation]="movimento.Veiculo.Servicos.length" lines="full">
-          <ion-item-sliding id="servico.Id" *ngFor="let servico of movimento.Veiculo.Servicos">
-            <ion-item>
-              <h3 class="textoLimitado espacadorCampo">{{ servico.Nome }}</h3>
-              <ion-note slot="end">
-                <h3>{{ movimento.Veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h3>
-              </ion-note>
-            </ion-item>
-        
-            <ion-item-options side="end">
-              <ion-item-option color="danger">
-                <ion-icon slot="icon-only" name="trash"></ion-icon>
-              </ion-item-option>
-            </ion-item-options>
-          </ion-item-sliding>
+    <ion-row *ngIf="movimento.Veiculos != null && movimento.Veiculos.length > 0">
+      <ion-col size-xs="12" class="ion-no-margin ion-no-padding" *ngFor="let veiculo of movimento.Veiculos">
+        <ion-list [@listAnimation]="movimento.Veiculos.length" lines="full">
+          <ion-header>
+            {{ veiculo.Placa }}
+          </ion-header>
+          <ion-item *ngFor="let servico of veiculo.Servicos">
+            <h3 class="textoLimitado espacadorCampo">{{ servico.Nome }}</h3>
+            <ion-note slot="end">
+              <h3>{{ movimento.Veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h3>
+            </ion-note>
+          </ion-item>
         </ion-list>
       </ion-col>
     </ion-row>

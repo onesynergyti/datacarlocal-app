@@ -60,7 +60,7 @@ export class MovimentoService extends ServiceBaseService {
     // Caso seja inclusão
     if (movimento.Id == null || movimento.Id == 0) {
       sql = 'insert into movimentos (Data, Descricao, ValorDinheiro, ValorDebito, ValorCredito, Veiculo) values (?, ?, ?, ?, ?, ?)'
-      data = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm'), movimento.Descricao, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, JSON.stringify(movimento.Veiculo)]
+      data = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm'), movimento.Descricao, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, JSON.stringify(movimento.Veiculos)]
     }
     // Caso seja edição
     else {

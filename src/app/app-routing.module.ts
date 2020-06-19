@@ -35,6 +35,10 @@ const routes: Routes = [
     path: 'mensalistas',
     loadChildren: () => import('./pages/mensalistas/mensalistas.module').then( m => m.MensalistasPageModule)
   },
+  {
+    path: 'pendencias',
+    loadChildren: () => import('./pages/pendencias/pendencias.module').then( m => m.PendenciasPageModule)
+  },
 ];
 
 @NgModule({

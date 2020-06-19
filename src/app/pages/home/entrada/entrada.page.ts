@@ -172,7 +172,7 @@ export class EntradaPage implements OnInit {
         servicoEstacionamento.PrecoVeiculoGrande = this.calculadoraEstacionamentoService.calcularPrecos(this.veiculo.Entrada, this.veiculo.Saida, 4)
       }
       let movimento = new Movimento()
-      movimento.Veiculo = this.veiculo
+      movimento.Veiculos.push(this.veiculo)
       movimento.Data = new Date()
       movimento.Descricao = 'Cobrança de veículo'
       

@@ -8,7 +8,7 @@ export class Movimento {
   ValorDinheiro: number = 0
   ValorDebito: number = 0
   ValorCredito: number = 0
-  Veiculo: Veiculo = new Veiculo()
+  Veiculos: Veiculo[] = []
 
   constructor(movimento: Movimento = null) {
     if (movimento != null) {
@@ -19,11 +19,35 @@ export class Movimento {
       this.ValorCredito = movimento.ValorCredito
       this.ValorDebito = movimento.ValorDebito
       this.ValorDinheiro = movimento.ValorDinheiro
-      this.Veiculo = new Veiculo(movimento.Veiculo)
+      this.Veiculos = movimento.Veiculos.slice()
     }
   }
 
   get Valor() {
     return this.ValorCredito + this.ValorDebito + this.ValorDinheiro
+  }
+
+  get servicosConsolidados() {
+    let servicos = []
+
+    this.Veiculos.forEach(veiculoAtual => {
+      veiculoAtual.Servicos.forEach(servicoAtual => {
+        let servicoLocalizado = servicos.find(servicoAtual => servicoAtual.Id = servicoAtual.Id)
+        // Se não existir o serviço cria
+        if (servicoLocalizado == null) {
+          servicos.push(servicoLocalizado)
+        }
+        // Se existir atualiza o valor
+        else {
+          servicoLocalizado.Valor = servicoLocalizado.Valor + veiculoAtual.precoServico(servicoAtual)
+        }
+      })
+    });
+
+    return servicos
+  }
+
+  get TotalServicos() {
+    return this.Veiculos.reduce((acumulador, veiculoAtual) => acumulador + veiculoAtual.TotalServicos, 0)
   }
 }

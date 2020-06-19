@@ -27,7 +27,7 @@ export class SaidaPage {
   }
 
   async concluir() {
-    if (this.totalPago < this.total)
+    if (this.totalPago < this.movimento.TotalServicos)
       this.utils.mostrarToast('O valor pago não foi suficiente.', 'danger')
     else if (this.troco > this.movimento.ValorDinheiro) {
       this.utils.mostrarToast('O valor pago em dinheiro não permite troco.', 'danger')
@@ -46,8 +46,8 @@ export class SaidaPage {
 
   async concluirDepois() {
     await this.patio.exibirProcessamento('Acumulando pagamento...')
-    this.movimento.Veiculo.Ativo = false
-    this.patio.salvar(this.movimento.Veiculo)
+    this.movimento.Veiculos[0].Ativo = false
+    this.patio.salvar(this.movimento.Veiculos[0])
     .then(() => {
       this.modalCtrl.dismiss({ Operacao: 'excluir', Movimento: this.movimento })
     })
@@ -56,16 +56,12 @@ export class SaidaPage {
     })
   }  
 
-  get total() {
-    return this.movimento.Veiculo.TotalServicos
-  }
-
   get totalPago() {
     return this.movimento.ValorCredito + this.movimento.ValorDebito + this.movimento.ValorDinheiro
   }
 
   get troco() {
-    const troco = this.totalPago - this.total
+    const troco = this.totalPago - this.movimento.TotalServicos
     return troco > 0 ? troco : 0
   }
 }

@@ -1,22 +1,18 @@
-import { Component } from '@angular/core';
-import { Veiculo } from '../../models/veiculo';
-import { PatioService } from '../../dbproviders/patio.service';
-import { ModalController, ActionSheetController } from '@ionic/angular';
-import { EntradaPage } from './entrada/entrada.page';
-import { BluetoothService } from '../../services/bluetooth.service';
-import { Utils } from 'src/app/utils/utils';
+import { Component, OnInit } from '@angular/core';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { PatioService } from 'src/app/dbproviders/patio.service';
+import { ModalController } from '@ionic/angular';
+import { Utils } from 'src/app/utils/utils';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
-import { ServicoVeiculo } from 'src/app/models/servico-veiculo';
-import { SaidaPage } from './saida/saida.page';
 import { Movimento } from 'src/app/models/movimento';
+import { SaidaPage } from '../home/saida/saida.page';
 import { PropagandasService } from 'src/app/services/propagandas.service';
+import { BluetoothService } from 'src/app/services/bluetooth.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: 'app-pendencias',
+  templateUrl: './pendencias.page.html',
+  styleUrls: ['./pendencias.page.scss'],
   animations: [
     trigger('listAnimation', [
       transition('* <=> *', [
@@ -32,37 +28,32 @@ import { PropagandasService } from 'src/app/services/propagandas.service';
     ])
   ]
 })
-export class HomePage {
+export class PendenciasPage implements OnInit {
 
-  carregandoVeiculos = false
   veiculos = []
-  placa
-  pontos = 0
-  pesquisa = ''
+  carregandoVeiculos = false
+  pesquisa
 
   constructor(
     private providerPatio: PatioService,
     private modalController: ModalController,
-    public bluetooth: BluetoothService,
     private utils: Utils,
-    private barcodeScanner: BarcodeScanner,
-    private configuracoesService: ConfiguracoesService,
-    public propagandaService: PropagandasService
+    public propagandaService: PropagandasService,
+    public bluetooth: BluetoothService
   ) { }
 
-  ionViewDidEnter() {
-    this.atualizarPatio()
+  ngOnInit() {
   }
 
   atualizarPatio() {
     this.veiculos = []
     this.carregandoVeiculos = true
-    this.providerPatio.lista().then((lista: any) => {
+    this.providerPatio.lista(false, true).then((lista: any) => {
       this.veiculos = lista
     })    
     // Em caso de erro
     .catch((erro) => {
-      alert(JSON.stringify('Não foi possível carregar os veículos do pátio.'))
+      alert(JSON.stringify('Não foi possível carregar as pendências de pagamento.'))
     })
     .finally(() => {
       this.carregandoVeiculos = false
@@ -92,43 +83,6 @@ export class HomePage {
       veiculo.enviarMensagemWhatsapp(veiculo.Telefone)
     else
       this.utils.mostrarToast('Não foi registrado o contato para esse veículo', 'danger')
-  }
-
-  async cadastrarEntrada(veiculo = null) {
-    let inclusao = false
-    let veiculoEdicao: Veiculo
-
-    // Define os parâmetros iniciais se não houver veículo indicado para edição
-    if (veiculo == null) {
-      // Trata mensagens e ações quando for ateração ou inclusão de novo veículo
-      inclusao = true
-
-      veiculoEdicao = new Veiculo()      
-
-      // Define serviços de estacionamento
-      if (this.configuracoesService.configuracoes.UtilizaEstacionamento) {
-        let servico = new ServicoVeiculo()
-        servico.Id = 0
-        servico.Nome = 'Estacionamento'
-        veiculoEdicao.Servicos.push(servico)
-      }      
-    }
-    else 
-      veiculoEdicao = new Veiculo(veiculo)    
-
-    const modal = await this.modalController.create({
-      component: EntradaPage,
-      componentProps: {
-        'veiculo': veiculoEdicao,
-        'inclusao': inclusao
-      }
-    });
-
-    modal.onWillDismiss().then((retorno) => {
-      this.avaliarRetornoVeiculo(retorno, inclusao)
-    })
-
-    return await modal.present(); 
   }
 
   async avaliarRetornoVeiculo(retorno, inclusao) {
@@ -174,30 +128,13 @@ export class HomePage {
     }
   }
 
-  async leituraQrCode() {
-    this.barcodeScanner.scan().then(barcodeData => {      
-      if (barcodeData.text != '') {
-        let veiculo = this.veiculos.find(itemAtual => this.utils.stringPura(itemAtual.Placa) == this.utils.stringPura(barcodeData.text))
-        if (veiculo != null)
-          this.cadastrarEntrada(veiculo)
-        else
-          this.utils.mostrarToast('Não localizamos o código informado.', 'danger')
-      }
-    })
-  }
-
-  async imprimirReciboEntrada(veiculo) {
-    await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
-    this.bluetooth.imprimirRecibo(veiculo)
-  }
-   
   async registrarSaida(veiculo) {
-    if (veiculo.PossuiServicosPendentes) 
+/*    if (veiculo.PossuiServicosPendentes) 
       this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve finalizar todos os serviços ou excluir antes de realizar o pagamento.', 'danger', 3000)
     else {
       let movimento = new Movimento()
       movimento.Data = new Date
-      movimento.Veiculos.push(veiculo)
+      movimento.Veiculo = veiculo
 
       const modal = await this.modalController.create({
         component: SaidaPage,
@@ -211,6 +148,7 @@ export class HomePage {
       })
   
       return await modal.present(); 
-    }
+    }*/
   }
+
 }

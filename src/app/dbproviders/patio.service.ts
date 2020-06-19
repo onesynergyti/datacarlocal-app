@@ -69,17 +69,21 @@ export class PatioService extends ServiceBaseService {
       this.database.DB.then(db => {
         db.transaction(tx => {
           // Exclui o carro do pátio
-          const sqlExclusao = 'delete from veiculos where Id = ?';
-          const dataExclusao = [movimento.Veiculo.Id];
+          const sqlExclusao = 'delete from veiculos where Id in (?)';
+          let ids = ''
+          movimento.Veiculos.forEach(itemAtual => {
+            if (ids != '')
+              ids += ','
+            ids += itemAtual.Id
+          });
+          const dataExclusao = [ids];
           tx.executeSql(sqlExclusao, dataExclusao, () => {
             // Inclui o movimento financeiro
             const sqlInclusao = 'insert into movimentos (Data, Descricao, ValorDinheiro, ValorDebito, ValorCredito, Veiculo) values (?, ?, ?, ?, ?, ?)';
-            const dataInclusao = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss'), movimento.Descricao, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, JSON.stringify(movimento.Veiculo)];
+            const dataInclusao = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss'), movimento.Descricao, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, JSON.stringify(movimento.Veiculos)];
             tx.executeSql(sqlInclusao, dataInclusao, (tx, result) => {
-
-              // Insere todos os serviços do movimentos
               let promisesTx = []
-              movimento.Veiculo.Servicos.map(itemAtual => {
+              movimento.servicosConsolidados.forEach(itemAtual => {
                 promisesTx.push(
                   new Promise((resolve, reject) => {
                     const sqlInclusaoServico = 'insert into movimentosServicos (IdMovimento, IdServico, Nome, Valor) values (?, ?, ?, ?)';
@@ -87,7 +91,8 @@ export class PatioService extends ServiceBaseService {
                     tx.executeSql(sqlInclusaoServico, dataInclusaoServico, () => { resolve() }, (erro) => { reject(erro) })
                   })
                 )      
-              })
+              });
+
               Promise.all(promisesTx).then(() => { 
                 resolve() 
               }, 
