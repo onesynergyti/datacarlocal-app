@@ -71,14 +71,14 @@ export class PendenciasPage implements OnInit {
   }
 
   async excluir(veiculo) {
-/*    await this.providerPatio.exibirProcessamento('Excluindo veículo...')
-    this.providerPatio.excluir(veiculo.Placa)
-    .then(retorno => {
+    await this.providerPatio.exibirProcessamento('Excluindo veículo...')
+    this.providerPatio.excluir(veiculo.Id)
+    .then(() => {
       this.veiculos.splice(this.veiculos.indexOf(veiculo), 1)
     })
     .catch(() => {
       this.utils.mostrarToast('Não foi possível excluir o veículo.', 'danger')
-    })*/
+    })
   }
 
   abrirWhatsapp(veiculo) {
@@ -113,9 +113,22 @@ export class PendenciasPage implements OnInit {
   }
 
   async registrarSaida(veiculos) {
+    if (veiculos.length == 0) {
+      this.utils.mostrarToast('Nenhuma pendência localizada.', 'danger')
+      return
+    }
+    
+    // Os veículos para pagamento devem ter a mesma placa e o mesmo tipo
+    const veiculoBase = veiculos[0]
+    if (veiculos.find(itemAtual => itemAtual.Placa != veiculoBase.Placa || itemAtual.TipoVeiculo != veiculoBase.TipoVeiculo)) {
+      this.utils.mostrarToast('Pague sempre pendências de veículos iguais.', 'danger')
+      return
+    }
+
     let movimento = new Movimento()
     movimento.Data = new Date
     movimento.Veiculos = veiculos.slice()
+    movimento.Descricao = 'Pagamentos de serviços pendentes'
 
     const modal = await this.modalController.create({
       component: SaidaPage,

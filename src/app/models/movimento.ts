@@ -28,7 +28,7 @@ export class Movimento {
     return this.ValorCredito + this.ValorDebito + this.ValorDinheiro
   }
 
-  get servicosConsolidados() {
+  get servicosConsolidados(): ServicoVeiculo[] {
     let servicos = []
 
     this.Veiculos.forEach(veiculoAtual => {

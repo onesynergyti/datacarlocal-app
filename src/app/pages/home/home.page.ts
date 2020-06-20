@@ -79,14 +79,14 @@ export class HomePage {
   }
 
   async excluir(veiculo) {
-/*    await this.providerPatio.exibirProcessamento('Excluindo veículo...')
-    this.providerPatio.excluir(veiculo.Placa)
-    .then(retorno => {
+    await this.providerPatio.exibirProcessamento('Excluindo veículo...')
+    this.providerPatio.excluir(veiculo.Id)
+    .then(() => {
       this.veiculos.splice(this.veiculos.indexOf(veiculo), 1)
     })
     .catch(() => {
       this.utils.mostrarToast('Não foi possível excluir o veículo.', 'danger')
-    })*/
+    })
   }
 
   abrirWhatsapp(veiculo) {

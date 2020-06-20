@@ -175,7 +175,7 @@
       </ion-col>
     </ion-row>
     <ion-row *ngIf="veiculo.EntregaAgendada == true">
-      <ion-col size-xs="12" class="ion-text-center" (click)="selecionarPrevisao()">
+      <ion-col size-xs="12" class="ion-text-center" (click)="selecionarDataPrevisao()">
         <ion-item (click)="selecionarDataPrevisao()">
           <ion-label>Data</ion-label>
           <ion-label>{{ veiculo.PrevisaoEntrega | date:"dd/MM/yyyy" }}</ion-label>

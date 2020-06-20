@@ -20,7 +20,7 @@ import { SaidaPage } from './saida/saida.page';
     ComponentsModule,
     PipeModule.forRoot() 
   ],
-  entryComponents: [EntradaPage, SaidaPage],
-  declarations: [HomePage, EntradaPage, SaidaPage]
+  entryComponents: [EntradaPage],
+  declarations: [HomePage, EntradaPage]
 })
 export class HomePageModule {}

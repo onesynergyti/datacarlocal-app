@@ -17,14 +17,17 @@ import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import { PipeModule } from './pipes/pipe.module';
 import { FormsModule } from '@angular/forms';
 import { DatePicker } from '@ionic-native/date-picker/ngx';
+import { SaidaPage } from './pages/home/saida/saida.page';
 
 @NgModule({
   declarations: [
     AppComponent,
-    SelectPopupModalPage
+    SelectPopupModalPage,
+    SaidaPage
   ],
   entryComponents: [
-    SelectPopupModalPage
+    SelectPopupModalPage,
+    SaidaPage
   ],
   imports: [
     BrowserModule,

@@ -53,14 +53,23 @@ export class PatioService extends ServiceBaseService {
     })
   } 
 
-  /*  public excluir(placa) {
-    let sql = 'delete from veiculos where Placa = ?';
-    let data = [placa];
-    return this.database.dbApp.executeSql(sql, data)
-    .finally(() => {
-      this.ocultarProcessamento()
+  public excluir(id) {
+    return new Promise((resolve, reject) => { 
+      this.database.DB.then(db => { 
+        let sql = 'delete from veiculos where Id = ?';
+        let data = [id];
+        db.executeSql(sql, data).then(() => {
+          resolve()
+        })
+        .catch(erro => {
+          reject(erro)
+        })
+      })
+      .finally(() => {
+        this.ocultarProcessamento()
+      })
     })
-  }*/
+  }
 
   registrarSaida(movimento: Movimento) {
     return new Promise((resolve, reject) => {
@@ -85,7 +94,7 @@ export class PatioService extends ServiceBaseService {
                 promisesTx.push(
                   new Promise((resolve, reject) => {
                     const sqlInclusaoServico = 'insert into movimentosServicos (IdMovimento, IdServico, Nome, Valor) values (?, ?, ?, ?)';
-                    const dataInclusaoServico = [result.insertId, itemAtual.Id, itemAtual.Nome, 0];
+                    const dataInclusaoServico = [result.insertId, itemAtual.Id, itemAtual.Nome, movimento.Veiculos[0].precoServico(itemAtual)];
                     tx.executeSql(sqlInclusaoServico, dataInclusaoServico, () => { resolve() }, (erro) => { reject(erro) })
                   })
                 )      
