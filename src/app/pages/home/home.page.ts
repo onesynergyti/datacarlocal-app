@@ -139,7 +139,7 @@ export class HomePage {
       
       // Saída de veículo, exclui o item 
       // ESSE CASO CONSIDERA QUE PODEM TER MÚLTIPLOS PAGAMENTOS
-      if (retorno.data.Operacao == 'excluir') {
+      if (retorno.data.Operacao != 'entrada') {
         // A saída do veículo retorna o movimento completo
         const veiculos = retorno.data.Movimento.Veiculos
 
@@ -150,7 +150,8 @@ export class HomePage {
         
         if (this.bluetooth.dispositivoSalvo != null) {
           await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
-          this.bluetooth.imprimirRecibo(retorno.data.Movimento, 'saida')
+          // Se for pagamento imprime o comprovante, caso contrário passa o veículo para imprimir o indicador de débito pendente
+          this.bluetooth.imprimirRecibo(retorno.data.Operacao == 'pagamento' ? retorno.data.Movimento : retorno.data.Movimento.Veiculos[0], retorno.data.Operacao)
         }
       }
       // Alteração do veículo, altera o item 

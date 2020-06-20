@@ -74,10 +74,9 @@ export class PatioService extends ServiceBaseService {
             ids += itemAtual.Id
           });
           const sqlExclusao = 'delete from veiculos where Id in ' + '(' +  ids + ')';
-          alert(JSON.stringify(ids))
           tx.executeSql(sqlExclusao, [], () => {
             // Inclui o movimento financeiro
-            const sqlInclusao = 'insert into movimentos (Data, Descricao, ValorDinheiro, ValorDebito, ValorCredito, Veiculo) values (?, ?, ?, ?, ?, ?)';
+            const sqlInclusao = 'insert into movimentos (Data, Descricao, ValorDinheiro, ValorDebito, ValorCredito, Veiculos) values (?, ?, ?, ?, ?, ?)';
             const dataInclusao = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss'), movimento.Descricao, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, JSON.stringify(movimento.Veiculos)];
             tx.executeSql(sqlInclusao, dataInclusao, (tx, result) => {
               let promisesTx = []

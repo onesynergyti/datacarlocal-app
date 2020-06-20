@@ -155,7 +155,7 @@ export class EntradaPage implements OnInit {
     // Precisa do settimeout para ocultar a tela corretamente
     setTimeout(() => {
       this.patioProvider.ocultarProcessamento()
-      this.modalCtrl.dismiss({ Operacao: 'excluir', Movimento: retorno.Movimento })
+      this.modalCtrl.dismiss({ Operacao: retorno.Operacao, Movimento: retorno.Movimento })
     }, 300);
   }
 

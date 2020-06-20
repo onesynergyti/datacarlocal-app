@@ -32,8 +32,9 @@ export class MovimentoService extends ServiceBaseService {
           if (data.rows.length > 0) {
             let movimentos: any[] = [];
             for (var i = 0; i < data.rows.length; i++) {
-              var movimento = new Movimento(data.rows.item(i))  
-              movimentos.push(movimento);
+              var movimento = data.rows.item(i);
+              movimento.Veiculos = JSON.parse(movimento.Veiculos)
+              movimentos.push(new Movimento(movimento));
             }
             resolve(movimentos)
           } else {

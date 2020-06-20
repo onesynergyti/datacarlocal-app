@@ -53,7 +53,6 @@ export class PendenciasPage implements OnInit {
     this.carregandoVeiculos = true
     this.providerPatio.lista(false, true).then((lista: any) => {
       this.veiculos = lista
-      alert(JSON.stringify(lista))
     })    
     // Em caso de erro
     .catch((erro) => {
@@ -91,38 +90,32 @@ export class PendenciasPage implements OnInit {
 
   async avaliarRetornoVeiculo(retorno, inclusao) {
     if (retorno.data != null) {        
-      alert(JSON.stringify(retorno))
+            const veiculos = retorno.data.Movimento.Veiculos
+
+      // Exclui os veículos
+      veiculos.slice().forEach(veiculoAtual => {
+        this.veiculos.splice(this.veiculos.indexOf(this.veiculos.find(itemAtual => itemAtual.Placa === veiculoAtual.Placa)), 1)
+      });
       
-      // Saída de veículo, exclui o item 
-      // ESSE CASO CONSIDERA QUE PODEM TER MÚLTIPLOS PAGAMENTOS
-      if (retorno.data.Operacao == 'excluir') {
-        // A saída do veículo retorna o movimento completo
-        const veiculos = retorno.data.Movimento.Veiculos
-
-        // Exclui os veículos
-        veiculos.slice().forEach(veiculoAtual => {
-          this.veiculos.splice(this.veiculos.indexOf(this.veiculos.find(itemAtual => itemAtual.Placa === veiculoAtual.Placa)), 1)
-        });
-        
-        if (this.bluetooth.dispositivoSalvo != null) {
-          await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
-          this.bluetooth.imprimirRecibo(retorno.data.Movimento, 'saida')
-        }
-
-        // Exibe uma propagando na saída do veículo
-        setTimeout(() => {
-          this.propagandaService.showInterstitialAds()
-        }, 3000);
-
-        this.utils.mostrarToast('Pagamento dos serviços realizada com sucesso', 'success')
+      if (this.bluetooth.dispositivoSalvo != null) {
+        await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
+        alert(JSON.stringify(retorno.data.Movimento))
+        this.bluetooth.imprimirRecibo(retorno.data.Movimento, 'pagamento')
       }
+
+      // Exibe uma propagando na saída do veículo
+      setTimeout(() => {
+        this.propagandaService.showInterstitialAds()
+      }, 3000);
+
+      this.utils.mostrarToast('Pagamento dos serviços realizada com sucesso', 'success')
     }
   }
 
   async registrarSaida(veiculos) {
     let movimento = new Movimento()
     movimento.Data = new Date
-    movimento.Veiculos = veiculos
+    movimento.Veiculos = veiculos.slice()
 
     const modal = await this.modalController.create({
       component: SaidaPage,

@@ -36,7 +36,7 @@ export class SaidaPage {
       await this.patio.exibirProcessamento('Registrando saida...')
       this.patio.registrarSaida(this.movimento)
       .then(() => {
-        this.modalCtrl.dismiss({ Operacao: 'excluir', Movimento: this.movimento })
+        this.modalCtrl.dismiss({ Operacao: 'pagamento', Movimento: this.movimento })
       })
       .catch((erro) => {
         alert(JSON.stringify(erro))
@@ -49,7 +49,7 @@ export class SaidaPage {
     this.movimento.Veiculos[0].Ativo = false
     this.patio.salvar(this.movimento.Veiculos[0])
     .then(() => {
-      this.modalCtrl.dismiss({ Operacao: 'excluir', Movimento: this.movimento })
+      this.modalCtrl.dismiss({ Operacao: 'postergar', Movimento: this.movimento })
     })
     .catch((erro) => {
       alert(JSON.stringify(erro))

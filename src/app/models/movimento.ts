@@ -1,4 +1,5 @@
 import { Veiculo } from './veiculo'
+import { ServicoVeiculo } from './servico-veiculo'
 
 export class Movimento {
   Id: number = 0
@@ -33,15 +34,12 @@ export class Movimento {
     this.Veiculos.forEach(veiculoAtual => {
       veiculoAtual.Servicos.forEach(servicoAtual => {
         let servicoLocalizado = servicos.find(servicoAtualConsolidado => servicoAtualConsolidado.Id == servicoAtual.Id)
-        alert(JSON.stringify(servicoLocalizado))
         // Se não existir o serviço cria
         if (servicoLocalizado == null) {
-          alert('inserindo')
-          servicos.push(servicoAtual)
+          servicos.push(new ServicoVeiculo(servicoAtual))
         }
         // Se existir atualiza o valor
         else {
-          alert('editando')
           servicoLocalizado.PrecoMoto = servicoLocalizado.PrecoMoto + servicoAtual.PrecoMoto
           servicoLocalizado.PrecoVeiculoPequeno = servicoLocalizado.PrecoVeiculoPequeno + servicoAtual.PrecoVeiculoPequeno
           servicoLocalizado.PrecoVeiculoMedio = servicoLocalizado.PrecoVeiculoMedio + servicoAtual.PrecoVeiculoMedio
@@ -50,7 +48,6 @@ export class Movimento {
       })
     });
 
-    alert('serviços: ' + JSON.stringify(servicos))
     return servicos
   }
 
