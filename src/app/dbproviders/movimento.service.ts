@@ -30,6 +30,7 @@ export class MovimentoService extends ServiceBaseService {
         db.executeSql(sql, data)
         .then(data => {
           if (data.rows.length > 0) {
+            alert(JSON.stringify(data))
             let movimentos: any[] = [];
             for (var i = 0; i < data.rows.length; i++) {
               var movimento = data.rows.item(i);

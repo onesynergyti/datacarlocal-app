@@ -1,0 +1,63 @@
+<ion-header>
+  <app-header-modal titulo="Cadastro de serviço" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+</ion-header>
+
+<ion-content>
+  <ion-grid *ngIf="servicoVeiculo != null">
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
+        Dados do serviço
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="separadorCampo">
+        <h4 class="negrito">Nome</h4>
+        <h3>{{ servicoVeiculo.Nome }}</h3>
+      </ion-col>
+      <ion-col size-xs="12">
+        <h4 class="negrito">Preço</h4>
+        <h3>{{ servicoVeiculo.precoServico(tipoVeiculo) | decimalPipe:"R$ " }}</h3>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="pricetag"></ion-icon>
+        Alteração de preço
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item class="ion-no-margin ion-no-padding">
+          <ion-label position="floating">Acrescimo</ion-label>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="servicoVeiculo.Acrescimo"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item class="ion-no-margin ion-no-padding">
+          <ion-label position="floating">Desconto</ion-label>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="servicoVeiculo.Desconto"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-grid class="ion-no-padding ion-no-margin">
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="success" (click)="concluir()">
+          <ion-icon slot="start" name="checkmark"></ion-icon>
+          Salvar
+        </ion-button>
+      </ion-col>
+      <ion-col size-xs="2" *ngIf="!inclusao">
+        <ion-button expand="block" color="danger" (click)="excluir()">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>
+

@@ -8,7 +8,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 import { ComponentsModule } from '../../components/components.module';
 import { EntradaPage } from './entrada/entrada.page';
 import { PipeModule } from 'src/app/pipes/pipe.module';
-import { SaidaPage } from './saida/saida.page';
+import { CadastroServicoPage } from './entrada/cadastro-servico/cadastro-servico.page';
 
 
 @NgModule({
@@ -20,7 +20,7 @@ import { SaidaPage } from './saida/saida.page';
     ComponentsModule,
     PipeModule.forRoot() 
   ],
-  entryComponents: [EntradaPage],
-  declarations: [HomePage, EntradaPage]
+  entryComponents: [EntradaPage, CadastroServicoPage],
+  declarations: [HomePage, EntradaPage, CadastroServicoPage]
 })
 export class HomePageModule {}

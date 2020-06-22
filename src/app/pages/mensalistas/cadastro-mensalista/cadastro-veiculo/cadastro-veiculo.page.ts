@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
-import { VeiculoMensalista } from 'src/app/models/veiculo-mensalista';
+import { VeiculoCadastro } from 'src/app/models/veiculo-cadastro';
 
 @Component({
   selector: 'app-cadastro-veiculo',
@@ -9,7 +9,7 @@ import { VeiculoMensalista } from 'src/app/models/veiculo-mensalista';
 })
 export class CadastroVeiculoPage implements OnInit {
 
-  veiculo: VeiculoMensalista
+  veiculo: VeiculoCadastro
 
   constructor(
     private modalCtrl: ModalController,

@@ -9,7 +9,7 @@ export class PropagandasService {
   constructor(
     private admobFree: AdMobFree    
   ) { 
-    this.showBannerAd()
+    // this.showBannerAd()
   }
 
   showInterstitialAds(){

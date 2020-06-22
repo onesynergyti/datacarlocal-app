@@ -1,4 +1,4 @@
-import { VeiculoMensalista } from './veiculo-mensalista'
+import { VeiculoCadastro } from './veiculo-cadastro'
 
 export class Mensalista {
   Id: number = 0
@@ -8,7 +8,7 @@ export class Mensalista {
   Telefone: string
   Email: string
   Ativo: boolean = true
-  Veiculos: VeiculoMensalista[] = []
+  Veiculos: VeiculoCadastro[] = []
 
   constructor(mensalista: Mensalista = null) {
     if (mensalista != null) {

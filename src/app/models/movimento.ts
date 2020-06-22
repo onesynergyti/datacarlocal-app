@@ -10,6 +10,9 @@ export class Movimento {
   ValorDebito: number = 0
   ValorCredito: number = 0
   Veiculos: Veiculo[] = []
+  IdMensalista: number = 0
+  Inicio: Date
+  Fim: Date
 
   constructor(movimento: Movimento = null) {
     if (movimento != null) {
@@ -20,7 +23,10 @@ export class Movimento {
       this.ValorCredito = movimento.ValorCredito
       this.ValorDebito = movimento.ValorDebito
       this.ValorDinheiro = movimento.ValorDinheiro
-      this.Veiculos = movimento.Veiculos.slice()
+      this.Veiculos = movimento.Veiculos ? movimento.Veiculos.slice() : []
+      this.IdMensalista = movimento.IdMensalista
+      this.Inicio = movimento.Inicio ? new Date(movimento.Inicio) : null
+      this.Fim = movimento.Fim ? new Date(movimento.Fim) : null
     }
   }
 
@@ -43,7 +49,7 @@ export class Movimento {
           servicoLocalizado.PrecoMoto = servicoLocalizado.PrecoMoto + servicoAtual.PrecoMoto
           servicoLocalizado.PrecoVeiculoPequeno = servicoLocalizado.PrecoVeiculoPequeno + servicoAtual.PrecoVeiculoPequeno
           servicoLocalizado.PrecoVeiculoMedio = servicoLocalizado.PrecoVeiculoMedio + servicoAtual.PrecoVeiculoMedio
-          servicoLocalizado.PrecoVeiculoGrande = servicoLocalizado.PrecoVeiculoGrande + servicoAtual.PrecoVeiculoGrande
+          servicoLocalizado.PrecoVeiculoGrande = servicoLocalizado.PrecoVeiculoGrande + servicoAtual.PrecoVeiculoGrande          
         }
       })
     });

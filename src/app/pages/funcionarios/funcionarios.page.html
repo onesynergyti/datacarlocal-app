@@ -1,0 +1,35 @@
+<ion-header>
+  <app-header titulo="Funcionários"></app-header>
+</ion-header>
+
+<ion-content>
+  <ion-list [@listAnimation]="funcionarios.length" lines="full">
+    <ion-item-sliding id="funcionario.Id" *ngFor="let funcionario of funcionarios">
+      <ion-item>
+        <ion-grid class="ion-no-margin ion-no-padding ">
+          <ion-row>
+            <ion-col size-xs="8">
+              <h4>{{ funcionario.Nome }}</h4>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-note slot="end">
+          <ion-toggle color="primary" [(ngModel)]="funcionario.Ativo"></ion-toggle>
+        </ion-note>
+      </ion-item>
+  
+      <ion-item-options side="end">
+        <ion-item-option color="danger">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="block" color="success" (click)="cadastrarFuncionario()">
+    <ion-icon slot="start" name="add-circle"></ion-icon>
+    Adicionar
+  </ion-button>
+</ion-footer>

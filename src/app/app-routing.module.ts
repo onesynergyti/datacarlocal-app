@@ -39,6 +39,10 @@ const routes: Routes = [
     path: 'pendencias',
     loadChildren: () => import('./pages/pendencias/pendencias.module').then( m => m.PendenciasPageModule)
   },
+  {
+    path: 'funcionarios',
+    loadChildren: () => import('./pages/funcionarios/funcionarios.module').then( m => m.FuncionariosPageModule)
+  },
 ];
 
 @NgModule({

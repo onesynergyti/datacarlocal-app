@@ -11,6 +11,10 @@ const routes: Routes = [
   {
     path: 'cadastro-mensalista',
     loadChildren: () => import('./cadastro-mensalista/cadastro-mensalista.module').then( m => m.CadastroMensalistaPageModule)
+  },
+  {
+    path: 'cadastro-pagamento',
+    loadChildren: () => import('./cadastro-mensalista/cadastro-pagamento/cadastro-pagamento.module').then( m => m.CadastroPagamentoPageModule)
   }
 ];
 

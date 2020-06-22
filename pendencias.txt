@@ -1,0 +1,18 @@
+OK - Permitir dar desconto ou acréscimos nos serviços. Criar uma nova tela de cadastro do serviço com os campos de acrescimo e desconto
+OK - Mensalista na saída não é calculado o preço do estacionamento, o serviço fica zerado
+CANCELADO - Ao realizar um pagamento de mensalista, caso existam pendências perguntar o que fazer elas. Opções: Eliminar serviços de estacionamento e pagar o restante, eliminar todos as pendências ou manter do jeito que está
+OK - Cadastro básico de funcionários
+- Permitir informar o responsável pelo atendimento para relatórios futuros
+- Criar uma tabela de histórico de fluxo detalhado dos veículos, contendo tipo, entrada, saída, placa, valor total pago e responsável pelo atendimento
+- Complementar a tela de configurações
+- Criar senha de segurança para ações críticas
+- Controle de acesso para exclusão de Veículos do pátio
+- Controle de acesso para exclusão de pendências
+- Controle de acesso para edição e exclusão de serviços já inseridos no Veículos
+- Controle de quantidade de vagas disponíveis
+- Campo para informar detalhes da localização do veículo
+- Finalizar gráficos
+- Controle de acesso e Exclusão de movimentos (Desabilitar sem excluir), tanto na tela de movimentos quanto na tela de mensalistas
+- Fazer os slides de configuração inicial do aplicativo
+- Criar a chaves das tabelas para garantir consistência
+- Permitir fazer backup e exportação de dados

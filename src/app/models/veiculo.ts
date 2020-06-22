@@ -6,7 +6,7 @@ export class Veiculo {
   Modelo: string
   Entrada: Date = new Date()
   Saida: Date
-  TipoVeiculo: number
+  TipoVeiculo: number = 0
   Observacoes: string
   Telefone: string
   Nome: string
@@ -50,13 +50,7 @@ export class Veiculo {
   }
 
   precoServico(servico: ServicoVeiculo): number{
-    switch(this.TipoVeiculo) {
-      case 1: return servico.PrecoMoto
-      case 2: return servico.PrecoVeiculoPequeno
-      case 3: return servico.PrecoVeiculoMedio
-      case 4: return servico.PrecoVeiculoGrande
-      default: return 0
-    }
+    return servico.precoServico(this.TipoVeiculo)
   }
 
   get TotalServicos() {

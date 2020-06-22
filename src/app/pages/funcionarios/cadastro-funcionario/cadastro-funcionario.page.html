@@ -1,0 +1,26 @@
+<ion-header>
+  <app-header-modal titulo="Cadastro de funcionário" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
+        Identificação
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="separadorCampo">
+        <ion-item>
+          <ion-label position="floating">Dados do funcionário</ion-label>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="funcionario.Nome"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="full" (click)="concluir()">Salvar Funcionário</ion-button>
+</ion-footer>

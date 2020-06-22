@@ -74,6 +74,8 @@ export class MovimentoPage implements OnInit {
     this.carregandoMovimentos = true
     let inseriuItem = false
     this.providerMovimentos.lista(this.dataInicio, this.dataFim, this.dataMaxima).then((lista: any) => {
+      alert(JSON.stringify(lista))
+
       lista.forEach(itemAtual => {
         if (this.movimentos.find(itemExistente => itemExistente.Id === itemAtual.Id) == null) {
           this.movimentos.push(itemAtual)

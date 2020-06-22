@@ -1,0 +1,52 @@
+<ion-header>
+  <app-header-modal titulo="Pagamento de mensalidade" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+</ion-header>
+
+<ion-content>
+  <ion-grid *ngIf="movimento != null">
+    <ion-row>
+      <ion-col size-xs="12" class="ion-text-center">
+        <ion-item (click)="selecionarDataInicio()">
+          <ion-label>Início</ion-label>
+          <ion-label>{{ movimento.Inicio | date:"dd/MM/yyyy" }}</ion-label>
+        </ion-item>
+        <ion-item (click)="selecionarDataFim()">
+          <ion-label>Fim</ion-label>
+          <ion-label>{{ movimento.Fim | date:"dd/MM/yyyy" }}</ion-label>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-icon name="cash-outline"></ion-icon>        
+        <h4>Dinheiro</h4>
+        <ion-item>
+          <ion-label position="floating">R$</ion-label>
+          <ion-input autocorrect="off" type="number" [(ngModel)]="movimento.ValorDinheiro"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col class="ion-text-center">
+        <ion-icon name="card-outline"></ion-icon>
+        <h4>Débito</h4>
+        <ion-item>
+          <ion-label position="floating">R$</ion-label>
+          <ion-input autocorrect="off" type="number" [(ngModel)]="movimento.ValorDebito"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col class="ion-text-center">
+        <ion-icon name="card-outline"></ion-icon>
+        <h4>Crédito</h4>
+        <ion-item>
+          <ion-label position="floating">R$</ion-label>
+          <ion-input autocorrect="off" type="number" [(ngModel)]="movimento.ValorCredito"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>      </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="block" color="success" (click)="concluir()">
+    <ion-icon slot="start" name="checkmark-done"></ion-icon>
+    Salvar
+  </ion-button>
+</ion-footer>

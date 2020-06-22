@@ -434,6 +434,14 @@ export class BluetoothService extends ServiceBaseService {
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.qrCode(veiculo.Placa));
+    if (veiculo.Observacoes && veiculo.Observacoes.length > 0) {
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_LT);
+      this.bluetoothSerial.write(veiculo.Observacoes);
+      this.bluetoothSerial.write(this.CMD.EOL);
+      this.bluetoothSerial.write(this.CMD.EOL);
+    }
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
     this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
     this.bluetoothSerial.write(this.CMD.EOL);

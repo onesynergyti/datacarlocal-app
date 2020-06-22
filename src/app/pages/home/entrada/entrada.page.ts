@@ -2,14 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController, NavParams, AlertController } from '@ionic/angular';
 import { Veiculo } from 'src/app/models/veiculo';
 import { PatioService } from 'src/app/dbproviders/patio.service';
-import { SelectPopupModalPage } from 'src/app/components/select-popup-modal/select-popup-modal.page';
-import { ServicosService } from 'src/app/dbproviders/servicos.service';
-import { ServicoVeiculo } from 'src/app/models/servico-veiculo';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
 import { SaidaPage } from '../saida/saida.page';
 import { Utils } from 'src/app/utils/utils';
 import { Movimento } from 'src/app/models/movimento';
 import { CalculadoraEstacionamentoService } from 'src/app/services/calculadora-estacionamento.service';
+import { CadastroServicoPage } from './cadastro-servico/cadastro-servico.page';
+import { UtilsLista } from 'src/app/utils/utils-lista';
 
 @Component({
   selector: 'app-entrada',
@@ -41,12 +40,11 @@ export class EntradaPage implements OnInit {
   constructor(
     private modalCtrl: ModalController,
     private patioProvider: PatioService,
-    private servicosProvider: ServicosService,
     public navParams: NavParams,
     private modalController: ModalController,
     public utils: Utils,
+    public utilsLista: UtilsLista,
     private alertController: AlertController,
-    private calculadoraEstacionamentoService: CalculadoraEstacionamentoService
   ) { 
     this.veiculo = navParams.get('veiculo')
     this.inclusao = navParams.get('inclusao')
@@ -59,35 +57,38 @@ export class EntradaPage implements OnInit {
     this.modalCtrl.dismiss()
   }
 
-  async adicionarServico() {
-    await this.servicosProvider.exibirProcessamento('Listando serviços...')
-    this.servicosProvider.lista().then((servicos => {
-      this.selecionarServico(servicos)
-    }))    
+  consultarPlaca() {
+    if (this.veiculo.Placa && this.veiculo.Placa.length >= 3) {
+      this.patioProvider.consultaHistoricoPlaca(this.veiculo.Placa).then(veiculo => {
+        this.veiculo.Nome = veiculo.Nome
+        this.veiculo.TipoVeiculo = veiculo.TipoVeiculo
+        this.veiculo.Telefone = veiculo.Telefone
+        this.veiculo.Modelo = veiculo.Modelo
+      })
+    }
   }
 
-  async selecionarServico(servicos) {
+  async cadastrarServico(servico = null) {
+    if (!this.veiculo.TipoVeiculo) {
+      this.utils.mostrarToast('Informe o tipo do veículo antes de adicionar um serviço', 'danger')
+    }
+
     const modal = await this.modalCtrl.create({
-      component: SelectPopupModalPage,
+      component: CadastroServicoPage,
       componentProps: {
-        'lista': servicos,
-        'keyField': 'Nome',
-        'titulo': 'Serviços',
-        'icone': 'construct'
+        'servicoVeiculo': servico,
+        'tipoVeiculo': this.veiculo.TipoVeiculo,
+        'inclusao': servico == null
       }
     })
 
     modal.onWillDismiss().then((retorno) => {
-      let servico = retorno.data
-      if (servico != null) {
-        let servicoVeiculo = new ServicoVeiculo()
-        servicoVeiculo.Id = servico.Id
-        servicoVeiculo.Nome = servico.Nome
-        servicoVeiculo.PrecoMoto = servico.PrecoMoto
-        servicoVeiculo.PrecoVeiculoPequeno = servico.PrecoVeiculoPequeno
-        servicoVeiculo.PrecoVeiculoMedio = servico.PrecoVeiculoMedio
-        servicoVeiculo.PrecoVeiculoGrande = servico.PrecoVeiculoGrande
-        this.veiculo.Servicos.push(servicoVeiculo)
+      if (retorno.data != null) {
+        const servico = retorno.data.ServicoVeiculo
+        if (retorno.data.Operacao = 'cadastro') 
+          this.utilsLista.atualizarLista(this.veiculo.Servicos, servico)
+        else
+          this.utilsLista.excluirDaLista(this.veiculo.Servicos, servico)
       }
     })
 
@@ -150,45 +151,11 @@ export class EntradaPage implements OnInit {
     await alert.present();
   }
 
-  async finalizarSaida(retorno) {
-    await this.patioProvider.exibirProcessamento('Atualizando listagem...')
-    // Precisa do settimeout para ocultar a tela corretamente
-    setTimeout(() => {
-      this.patioProvider.ocultarProcessamento()
-      this.modalCtrl.dismiss({ Operacao: retorno.Operacao, Movimento: retorno.Movimento })
-    }, 300);
-  }
-
-  async registrarSaida() {
+  registrarSaida() {
     if (this.veiculo.PossuiServicosPendentes) 
       this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve excluir ou finalizar antes de realizar o pagamento.', 'danger', 3000)      
     else {
-      this.veiculo.Saida = new Date()
-      let servicoEstacionamento = this.veiculo.PossuiServicoEstacionamento
-      if (servicoEstacionamento) {
-        servicoEstacionamento.PrecoMoto = this.calculadoraEstacionamentoService.calcularPrecos(this.veiculo.Entrada, this.veiculo.Saida, 1)
-        servicoEstacionamento.PrecoVeiculoPequeno = this.calculadoraEstacionamentoService.calcularPrecos(this.veiculo.Entrada, this.veiculo.Saida, 2)
-        servicoEstacionamento.PrecoVeiculoMedio = this.calculadoraEstacionamentoService.calcularPrecos(this.veiculo.Entrada, this.veiculo.Saida, 3)
-        servicoEstacionamento.PrecoVeiculoGrande = this.calculadoraEstacionamentoService.calcularPrecos(this.veiculo.Entrada, this.veiculo.Saida, 4)
-      }
-      let movimento = new Movimento()
-      movimento.Veiculos.push(this.veiculo)
-      movimento.Data = new Date()
-      movimento.Descricao = 'Cobrança de veículo'
-      
-      const modal = await this.modalController.create({
-        component: SaidaPage,
-        componentProps: {
-          'movimento': movimento
-        }
-      });
-  
-      modal.onWillDismiss().then((retorno) => {
-        if (retorno.data)
-          this.finalizarSaida(retorno.data)
-      })
-  
-      return await modal.present(); 
+      this.modalController.dismiss({ Operacao: 'finalizar', Veiculo: this.veiculo })
     }
   }
 

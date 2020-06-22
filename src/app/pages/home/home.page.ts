@@ -13,6 +13,7 @@ import { SaidaPage } from './saida/saida.page';
 import { Movimento } from 'src/app/models/movimento';
 import { PropagandasService } from 'src/app/services/propagandas.service';
 import { CalculadoraEstacionamentoService } from 'src/app/services/calculadora-estacionamento.service';
+import { MensalistasService } from 'src/app/dbproviders/mensalistas.service';
 
 @Component({
   selector: 'app-home',
@@ -49,7 +50,8 @@ export class HomePage {
     private barcodeScanner: BarcodeScanner,
     private configuracoesService: ConfiguracoesService,
     public propagandaService: PropagandasService,
-    private calculadoraEstacionamentoService: CalculadoraEstacionamentoService
+    private calculadoraEstacionamentoService: CalculadoraEstacionamentoService,
+    private providerMensalistas: MensalistasService
   ) { }
 
   ionViewDidEnter() {
@@ -134,12 +136,13 @@ export class HomePage {
   }
 
   async avaliarRetornoVeiculo(retorno, inclusao) {
-    if (retorno.data != null) {        
-      alert(JSON.stringify(retorno))
-      
+    if (retorno.data != null) {             
+      if (retorno.data.Operacao == 'finalizar') { 
+        this.registrarSaida(retorno.data.Veiculo)
+      }
       // Saída de veículo, exclui o item 
       // ESSE CASO CONSIDERA QUE PODEM TER MÚLTIPLOS PAGAMENTOS
-      if (retorno.data.Operacao != 'entrada') {
+      else if (retorno.data.Operacao != 'entrada') {
         // A saída do veículo retorna o movimento completo
         const veiculos = retorno.data.Movimento.Veiculos
 
@@ -153,6 +156,12 @@ export class HomePage {
           // Se for pagamento imprime o comprovante, caso contrário passa o veículo para imprimir o indicador de débito pendente
           this.bluetooth.imprimirRecibo(retorno.data.Operacao == 'pagamento' ? retorno.data.Movimento : retorno.data.Movimento.Veiculos[0], retorno.data.Operacao)
         }
+
+        // Exibe uma propagando na saída do veículo
+        setTimeout(() => {
+          this.propagandaService.showInterstitialAds()
+        }, 3000);
+        this.utils.mostrarToast('Saída realizada com sucesso', 'success')
       }
       // Alteração do veículo, altera o item 
       // ESSE CASO CONSIDERA QUE SÓ PODE TER UM VEÍCULO ALTERADO
@@ -167,22 +176,15 @@ export class HomePage {
         else {
           // Se for inclusão imprime o recibo
           this.veiculos.push(veiculo)
+
+          this.utils.mostrarToast(inclusao ? 'Veículo adicionado com sucesso' : 'Alteração realizada com sucesso', 'success')        
+
           if (this.bluetooth.dispositivoSalvo != null) { 
             await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
             this.bluetooth.imprimirRecibo(retorno.data.Veiculo)
           }
         }
       }
-
-      if (retorno.data.Operacao == 'excluir') {
-        // Exibe uma propagando na saída do veículo
-        setTimeout(() => {
-          this.propagandaService.showInterstitialAds()
-        }, 3000);
-        this.utils.mostrarToast('Conclusão dos serviços realizada com sucesso', 'success')
-      }
-      else
-        this.utils.mostrarToast(inclusao ? 'Veículo adicionado com sucesso' : 'Alteração realizada com sucesso', 'success')        
     }
   }
 
@@ -210,10 +212,24 @@ export class HomePage {
       veiculo.Saida = new Date()
       let servicoEstacionamento = veiculo.PossuiServicoEstacionamento
       if (servicoEstacionamento) {
-        servicoEstacionamento.PrecoMoto = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 1)
-        servicoEstacionamento.PrecoVeiculoPequeno = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 2)
-        servicoEstacionamento.PrecoVeiculoMedio = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 3)
-        servicoEstacionamento.PrecoVeiculoGrande = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 4)
+        await this.providerMensalistas.exibirProcessamento('Avaliando mensalistas...')
+        this.providerMensalistas.validarMensalista(veiculo.Saida, veiculo.Placa).then(mensalistaValido => {
+          if (mensalistaValido) {
+            servicoEstacionamento.PrecoMoto = 0
+            servicoEstacionamento.PrecoVeiculoPequeno = 0
+            servicoEstacionamento.PrecoVeiculoMedio = 0
+            servicoEstacionamento.PrecoVeiculoGrande = 0
+          }
+          else {
+            servicoEstacionamento.PrecoMoto = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 1)
+            servicoEstacionamento.PrecoVeiculoPequeno = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 2)
+            servicoEstacionamento.PrecoVeiculoMedio = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 3)
+            servicoEstacionamento.PrecoVeiculoGrande = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 4)
+          }
+        })
+        .catch(erro => {
+          alert('erro: ' + JSON.stringify(erro))
+        })
       }
       let movimento = new Movimento()
       movimento.Veiculos.push(veiculo)
