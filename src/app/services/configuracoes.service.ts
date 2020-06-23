@@ -3,6 +3,7 @@ import { Configuracoes } from '../models/configuracoes';
 import { ConfiguracaoRecibo } from '../models/configuracao-recibo';
 import { ConfiguracaoEstacionamento } from '../models/configuracao-estacionamento';
 import { Estabelecimento } from '../models/estabelecimento';
+import { ConfiguracaoPatio } from '../models/configuracao-patio';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,10 @@ export class ConfiguracoesService {
     if (valor.Estabelecimento == null)
       valor.Estabelecimento = new Estabelecimento()
 
-    return valor
+    if (valor.Patio == null)
+      valor.Patio = new ConfiguracaoPatio()
+
+      return valor
 }
 
   set configuracoes(configuracoes: Configuracoes) {

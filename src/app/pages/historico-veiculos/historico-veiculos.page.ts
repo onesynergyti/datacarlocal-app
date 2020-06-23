@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
 import { HistoricoVeiculosService } from 'src/app/dbproviders/historico-veiculos.service';
+import { Chart } from 'chart.js';
 
 @Component({
   selector: 'app-historico-veiculos',
@@ -22,6 +23,8 @@ import { HistoricoVeiculosService } from 'src/app/dbproviders/historico-veiculos
   ]
 })
 export class HistoricoVeiculosPage implements OnInit {
+
+  @ViewChild('graficoEvolucaoReceita') graficoEvolucaoReceita;
 
   vendas = []
   dataInicio: Date
@@ -45,6 +48,7 @@ export class HistoricoVeiculosPage implements OnInit {
 
   ionViewDidEnter() {
     this.atualizarHistorico()
+    this.criarGraficosReceitas()
   }
 
   atualizarHistorico(event = null) {
@@ -74,4 +78,44 @@ export class HistoricoVeiculosPage implements OnInit {
       this.carregandoHistorico = false
     })
   }
+
+  criarGraficosReceitas() {
+    this.providerHistorico.receitaXfuncionario(this.dataInicio, this.dataFim).then((receitas: any) => {
+      // Grafico de evolução de receita
+      let labels = []
+      let funcionarios = []
+      let dataset = []
+      receitas.forEach(receitaAtual => {
+        // Insere os períodos
+        if (!labels.find(itemAtual => itemAtual == receitaAtual.Periodo))
+          labels.push(receitaAtual.Periodo)
+
+        if (!funcionarios.find(itemAtual => itemAtual == receitaAtual.Funcionario.Nome))
+          funcionarios.push(receitaAtual.Funcionario.Nome)
+      });
+
+      funcionarios.forEach(funcionarioAtual => {
+        let data = { label: funcionarioAtual, fill: false, borderColor: 'green', data: [] }
+        // Percorre o período informando o valor
+
+        labels.forEach(periodoAtual => {
+          const receitaLocalizada = receitas.find(receitaAtual => receitaAtual.Periodo == periodoAtual && receitaAtual.Funcionario.Nome == funcionarioAtual)
+          data.data.push(receitaLocalizada != null ? receitaLocalizada.Valor : 0)
+        })
+
+        dataset.push(data)
+      })
+
+      new Chart(this.graficoEvolucaoReceita.nativeElement, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: dataset
+        }
+      });
+    })
+    .catch((erro) => {
+      alert(erro)
+    })
+  }  
 }

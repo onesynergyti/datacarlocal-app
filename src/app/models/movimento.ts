@@ -23,7 +23,12 @@ export class Movimento {
       this.ValorCredito = movimento.ValorCredito
       this.ValorDebito = movimento.ValorDebito
       this.ValorDinheiro = movimento.ValorDinheiro
-      this.Veiculos = movimento.Veiculos ? movimento.Veiculos.slice() : []
+      this.Veiculos = []
+      if (movimento.Veiculos != null) {
+        movimento.Veiculos.forEach(veiculoAtual => {
+          this.Veiculos.push(new Veiculo(veiculoAtual))
+        })
+      }
       this.IdMensalista = movimento.IdMensalista
       this.Inicio = movimento.Inicio ? new Date(movimento.Inicio) : null
       this.Fim = movimento.Fim ? new Date(movimento.Fim) : null

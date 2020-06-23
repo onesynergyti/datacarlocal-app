@@ -28,10 +28,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/configuracoes/configuracoes.module').then( m => m.ConfiguracoesPageModule)
   },
   {
-    path: 'configuracoes-estacionamento',
-    loadChildren: () => import('./pages/configuracoes/configuracoes-estacionamento/configuracoes-estacionamento.module').then( m => m.ConfiguracoesEstacionamentoPageModule)
-  },
-  {
     path: 'mensalistas',
     loadChildren: () => import('./pages/mensalistas/mensalistas.module').then( m => m.MensalistasPageModule)
   },

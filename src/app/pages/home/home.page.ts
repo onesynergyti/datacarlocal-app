@@ -48,7 +48,7 @@ export class HomePage {
     public bluetooth: BluetoothService,
     private utils: Utils,
     private barcodeScanner: BarcodeScanner,
-    private configuracoesService: ConfiguracoesService,
+    public configuracoesService: ConfiguracoesService,
     public propagandaService: PropagandasService,
     private calculadoraEstacionamentoService: CalculadoraEstacionamentoService,
     private providerMensalistas: MensalistasService
@@ -110,7 +110,7 @@ export class HomePage {
       veiculoEdicao = new Veiculo()      
 
       // Define serviços de estacionamento
-      if (this.configuracoesService.configuracoes.UtilizaEstacionamento) {
+      if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento) {
         let servico = new ServicoVeiculo()
         servico.Id = 0
         servico.Nome = 'Estacionamento'

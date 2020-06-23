@@ -8,6 +8,10 @@
 </ion-content>
 
 <ion-content *ngIf="!carregandoVeiculos">
+  <div *ngIf="configuracoesService.configuracoes.Patio.QuantidadeVagas">
+    Vagas: {{ configuracoesService.configuracoes.Patio.QuantidadeVagas }}
+    Ocupação: {{ veiculos.length }}
+  </div>
   <ion-list [@listAnimation]="listaFiltrada.length" lines="none">
     <ion-item-sliding id="veiculo.Placa" *ngFor="let veiculo of listaFiltrada">
       <ion-item (click)="cadastrarEntrada(veiculo)">

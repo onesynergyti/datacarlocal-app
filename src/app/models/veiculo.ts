@@ -28,7 +28,12 @@ export class Veiculo {
       this.Observacoes = veiculo.Observacoes
       this.Telefone = veiculo.Telefone
       this.Nome = veiculo.Nome
-      this.Servicos = veiculo.Servicos != null ? veiculo.Servicos.slice() : []
+      this.Servicos = []
+      if (veiculo.Servicos != null) {
+        veiculo.Servicos.forEach(servicoVeiculoAtual => {
+          this.Servicos.push(new ServicoVeiculo(servicoVeiculoAtual))
+        })
+      }
       this.EntregaAgendada = veiculo.EntregaAgendada
       this.PrevisaoEntrega = veiculo.PrevisaoEntrega ? new Date(veiculo.PrevisaoEntrega) : null
       this.Funcionario = veiculo.Funcionario != null ? new Funcionario(veiculo.Funcionario) : null
