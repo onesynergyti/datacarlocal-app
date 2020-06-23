@@ -56,7 +56,7 @@ export class PendenciasPage implements OnInit {
     })    
     // Em caso de erro
     .catch((erro) => {
-      alert(JSON.stringify('Não foi possível carregar as pendências de pagamento.'))
+      alert(JSON.stringify('Não foi possível carregar as pendências de pagamento. ' + erro))
     })
     .finally(() => {
       this.carregandoVeiculos = false

@@ -1,4 +1,5 @@
 import { ServicoVeiculo } from './servico-veiculo'
+import { Funcionario } from './funcionario'
 
 export class Veiculo {
   Id: number = 0
@@ -13,6 +14,7 @@ export class Veiculo {
   Servicos: ServicoVeiculo[] = []
   EntregaAgendada: boolean
   PrevisaoEntrega: Date
+  Funcionario: Funcionario
   Ativo: boolean = true
 
   constructor(veiculo: Veiculo = null) {
@@ -21,7 +23,7 @@ export class Veiculo {
       this.Placa = veiculo.Placa 
       this.Modelo = veiculo.Modelo
       this.Entrada = veiculo.Entrada ? new Date(veiculo.Entrada) : new Date()
-      this.Saida = veiculo.Saida
+      this.Saida = veiculo.Saida ? new Date(veiculo.Saida) : null
       this.TipoVeiculo = veiculo.TipoVeiculo
       this.Observacoes = veiculo.Observacoes
       this.Telefone = veiculo.Telefone
@@ -29,6 +31,7 @@ export class Veiculo {
       this.Servicos = veiculo.Servicos != null ? veiculo.Servicos.slice() : []
       this.EntregaAgendada = veiculo.EntregaAgendada
       this.PrevisaoEntrega = veiculo.PrevisaoEntrega ? new Date(veiculo.PrevisaoEntrega) : null
+      this.Funcionario = veiculo.Funcionario != null ? new Funcionario(veiculo.Funcionario) : null
       this.Ativo = veiculo.Ativo
     }
   }
@@ -55,6 +58,14 @@ export class Veiculo {
 
   get TotalServicos() {
     return this.Servicos.reduce((acumulador: number, itemAtual) => acumulador + this.precoServico(itemAtual), 0)
+  }
+
+  get TotalDescontos() {
+    return this.Servicos.reduce((acumulador: number, itemAtual) => acumulador + itemAtual.Desconto, 0)
+  }
+
+  get TotalAcrescimos() {
+    return this.Servicos.reduce((acumulador: number, itemAtual) => acumulador + itemAtual.Acrescimo, 0)
   }
 
   enviarMensagemWhatsapp(celular, mensagem = '') {

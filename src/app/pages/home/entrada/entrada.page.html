@@ -79,6 +79,19 @@
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="person"></ion-icon>
+        Responsável pelo atendimento
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" (click)="alterarFuncionario()">
+        <h4 class="negrito">Responsável</h4>
+        <h3 class="textoLimitado">{{ veiculo.Funcionario ? veiculo.Funcionario.Nome : 'Não informado' }}</h3>
+        <ion-icon class="editIcone" name="create-outline"></ion-icon>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-icon class="iconeSubTitulo" name="call"></ion-icon>
         Contato do cliente
       </ion-col>
@@ -226,7 +239,7 @@
         </ion-button>
       </ion-col>
       <ion-col size-xs="5" *ngIf="!inclusao">        
-        <ion-button expand="block" color="danger" (click)="registrarSaida()">
+        <ion-button expand="block" color="danger" (click)="concluir('finalizar')">
           <ion-icon slot="start" name="checkmark-done"></ion-icon>
           Finalizar
         </ion-button>

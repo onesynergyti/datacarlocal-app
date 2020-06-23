@@ -10,6 +10,7 @@ import { DatePipe } from '@angular/common';
 import { VeiculoCadastro } from '../models/veiculo-cadastro';
 import { Servico } from '../models/servico';
 import { ServicoVeiculo } from '../models/servico-veiculo';
+import { Funcionario } from '../models/funcionario';
 
 @Injectable({
   providedIn: 'root'
@@ -56,12 +57,12 @@ export class PatioService extends ServiceBaseService {
 
     // Se for inclusão
     if (!veiculo.Id) {
-      sql = 'insert into veiculos (Placa, Modelo, TipoVeiculo, Entrada, Saida, Telefone, Nome, Observacoes, Servicos, EntregaAgendada, PrevisaoEntrega, Ativo) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-      data = [veiculo.Placa, veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Saida, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, veiculo.PrevisaoEntrega, veiculo.Ativo];
+      sql = 'insert into veiculos (Placa, Modelo, TipoVeiculo, Entrada, Saida, Telefone, Nome, Observacoes, Servicos, EntregaAgendada, PrevisaoEntrega, Funcionario, Ativo) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+      data = [veiculo.Placa, veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Saida, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, veiculo.PrevisaoEntrega, JSON.stringify(veiculo.Funcionario), veiculo.Ativo];
     }
     else {
-      sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Saida = ?, Telefone = ?, Nome = ?, Observacoes = ?, Servicos = ?, EntregaAgendada = ?, PrevisaoEntrega = ?, Ativo = ? where Id = ?';
-      data = [veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Saida, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, veiculo.PrevisaoEntrega, veiculo.Ativo, veiculo.Id];
+      sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Saida = ?, Telefone = ?, Nome = ?, Observacoes = ?, Servicos = ?, EntregaAgendada = ?, PrevisaoEntrega = ?, Funcionario = ?, Ativo = ? where Id = ?';
+      data = [veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Saida, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, veiculo.PrevisaoEntrega, JSON.stringify(veiculo.Funcionario), veiculo.Ativo, veiculo.Id];
     }
 
     return new Promise((resolve, reject) => {
@@ -135,16 +136,28 @@ export class PatioService extends ServiceBaseService {
               tx.executeSql(sqlInclusao, dataInclusao, (tx, result) => {
                 let promisesTx = []
                 // Inclui detalhamento do movimento consolidado dos serviços
-                movimento.servicosConsolidados.forEach(itemAtual => {
+                movimento.servicosConsolidados.forEach(servicoAtual => {
                   promisesTx.push(
                     new Promise((resolve, reject) => {
                       const sqlInclusaoServico = 'insert into movimentosServicos (IdMovimento, IdServico, Nome, Valor, Desconto, Acrescimo) values (?, ?, ?, ?, ?, ?)';
-                      const dataInclusaoServico = [result.insertId, itemAtual.Id, itemAtual.Nome, movimento.Veiculos[0].precoServico(itemAtual), itemAtual.Desconto, itemAtual.Acrescimo];
+                      const dataInclusaoServico = [result.insertId, servicoAtual.Id, servicoAtual.Nome, movimento.Veiculos[0].precoServico(servicoAtual), servicoAtual.Desconto, servicoAtual.Acrescimo];
                       tx.executeSql(sqlInclusaoServico, dataInclusaoServico, () => { resolve() }, (erro) => { reject(erro) })
                     })
                   )      
                 });
 
+                // Insere o histórico de todos os veículos
+                movimento.Veiculos.forEach(veiculoAtual => {
+                  promisesTx.push(
+                    new Promise((resolve, reject) => {
+                      const sqlInclusaoHistoricoVeiculo = 'insert into veiculosHistorico (Placa, TipoVeiculo, IdFuncionario, Valor, Descontos, Acrescimos, Entrada, Saida, Pagamento) values (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                      const dataInclusaoHistoricoVeiculo = [veiculoAtual.Placa, veiculoAtual.TipoVeiculo, veiculoAtual.Funcionario ? veiculoAtual.Funcionario.Id : null, veiculoAtual.TotalServicos, veiculoAtual.TotalDescontos, veiculoAtual.TotalAcrescimos, new DatePipe('en-US').transform(veiculoAtual.Entrada, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(veiculoAtual.Saida, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss')];
+                      tx.executeSql(sqlInclusaoHistoricoVeiculo, dataInclusaoHistoricoVeiculo, () => { resolve() }, (erro) => { reject(erro) })
+                    })
+                  )      
+                });
+
+                // Executa todos os comandos SQL preparados
                 Promise.all(promisesTx).then(() => { 
                   resolve() 
                 }, 
@@ -182,7 +195,7 @@ export class PatioService extends ServiceBaseService {
           if (data.rows.length > 0) {
             let veiculos = []
             for (var i = 0; i < data.rows.length; i++) {
-              var veiculo = data.rows.item(i);
+              let veiculo = data.rows.item(i);
 
               // Converte os serviços do veículos para o objeto adequado
               let servicosVeiculo = JSON.parse(veiculo.Servicos)
@@ -191,6 +204,8 @@ export class PatioService extends ServiceBaseService {
                 veiculo.Servicos.push(new ServicoVeiculo(servicoAtual))
               });
 
+              // Converte o funcionário responsável
+              veiculo.Funcionario = veiculo.Funcionario != null ? JSON.parse(veiculo.Funcionario) : null
               veiculos.push(new Veiculo(veiculo));
             }
             resolve(veiculos)

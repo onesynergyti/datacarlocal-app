@@ -2,8 +2,10 @@ OK - Permitir dar desconto ou acréscimos nos serviços. Criar uma nova tela de 
 OK - Mensalista na saída não é calculado o preço do estacionamento, o serviço fica zerado
 CANCELADO - Ao realizar um pagamento de mensalista, caso existam pendências perguntar o que fazer elas. Opções: Eliminar serviços de estacionamento e pagar o restante, eliminar todos as pendências ou manter do jeito que está
 OK - Cadastro básico de funcionários
-- Permitir informar o responsável pelo atendimento para relatórios futuros
-- Criar uma tabela de histórico de fluxo detalhado dos veículos, contendo tipo, entrada, saída, placa, valor total pago e responsável pelo atendimento
+OK - Permitir informar o responsável pelo atendimento para relatórios futuros
+OK - Criar uma tabela de histórico de fluxo detalhado dos veículos, contendo tipo, entrada, saída, placa, valor total pago e responsável pelo atendimento
+- Criar um relatório de histórico com filtros por período e funcionário
+- Criar controle de quantidade de vagas
 - Complementar a tela de configurações
 - Criar senha de segurança para ações críticas
 - Controle de acesso para exclusão de Veículos do pátio

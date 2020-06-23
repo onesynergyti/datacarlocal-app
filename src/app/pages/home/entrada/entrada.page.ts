@@ -9,6 +9,9 @@ import { Movimento } from 'src/app/models/movimento';
 import { CalculadoraEstacionamentoService } from 'src/app/services/calculadora-estacionamento.service';
 import { CadastroServicoPage } from './cadastro-servico/cadastro-servico.page';
 import { UtilsLista } from 'src/app/utils/utils-lista';
+import { FuncionariosService } from 'src/app/dbproviders/funcionarios.service';
+import { SelectPopupModalPage } from 'src/app/components/select-popup-modal/select-popup-modal.page';
+import { Funcionario } from 'src/app/models/funcionario';
 
 @Component({
   selector: 'app-entrada',
@@ -45,12 +48,40 @@ export class EntradaPage implements OnInit {
     public utils: Utils,
     public utilsLista: UtilsLista,
     private alertController: AlertController,
+    private funcionariosProvider: FuncionariosService
   ) { 
     this.veiculo = navParams.get('veiculo')
     this.inclusao = navParams.get('inclusao')
   }
 
   ngOnInit() {
+  }
+
+  async abrirModalFuncionarios(funcionarios) {
+    const modal = await this.modalCtrl.create({
+      component: SelectPopupModalPage,
+      componentProps: {
+        'lista': funcionarios,
+        'keyField': 'Nome',
+        'titulo': 'Funcionários',
+        'icone': 'person'
+      }
+    })
+
+    modal.onWillDismiss().then((retorno) => {
+      let funcionario = retorno.data
+      if (funcionario != null) 
+        this.veiculo.Funcionario = new Funcionario(funcionario)
+    })
+
+    return await modal.present(); 
+  }
+
+  async alterarFuncionario() {
+    await this.funcionariosProvider.exibirProcessamento('Carregando funcionários...')
+    this.funcionariosProvider.lista().then(funcionarios => {
+      this.abrirModalFuncionarios(funcionarios)
+    })
   }
 
   cancelar() {
@@ -95,26 +126,30 @@ export class EntradaPage implements OnInit {
     return await modal.present(); 
   }
 
-  async concluir() {
+  async concluir(operacao = 'entrada') {
     this.avaliouFormulario = true
 
     const valido = this.veiculo.Placa && 
       this.veiculo.TipoVeiculo && 
-      (!this.veiculo.EntregaAgendada || (this.veiculo.EntregaAgendada && this.veiculo.PossuiServicoAgendavel)) // Agendamento exige um serviço que permita previsão
-      this.veiculo.Servicos != null && this.veiculo.Servicos.length > 0
-
+      (!this.veiculo.EntregaAgendada || (this.veiculo.EntregaAgendada && this.veiculo.PossuiServicoAgendavel)) && // Agendamento exige um serviço que permita previsão
+      (this.veiculo.Servicos != null && this.veiculo.Servicos.length > 0)
     if (!valido) {
       this.utils.mostrarToast('Preencha os campos corretamente', 'danger')
     }
     else {
-      await this.patioProvider.exibirProcessamento('Registrando entrada...')
-      this.patioProvider.salvar(this.veiculo)
-      .then((veiculo) => {
-        this.modalCtrl.dismiss({ Operacao: 'entrada', Veiculo: veiculo })
-      })
-      .catch(() => {
-        alert('Não foi possível inserir o veículo')
-      })
+      // Para finalizar o atendimento tem que finalizar os serviços
+      if (operacao == 'finalizar' && this.veiculo.PossuiServicosPendentes) 
+        this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve excluir ou finalizar antes de realizar o pagamento.', 'danger', 3000)      
+      else {
+        await this.patioProvider.exibirProcessamento('Registrando entrada...')
+        this.patioProvider.salvar(this.veiculo)
+        .then((veiculo) => {
+          this.modalCtrl.dismiss({ Operacao: operacao, Veiculo: veiculo })
+        })
+        .catch((erro) => {
+          alert('Não foi possível inserir o veículo. ' + JSON.stringify(erro))
+        })
+      }
     }
   }
 
@@ -149,14 +184,6 @@ export class EntradaPage implements OnInit {
     });
 
     await alert.present();
-  }
-
-  registrarSaida() {
-    if (this.veiculo.PossuiServicosPendentes) 
-      this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve excluir ou finalizar antes de realizar o pagamento.', 'danger', 3000)      
-    else {
-      this.modalController.dismiss({ Operacao: 'finalizar', Veiculo: this.veiculo })
-    }
   }
 
   selecionarDataPrevisao() {

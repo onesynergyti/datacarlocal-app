@@ -43,6 +43,10 @@ const routes: Routes = [
     path: 'funcionarios',
     loadChildren: () => import('./pages/funcionarios/funcionarios.module').then( m => m.FuncionariosPageModule)
   },
+  {
+    path: 'historico-veiculos',
+    loadChildren: () => import('./pages/historico-veiculos/historico-veiculos.module').then( m => m.HistoricoVeiculosPageModule)
+  },
 ];
 
 @NgModule({
