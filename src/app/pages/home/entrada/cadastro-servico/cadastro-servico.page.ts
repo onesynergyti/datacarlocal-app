@@ -3,6 +3,9 @@ import { ModalController, NavParams } from '@ionic/angular';
 import { ServicosService } from 'src/app/dbproviders/servicos.service';
 import { ServicoVeiculo } from 'src/app/models/servico-veiculo';
 import { SelectPopupModalPage } from 'src/app/components/select-popup-modal/select-popup-modal.page';
+import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
+import { Servico } from 'src/app/models/servico';
+import { Utils } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-cadastro-servico',
@@ -18,7 +21,9 @@ export class CadastroServicoPage implements OnInit {
   constructor(
     private modalCtrl: ModalController,
     private servicosProvider: ServicosService,
-    public navParams: NavParams
+    public navParams: NavParams,
+    public configuracoesService: ConfiguracoesService,
+    public utils: Utils
   ) { 
     this.inclusao = navParams.get('inclusao')
     this.tipoVeiculo = navParams.get('tipoVeiculo')
@@ -83,6 +88,15 @@ export class CadastroServicoPage implements OnInit {
   async selecionarServico() {
     await this.servicosProvider.exibirProcessamento('Listando serviços...')
     this.servicosProvider.lista().then((servicos => {
+      // Se utilizar estacionamento adiciona automaticamente o serviço equivalente
+      if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento)
+      {
+        const servicoEstacionamento = new Servico()
+        servicoEstacionamento.Id = 0
+        servicoEstacionamento.Nome = "Estacionamento"
+        servicos.unshift(servicoEstacionamento)
+      }
+
       this.abrirModalServico(servicos)
     }))    
   }

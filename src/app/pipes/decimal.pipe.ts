@@ -9,6 +9,7 @@ export class DecimalPipe extends CurrencyPipe {
 
   transform(value: any, simboloMonetario?: string, separadorDecimal?: string): any {
     let fracao = '1.2-5';
+
     // Separador nulo considera valor formato Brasil
     separadorDecimal = separadorDecimal == null ? ',' : separadorDecimal
     // Separador milhar é o inverso do separador decimal

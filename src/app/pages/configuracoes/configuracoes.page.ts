@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Configuracoes } from 'src/app/models/configuracoes';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
+import { Utils } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-configuracoes',
@@ -13,7 +14,8 @@ export class ConfiguracoesPage implements OnInit {
   pagina = 'empresa'
 
   constructor(
-    private configuracoesService: ConfiguracoesService
+    private configuracoesService: ConfiguracoesService,
+    public utils: Utils
   ) { }
 
   ngOnInit() {

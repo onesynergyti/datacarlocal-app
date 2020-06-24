@@ -1,26 +1,34 @@
+OK - Criar máscaras nos campos de números
 OK - Permitir dar desconto ou acréscimos nos serviços. Criar uma nova tela de cadastro do serviço com os campos de acrescimo e desconto
 OK - Mensalista na saída não é calculado o preço do estacionamento, o serviço fica zerado
 CANCELADO - Ao realizar um pagamento de mensalista, caso existam pendências perguntar o que fazer elas. Opções: Eliminar serviços de estacionamento e pagar o restante, eliminar todos as pendências ou manter do jeito que está
 OK - Cadastro básico de funcionários
 OK - Permitir informar o responsável pelo atendimento para relatórios futuros
 OK - Criar uma tabela de histórico de fluxo detalhado dos veículos, contendo tipo, entrada, saída, placa, valor total pago e responsável pelo atendimento
-BASE CRIADA - Criar um relatório de histórico com filtros por período e funcionário
 OK - Criar controle de quantidade de vagas
-INICIADO - Complementar a tela de configurações
+OK - Criar máscaras nos campos de telefone
+OK - Criar máscaras nos campos de documento
+OK - Permitir abrir um veículo pendente apenas com o click, sem precisar do slide
+OK - Veículos pendentes exibem apenas o botão de finalizar, deve ocultar o botão de pagar depois
+OK - Criar mascara da placa
+OK - Campo para informar detalhes da localização do veículo
+BASE CRIADA - Criar um relatório de histórico com filtros por período e funcionário
+- Criar consistência nos formulários, incluindo max length e campos obrigatórios
+- Criar consistência no cadastro de veículos
+- Ao navegar pelas telas, no rodapé e o cabeçalho estão ficando alguns restos das telas de origem. Tem que verificar o motivo e retirar isso
+- Complementar a tela de configurações
 - Criar senha de segurança para ações críticas
 - Controle de acesso para exclusão de Veículos do pátio
 - Controle de acesso para exclusão de pendências
 - Controle de acesso para edição e exclusão de serviços já inseridos no Veículos
-- Campo para informar detalhes da localização do veículo
 - Finalizar gráficos
 - Controle de acesso e Exclusão de movimentos (Desabilitar sem excluir), tanto na tela de movimentos quanto na tela de mensalistas
 - Fazer os slides de configuração inicial do aplicativo
 - Criar a chaves das tabelas para garantir consistência
 - Permitir fazer backup e exportação de dados
 - A primeira vez que entra no pátio, os serviços agendados não estão exibindo alertas de agendamento
-- Permitir abrir um veículo pendente apenas com o click, sem precisar do slide
-- Veículos pendentes exibem apenas o botão de finalizar, deve ocultar o botão de pagar depois
 - Tratar cabeçalhos do veículo na tela de pagamento e no recibo
 - Criar assinatura no recibo de pagar depois, para comprovação do estabelecimento
 - Trabalhar melhor a conexão com a impressora, exibindo status na tela principal da home
 - Permitir incluir uma logomarca no aplicativo
+- Incluir máscara de número nos campos

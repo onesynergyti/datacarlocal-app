@@ -20,6 +20,7 @@ export class SaidaPage {
     private utils: Utils
   ) { 
     this.movimento = navParams.get('movimento')
+    alert(JSON.stringify(this.movimento))
   }
 
   cancelar() {

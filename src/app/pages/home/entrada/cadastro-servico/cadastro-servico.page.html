@@ -10,14 +10,15 @@
         Dados do serviço
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row (click)="selecionarServico()">
       <ion-col size-xs="12" class="separadorCampo">
-        <h4 class="negrito">Nome</h4>
+        <h4 class="negrito espacamentoCampo">Nome</h4>
         <h3>{{ servicoVeiculo.Nome }}</h3>
       </ion-col>
       <ion-col size-xs="12">
-        <h4 class="negrito">Preço</h4>
-        <h3>{{ servicoVeiculo.precoServico(tipoVeiculo) | decimalPipe:"R$ " }}</h3>
+        <h4 class="negrito espacamentoCampo">Preço</h4>
+        <h3 *ngIf="servicoVeiculo.Id">{{ servicoVeiculo.precoServico(tipoVeiculo) | decimalPipe:"R$ " }}</h3>
+        <h3 *ngIf="!servicoVeiculo.Id">Calculado na saída</h3>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -30,13 +31,13 @@
       <ion-col>
         <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">Acrescimo</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="servicoVeiculo.Acrescimo"></ion-input>
+          <ion-input autocorrect="off" type="number" [ngModel]="servicoVeiculo.Acrescimo | decimalInputPipe" (ionChange)="servicoVeiculo.Acrescimo=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col>
         <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">Desconto</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="servicoVeiculo.Desconto"></ion-input>
+          <ion-input autocorrect="off" type="number" [ngModel]="servicoVeiculo.Desconto | decimalInputPipe" (ionChange)="servicoVeiculo.Desconto=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>

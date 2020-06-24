@@ -15,6 +15,7 @@ export class Veiculo {
   EntregaAgendada: boolean
   PrevisaoEntrega: Date
   Funcionario: Funcionario
+  Localizacao: string
   Ativo: boolean = true
 
   constructor(veiculo: Veiculo = null) {
@@ -37,6 +38,7 @@ export class Veiculo {
       this.EntregaAgendada = veiculo.EntregaAgendada
       this.PrevisaoEntrega = veiculo.PrevisaoEntrega ? new Date(veiculo.PrevisaoEntrega) : null
       this.Funcionario = veiculo.Funcionario != null ? new Funcionario(veiculo.Funcionario) : null
+      this.Localizacao = veiculo.Localizacao
       this.Ativo = veiculo.Ativo
     }
   }
@@ -76,9 +78,5 @@ export class Veiculo {
   enviarMensagemWhatsapp(celular, mensagem = '') {
     celular = celular.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
     window.location.href=`https://api.whatsapp.com/send?phone=55${celular}&text=${mensagem.replace(' ', '%20')}`;
-  }
-
-  excluirServico(servico) {
-    this.Servicos.splice(this.Servicos.indexOf(servico), 1)
   }
 }

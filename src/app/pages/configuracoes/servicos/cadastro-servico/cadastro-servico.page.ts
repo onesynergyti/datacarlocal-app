@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
 import { Servico } from 'src/app/models/servico';
 import { ServicosService } from 'src/app/dbproviders/servicos.service';
+import { Utils } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-cadastro-servico',
@@ -15,7 +16,8 @@ export class CadastroServicoPage implements OnInit {
   constructor(
     private modalController: ModalController,
     private providerServico: ServicosService,
-    public navParams: NavParams
+    public navParams: NavParams,
+    public utils: Utils
   ) { 
     this.servico = navParams.get('servico')
   }
@@ -37,5 +39,4 @@ export class CadastroServicoPage implements OnInit {
       alert('Não foi possível salvar o serviço')
     })
   }
-
 }

@@ -3,15 +3,13 @@ import { ModalController, NavParams, AlertController } from '@ionic/angular';
 import { Veiculo } from 'src/app/models/veiculo';
 import { PatioService } from 'src/app/dbproviders/patio.service';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
-import { SaidaPage } from '../saida/saida.page';
 import { Utils } from 'src/app/utils/utils';
-import { Movimento } from 'src/app/models/movimento';
-import { CalculadoraEstacionamentoService } from 'src/app/services/calculadora-estacionamento.service';
 import { CadastroServicoPage } from './cadastro-servico/cadastro-servico.page';
 import { UtilsLista } from 'src/app/utils/utils-lista';
 import { FuncionariosService } from 'src/app/dbproviders/funcionarios.service';
 import { SelectPopupModalPage } from 'src/app/components/select-popup-modal/select-popup-modal.page';
 import { Funcionario } from 'src/app/models/funcionario';
+import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 
 @Component({
   selector: 'app-entrada',
@@ -36,7 +34,7 @@ export class EntradaPage implements OnInit {
 
   pagina = 'veiculo'
   pesquisa
-  inclusao
+  inclusao = false
   veiculo: Veiculo
   avaliouFormulario = false
   
@@ -44,11 +42,11 @@ export class EntradaPage implements OnInit {
     private modalCtrl: ModalController,
     private patioProvider: PatioService,
     public navParams: NavParams,
-    private modalController: ModalController,
     public utils: Utils,
     public utilsLista: UtilsLista,
     private alertController: AlertController,
-    private funcionariosProvider: FuncionariosService
+    private funcionariosProvider: FuncionariosService,
+    public configuracoesService: ConfiguracoesService,
   ) { 
     this.veiculo = navParams.get('veiculo')
     this.inclusao = navParams.get('inclusao')
@@ -88,55 +86,69 @@ export class EntradaPage implements OnInit {
     this.modalCtrl.dismiss()
   }
 
-  consultarPlaca() {
-    if (this.veiculo.Placa && this.veiculo.Placa.length >= 3) {
-      this.patioProvider.consultaHistoricoPlaca(this.veiculo.Placa).then(veiculo => {
-        this.veiculo.Nome = veiculo.Nome
-        this.veiculo.TipoVeiculo = veiculo.TipoVeiculo
-        this.veiculo.Telefone = veiculo.Telefone
-        this.veiculo.Modelo = veiculo.Modelo
-      })
+  tratarPlaca(valor: string) {
+    if (valor != null) {
+      valor = valor.replace(/[^a-zA-Z0-9]/g,'').toUpperCase()
+    
+      if (valor && valor.length >= 3) {
+        this.patioProvider.consultaHistoricoPlaca(valor).then(veiculo => {
+          this.veiculo.Nome = veiculo.Nome
+          this.veiculo.TipoVeiculo = veiculo.TipoVeiculo
+          this.veiculo.Telefone = veiculo.Telefone
+          this.veiculo.Modelo = veiculo.Modelo
+        })
+      }
     }
+    return valor
   }
 
   async cadastrarServico(servico = null) {
     if (!this.veiculo.TipoVeiculo) {
-      this.utils.mostrarToast('Informe o tipo do veículo antes de adicionar um serviço', 'danger')
+      this.utils.mostrarToast('Informe o tipo do veículo antes de adicionar um serviço', 'danger')    
     }
-
-    const modal = await this.modalCtrl.create({
-      component: CadastroServicoPage,
-      componentProps: {
-        'servicoVeiculo': servico,
-        'tipoVeiculo': this.veiculo.TipoVeiculo,
-        'inclusao': servico == null
-      }
-    })
-
-    modal.onWillDismiss().then((retorno) => {
-      if (retorno.data != null) {
-        const servico = retorno.data.ServicoVeiculo
-        if (retorno.data.Operacao = 'cadastro') 
-          this.utilsLista.atualizarLista(this.veiculo.Servicos, servico)
-        else
-          this.utilsLista.excluirDaLista(this.veiculo.Servicos, servico)
-      }
-    })
-
-    return await modal.present(); 
+    // Estacionamento não pode ser editado
+    else {
+      const inclusao = servico == null
+      const modal = await this.modalCtrl.create({
+        component: CadastroServicoPage,
+        componentProps: {
+          'servicoVeiculo': servico,
+          'tipoVeiculo': this.veiculo.TipoVeiculo,
+          'inclusao': inclusao
+        }
+      })
+  
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data != null) {
+          const servico = retorno.data.ServicoVeiculo
+          if (retorno.data.Operacao = 'cadastro') {
+            // Não permite incluir serviço repetido
+            if (inclusao && (this.veiculo.Servicos.find(servicoAtual => servicoAtual.Id == servico.Id )))
+              this.utils.mostrarToast('O serviço informado já existe.', 'danger')
+            else
+              this.utilsLista.atualizarLista(this.veiculo.Servicos, servico)
+          }
+          else
+            this.utilsLista.excluirDaLista(this.veiculo.Servicos, servico)
+        }
+      })
+  
+      return await modal.present(); 
+    }
   }
 
   async concluir(operacao = 'entrada') {
     this.avaliouFormulario = true
 
-    const valido = this.veiculo.Placa && 
+    const valido = (this.veiculo.Placa && this.veiculo.Placa.length == 7) &&
       this.veiculo.TipoVeiculo && 
+      (!this.veiculo.Modelo || this.veiculo.Modelo.length <= 30) && 
+      (!this.veiculo.Nome || this.veiculo.Nome.length <= 100) && 
+      (!this.veiculo.Localizacao || this.veiculo.Localizacao.length <= 50) && 
       (!this.veiculo.EntregaAgendada || (this.veiculo.EntregaAgendada && this.veiculo.PossuiServicoAgendavel)) && // Agendamento exige um serviço que permita previsão
-      (this.veiculo.Servicos != null && this.veiculo.Servicos.length > 0)
-    if (!valido) {
-      this.utils.mostrarToast('Preencha os campos corretamente', 'danger')
-    }
-    else {
+      (this.veiculo.Servicos != null && this.veiculo.Servicos.length > 0) &&
+      (!this.veiculo.Telefone || [0, 10, 11].includes(this.veiculo.Telefone.length))
+    if (valido) {
       // Para finalizar o atendimento tem que finalizar os serviços
       if (operacao == 'finalizar' && this.veiculo.PossuiServicosPendentes) 
         this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve excluir ou finalizar antes de realizar o pagamento.', 'danger', 3000)      
@@ -177,7 +189,7 @@ export class EntradaPage implements OnInit {
         }, {
           text: 'Sim',
           handler: () => {
-            this.veiculo.excluirServico(servico)
+            this.utilsLista.excluirDaLista(this.veiculo.Servicos, servico)
           }
         }
       ]

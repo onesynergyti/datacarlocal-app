@@ -8,6 +8,7 @@ import { ConfiguracoesPageRoutingModule } from './configuracoes-routing.module';
 
 import { ConfiguracoesPage } from './configuracoes.page';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { PipeModule } from 'src/app/pipes/pipe.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { ComponentsModule } from 'src/app/components/components.module';
     FormsModule,
     IonicModule,
     ConfiguracoesPageRoutingModule,
-    ComponentsModule
+    ComponentsModule,
+    PipeModule.forRoot() 
   ],
   declarations: [ConfiguracoesPage]
 })

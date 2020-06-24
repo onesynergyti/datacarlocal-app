@@ -33,8 +33,8 @@
         <ion-col class="ion-no-padding">
           <ion-list *ngIf="configuracoes != null">
             <ion-item>
-              <ion-label position="floating">CNPJ</ion-label>
-              <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estabelecimento.Documento"></ion-input>
+              <ion-label position="floating">Documento (CNPJ / CPF)</ion-label>
+              <ion-input autocorrect="off" type="tel" [ngModel]="configuracoes.Estabelecimento.Documento | documentoPipe" (ionChange)="configuracoes.Estabelecimento.Documento = utils.somenteNumeros($event.target.value)"></ion-input>
             </ion-item>
             <ion-item>
               <ion-label position="floating">Nome do estabelecimento</ion-label>

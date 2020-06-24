@@ -30,7 +30,7 @@ export class ConfiguracoesService {
     if (valor.Patio == null)
       valor.Patio = new ConfiguracaoPatio()
 
-      return valor
+    return valor
 }
 
   set configuracoes(configuracoes: Configuracoes) {

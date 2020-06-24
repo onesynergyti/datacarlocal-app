@@ -64,4 +64,13 @@ export class Utils {
       androidTheme: this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT
     })
   }  
+
+  somenteNumeros(valor: string) {
+    return valor.toString().replace(/\D/g, "")
+  }
+
+  trataCampoNumero(valor: number) {    
+    const numeros = valor.toString().replace(/\D/g, "")
+    return Number(numeros) / 100
+  }
 }

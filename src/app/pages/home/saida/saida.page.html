@@ -103,7 +103,7 @@
   </ion-grid>
 </ion-content>
 
-<ion-footer>
+<ion-footer *ngIf="movimento != null">
   <ion-grid class="ion-no-padding ion-no-margin">
     <ion-row>
       <ion-col>
@@ -112,7 +112,7 @@
           Finalizar
         </ion-button>
       </ion-col>
-      <ion-col>
+      <ion-col *ngIf="movimento.Veiculos[0].Ativo == true">
         <ion-button expand="block" color="danger" (click)="concluirDepois()">
           <ion-icon slot="start" name="document-attach"></ion-icon>
           Receber depois

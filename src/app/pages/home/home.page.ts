@@ -66,7 +66,7 @@ export class HomePage {
     })    
     // Em caso de erro
     .catch((erro) => {
-      alert(JSON.stringify('Não foi possível carregar os veículos do pátio.'))
+      alert(JSON.stringify('Não foi possível carregar os veículos do pátio. ' + erro))
     })
     .finally(() => {
       this.carregandoVeiculos = false
@@ -109,8 +109,8 @@ export class HomePage {
 
       veiculoEdicao = new Veiculo()      
 
-      // Define serviços de estacionamento
-      if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento) {
+      // Define serviços de estacionamento se for configurado para incluir automaticamente
+      if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento && this.configuracoesService.configuracoes.Estacionamento.IncluirServicoEstacionamento) {
         let servico = new ServicoVeiculo()
         servico.Id = 0
         servico.Nome = 'Estacionamento'
@@ -137,6 +137,7 @@ export class HomePage {
 
   async avaliarRetornoVeiculo(retorno, inclusao) {
     if (retorno.data != null) {             
+      // Caso tenha solicitado a finalização, abre a tela de saída
       if (retorno.data.Operacao == 'finalizar') { 
         this.registrarSaida(retorno.data.Veiculo)
       }
@@ -158,10 +159,7 @@ export class HomePage {
         }
 
         // Exibe uma propagando na saída do veículo
-        setTimeout(() => {
-          this.propagandaService.showInterstitialAds()
-        }, 3000);
-        this.utils.mostrarToast('Saída realizada com sucesso', 'success')
+        this.propagandaService.showInterstitialAds()
       }
       // Alteração do veículo, altera o item 
       // ESSE CASO CONSIDERA QUE SÓ PODE TER UM VEÍCULO ALTERADO

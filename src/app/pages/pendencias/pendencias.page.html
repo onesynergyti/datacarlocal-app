@@ -10,7 +10,7 @@
 <ion-content *ngIf="!carregandoVeiculos">
   <ion-list [@listAnimation]="listaFiltrada.length" lines="none">
     <ion-item-sliding id="veiculo.Placa" *ngFor="let veiculo of listaFiltrada">
-      <ion-item>
+      <ion-item (click)="registrarSaida([veiculo])">
         <div class="cartao">
           <ion-grid>
             <ion-row>
@@ -71,9 +71,6 @@
       </ion-item>      
 
       <ion-item-options side="start">
-        <ion-item-option color="success" (click)="registrarSaida([veiculo])">
-          <ion-icon slot="icon-only" name="checkmark-circle"></ion-icon>
-        </ion-item-option>
         <ion-item-option  *ngIf="veiculo.Telefone != null && veiculo.Telefone.length >= 10" color="success" (click)="abrirWhatsapp(veiculo)">
           <ion-icon slot="icon-only" name="logo-whatsapp"></ion-icon>
         </ion-item-option>

@@ -9,6 +9,7 @@ import { ServicosPageRoutingModule } from './servicos-routing.module';
 import { ServicosPage } from './servicos.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { CadastroServicoPage } from './cadastro-servico/cadastro-servico.page';
+import { PipeModule } from 'src/app/pipes/pipe.module';
 
 @NgModule({
   imports: [
@@ -16,7 +17,9 @@ import { CadastroServicoPage } from './cadastro-servico/cadastro-servico.page';
     FormsModule,
     IonicModule,
     ServicosPageRoutingModule,
-    ComponentsModule
+    ComponentsModule,
+    PipeModule.forRoot() 
+
   ],
   entryComponents:[CadastroServicoPage],
   declarations: [ServicosPage, CadastroServicoPage]

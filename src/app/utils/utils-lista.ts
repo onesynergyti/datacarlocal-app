@@ -29,8 +29,9 @@ export class UtilsLista {
   }
 
   excluirDaLista(lista: any[], item: any) {
+    alert()
     if (item != null) {
-      let index = lista.indexOf(item)
+      let index = lista.findIndex(itemAtual => itemAtual.Id == item.Id)
 
       // Exclui o elemento na lista se foi encontrado
       if (index >= 0) 

@@ -37,14 +37,14 @@
           <ion-row>
             <ion-col>
               <ion-item class="ion-no-margin ion-no-padding">
-                <ion-label position="floating" [ngClass]="{'fontCorPerigo': avaliouFormulario && !veiculo.Placa}" >Placa</ion-label>
-                <ion-input autocorrect="off" type="text" (ionChange)="consultarPlaca()" [(ngModel)]="veiculo.Placa"></ion-input>
+                <ion-label position="floating" [ngClass]="{'fontCorPerigo': avaliouFormulario && !veiculo.Placa == null}" >Placa</ion-label>
+                <ion-input autocorrect="off" type="text" maxlength="8" [disabled]="!inclusao" [ngModel]="veiculo.Placa | placaPipe" (ionChange)="veiculo.Placa = tratarPlaca($event.target.value)"></ion-input>
               </ion-item>
             </ion-col>
             <ion-col>
               <ion-item class="ion-no-margin ion-no-padding">
                 <ion-label position="floating">Modelo</ion-label>
-                <ion-input autocorrect="off" type="text" [(ngModel)]="veiculo.Modelo"></ion-input>
+                <ion-input autocorrect="off" maxlength="30" type="text" [(ngModel)]="veiculo.Modelo"></ion-input>
               </ion-item>
             </ion-col>
           </ion-row>          
@@ -85,9 +85,21 @@
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" (click)="alterarFuncionario()">
-        <h4 class="negrito">Responsável</h4>
-        <h3 class="textoLimitado">{{ veiculo.Funcionario ? veiculo.Funcionario.Nome : 'Não informado' }}</h3>
+        <h4 class="negrito espacadorCampo">Responsável</h4>
+        <h3 class="textoLimitado">{{ veiculo.Funcionario != null ? veiculo.Funcionario.Nome : 'Não informado' }}</h3>
         <ion-icon class="editIcone" name="create-outline"></ion-icon>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="configuracoesService.configuracoes.Patio.CampoLocalizacao">
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="pin"></ion-icon>
+        Localização do veículo
+      </ion-col>
+      <ion-col size-xs="12">
+        <ion-item class="ion-no-margin ion-no-padding">
+          <ion-label position="floating">Identificação da localização</ion-label>
+          <ion-input autocorrect="off" type="text" maxlength="50" [(ngModel)]="veiculo.Localizacao"></ion-input>
+        </ion-item>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -100,13 +112,13 @@
       <ion-col size-xs="7">
         <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">Nome</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="veiculo.Nome"></ion-input>
+          <ion-input autocorrect="off" type="text" maxlength="100" [(ngModel)]="veiculo.Nome"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="5">
         <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">Telefone</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="veiculo.Telefone"></ion-input>
+          <ion-input autocorrect="off" type="tel" maxlength="15" [ngModel]="veiculo.Telefone | telefonePipe" (ionChange)="veiculo.Telefone = utils.somenteNumeros($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -195,7 +207,7 @@
       </ion-col>
     </ion-row>
     <ion-row *ngIf="veiculo.EntregaAgendada == true">
-      <ion-col size-xs="12" class="ion-text-center" (click)="selecionarDataPrevisao()">
+      <ion-col size-xs="12" class="ion-text-center">
         <ion-item (click)="selecionarDataPrevisao()">
           <ion-label>Data</ion-label>
           <ion-label>{{ veiculo.PrevisaoEntrega | date:"dd/MM/yyyy" }}</ion-label>
@@ -211,9 +223,25 @@
 <ion-footer>  
   <ion-grid>    
     <ion-row>
-      <ion-col size-xs="12" *ngIf="avaliouFormulario && !veiculo.Placa" class="subTitulo fundoPerigo">
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && (!veiculo.Placa || veiculo.Placa.length != 7)" class="subTitulo fundoPerigo">
         <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
-        Informe a placa do veículo
+        Informe uma placa válida
+      </ion-col>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && veiculo.Modelo && veiculo.Modelo.length > 30" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        O modelo deve ter até 30 caracteres
+      </ion-col>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && veiculo.Nome && veiculo.Nome.length > 100" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        O nome deve ter até 100 caracteres
+      </ion-col>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && veiculo.Localizacao && veiculo.Localizacao.length > 50" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        A localização deve ter até 50 caracteres
+      </ion-col>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && veiculo.Telefone && veiculo.Telefone.length > 0 && (veiculo.Telefone.length < 10 || veiculo.Telefone.length > 11)" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Telefone inválido
       </ion-col>
       <ion-col size-xs="12" *ngIf="avaliouFormulario && !veiculo.TipoVeiculo" class="subTitulo fundoPerigo">
         <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>

@@ -8,7 +8,6 @@ import { ConfiguracoesService } from './configuracoes.service';
 import { Veiculo } from '../models/veiculo';
 import { DatePipe } from '@angular/common';
 import { Movimento } from '../models/movimento';
-import { CalculadoraEstacionamentoService } from './calculadora-estacionamento.service';
 
 @Injectable({
   providedIn: 'root'
@@ -165,8 +164,7 @@ export class BluetoothService extends ServiceBaseService {
     private bluetoothSerial: BluetoothSerial,
     public loadingController: LoadingController,
     private utils: Utils,
-    private configuracoes: ConfiguracoesService,
-    private calculadoraEstacionamentoService: CalculadoraEstacionamentoService
+    private configuracoes: ConfiguracoesService
   ) { 
     super(loadingController)
     // Tenta iniciar a conexão com a impressora se o bluetooth estiver ligado

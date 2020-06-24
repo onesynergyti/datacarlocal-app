@@ -38,25 +38,25 @@
                           <div class="divTipoVeiculo">
                             <img src='../../../../../assets/img/veiculos/1.png' />
                           </div>
-                          <h5>{{ servico.PrecoMoto }}</h5>
+                          <h5>{{ servico.PrecoMoto | decimalPipe:"R$ " }}</h5>
                         </ion-col>
                         <ion-col size-xs="3" class="ion-text-center">
                           <div class="divTipoVeiculo">
                             <img src='../../../../../assets/img/veiculos/2.png' />
                           </div>
-                          <h5>{{ servico.PrecoVeiculoPequeno }}</h5>
+                          <h5>{{ servico.PrecoVeiculoPequeno | decimalPipe:"R$ " }}</h5>
                         </ion-col>
                         <ion-col size-xs="3" class="ion-text-center">
                           <div class="divTipoVeiculo">
                             <img src='../../../../../assets/img/veiculos/3.png' />
                           </div>
-                          <h5>{{ servico.PrecoVeiculoMedio }}</h5>
+                          <h5>{{ servico.PrecoVeiculoMedio | decimalPipe:"R$ " }}</h5>
                         </ion-col>
                         <ion-col size-xs="3" class="ion-text-center">
                           <div class="divTipoVeiculo">
                             <img src='../../../../../assets/img/veiculos/4.png' />
                           </div>
-                          <h5>{{ servico.PrecoVeiculoGrande }}</h5>
+                          <h5>{{ servico.PrecoVeiculoGrande | decimalPipe:"R$ " }}</h5>
                         </ion-col>
                       </ion-row>
                     </ion-grid>
