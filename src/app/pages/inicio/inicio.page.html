@@ -1,0 +1,104 @@
+<ion-header>
+  <app-header titulo="Configurações iniciais" ocultarRetorno="true" ocultarMenu="true"></app-header>
+</ion-header>
+
+<ion-content>
+  <ion-grid *ngIf="configuracoes != null">
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoPrimario">
+        Bem vindo ao sistema
+      </ion-col>
+      <ion-col size-xs="12" class="subTitulo fundoPrimario">
+        Vamos realizar as configurações básicas
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="business"></ion-icon>
+        Dados da empresa
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-no-padding">
+        <ion-list>
+          <ion-item>
+            <ion-label position="floating">Documento (CNPJ / CPF)</ion-label>
+            <ion-input autocorrect="off" type="tel" [ngModel]="configuracoes.Estabelecimento.Documento | documentoPipe" (ionInput)="configuracoes.Estabelecimento.Documento = utils.somenteNumeros($event.target.value)"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Nome do estabelecimento</ion-label>
+            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estabelecimento.Nome"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Endereco</ion-label>
+            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estabelecimento.Endereco"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Telefone</ion-label>
+            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estabelecimento.Telefone"></ion-input>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="repeat"></ion-icon>
+        Opções de estacionamento
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-no-padding">
+        <ion-item>
+          <ion-label>Utilizar estacionamento</ion-label>
+          <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizarEstacionamento"></ion-toggle>
+        </ion-item>
+        <ion-item *ngIf="configuracoes.Estacionamento.UtilizarEstacionamento">
+          <ion-label>Incluir serviço automaticamente</ion-label>
+          <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.IncluirServicoEstacionamento"></ion-toggle>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
+        Opções de outros tipos de serviços
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-no-padding">
+        <ion-item>
+          <ion-label>Disponibilizar serviços</ion-label>
+          <ion-toggle color="primary" [(ngModel)]="configuracoes.UtilizaServicos"></ion-toggle>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="lock-closed"></ion-icon>
+        Administração e segurança
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-no-padding">
+        <ion-item class="ion-no-margin ion-no-padding">
+          <ion-label position="floating">E-mail do administrador</ion-label>
+          <ion-input autocorrect="off" type="email" maxlength="20" [(ngModel)]="configuracoes.Seguranca.EmailAdministrador"></ion-input>
+        </ion-item>
+        <ion-item class="ion-no-margin ion-no-padding">
+          <ion-label position="floating">Senha</ion-label>
+          <ion-input autocorrect="off" type="password" maxlength="20" [(ngModel)]="senhaNova"></ion-input>
+        </ion-item>
+        <ion-item class="ion-no-margin ion-no-padding">
+          <ion-label position="floating">Confirme a senha</ion-label>
+          <ion-input autocorrect="off" type="password" maxlength="20" [(ngModel)]="senhaConfirmacao"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-button color="success" expand="block" (click)="concluir()">
+    Iniciar o aplicativo
+  </ion-button>
+</ion-footer>

@@ -4,6 +4,8 @@ import { ConfiguracaoRecibo } from '../models/configuracao-recibo';
 import { ConfiguracaoEstacionamento } from '../models/configuracao-estacionamento';
 import { Estabelecimento } from '../models/estabelecimento';
 import { ConfiguracaoPatio } from '../models/configuracao-patio';
+import { ConfiguracaoSeguranca } from '../models/configuracao-seguranca';
+import { ConfiguracaoManualUso } from '../models/configuracao-manual-uso';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +31,12 @@ export class ConfiguracoesService {
 
     if (valor.Patio == null)
       valor.Patio = new ConfiguracaoPatio()
+
+    if (valor.Seguranca == null)
+      valor.Seguranca = new ConfiguracaoSeguranca()
+
+    if (valor.ManualUso == null)
+      valor.ManualUso = new ConfiguracaoManualUso()
 
     return valor
 }

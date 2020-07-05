@@ -17,7 +17,7 @@ export class SaidaPage {
     private modalCtrl: ModalController,
     public navParams: NavParams,
     private patio: PatioService,
-    private utils: Utils
+    public utils: Utils
   ) { 
     this.movimento = navParams.get('movimento')
     alert(JSON.stringify(this.movimento))

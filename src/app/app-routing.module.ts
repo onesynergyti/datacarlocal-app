@@ -7,11 +7,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
   },
   {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
-  },
-  {
     path: 'impressora',
     loadChildren: () => import('./pages/configuracoes/impressora/impressora.module').then( m => m.ImpressoraPageModule)
   },
@@ -42,6 +37,18 @@ const routes: Routes = [
   {
     path: 'historico-veiculos',
     loadChildren: () => import('./pages/historico-veiculos/historico-veiculos.module').then( m => m.HistoricoVeiculosPageModule)
+  },
+  {
+    path: 'senha-administrador',
+    loadChildren: () => import('./pages/senha-administrador/senha-administrador.module').then( m => m.SenhaAdministradorPageModule)
+  },
+  {
+    path: 'inicio',
+    loadChildren: () => import('./pages/inicio/inicio.module').then( m => m.InicioPageModule)
+  },
+  {
+    path: 'validar-acesso',
+    loadChildren: () => import('./pages/validar-acesso/validar-acesso.module').then( m => m.ValidarAcessoPageModule)
   },
 ];
 

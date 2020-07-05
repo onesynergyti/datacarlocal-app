@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Veiculo } from '../../models/veiculo';
 import { PatioService } from '../../dbproviders/patio.service';
-import { ModalController, ActionSheetController } from '@ionic/angular';
+import { ModalController, ActionSheetController, NavController, AlertController } from '@ionic/angular';
 import { EntradaPage } from './entrada/entrada.page';
 import { BluetoothService } from '../../services/bluetooth.service';
 import { Utils } from 'src/app/utils/utils';
@@ -14,6 +14,8 @@ import { Movimento } from 'src/app/models/movimento';
 import { PropagandasService } from 'src/app/services/propagandas.service';
 import { CalculadoraEstacionamentoService } from 'src/app/services/calculadora-estacionamento.service';
 import { MensalistasService } from 'src/app/dbproviders/mensalistas.service';
+import { ServicosService } from 'src/app/dbproviders/servicos.service';
+import { ValidarAcessoPage } from '../validar-acesso/validar-acesso.page';
 
 @Component({
   selector: 'app-home',
@@ -51,7 +53,10 @@ export class HomePage {
     public configuracoesService: ConfiguracoesService,
     public propagandaService: PropagandasService,
     private calculadoraEstacionamentoService: CalculadoraEstacionamentoService,
-    private providerMensalistas: MensalistasService
+    private providerMensalistas: MensalistasService,
+    private navController: NavController,
+    private alertController: AlertController,
+    private providerServicos: ServicosService
   ) { }
 
   ionViewDidEnter() {
@@ -80,7 +85,7 @@ export class HomePage {
     return this.veiculos.filter(itemAtual => this.utils.stringPura(itemAtual.Placa).includes(this.utils.stringPura(this.pesquisa)))
   }
 
-  async excluir(veiculo) {
+  async confirmarExclusao(veiculo) {
     await this.providerPatio.exibirProcessamento('Excluindo veículo...')
     this.providerPatio.excluir(veiculo.Id)
     .then(() => {
@@ -91,6 +96,19 @@ export class HomePage {
     })
   }
 
+  async excluir(veiculo) {
+    const modal = await this.modalController.create({
+      component: ValidarAcessoPage
+    });
+
+    modal.onWillDismiss().then((retorno) => {
+      if (retorno.data == true)
+        this.confirmarExclusao(veiculo)
+    })
+
+    return await modal.present(); 
+  }
+
   abrirWhatsapp(veiculo) {
     if (veiculo.Telefone && veiculo.Telefone.length >= 10)
       veiculo.enviarMensagemWhatsapp(veiculo.Telefone)
@@ -98,7 +116,37 @@ export class HomePage {
       this.utils.mostrarToast('Não foi registrado o contato para esse veículo', 'danger')
   }
 
-  async cadastrarEntrada(veiculo = null) {
+  async verificarConfiguracoesPendentes() {
+    return new Promise((resolve, reject) => {
+      // O estacionamento ou os serviços devem estar ativos
+      if (!this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento && !this.configuracoesService.configuracoes.UtilizaServicos) {
+        reject({ Titulo: 'Configuração inválida', Mensagem: 'Você deve habilitar a função de estacionamento ou serviços. Deseja acessar as configurações agora?', Rota: 'configuracoes' })
+      }
+      // Se houver utilização de estacionamento, tem que ter a tabela configurada
+      else if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento && 
+      !this.configuracoesService.configuracoes.Estacionamento.UtilizaDiaria &&
+      !this.configuracoesService.configuracoes.Estacionamento.UtilizaFracao15Minutos &&
+      !this.configuracoesService.configuracoes.Estacionamento.UtilizaFracao30Minutos &&
+      !this.configuracoesService.configuracoes.Estacionamento.UtilizaHora &&
+      !this.configuracoesService.configuracoes.Estacionamento.UtilizaPrimeirosMinutos) {
+        reject({ Titulo: 'Configurar estacionamento', Mensagem: 'É necessário configurar a tabela de estacionamento ou desabilitar essa função antes de prosseguir. Deseja acessar as configurações agora?', Rota: 'configuracoes?pagina=estacionamento' })
+      }
+      else {
+        // Se não utiliza estacionamento, então tem que ter algum serviço cadastrado
+        this.providerServicos.lista().then(servicos => {
+          if (!this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento && servicos.length == 0)
+            reject({ Titulo: 'Configurar serviços', Mensagem: 'É necessário cadastrar pelo menos um serviço antes de prosseguir. Deseja acessar as configurações agora?', Rota: 'servicos' })
+          else
+            resolve()
+        })
+        .catch(erro => {
+          reject({ Titulo: 'Erro na verificação', Mensagem: 'Não foi possível verificar as configurações. Tente novamente' })
+        })
+      }
+    })
+  }
+
+  async procederCadastroEntrada(veiculo) {
     let inclusao = false
     let veiculoEdicao: Veiculo
 
@@ -133,6 +181,50 @@ export class HomePage {
     })
 
     return await modal.present(); 
+  }
+
+  async exibirErroCadastroEntrada(erro) {
+    let botoes
+
+    if (erro.Rota == null) {
+      botoes = [
+        {
+          text: 'Ok',
+        }
+      ]
+    }
+    else {
+      botoes = [
+        {
+          text: 'Não',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Sim',
+          handler: () => {
+            if (erro.Rota != null)
+              this.navController.navigateForward(erro.Rota)
+          }
+        }
+      ]
+    }
+
+    const alert = await this.alertController.create({
+      header: erro.Titulo,
+      message: erro.Mensagem,
+      buttons: botoes
+    });
+  
+    await alert.present();
+  }
+
+  async cadastrarEntrada(veiculo = null) {
+    this.verificarConfiguracoesPendentes().then(() => {
+      this.procederCadastroEntrada(veiculo)
+    })
+    .catch(erro => {
+      this.exibirErroCadastroEntrada(erro)
+    })
   }
 
   async avaliarRetornoVeiculo(retorno, inclusao) {

@@ -18,16 +18,22 @@ import { PipeModule } from './pipes/pipe.module';
 import { FormsModule } from '@angular/forms';
 import { DatePicker } from '@ionic-native/date-picker/ngx';
 import { SaidaPage } from './pages/home/saida/saida.page';
+import { SenhaAdministradorPage } from './pages/senha-administrador/senha-administrador.page';
+import { ValidarAcessoPage } from './pages/validar-acesso/validar-acesso.page';
 
 @NgModule({
   declarations: [
     AppComponent,
     SelectPopupModalPage,
-    SaidaPage
+    SaidaPage,
+    SenhaAdministradorPage,
+    ValidarAcessoPage
   ],
   entryComponents: [
     SelectPopupModalPage,
-    SaidaPage
+    SaidaPage,
+    SenhaAdministradorPage,
+    ValidarAcessoPage
   ],
   imports: [
     BrowserModule,

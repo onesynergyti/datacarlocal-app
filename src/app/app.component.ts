@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
-import { Platform, NavController } from '@ionic/angular';
+import { Platform, NavController, ModalController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { DatabaseService } from './dbproviders/database.service';
 import { AdMobFree, AdMobFreeRewardVideoConfig } from '@ionic-native/admob-free/ngx';
+import { SenhaAdministradorPage } from './pages/senha-administrador/senha-administrador.page';
+import { Utils } from './utils/utils';
+import { ConfiguracoesService } from './services/configuracoes.service';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +23,10 @@ export class AppComponent {
     private statusBar: StatusBar,
     private navController: NavController,
     private databaseProvider: DatabaseService,
-    private admobFree: AdMobFree
+    private admobFree: AdMobFree,
+    private modalController: ModalController,
+    private utils: Utils,
+    private configuracoesService: ConfiguracoesService
   ) {
     this.initializeApp();
 
@@ -38,6 +44,12 @@ export class AppComponent {
       this.databaseProvider.DB.then((db) => {
         this.databaseProvider.criarTabelas(db).then(() => {
           this.splashScreen.hide()
+
+          // Exige as configurações iniciais do sistema
+          if (!this.configuracoesService.configuracoes.ManualUso.ConfiguracaoInicial)
+            this.navController.navigateRoot('inicio')
+          else
+            this.navController.navigateRoot('home')
         })
         .catch((erro) => {
           alert('Não foi possível iniciar o aplicativo. Tente novamente. ' + JSON.stringify(erro))
@@ -79,4 +91,19 @@ export class AppComponent {
     await this.databaseProvider.exibirProcessamento('Aguarde...')
     this.showRewardVideoAds(url)
   }  
+
+  async abrirSenhaAdministrador() {
+    const modal = await this.modalController.create({
+      component: SenhaAdministradorPage,
+      componentProps: {}
+    });
+
+    modal.onWillDismiss().then((retorno) => {
+      if (retorno != null) {
+        this.utils.mostrarToast('Senha alterada com sucesso', 'success')
+      }
+    })
+
+    return await modal.present(); 
+  }
 }

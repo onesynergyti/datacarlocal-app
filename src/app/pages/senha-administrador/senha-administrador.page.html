@@ -1,0 +1,25 @@
+<ion-header>
+  <app-header-modal titulo="Senha de administrador" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+</ion-header>
+
+<ion-content>
+  <ion-item class="ion-no-margin ion-no-padding" *ngIf="configuracoes.SenhaAdministrador != null">
+    <ion-label position="floating">Senha atual</ion-label>
+    <ion-input autocorrect="off" type="password" maxlength="20" [(ngModel)]="senhaAtual"></ion-input>
+  </ion-item>
+  <ion-item class="ion-no-margin ion-no-padding">
+    <ion-label position="floating">Nova senha</ion-label>
+    <ion-input autocorrect="off" type="password" maxlength="20" [(ngModel)]="senhaNova"></ion-input>
+  </ion-item>
+  <ion-item class="ion-no-margin ion-no-padding">
+    <ion-label position="floating">Confirme a senha</ion-label>
+    <ion-input autocorrect="off" type="password" maxlength="20" [(ngModel)]="senhaConfirmacao"></ion-input>
+  </ion-item>
+</ion-content>
+
+<ion-footer>
+  <ion-button expand="block" color="success" (click)="concluir()">
+    <ion-icon slot="start" name="checkmark-done"></ion-icon>
+    Salvar Senha
+  </ion-button>
+</ion-footer>

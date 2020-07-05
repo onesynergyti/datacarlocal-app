@@ -1,26 +1,33 @@
 <ion-header>
-  <app-header titulo="Configurações"></app-header>
-  <ion-segment scrollable [(ngModel)]="pagina">
-    <ion-segment-button value="empresa">
-      <ion-icon name="business" class="espacadorCampo"></ion-icon>
-      Empresa
-    </ion-segment-button>
-    <ion-segment-button value="patio">
-      <ion-icon name="car-sport" class="espacadorCampo"></ion-icon>
-      Patio
-    </ion-segment-button>
-    <ion-segment-button value="estacionamento">
-      <ion-icon name="repeat" class="espacadorCampo"></ion-icon>
-      Estacionamento
-    </ion-segment-button>
-    <ion-segment-button value="recibo">
-      <ion-icon name="receipt" class="espacadorCampo"></ion-icon>
-      Recibo
-    </ion-segment-button>
-  </ion-segment>
+  <app-header titulo="Configurações" ocultarRetorno="true" iconeBotaoAdicional="chevron-back" (onClickBotaoAdicional)="fecharItem()"></app-header>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="configuracoes != null">
+  <div *ngIf="pagina == null">
+    <ion-list [@listAnimation]="5">
+      <ion-item button (click)="abrirPagina('empresa')">
+        <ion-icon name="business"></ion-icon>
+        Empresa
+      </ion-item>
+      <ion-item button (click)="abrirPagina('patio')">
+        <ion-icon name="car-sport"></ion-icon>
+        Patio
+      </ion-item>
+      <ion-item button (click)="abrirPagina('estacionamento')">
+        <ion-icon name="repeat"></ion-icon>
+        Estacionamento
+      </ion-item>
+      <ion-item button (click)="abrirPagina('recibo')">
+        <ion-icon name="receipt"></ion-icon>
+        Recibo
+      </ion-item>
+      <ion-item button (click)="abrirPagina('seguranca')">
+        <ion-icon name="key"></ion-icon>
+        Segurança
+      </ion-item>
+    </ion-list>
+  </div>
+
   <div *ngIf="pagina == 'empresa'">
     <ion-grid>
       <ion-row>
@@ -34,7 +41,7 @@
           <ion-list *ngIf="configuracoes != null">
             <ion-item>
               <ion-label position="floating">Documento (CNPJ / CPF)</ion-label>
-              <ion-input autocorrect="off" type="tel" [ngModel]="configuracoes.Estabelecimento.Documento | documentoPipe" (ionChange)="configuracoes.Estabelecimento.Documento = utils.somenteNumeros($event.target.value)"></ion-input>
+              <ion-input autocorrect="off" type="tel" [ngModel]="configuracoes.Estabelecimento.Documento | documentoPipe" (ionInput)="configuracoes.Estabelecimento.Documento = utils.somenteNumeros($event.target.value)"></ion-input>
             </ion-item>
             <ion-item>
               <ion-label position="floating">Nome do estabelecimento</ion-label>
@@ -72,6 +79,83 @@
             <ion-item>
               <ion-label>Bloquear entrada em lotação</ion-label>
               <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.LimitarLotacao"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Controlar responsável pelo veículo</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoResponsavel"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Informar localização no pátio</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoLocalizacao"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Informar dados do cliente</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoCliente"></ion-toggle>
+            </ion-item>
+          </ion-list>
+          <ion-item>
+            <ion-label>Informar observações do veículo</ion-label>
+            <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoObservacao"></ion-toggle>
+          </ion-item>
+      </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <div *ngIf="pagina == 'seguranca'">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLigth">
+          <ion-icon class="iconeSubTitulo" name="person-circle"></ion-icon>
+          Dados do administrador
+        </ion-col>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">E-mail</ion-label>
+            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Seguranca.EmailAdministrador"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLigth">
+          <ion-icon class="iconeSubTitulo" name="lock-closed"></ion-icon>
+          Exigir senha nos seguinte itens
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-no-padding">
+          <ion-list *ngIf="configuracoes != null">
+            <ion-item>
+              <ion-label>Excluir veículo do pátio</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Seguranca.ExigirSenhaExcluirVeiculoPatio"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Excluir serviço do veículo</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Seguranca.ExigirSenhaExcluirServicosVeiculo"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Postergar pagamento</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Seguranca.ExigirSenhaPagarDepois"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Estornar movimento do caixa</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Seguranca.ExigirSenhaEstornarMovimento"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Alterar responsável do veículo</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Seguranca.ExigirSenhaAlterarResponsavel"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Conceder desconto</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Seguranca.ExigirSenhaConcederDesconto"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Acessar relatórios gerenciais</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Seguranca.ExigirSenhaRelatoriosGerenciais"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Cadastro de funcionários</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Seguranca.ExigirSenhaCadastroFuncionarios"></ion-toggle>
             </ion-item>
           </ion-list>
         </ion-col>
@@ -351,13 +435,41 @@
           <ion-icon class="iconeSubTitulo" name="receipt"></ion-icon>
           Informações do recibo
         </ion-col>
-      </ion-row>
+      </ion-row>    
       <ion-row>
         <ion-col class="ion-no-padding">
           <ion-list *ngIf="configuracoes != null">
             <ion-item>
-              <ion-label>Exibir CNPJ</ion-label>
+              <ion-label position="floating">Quantidade de colunas do recibo</ion-label>
+              <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Recibo.CaractersImpressao"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label>Imprimir recibo na entrada</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Recibo.ImprimirReciboEntrada"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Mensagem no rodapé da entrada</ion-label>
+              <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Recibo.MensagemReciboEntrada"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label>Imprimir recibo na saída</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Recibo.ImprimirReciboSaida"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Mensagem no rodapé de saída</ion-label>
+              <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Recibo.MensagemReciboSaida"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label>Exibir CNPJ no cabeçalho</ion-label>
               <ion-toggle color="primary" [(ngModel)]="configuracoes.Recibo.ExibirCNPJ"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Endereço primeira linha</ion-label>
+              <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Recibo.EnderecoLinha1"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Endereço segunda linha</ion-label>
+              <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Recibo.EnderecoLinha2"></ion-input>
             </ion-item>
           </ion-list>
         </ion-col>

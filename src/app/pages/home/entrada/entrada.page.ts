@@ -88,9 +88,7 @@ export class EntradaPage implements OnInit {
 
   tratarPlaca(valor: string) {
     if (valor != null) {
-      valor = valor.replace(/[^a-zA-Z0-9]/g,'').toUpperCase()
-    
-      if (valor && valor.length >= 3) {
+        if (valor && valor.length >= 3) {
         this.patioProvider.consultaHistoricoPlaca(valor).then(veiculo => {
           this.veiculo.Nome = veiculo.Nome
           this.veiculo.TipoVeiculo = veiculo.TipoVeiculo
@@ -99,7 +97,8 @@ export class EntradaPage implements OnInit {
         })
       }
     }
-    return valor
+
+    return valor.toString().toUpperCase().replace(/[^a-zA-Z0-9]/g,'')
   }
 
   async cadastrarServico(servico = null) {

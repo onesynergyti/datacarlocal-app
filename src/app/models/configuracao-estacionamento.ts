@@ -1,6 +1,6 @@
 export class ConfiguracaoEstacionamento {
-  UtilizarEstacionamento: boolean
-  IncluirServicoEstacionamento: boolean
+  UtilizarEstacionamento: boolean = true
+  IncluirServicoEstacionamento: boolean = true
   MinutosCarencia: number
   UtilizaFracao15Minutos: boolean
   UtilizaFracao30Minutos: boolean
