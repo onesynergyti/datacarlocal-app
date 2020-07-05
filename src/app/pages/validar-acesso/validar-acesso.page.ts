@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavParams } from '@ionic/angular';
 
 @Component({
   selector: 'app-validar-acesso',
@@ -8,18 +8,23 @@ import { ModalController } from '@ionic/angular';
 })
 export class ValidarAcessoPage implements OnInit {
 
+  mensagem = ''
+
   constructor(
-    private modalCtrl: ModalController
-  ) { }
+    private modalCtrl: ModalController,
+    private navParams: NavParams
+  ) { 
+    this.mensagem = navParams.get('mensagem')
+  }
 
   ngOnInit() {
   }
 
-  cancelar() {
-    this.modalCtrl.dismiss(false)
+  async cancelar() {
+    await this.modalCtrl.dismiss(false)
   }
 
-  concluir() {
-    this.modalCtrl.dismiss(true)
+  async concluir() {
+    await this.modalCtrl.dismiss(true)
   }
 }

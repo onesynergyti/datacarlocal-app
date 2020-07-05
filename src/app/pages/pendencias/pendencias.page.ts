@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
 import { PatioService } from 'src/app/dbproviders/patio.service';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 import { Utils } from 'src/app/utils/utils';
 import { PropagandasService } from 'src/app/services/propagandas.service';
 import { BluetoothService } from 'src/app/services/bluetooth.service';
 import { SaidaPage } from '../home/saida/saida.page';
 import { Movimento } from 'src/app/models/movimento';
+import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
+import { ValidarAcessoPage } from '../validar-acesso/validar-acesso.page';
 
 @Component({
   selector: 'app-pendencias',
@@ -38,7 +40,9 @@ export class PendenciasPage implements OnInit {
     private modalController: ModalController,
     private utils: Utils,
     public propagandaService: PropagandasService,
-    public bluetooth: BluetoothService
+    public bluetooth: BluetoothService,
+    public configuracoesService: ConfiguracoesService,
+    private alertController: AlertController
   ) { }
 
   ngOnInit() {
@@ -71,6 +75,44 @@ export class PendenciasPage implements OnInit {
   }
 
   async excluir(veiculo) {
+    if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaExcluirVeiculoPatio) {
+      const alert = await this.alertController.create({
+        header: 'Excluir veículo ' + veiculo.Placa,
+        message: 'Deseja realmente excluir o veículo?',
+        buttons: [
+          {
+            text: 'Não',
+            role: 'cancel',
+            cssClass: 'secondary',
+          }, {
+            text: 'Sim',
+            handler: () => {
+              this.confirmarExclusao(veiculo)
+            }
+          }
+        ]  
+      });
+    
+      await alert.present();
+    }
+    else {
+      const modal = await this.modalController.create({
+        component: ValidarAcessoPage,
+        componentProps: {
+          'mensagem': 'Informe a senha de administrador para excluir o veículo.'
+        }  
+      });
+  
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data == true)
+          this.confirmarExclusao(veiculo)
+      })
+  
+      return await modal.present(); 
+    }
+  }
+
+  async confirmarExclusao(veiculo) {
     await this.providerPatio.exibirProcessamento('Excluindo veículo...')
     this.providerPatio.excluir(veiculo.Id)
     .then(() => {
@@ -90,25 +132,30 @@ export class PendenciasPage implements OnInit {
 
   async avaliarRetornoVeiculo(retorno, inclusao) {
     if (retorno.data != null) {        
-            const veiculos = retorno.data.Movimento.Veiculos
-
-      // Exclui os veículos
-      veiculos.slice().forEach(veiculoAtual => {
-        this.veiculos.splice(this.veiculos.indexOf(this.veiculos.find(itemAtual => itemAtual.Placa === veiculoAtual.Placa)), 1)
-      });
-      
-      if (this.bluetooth.dispositivoSalvo != null) {
-        await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
-        alert(JSON.stringify(retorno.data.Movimento))
-        this.bluetooth.imprimirRecibo(retorno.data.Movimento, 'pagamento')
+      if (retorno.data.Operacao == 'excluir') {
+        this.excluir(retorno.data.Veiculo)
       }
+      else {
+        const veiculos = retorno.data.Movimento.Veiculos
 
-      // Exibe uma propagando na saída do veículo
-      setTimeout(() => {
-        this.propagandaService.showInterstitialAds()
-      }, 3000);
-
-      this.utils.mostrarToast('Pagamento dos serviços realizada com sucesso', 'success')
+        // Exclui os veículos
+        veiculos.slice().forEach(veiculoAtual => {
+          this.veiculos.splice(this.veiculos.indexOf(this.veiculos.find(itemAtual => itemAtual.Placa === veiculoAtual.Placa)), 1)
+        });
+        
+        if (this.bluetooth.dispositivoSalvo != null) {
+          await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
+          alert(JSON.stringify(retorno.data.Movimento))
+          this.bluetooth.imprimirRecibo(retorno.data.Movimento, 'pagamento')
+        }
+  
+        // Exibe uma propagando na saída do veículo
+        setTimeout(() => {
+          this.propagandaService.showInterstitialAds()
+        }, 3000);
+  
+        this.utils.mostrarToast('Pagamento dos serviços realizada com sucesso', 'success')
+      }
     }
   }
 

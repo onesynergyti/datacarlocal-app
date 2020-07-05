@@ -1,6 +1,6 @@
 export class ConfiguracaoSeguranca {
   ExigirSenhaExcluirVeiculoPatio: boolean = true
-  ExigirSenhaExcluirServicosVeiculo: boolean = true
+  ExigirSenhaEditarServicosVeiculo: boolean = true
   ExigirSenhaPagarDepois: boolean = true
   ExigirSenhaEstornarMovimento: boolean = true
   ExigirSenhaAlterarResponsavel: boolean = true

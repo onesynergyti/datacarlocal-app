@@ -10,6 +10,7 @@ import { FuncionariosService } from 'src/app/dbproviders/funcionarios.service';
 import { SelectPopupModalPage } from 'src/app/components/select-popup-modal/select-popup-modal.page';
 import { Funcionario } from 'src/app/models/funcionario';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
+import { ValidarAcessoPage } from '../../validar-acesso/validar-acesso.page';
 
 @Component({
   selector: 'app-entrada',
@@ -101,38 +102,59 @@ export class EntradaPage implements OnInit {
     return valor.toString().toUpperCase().replace(/[^a-zA-Z0-9]/g,'')
   }
 
+  async procederCadastroServico(servico) {
+    const inclusao = servico == null
+    const modal = await this.modalCtrl.create({
+      component: CadastroServicoPage,
+      componentProps: {
+        'servicoVeiculo': servico,
+        'tipoVeiculo': this.veiculo.TipoVeiculo,
+        'inclusao': inclusao
+      }
+    })
+
+    modal.onWillDismiss().then((retorno) => {
+      if (retorno.data != null) {
+        const servico = retorno.data.ServicoVeiculo
+        if (retorno.data.Operacao = 'cadastro') {
+          // Não permite incluir serviço repetido
+          if (inclusao && (this.veiculo.Servicos.find(servicoAtual => servicoAtual.Id == servico.Id )))
+            this.utils.mostrarToast('O serviço informado já existe.', 'danger')
+          else
+            this.utilsLista.atualizarLista(this.veiculo.Servicos, servico)
+        }
+        else
+          this.utilsLista.excluirDaLista(this.veiculo.Servicos, servico)
+      }
+    })
+
+    return await modal.present(); 
+  }
+
   async cadastrarServico(servico = null) {
     if (!this.veiculo.TipoVeiculo) {
       this.utils.mostrarToast('Informe o tipo do veículo antes de adicionar um serviço', 'danger')    
     }
-    // Estacionamento não pode ser editado
     else {
-      const inclusao = servico == null
-      const modal = await this.modalCtrl.create({
-        component: CadastroServicoPage,
-        componentProps: {
-          'servicoVeiculo': servico,
-          'tipoVeiculo': this.veiculo.TipoVeiculo,
-          'inclusao': inclusao
-        }
-      })
-  
-      modal.onWillDismiss().then((retorno) => {
-        if (retorno.data != null) {
-          const servico = retorno.data.ServicoVeiculo
-          if (retorno.data.Operacao = 'cadastro') {
-            // Não permite incluir serviço repetido
-            if (inclusao && (this.veiculo.Servicos.find(servicoAtual => servicoAtual.Id == servico.Id )))
-              this.utils.mostrarToast('O serviço informado já existe.', 'danger')
-            else
-              this.utilsLista.atualizarLista(this.veiculo.Servicos, servico)
-          }
-          else
-            this.utilsLista.excluirDaLista(this.veiculo.Servicos, servico)
-        }
-      })
-  
-      return await modal.present(); 
+      // Verifica permissão para editar serviços
+      if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaEditarServicosVeiculo || this.inclusao) {
+        this.procederCadastroServico(servico)
+      }
+      else {
+        const modal = await this.modalCtrl.create({
+          component: ValidarAcessoPage,
+          componentProps: {
+            'mensagem': 'Informe a senha de administrador para prorrogar o pagamento.'
+          }  
+        });
+    
+        modal.onWillDismiss().then((retorno) => {
+          if (retorno.data == true)
+            this.procederCadastroServico(servico)
+        })
+    
+        return await modal.present(); 
+      }
     }
   }
 
@@ -151,7 +173,8 @@ export class EntradaPage implements OnInit {
       // Para finalizar o atendimento tem que finalizar os serviços
       if (operacao == 'finalizar' && this.veiculo.PossuiServicosPendentes) 
         this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve excluir ou finalizar antes de realizar o pagamento.', 'danger', 3000)      
-      else {
+      // Edição ou inclusão
+      else if (operacao != 'excluir') {
         await this.patioProvider.exibirProcessamento('Registrando entrada...')
         this.patioProvider.salvar(this.veiculo)
         .then((veiculo) => {
@@ -161,6 +184,9 @@ export class EntradaPage implements OnInit {
           alert('Não foi possível inserir o veículo. ' + JSON.stringify(erro))
         })
       }
+      // Exclusão
+      else 
+        this.modalCtrl.dismiss({ Operacao: operacao, Veiculo: this.veiculo })
     }
   }
 

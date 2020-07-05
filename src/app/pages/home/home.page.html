@@ -12,6 +12,12 @@
     Vagas: {{ configuracoesService.configuracoes.Patio.QuantidadeVagas }}
     Ocupação: {{ veiculos.length }}
   </div>
+  <div *ngIf="veiculos.length == 0">
+    Seu pátio está vazio
+  </div>
+  <div *ngIf="veiculos.length > 0 && listaFiltrada.length == 0">
+    Nenhum veículo localizado
+  </div>
   <ion-list [@listAnimation]="listaFiltrada.length" lines="none">
     <ion-item-sliding id="veiculo.Placa" *ngFor="let veiculo of listaFiltrada">
       <ion-item (click)="cadastrarEntrada(veiculo)">
@@ -107,7 +113,7 @@
       </ion-col>
       <ion-col size-xs="6">
         <ion-button color="danger" expand="block" (click)="leituraQrCode()">
-          <ion-icon slot="start" name="remove-circle"></ion-icon>
+          <ion-icon slot="start" name="qr-code"></ion-icon>
           Saída
         </ion-button>
       </ion-col>

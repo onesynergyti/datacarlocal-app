@@ -6,6 +6,7 @@ import { SelectPopupModalPage } from 'src/app/components/select-popup-modal/sele
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { Servico } from 'src/app/models/servico';
 import { Utils } from 'src/app/utils/utils';
+import { ValidarAcessoPage } from 'src/app/pages/validar-acesso/validar-acesso.page';
 
 @Component({
   selector: 'app-cadastro-servico',
@@ -23,7 +24,9 @@ export class CadastroServicoPage implements OnInit {
     private servicosProvider: ServicosService,
     public navParams: NavParams,
     public configuracoesService: ConfiguracoesService,
-    public utils: Utils
+    public utils: Utils,
+    private modalController: ModalController,
+    
   ) { 
     this.inclusao = navParams.get('inclusao')
     this.tipoVeiculo = navParams.get('tipoVeiculo')
@@ -66,7 +69,7 @@ export class CadastroServicoPage implements OnInit {
   }
   
   cancelar() {
-    this.modalCtrl.dismiss()
+    this.fechar()
   }
 
   async cancelarOperacao() {
@@ -77,8 +80,33 @@ export class CadastroServicoPage implements OnInit {
     }, 500);
   }
 
-  concluir() {
-    this.modalCtrl.dismiss({ Operacao: 'cadastro', ServicoVeiculo: this.servicoVeiculo})
+  async fechar(retorno = null) {    
+    await this.servicosProvider.exibirProcessamento('Atualizando serviço...')
+    setTimeout(() => {
+      this.servicosProvider.ocultarProcessamento()
+      this.modalController.dismiss(retorno)
+    }, 200);
+  }
+
+  async concluir() {
+    // Verifica permissão para conceder desconto
+    if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaConcederDesconto || this.servicoVeiculo.Desconto == 0)
+      this.modalCtrl.dismiss({ Operacao: 'cadastro', ServicoVeiculo: this.servicoVeiculo})
+    else {
+      const modal = await this.modalController.create({
+        component: ValidarAcessoPage,
+        componentProps: {
+          'mensagem': 'Informe a senha de administrador para concessão de desconto.'
+        }  
+      });
+  
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data == true)
+          this.fechar({ Operacao: 'cadastro', ServicoVeiculo: this.servicoVeiculo})
+      })
+  
+      return await modal.present(); 
+    }
   }
 
   excluir() {

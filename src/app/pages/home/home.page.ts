@@ -97,16 +97,41 @@ export class HomePage {
   }
 
   async excluir(veiculo) {
-    const modal = await this.modalController.create({
-      component: ValidarAcessoPage
-    });
-
-    modal.onWillDismiss().then((retorno) => {
-      if (retorno.data == true)
-        this.confirmarExclusao(veiculo)
-    })
-
-    return await modal.present(); 
+    if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaExcluirVeiculoPatio) {
+      const alert = await this.alertController.create({
+        header: 'Excluir veículo ' + veiculo.Placa,
+        message: 'Deseja realmente excluir o veículo?',
+        buttons: [
+          {
+            text: 'Não',
+            role: 'cancel',
+            cssClass: 'secondary',
+          }, {
+            text: 'Sim',
+            handler: () => {
+              this.confirmarExclusao(veiculo)
+            }
+          }
+        ]  
+      });
+    
+      await alert.present();
+    }
+    else {
+      const modal = await this.modalController.create({
+        component: ValidarAcessoPage,
+        componentProps: {
+          'mensagem': 'Informe a senha de administrador para excluir o veículo.'
+        }  
+      });
+  
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data == true)
+          this.confirmarExclusao(veiculo)
+      })
+  
+      return await modal.present(); 
+    }
   }
 
   abrirWhatsapp(veiculo) {
@@ -229,33 +254,26 @@ export class HomePage {
 
   async avaliarRetornoVeiculo(retorno, inclusao) {
     if (retorno.data != null) {             
-      // Caso tenha solicitado a finalização, abre a tela de saída
       if (retorno.data.Operacao == 'finalizar') { 
         this.registrarSaida(retorno.data.Veiculo)
       }
-      // Saída de veículo, exclui o item 
-      // ESSE CASO CONSIDERA QUE PODEM TER MÚLTIPLOS PAGAMENTOS
-      else if (retorno.data.Operacao != 'entrada') {
-        // A saída do veículo retorna o movimento completo
-        const veiculos = retorno.data.Movimento.Veiculos
-
-        // Exclui os veículos
-        veiculos.slice().forEach(veiculoAtual => {
-          this.veiculos.splice(this.veiculos.indexOf(this.veiculos.find(itemAtual => itemAtual.Placa === veiculoAtual.Placa)), 1)
-        });
-        
-        if (this.bluetooth.dispositivoSalvo != null) {
-          await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
-          // Se for pagamento imprime o comprovante, caso contrário passa o veículo para imprimir o indicador de débito pendente
-          this.bluetooth.imprimirRecibo(retorno.data.Operacao == 'pagamento' ? retorno.data.Movimento : retorno.data.Movimento.Veiculos[0], retorno.data.Operacao)
-        }
-
-        // Exibe uma propagando na saída do veículo
-        this.propagandaService.showInterstitialAds()
+      else if (retorno.data.Operacao == 'excluir') {
+        this.excluir(retorno.data.Veiculo)
       }
-      // Alteração do veículo, altera o item 
-      // ESSE CASO CONSIDERA QUE SÓ PODE TER UM VEÍCULO ALTERADO
-      else {
+      else if (retorno.data.Operacao == 'postergar') {
+        // No caso do pagamento o retorno é do movimento
+        const veiculo = retorno.data.Movimento.Veiculos[0]
+        const veiculoLocalizado = this.veiculos.find(itemAtual => itemAtual.Placa === veiculo.Placa)
+        this.veiculos.splice(this.veiculos.indexOf(veiculoLocalizado), 1)
+        this.utils.mostrarToast('Pagamento acumulado com sucesso', 'success')        
+
+        if (this.bluetooth.dispositivoSalvo != null) { 
+          await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
+          this.bluetooth.imprimirRecibo(retorno.data.Veiculo, 'postergar')
+        }
+      }
+      // Alteração ou inclusão de veículo
+      else {        
         const veiculo = retorno.data.Veiculo
         const veiculoLocalizado = this.veiculos.find(itemAtual => itemAtual.Placa === veiculo.Placa)
 

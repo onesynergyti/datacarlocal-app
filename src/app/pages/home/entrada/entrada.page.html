@@ -152,8 +152,12 @@
                 <h5 *ngIf="veiculo.TipoVeiculo && servico.Id">{{ veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h5>                
                 <h5 *ngIf="!veiculo.TipoVeiculo && servico.Id">Selecione o tipo de veículo</h5>
                 <h5 *ngIf="!servico.Id">Preço calculado na saída</h5>
-                <h5 class="fontCorPerigo">{{ servico.Acrescimo | decimalPipe:"R$ " }}</h5>                
-                <h5 class="fontCorSucesso">{{ servico.Desconto | decimalPipe:"R$ " }}</h5>                
+                <ion-grid>
+                  <ion-row class="ion-no-padding ion-no-margin">
+                    <ion-col *ngIf="servico.Acrescimo > 0"><h5 class="fontCorPerigo">Acrescimo: {{ servico.Acrescimo | decimalPipe:"R$ " }}</h5></ion-col>
+                    <ion-col *ngIf="servico.Desconto > 0"><h5 class="fontCorSucesso">Desconto: {{ servico.Desconto | decimalPipe:"R$ " }}</h5></ion-col>
+                  </ion-row>
+                </ion-grid>                                
               </div>
               <ion-note slot="end" *ngIf="servico.Id">
                 <ion-toggle color="primary" [(ngModel)]="servico.Executado"></ion-toggle>
@@ -266,7 +270,7 @@
           Finalizar
         </ion-button>
       </ion-col>
-      <ion-col size-xs="2" *ngIf="!inclusao">
+      <ion-col size-xs="2" *ngIf="!inclusao" (click)="concluir('excluir')">
         <ion-button expand="block" color="danger">
           <ion-icon name="trash"></ion-icon>
         </ion-button>

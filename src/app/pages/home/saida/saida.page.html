@@ -112,12 +112,17 @@
           Finalizar
         </ion-button>
       </ion-col>
-      <ion-col *ngIf="movimento.Veiculos[0].Ativo == true">
+      <ion-col size-xs="5" *ngIf="movimento.Veiculos[0].Ativo == true">
         <ion-button expand="block" color="danger" (click)="concluirDepois()">
           <ion-icon slot="start" name="document-attach"></ion-icon>
           Receber depois
         </ion-button>
       </ion-col>
+      <ion-col size-xs="2" (click)="concluir('excluir')">
+        <ion-button expand="block" color="danger">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
     </ion-row>
-  </ion-grid>
+</ion-grid>
 </ion-footer>
