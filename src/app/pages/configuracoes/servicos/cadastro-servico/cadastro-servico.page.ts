@@ -12,6 +12,7 @@ import { Utils } from 'src/app/utils/utils';
 export class CadastroServicoPage implements OnInit {
 
   servico: Servico
+  inclusao: boolean
 
   constructor(
     private modalController: ModalController,
@@ -20,6 +21,7 @@ export class CadastroServicoPage implements OnInit {
     public utils: Utils
   ) { 
     this.servico = navParams.get('servico')
+    this.inclusao = navParams.get('inclusao')
   }
 
   ngOnInit() {
@@ -29,14 +31,19 @@ export class CadastroServicoPage implements OnInit {
     this.modalController.dismiss()
   }
 
-  async concluir() {
-    await this.providerServico.exibirProcessamento('Salvando servico...')
-    this.providerServico.salvar(this.servico)
-    .then(() => {
-      this.modalController.dismiss(this.servico)
-    })
-    .catch(() => {
-      alert('Não foi possível salvar o serviço')
-    })
+  async concluir(operacao = 'cadastrar') {
+    if (operacao != 'cadastrar') {
+      this.modalController.dismiss({ Operacao: operacao, Servico: this.servico })
+    }
+    else {
+      await this.providerServico.exibirProcessamento('Salvando servico...')
+      this.providerServico.salvar(this.servico)
+      .then(() => {
+        this.modalController.dismiss({ Operacao: operacao, Servico: this.servico })
+      })
+      .catch(() => {
+        alert('Não foi possível salvar o serviço')
+      })
+    }
   }
 }

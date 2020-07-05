@@ -136,7 +136,7 @@ export class HomePage {
 
   abrirWhatsapp(veiculo) {
     if (veiculo.Telefone && veiculo.Telefone.length >= 10)
-      veiculo.enviarMensagemWhatsapp(veiculo.Telefone)
+      this.utils.abrirWhatsapp(veiculo.Telefone)
     else
       this.utils.mostrarToast('Não foi registrado o contato para esse veículo', 'danger')
   }
@@ -144,11 +144,8 @@ export class HomePage {
   async verificarConfiguracoesPendentes() {
     return new Promise((resolve, reject) => {
       // O estacionamento ou os serviços devem estar ativos
-      if (!this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento && !this.configuracoesService.configuracoes.UtilizaServicos) {
-        reject({ Titulo: 'Configuração inválida', Mensagem: 'Você deve habilitar a função de estacionamento ou serviços. Deseja acessar as configurações agora?', Rota: 'configuracoes' })
-      }
       // Se houver utilização de estacionamento, tem que ter a tabela configurada
-      else if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento && 
+      if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento && 
       !this.configuracoesService.configuracoes.Estacionamento.UtilizaDiaria &&
       !this.configuracoesService.configuracoes.Estacionamento.UtilizaFracao15Minutos &&
       !this.configuracoesService.configuracoes.Estacionamento.UtilizaFracao30Minutos &&

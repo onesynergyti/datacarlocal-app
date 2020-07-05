@@ -126,6 +126,10 @@
         <ion-col class="ion-no-padding">
           <ion-list *ngIf="configuracoes != null">
             <ion-item>
+              <ion-label>Acessar cadastro de serviços</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Seguranca.ExigirSenhaCadastroServicos"></ion-toggle>
+            </ion-item>            
+            <ion-item>
               <ion-label>Excluir veículo do pátio</ion-label>
               <ion-toggle color="primary" [(ngModel)]="configuracoes.Seguranca.ExigirSenhaExcluirVeiculoPatio"></ion-toggle>
             </ion-item>

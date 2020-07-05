@@ -18,6 +18,24 @@ export class ServicosService extends ServiceBaseService {
     super(loadingController)
   }
 
+  public excluir(id) {
+    return new Promise((resolve, reject) => { 
+      this.database.DB.then(db => { 
+        let sql = 'delete from servicos where Id = ?';
+        let data = [id];
+        db.executeSql(sql, data).then(() => {
+          resolve()
+        })
+        .catch(erro => {
+          reject(erro)
+        })
+      })
+      .finally(() => {
+        this.ocultarProcessamento()
+      })
+    })
+  }
+
   public salvar(servico: Servico) {
     let sql
     let data

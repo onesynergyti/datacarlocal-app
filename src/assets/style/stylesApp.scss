@@ -112,6 +112,18 @@ ion-list {
     margin-top: 10px;
 }
 
+.divInformativo {
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+    padding: 10px;
+
+    ion-icon {
+        margin-top: 20px;
+        font-size: 50px;
+    }
+}
+
 .textoLimitado { 
     max-width: 90%;
     overflow: hidden;

@@ -1,24 +1,22 @@
 <ion-header>
   <app-header titulo="Serviços"></app-header>
-  <ion-item *ngIf="configuracoes != null">
-    <ion-label>Controlar serviços</ion-label>
-    <ion-toggle [(ngModel)]="configuracoes.UtilizaServicos"></ion-toggle>
-  </ion-item>    
-  <ion-searchbar *ngIf="configuracoes != null && configuracoes.UtilizaServicos" autocorrect="off" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
+  <ion-searchbar autocorrect="off" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
 </ion-header>
 
-<ion-content *ngIf="carregandoServicos && configuracoes != null && configuracoes.UtilizaServicos">
+<ion-content *ngIf="carregandoServicos">
   <ion-spinner class="spinnerCentro"></ion-spinner>
 </ion-content>
 
-<ion-content *ngIf="!carregandoServicos && configuracoes != null && configuracoes.UtilizaServicos">
+<ion-content *ngIf="!carregandoServicos">
+  <div class="divInformativo" *ngIf="servicos.length == 0">
+    <h2>Nenhum serviço cadastrado</h2>
+    <ion-icon name="clipboard-outline"></ion-icon>
+  </div>
+  <div class="divInformativo" *ngIf="servicos.length > 0 && listaFiltrada.length == 0">
+    <h2>Nenhum serviço localizado</h2>
+    <ion-icon name="search-outline"></ion-icon>
+  </div>
   <ion-grid>
-    <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
-        <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
-        Serviços disponíveis
-      </ion-col>
-    </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
         <ion-list [@listAnimation]="listaFiltrada.length" lines="full">
@@ -78,5 +76,8 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block" (click)="cadastrarServico()">Adicionar Serviço</ion-button>
+  <ion-button color="success" expand="block" (click)="cadastrarServico()">
+    <ion-icon slot="start" name="add-circle"></ion-icon>
+    Adicionar
+  </ion-button>
 </ion-footer>

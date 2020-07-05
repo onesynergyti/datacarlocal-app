@@ -64,5 +64,19 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="full" (click)="concluir()">Salvar Serviço</ion-button>
+  <ion-grid class="ion-no-padding ion-no-margin">
+    <ion-row>
+      <ion-col>
+        <ion-button color="success" expand="block" (click)="concluir()">
+          <ion-icon slot="start" name="checkmark-circle"></ion-icon>
+          Salvar
+        </ion-button>
+      </ion-col>
+      <ion-col size-xs="2" *ngIf="!inclusao" (click)="concluir('excluir')">
+        <ion-button expand="block" color="danger">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-footer>

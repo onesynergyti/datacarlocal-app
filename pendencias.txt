@@ -12,21 +12,26 @@ OK - Permitir abrir um veículo pendente apenas com o click, sem precisar do sli
 OK - Veículos pendentes exibem apenas o botão de finalizar, deve ocultar o botão de pagar depois
 OK - Criar mascara da placa
 OK - Campo para informar detalhes da localização do veículo
+OK - Criar senha de segurança para ações críticas
+OK - Controle de acesso para exclusão de Veículos do pátio
+OK - Controle de acesso para exclusão de pendências
+OK - Configuração incial do sistema
+OK - A primeira vez que entra no pátio, os serviços agendados não estão exibindo alertas de agendamento
 BASE CRIADA - Criar um relatório de histórico com filtros por período e funcionário
-- Criar consistência nos formulários, incluindo max length e campos obrigatórios
+OK - Ajustar layout do menu
+- Ajustar layout dos movimentos
+- Ajustar layout do cadastro de funcionários
+- Ajustar consistência no cadastro de funcionários
+- Trocar senha de administrador está errado
 - Criar consistência no cadastro de veículos
+- Criar consistência nos formulários, incluindo max length e campos obrigatórios
 - Ao navegar pelas telas, no rodapé e o cabeçalho estão ficando alguns restos das telas de origem. Tem que verificar o motivo e retirar isso
 - Complementar a tela de configurações
-- Criar senha de segurança para ações críticas
-- Controle de acesso para exclusão de Veículos do pátio
-- Controle de acesso para exclusão de pendências
 - Controle de acesso para edição e exclusão de serviços já inseridos no Veículos
 - Finalizar gráficos
 - Controle de acesso e Exclusão de movimentos (Desabilitar sem excluir), tanto na tela de movimentos quanto na tela de mensalistas
-- Fazer os slides de configuração inicial do aplicativo
 - Criar a chaves das tabelas para garantir consistência
 - Permitir fazer backup e exportação de dados
-- A primeira vez que entra no pátio, os serviços agendados não estão exibindo alertas de agendamento
 - Tratar cabeçalhos do veículo na tela de pagamento e no recibo
 - Criar assinatura no recibo de pagar depois, para comprovação do estabelecimento
 - Trabalhar melhor a conexão com a impressora, exibindo status na tela principal da home

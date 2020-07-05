@@ -6,7 +6,6 @@ import { ConfiguracaoSeguranca } from './configuracao-seguranca'
 import { ConfiguracaoManualUso } from './configuracao-manual-uso'
 
 export class Configuracoes {
-  UtilizaServicos: boolean = true
   Recibo: ConfiguracaoRecibo = new ConfiguracaoRecibo()
   Estabelecimento: Estabelecimento = new Estabelecimento()
   Estacionamento: ConfiguracaoEstacionamento = new ConfiguracaoEstacionamento()

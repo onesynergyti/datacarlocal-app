@@ -14,6 +14,11 @@ export class Utils {
     private datePicker: DatePicker
   ) { }
 
+  abrirWhatsapp(celular, mensagem = '') {
+    celular = celular.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+    window.location.href=`https://api.whatsapp.com/send?phone=55${celular}&text=${mensagem.replace(' ', '%20')}`;
+  }
+
   async alerta(titulo, mensagem) {
       const alert = await this.alertCtrl.create({
       message: mensagem,

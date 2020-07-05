@@ -2,22 +2,61 @@
   <ion-menu side="start" menuId="first" contentId="principal">
     <ion-header>
       <ion-toolbar color="primary">
-        <ion-title>Menu</ion-title>
+        <ion-title class="ion-text-center">Menu Principal</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content>
-      <ion-list>
-        <ion-menu-toggle>          
-          <ion-item (click)="navegar('home')">Pátio</ion-item>
-          <ion-item (click)="navegar('configuracoes')">Configurações</ion-item>
-          <ion-item (click)="navegar('impressora')">Impressora</ion-item>
-          <ion-item (click)="navegar('movimento')">Movimento</ion-item>
-          <ion-item (click)="navegar('servicos')">Serviços</ion-item>
-          <ion-item (click)="navegar('pendencias')">Pagamentos pendentes</ion-item>
-          <ion-item (click)="navegar('mensalistas')">Mensalistas</ion-item>
-          <ion-item (click)="navegar('funcionarios')">Funcionários</ion-item>
-          <ion-item (click)="navegar('historico-veiculos')">Histórico de vendas</ion-item>
-          <ion-item (click)="abrirSenhaAdministrador()">Senha de Administrador</ion-item>
+    <ion-content class="ion-no-margin ion-no-padding">
+      <ion-list class="ion-no-margin ion-no-padding">
+        <ion-menu-toggle color="secondary">
+          <ion-header>Suporte</ion-header>
+          <ion-item (click)="abrirWhatsAppSuporte()">
+            <ion-icon name="logo-whatsapp"></ion-icon>
+            Whatsapp
+          </ion-item>
+          <ion-header>Pátio</ion-header>
+          <ion-item (click)="navegar('mensalistas')">
+            <ion-icon name="people"></ion-icon>
+            Mensalistas
+          </ion-item>
+          <ion-item (click)="navegar('pendencias')">
+            <ion-icon name="wallet"></ion-icon>
+            Pagamentos pendentes
+          </ion-item>
+          <ion-item (click)="navegar('home')">
+            <ion-icon name="car-sport"></ion-icon>
+            Veículos ativos
+          </ion-item>
+          <ion-header>Financeiro</ion-header>
+          <ion-item (click)="navegar('historico-veiculos')">
+            <ion-icon name="stats-chart"></ion-icon>
+            Histórico de vendas
+          </ion-item>
+          <ion-item (click)="navegar('movimento')">
+            <ion-icon name="trending-up"></ion-icon>
+            Movimento
+          </ion-item>
+          <ion-header>Configurações</ion-header>
+          <ion-item (click)="navegar('configuracoes')">
+            <ion-icon name="settings"></ion-icon>
+            Configurações Gerais
+          </ion-item>
+          <ion-item (click)="navegar('funcionarios')">
+            <ion-icon name="person"></ion-icon>
+            Funcionários
+          </ion-item>
+          <ion-item (click)="navegar('impressora')">
+            <ion-icon name="print"></ion-icon>
+            Impressora
+          </ion-item>
+          <ion-item (click)="navegar('servicos', configuracoes.Seguranca.ExigirSenhaCadastroServicos)">
+            <ion-icon name="construct"></ion-icon>
+            Serviços
+          </ion-item>
+          <ion-header>Segurança</ion-header>
+          <ion-item (click)="abrirSenhaAdministrador()">
+            <ion-icon name="lock-closed"></ion-icon>
+            Senha de Administrador
+          </ion-item>
         </ion-menu-toggle>
       </ion-list>
     </ion-content>

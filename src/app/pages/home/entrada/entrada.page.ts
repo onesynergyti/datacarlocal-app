@@ -87,19 +87,17 @@ export class EntradaPage implements OnInit {
     this.modalCtrl.dismiss()
   }
 
-  tratarPlaca(valor: string) {
-    if (valor != null) {
-        if (valor && valor.length >= 3) {
-        this.patioProvider.consultaHistoricoPlaca(valor).then(veiculo => {
-          this.veiculo.Nome = veiculo.Nome
-          this.veiculo.TipoVeiculo = veiculo.TipoVeiculo
-          this.veiculo.Telefone = veiculo.Telefone
-          this.veiculo.Modelo = veiculo.Modelo
-        })
-      }
+  tratarPlaca(valor: string) {    
+    if (valor != null && valor.length >= 3) {
+      this.patioProvider.consultaHistoricoPlaca(valor).then(veiculo => {
+        this.veiculo.Nome = veiculo.Nome
+        this.veiculo.TipoVeiculo = veiculo.TipoVeiculo
+        this.veiculo.Telefone = veiculo.Telefone
+        this.veiculo.Modelo = veiculo.Modelo
+      })
     }
 
-    return valor.toString().toUpperCase().replace(/[^a-zA-Z0-9]/g,'')
+    return valor.toUpperCase().replace(/[^a-zA-Z0-9]/g,'')
   }
 
   async procederCadastroServico(servico) {
@@ -224,16 +222,18 @@ export class EntradaPage implements OnInit {
   }
 
   selecionarDataPrevisao() {
-    this.utils.selecionarData(this.veiculo.PrevisaoEntrega ? new Date(this.veiculo.PrevisaoEntrega) : new Date())
+    const dataPrevisao = this.veiculo.PrevisaoEntrega != null ? new Date(this.veiculo.PrevisaoEntrega) : new Date()
+    this.utils.selecionarData(dataPrevisao)
     .then(data => {
-      data.setHours(new Date(this.veiculo.PrevisaoEntrega).getHours())
-      data.setMinutes(new Date(this.veiculo.PrevisaoEntrega).getMinutes())
+      data.setHours(dataPrevisao.getHours())
+      data.setMinutes(dataPrevisao.getMinutes())
       this.veiculo.PrevisaoEntrega = data
     });
   }
 
   selecionarHoraPrevisao() {
-    this.utils.selecionarHora(new Date(this.veiculo.PrevisaoEntrega))
+    const dataPrevisao = this.veiculo.PrevisaoEntrega != null ? new Date(this.veiculo.PrevisaoEntrega) : new Date()
+    this.utils.selecionarHora(dataPrevisao)
     .then(hora => {
       this.veiculo.PrevisaoEntrega = hora
     });

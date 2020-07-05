@@ -3,10 +3,11 @@ import { Platform, NavController, ModalController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { DatabaseService } from './dbproviders/database.service';
-import { AdMobFree, AdMobFreeRewardVideoConfig } from '@ionic-native/admob-free/ngx';
 import { SenhaAdministradorPage } from './pages/senha-administrador/senha-administrador.page';
 import { Utils } from './utils/utils';
 import { ConfiguracoesService } from './services/configuracoes.service';
+import { ValidarAcessoPage } from './pages/validar-acesso/validar-acesso.page';
+import { Configuracoes } from './models/configuracoes';
 
 @Component({
   selector: 'app-root',
@@ -15,24 +16,17 @@ import { ConfiguracoesService } from './services/configuracoes.service';
 })
 export class AppComponent {
 
-  enderecoNavegacao
-
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private navController: NavController,
     private databaseProvider: DatabaseService,
-    private admobFree: AdMobFree,
     private modalController: ModalController,
     private utils: Utils,
     private configuracoesService: ConfiguracoesService
   ) {
     this.initializeApp();
-
-    document.addEventListener(this.admobFree.events.REWARD_VIDEO_REWARD, (result) => {
-      this.navController.navigateForward(this.enderecoNavegacao)
-    });     
   }
 
   initializeApp() {
@@ -63,33 +57,33 @@ export class AppComponent {
     });
   }
 
-  showRewardVideoAds(url){
-    this.databaseProvider.ocultarProcessamento()
-    this.enderecoNavegacao = url
-    this.navController.navigateForward(this.enderecoNavegacao) 
-
-    /* let RewardVideoConfig: AdMobFreeRewardVideoConfig = {
-        isTesting: false, 
-        autoShow: true,
-        id: "ca-app-pub-2818472978128447/7966305809"
-    };
-    this.admobFree.rewardVideo.config(RewardVideoConfig);
-
-    this.admobFree.rewardVideo.prepare()
-    .then(() => {
-      this.enderecoNavegacao = url
-    })
-    .catch(() => {
-      this.navController.navigateForward(this.enderecoNavegacao)
-    })
-    .finally(() => {
-      this.databaseProvider.ocultarProcessamento()
-    }) */
+  abrirWhatsAppSuporte() {
+    this.utils.abrirWhatsapp('31999082737')
   }
 
-  async navegar(url) {   
-    await this.databaseProvider.exibirProcessamento('Aguarde...')
-    this.showRewardVideoAds(url)
+  get configuracoes() {
+    return this.configuracoesService.configuracoes
+  }
+
+  async navegar(url, validar = false) {  
+    if (!validar) {
+      this.navController.navigateForward(url) 
+    }
+    else {
+      const modal = await this.modalController.create({
+        component: ValidarAcessoPage,
+        componentProps: {
+          'mensagem': 'Informe a senha de administrador para acessar o menu.'
+        }  
+      });
+  
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data == true)
+        this.navController.navigateForward(url) 
+      })
+  
+      return await modal.present(); 
+    }
   }  
 
   async abrirSenhaAdministrador() {

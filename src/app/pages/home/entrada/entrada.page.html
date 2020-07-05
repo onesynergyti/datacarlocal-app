@@ -38,7 +38,7 @@
             <ion-col>
               <ion-item class="ion-no-margin ion-no-padding">
                 <ion-label position="floating" [ngClass]="{'fontCorPerigo': avaliouFormulario && !veiculo.Placa == null}" >Placa</ion-label>
-                <ion-input autocorrect="off" type="text" maxlength="8" [disabled]="!inclusao" [ngModel]="veiculo.Placa | placaPipe" (ionInput)="veiculo.Placa = tratarPlaca($event.target.value)"></ion-input>
+                <ion-input autocorrect="off" type="text" maxlength="8" [disabled]="!inclusao" [ngModel]="veiculo.Placa | placaPipe" (ionChange)="buscarPlaca($event.target.value)" (ionInput)="veiculo.Placa = tratarPlaca($event.target.value)"></ion-input>
               </ion-item>
             </ion-col>
             <ion-col>
@@ -204,7 +204,7 @@
         </ion-item>        
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="veiculo.EntregaAgendada == true">
+    <ion-row *ngIf="veiculo.EntregaAgendada">
       <ion-col size-xs="12" class="ion-text-center">
         <ion-item (click)="selecionarDataPrevisao()">
           <ion-label>Data</ion-label>

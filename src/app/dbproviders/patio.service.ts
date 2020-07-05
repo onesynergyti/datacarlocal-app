@@ -28,7 +28,7 @@ export class PatioService extends ServiceBaseService {
   public consultaHistoricoPlaca(placa): Promise<any> {
     return new Promise((resolve, reject) => {              
       const sql = 'SELECT * from veiculosCadastro where Placa = ?'
-      const data = [placa];
+      const data = [placa.toUpperCase().replace(/[^a-zA-Z0-9]/g,'')];
       this.database.DB.then(db => {
         db.executeSql(sql, data)
         .then(data => {
@@ -58,11 +58,11 @@ export class PatioService extends ServiceBaseService {
     // Se for inclusão
     if (!veiculo.Id) {
       sql = 'insert into veiculos (Placa, Modelo, TipoVeiculo, Entrada, Saida, Telefone, Nome, Observacoes, Servicos, EntregaAgendada, PrevisaoEntrega, Funcionario, Localizacao, Ativo) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-      data = [veiculo.Placa, veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Saida, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, veiculo.PrevisaoEntrega, JSON.stringify(veiculo.Funcionario), veiculo.Localizacao, veiculo.Ativo];
+      data = [veiculo.Placa.toUpperCase().replace(/[^a-zA-Z0-9]/g,''), veiculo.Modelo, veiculo.TipoVeiculo, new DatePipe('en-US').transform(veiculo.Entrada, 'yyyy-MM-dd HH:mm:ss'), veiculo.Saida != null ? new DatePipe('en-US').transform(veiculo.Saida, 'yyyy-MM-dd HH:mm:ss') : null, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, new DatePipe('en-US').transform(veiculo.PrevisaoEntrega, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(veiculo.Funcionario), veiculo.Localizacao, veiculo.Ativo];
     }
     else {
       sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Saida = ?, Telefone = ?, Nome = ?, Observacoes = ?, Servicos = ?, EntregaAgendada = ?, PrevisaoEntrega = ?, Funcionario = ?, Localizacao = ?, Ativo = ? where Id = ?';
-      data = [veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Entrada, veiculo.Saida, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, veiculo.PrevisaoEntrega, JSON.stringify(veiculo.Funcionario), veiculo.Localizacao, veiculo.Ativo, veiculo.Id];
+      data = [veiculo.Modelo, veiculo.TipoVeiculo, new DatePipe('en-US').transform(veiculo.Entrada, 'yyyy-MM-dd HH:mm:ss'), veiculo.Saida != null ? new DatePipe('en-US').transform(veiculo.Saida, 'yyyy-MM-dd HH:mm:ss') : null, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, new DatePipe('en-US').transform(veiculo.PrevisaoEntrega, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(veiculo.Funcionario), veiculo.Localizacao, veiculo.Ativo, veiculo.Id];
     }
 
     return new Promise((resolve, reject) => {
@@ -74,12 +74,12 @@ export class PatioService extends ServiceBaseService {
 
           // Tenta atualizar o cadastro do veículo
           const sqlHistorico = 'update veiculosCadastro set Modelo = ?, TipoVeiculo = ?, Telefone = ?, Nome = ? where Placa = ?'
-          const dataHistorico = [veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Telefone, veiculo.Nome, veiculo.Placa];
+          const dataHistorico = [veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Telefone, veiculo.Nome, veiculo.Placa.toUpperCase().replace(/[^a-zA-Z0-9]/g,'')];
           db.executeSql(sqlHistorico, dataHistorico).then((row: any) => {
             // Se não houve atualização significa que o cadastro não existe
             if (row.rowsAffected == 0) {
               const sqlHistorico = 'insert into veiculosCadastro (Placa, Modelo, TipoVeiculo, Telefone, Nome) values (?, ?, ?, ?, ?)'
-              const dataHistorico = [veiculo.Placa, veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Telefone, veiculo.Nome];
+              const dataHistorico = [veiculo.Placa.toUpperCase().replace(/[^a-zA-Z0-9]/g,''), veiculo.Modelo, veiculo.TipoVeiculo, veiculo.Telefone, veiculo.Nome];
               db.executeSql(sqlHistorico, dataHistorico)
             }
           })
@@ -206,6 +206,7 @@ export class PatioService extends ServiceBaseService {
 
               // Converte o funcionário responsável
               veiculo.Funcionario = veiculo.Funcionario != null ? JSON.parse(veiculo.Funcionario) : null
+              veiculo.EntregaAgendada = veiculo.EntregaAgendada == 'true'
               veiculos.push(new Veiculo(veiculo));
             }
             resolve(veiculos)

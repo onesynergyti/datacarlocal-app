@@ -32,8 +32,6 @@ export class InicioPage implements OnInit {
   concluir() {
     if (this.configuracoes.Estabelecimento.Nome.length <= 0)
       this.utils.mostrarToast('Informe o nome do estabelecimento.', 'danger')
-    else if (!this.configuracoes.Estacionamento.UtilizarEstacionamento && !this.configuracoes.UtilizaServicos)
-      this.utils.mostrarToast('Habilite pelo menos uma opção de estacionamento ou serviço.', 'danger')
     else if (this.configuracoes.Seguranca.EmailAdministrador.length < 10)
       this.utils.mostrarToast('Informe um e-mail de administrador.', 'danger')
     else if (this.senhaNova.length < 4)

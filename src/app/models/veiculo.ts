@@ -23,8 +23,8 @@ export class Veiculo {
       this.Id = veiculo.Id
       this.Placa = veiculo.Placa 
       this.Modelo = veiculo.Modelo
-      this.Entrada = veiculo.Entrada ? new Date(veiculo.Entrada) : new Date()
-      this.Saida = veiculo.Saida ? new Date(veiculo.Saida) : null
+      this.Entrada = veiculo.Entrada != null ? new Date(veiculo.Entrada) : new Date()
+      this.Saida = veiculo.Saida != null ? new Date(veiculo.Saida) : null
       this.TipoVeiculo = veiculo.TipoVeiculo
       this.Observacoes = veiculo.Observacoes
       this.Telefone = veiculo.Telefone
@@ -36,7 +36,7 @@ export class Veiculo {
         })
       }
       this.EntregaAgendada = veiculo.EntregaAgendada
-      this.PrevisaoEntrega = veiculo.PrevisaoEntrega ? new Date(veiculo.PrevisaoEntrega) : null
+      this.PrevisaoEntrega = veiculo.PrevisaoEntrega != null ? new Date(veiculo.PrevisaoEntrega) : new Date()
       this.Funcionario = veiculo.Funcionario != null ? new Funcionario(veiculo.Funcionario) : null
       this.Localizacao = veiculo.Localizacao
       this.Ativo = veiculo.Ativo
@@ -44,7 +44,7 @@ export class Veiculo {
   }
 
   get MinutosRestantes() {
-    return this.PrevisaoEntrega ? ((this.PrevisaoEntrega.getTime() - new Date().getTime()) / 60000) : 0
+    return this.PrevisaoEntrega != null ? ((this.PrevisaoEntrega.getTime() - new Date().getTime()) / 60000) : 0
   }
 
   get PossuiServicoAgendavel() {
@@ -73,10 +73,5 @@ export class Veiculo {
 
   get TotalAcrescimos() {
     return this.Servicos.reduce((acumulador: number, itemAtual) => acumulador + itemAtual.Acrescimo, 0)
-  }
-
-  enviarMensagemWhatsapp(celular, mensagem = '') {
-    celular = celular.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-    window.location.href=`https://api.whatsapp.com/send?phone=55${celular}&text=${mensagem.replace(' ', '%20')}`;
   }
 }

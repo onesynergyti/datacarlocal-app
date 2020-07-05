@@ -125,7 +125,7 @@ export class PendenciasPage implements OnInit {
 
   abrirWhatsapp(veiculo) {
     if (veiculo.Telefone && veiculo.Telefone.length >= 10)
-      veiculo.enviarMensagemWhatsapp(veiculo.Telefone)
+      this.utils.abrirWhatsapp(veiculo.Telefone)
     else
       this.utils.mostrarToast('Não foi registrado o contato para esse veículo', 'danger')
   }
