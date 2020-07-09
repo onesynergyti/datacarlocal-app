@@ -96,6 +96,16 @@ export class CadastroMensalistaPage implements OnInit {
 
     // Se for um novo movimento, calcula a data da próxima validade
     if (movimento == null) {
+      // Obtem a maior validade atual do mensalista
+      var maiorData = new Date(Math.max.apply(null, this.movimentos.map(movimentoAtual => movimentoAtual.Fim)));
+
+      // Obtem o início do periodo um dia depois
+      movimentoEdicao.Inicio = new Date(maiorData)
+      movimentoEdicao.Inicio.setDate(maiorData.getDate() + 1)
+
+      // Obtem o final do período um mês depois
+      movimentoEdicao.Fim = new Date(maiorData)
+      movimentoEdicao.Fim.setMonth(maiorData.getMonth() + 1)
     }
 
     const modal = await this.modalCtrl.create({

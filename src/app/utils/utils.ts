@@ -38,7 +38,7 @@ export class Utils {
   }
 
   stringPura(texto) {
-    return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toUpperCase();
+    return texto.toUpperCase().replace(/[^a-zA-Z0-9]/g,'')
   }
 
   completarZeros(numero, tamanho) {

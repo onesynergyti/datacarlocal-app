@@ -1,29 +1,84 @@
 <ion-header>
   <app-header titulo="Mensalistas"></app-header>
+  <ion-searchbar autocorrect="off" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
 </ion-header>
 
-<ion-content>
-  <div>
-    <ion-list [@listAnimation]="mensalistas.length" lines="full">
-      <ion-item-sliding id="mensalista.Id" *ngFor="let mensalista of mensalistas">
-        <ion-item (click)="cadastrarMensalista(mensalista)">
-          <ion-grid class="ion-no-margin ion-no-padding ">
+<ion-content *ngIf="carregandoMensalistas">
+  <ion-spinner class="spinnerCentro"></ion-spinner>
+</ion-content>
+
+<ion-content *ngIf="!carregandoMensalistas">
+  <div class="divInformativo" *ngIf="mensalistas.length == 0">
+    <h2>Nenhum mensalista cadastrado</h2>
+    <ion-icon name="person-outline"></ion-icon>
+    <h5>Utilize o botão abaixo para adicionar um mensalista</h5>
+  </div>
+  <div class="divInformativo" *ngIf="mensalistas.length > 0 && listaFiltrada.length == 0">
+    <h2>Nenhum mensalista localizado</h2>
+    <ion-icon name="search-outline"></ion-icon>
+  </div>
+
+  <ion-list [@listAnimation]="listaFiltrada.length" lines="full" lines="none">
+    <ion-item-sliding id="mensalista.Id" *ngFor="let mensalista of listaFiltrada">
+      <ion-item (click)="cadastrarMensalista(mensalista)">
+        <div class="cartao">
+          <ion-grid>
             <ion-row>
+              <ion-col size-xs="12" class="fundoPrimario tituloCartao ion-text-center"> 
+                <h3>{{ mensalista.Nome }}</h3>
+              </ion-col>
+              <ion-col size-xs="12" *ngIf="!mensalista.Ativo" class="fundoAlerta ion-text-center"> 
+                <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+                Mensalista inativo
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size-xs="12" class="subTitulo fundoLigth">
+                <ion-icon class="iconeSubTitulo" name="person"></ion-icon>
+                Dados do mensalista
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="(mensalista.Documento != null && mensalista.Documento.length > 0) || (mensalista.Telefone != null && mensalista.Telefone.length > 0)">
               <ion-col>
-                {{ mensalista.Nome }}
+                <h4 class="negrito">Documento</h4>
+                <h4>{{ mensalista.Documento | documentoPipe }}</h4>
+              </ion-col>
+              <ion-col>
+                <h4 class="negrito">Telefone</h4>
+                <h4>{{ mensalista.Telefone | telefonePipe }}</h4>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="mensalista.Email != null && mensalista.Email.length > 0">
+              <ion-col>
+                <h4 class="negrito">Email</h4>
+                <h4>{{ mensalista.Email }}</h4>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size-xs="12" class="subTitulo fundoLigth">
+                <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
+                Veículos
+              </ion-col>
+            </ion-row>
+            <ion-row *ngFor="let veiculo of mensalista.Veiculos">
+              <ion-col size-xs="5">
+                <h4>{{ veiculo.Placa | placaPipe }}</h4>
+              </ion-col>
+              <ion-col>
+                <h4>{{ veiculo.Modelo == null || veiculo.Modelo.length == 0 ? 'Modelo não informado' : veiculo.Modelo }}</h4>
               </ion-col>
             </ion-row>
           </ion-grid>
-        </ion-item>
-    
-        <ion-item-options side="end">
-          <ion-item-option color="danger">
-            <ion-icon slot="icon-only" name="trash"></ion-icon>
-          </ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-  </div>
+        </div>          
+      </ion-item>
+  
+      <ion-item-options side="start">
+        <ion-item-option color="success">
+          <ion-icon slot="icon-only" name="logo-whatsapp"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
 </ion-content>
 
 <ion-footer>

@@ -33,7 +33,9 @@ TESTAR - Controle de acesso para edição e exclusão de serviços já inseridos
 CANCELADO - Controle de acesso e Exclusão de movimentos (Desabilitar sem excluir), tanto na tela de movimentos quanto na tela de mensalistas
 OK - Ajustar layout do cadastro de funcionários
 OK - Ajustar consistência no cadastro de funcionários
-- Ajustar layout do cadastro de mensalistas
+TESTAR - Pesquisa de placa no pátio não funciona quando coloca "-"
+OK - Ajustar layout do cadastro de mensalistas
+- Permitir excluir movimentos de mensalidade ou receitas e despesas avulsas
 - Criar consistência cadastro de serviços
 - Trocar senha de administrador está com problema
 - Criar consistência nos formulários, incluindo max length e campos obrigatórios
@@ -44,6 +46,5 @@ OK - Ajustar consistência no cadastro de funcionários
 - Trabalhar melhor a conexão com a impressora, exibindo status na tela principal da home
 - Permitir incluir uma logomarca no aplicativo
 - Verificar cada item da configuração e o impacto na utilização
-- Pesquisa de placa no pátio não funciona quando coloca "-"
 - Ajustar recibos de pagamentos, débito registrado e entrada
 - Criar assinatura no recibo de pagar depois, para comprovação do estabelecimento

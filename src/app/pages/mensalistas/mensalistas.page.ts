@@ -5,6 +5,7 @@ import { UtilsLista } from 'src/app/utils/utils-lista';
 import { ModalController } from '@ionic/angular';
 import { Mensalista } from 'src/app/models/mensalista';
 import { CadastroMensalistaPage } from './cadastro-mensalista/cadastro-mensalista.page';
+import { Utils } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-mensalistas',
@@ -27,13 +28,14 @@ import { CadastroMensalistaPage } from './cadastro-mensalista/cadastro-mensalist
 })
 export class MensalistasPage implements OnInit {
 
+  pesquisa = ''
   mensalistas = []
   finalizouCarregamento = false
   carregandoMensalistas = false
 
   constructor(
     private providerMensalistas: MensalistasService,
-    private utils: UtilsLista,
+    private utils: Utils,
     private modalController: ModalController,
     private utilsLista: UtilsLista
   ) { }
@@ -91,5 +93,12 @@ export class MensalistasPage implements OnInit {
     })
 
     return await modal.present(); 
+  }
+
+  get listaFiltrada() {
+    if (this.pesquisa == '')
+      return this.mensalistas
+
+    return this.mensalistas.filter(itemAtual => this.utils.stringPura(itemAtual.Nome).includes(this.utils.stringPura(this.pesquisa)) || this.utils.stringPura(itemAtual.Documento).includes(this.utils.stringPura(this.pesquisa)) || this.utils.stringPura(itemAtual.Telefone).includes(this.utils.stringPura(this.pesquisa)) || this.utils.stringPura(JSON.stringify(itemAtual.Veiculos)).includes(this.utils.stringPura(this.pesquisa)))
   }
 }
