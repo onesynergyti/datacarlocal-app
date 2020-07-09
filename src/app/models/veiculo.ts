@@ -3,19 +3,19 @@ import { Funcionario } from './funcionario'
 
 export class Veiculo {
   Id: number = 0
-  Placa: string
-  Modelo: string
+  Placa: string = ''
+  Modelo: string = ''
   Entrada: Date = new Date()
   Saida: Date
   TipoVeiculo: number = 0
   Observacoes: string
-  Telefone: string
-  Nome: string
+  Telefone: string = ''
+  Nome: string = ''
   Servicos: ServicoVeiculo[] = []
-  EntregaAgendada: boolean
+  EntregaAgendada: boolean = false
   PrevisaoEntrega: Date
   Funcionario: Funcionario
-  Localizacao: string
+  Localizacao: string = ''
   Ativo: boolean = true
 
   constructor(veiculo: Veiculo = null) {

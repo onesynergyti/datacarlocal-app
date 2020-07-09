@@ -8,6 +8,7 @@ import { Movimento } from 'src/app/models/movimento';
 import { ModalController } from '@ionic/angular';
 import { CadastroMovimentoPage } from './cadastro-movimento/cadastro-movimento.page';
 import { UtilsLista } from 'src/app/utils/utils-lista';
+import { SaidaPage } from '../home/saida/saida.page';
 
 @Component({
   selector: 'app-movimento',
@@ -19,10 +20,6 @@ import { UtilsLista } from 'src/app/utils/utils-lista';
         query(':enter',
           [style({ opacity: 0 }), stagger('40ms', animate('800ms ease-out', style({ opacity: 1 })))],
           { optional: true }
-        ),
-        query(':leave',
-          [style({ opacity: 1 }), stagger('40ms', animate('800ms ease-out', style({ opacity: 0 })))],
-          { optional: true }
         )
       ])
     ])
@@ -32,7 +29,6 @@ export class MovimentoPage implements OnInit {
 
   @ViewChild('graficoTipoReceita') graficoTipoReceita;
   @ViewChild('graficoEvolucaoReceita') graficoEvolucaoReceita;
-  @ViewChild('contentMovimentos') contentMovimentos;  
 
   bars: any;
   colorArray: any;
@@ -43,6 +39,7 @@ export class MovimentoPage implements OnInit {
   pagina = 'movimentos'
   dataMaxima = null
   finalizouCarregamento = false
+  saldoPeriodo = null
 
   constructor(
     private providerMovimentos: MovimentoService,
@@ -68,14 +65,63 @@ export class MovimentoPage implements OnInit {
   ionViewDidEnter() {
     this.atualizarMovimentos()
     this.criarGraficosReceitas()
+    this.atualizarSaldoPeriodo()
   }
 
-  atualizarMovimentos(event = null) {
-    this.carregandoMovimentos = true
-    let inseriuItem = false
-    this.providerMovimentos.lista(this.dataInicio, this.dataFim, this.dataMaxima).then((lista: any) => {
-      alert(JSON.stringify(lista))
+  async abrirMovimento(movimento = null, debito = false) {
+    // Movimento de veículo exibe a tela de finalização dos serviços
+    if (movimento != null && movimento.Veiculos[0] != null) {
+      const modal = await this.modalController.create({
+        component: SaidaPage,
+        componentProps: {
+          'movimento': movimento,
+          'somenteLeitura': true
+        }
+      });
+  
+      modal.onWillDismiss().then((retorno) => {
+        
+      })
+  
+      return await modal.present(); 
+    }
+    else {
+      let movimentoEdicao = new Movimento(movimento)
+      const modal = await this.modalController.create({
+        component: CadastroMovimentoPage,
+        componentProps: {
+          'movimento': movimentoEdicao,
+          'debito': (movimentoEdicao.ValorDebito < 0) || (movimentoEdicao.ValorCredito < 0) || (movimentoEdicao.ValorDinheiro < 0) || debito,
+          'somenteLeitura': movimento != null
+        }
+      });
+  
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data != null) {
+          this.utils.mostrarToast('Movimento inserido com sucesso.', 'success')
+          this.atualizarMovimentos(true)
+          this.criarGraficosReceitas()
+          this.atualizarSaldoPeriodo()
+        }
+      })
+  
+      return await modal.present(); 
+    }
+  }
 
+  atualizarMovimentos(recarregar = false, event = null) {
+    if (recarregar) {
+      this.saldoPeriodo = null
+      this.dataMaxima = null
+      this.movimentos = []
+      this.finalizouCarregamento = false
+    }
+
+    this.carregandoMovimentos = event == null
+    
+    // Faz o carregamento parcial dos itens
+    let inseriuItem = false    
+    this.providerMovimentos.lista(this.dataInicio, this.dataFim, this.dataMaxima).then((lista: any) => {
       lista.forEach(itemAtual => {
         if (this.movimentos.find(itemExistente => itemExistente.Id === itemAtual.Id) == null) {
           this.movimentos.push(itemAtual)
@@ -85,7 +131,8 @@ export class MovimentoPage implements OnInit {
       if (inseriuItem)
         this.dataMaxima = new DatePipe('en-US').transform(this.movimentos[this.movimentos.length -1].Data, 'yyyy-MM-dd HH:mm')
       else if (event != null)
-        this.finalizouCarregamento = true
+      // Se não houve nenhum item novo inserido significa que finalizou o carregamento
+      this.finalizouCarregamento = true
     })    
     // Em caso de erro
     .catch((erro) => {
@@ -98,22 +145,10 @@ export class MovimentoPage implements OnInit {
     })
   }
 
-  async cadastrarMovimento(movimento = null, debito = false) {
-    let movimentoEdicao = new Movimento(movimento)
-    const modal = await this.modalController.create({
-      component: CadastroMovimentoPage,
-      componentProps: {
-        'movimento': movimentoEdicao,
-        'debito': (movimentoEdicao.ValorDebito < 0) || (movimentoEdicao.ValorCredito < 0) || (movimentoEdicao.ValorDinheiro < 0) || debito
-      }
-    });
-
-    modal.onWillDismiss().then((retorno) => {
-      if (retorno.data != null)
-        this.utilsLista.atualizarLista(this.movimentos, retorno.data, true)
+  atualizarSaldoPeriodo() {
+    this.providerMovimentos.saldoPeriodo(this.dataInicio, this.dataFim).then(saldos => {
+      this.saldoPeriodo = saldos.ValorCredito + saldos.ValorDebito + saldos.ValorDinheiro
     })
-
-    return await modal.present(); 
   }
 
   criarGraficosReceitas() {
@@ -179,26 +214,20 @@ export class MovimentoPage implements OnInit {
   selecionarDataInicial(dataAtual) {
     this.utils.selecionarData(dataAtual ? new Date(dataAtual) : new Date())
     .then(data => {
-      this.dataMaxima = null
-      this.movimentos = []
       this.dataInicio = data
-      this.finalizouCarregamento = false
-      this.contentMovimentos.scrollToTop()
-      this.atualizarMovimentos()
+      this.atualizarMovimentos(true)
       this.criarGraficosReceitas()
+      this.atualizarSaldoPeriodo()
     });
   }
 
   selecionarDataFinal(dataAtual) {
     this.utils.selecionarData(dataAtual ? new Date(dataAtual) : new Date())
     .then(data => {
-      this.dataMaxima = null
-      this.movimentos = []
       this.dataFim = data
-      this.contentMovimentos.scrollToTop()
-      this.finalizouCarregamento = false
-      this.atualizarMovimentos()
+      this.atualizarMovimentos(true)
       this.criarGraficosReceitas()
+      this.atualizarSaldoPeriodo()
     });
   }
 }

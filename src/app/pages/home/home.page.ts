@@ -257,17 +257,23 @@ export class HomePage {
       else if (retorno.data.Operacao == 'excluir') {
         this.excluir(retorno.data.Veiculo)
       }
-      else if (retorno.data.Operacao == 'postergar') {
+      // Operações de saída do veículo
+      else if (retorno.data.Operacao == 'postergar' || retorno.data.Operacao == 'pagamento') {
         // No caso do pagamento o retorno é do movimento
         const veiculo = retorno.data.Movimento.Veiculos[0]
         const veiculoLocalizado = this.veiculos.find(itemAtual => itemAtual.Placa === veiculo.Placa)
         this.veiculos.splice(this.veiculos.indexOf(veiculoLocalizado), 1)
-        this.utils.mostrarToast('Pagamento acumulado com sucesso', 'success')        
+        this.utils.mostrarToast(retorno.data.Operacao == 'postergar' ? 'Pagamento acumulado com sucesso' : 'Pagamento realizado com sucesso', 'success')
 
         if (this.bluetooth.dispositivoSalvo != null) { 
           await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
-          this.bluetooth.imprimirRecibo(retorno.data.Veiculo, 'postergar')
+          this.bluetooth.imprimirRecibo(retorno.data.Veiculo, retorno.data.Operacao)
         }
+
+        // Exibe uma propagando na saída do veículo
+        setTimeout(() => {
+          this.propagandaService.showInterstitialAds()
+        }, 2000);
       }
       // Alteração ou inclusão de veículo
       else {        

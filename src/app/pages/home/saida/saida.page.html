@@ -10,13 +10,31 @@
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="ion-text-center">
-        <h2>{{ movimento.Data | date:"dd/MM/yyyy - HH:mm" }}</h2>
+        <h2 class="negrito">{{ movimento.Data | date:"dd/MM/yyyy - HH:mm" }}</h2>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="document-text"></ion-icon>
+        Descrição do pagamento
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="ion-text-center">
+        <h4>{{ movimento.Descricao }}</h4>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
         Dados do veículo
+      </ion-col>
+      <ion-col size-xs="8">
+        <h4 class="negrito espacadorCampo">Placa: {{ movimento.Veiculos[0].Placa | placaPipe }}</h4>
+        <h4 class="textoLimitado">{{ movimento.Veiculos[0].Modelo ? movimento.Veiculos[0].Modelo : 'Modelo não informado' }}</h4>
+      </ion-col>
+      <ion-col size-xs="4" class="ion-text-right">
+        <img id="imgTipoVeiculo" src="{{ '../../../assets/img/veiculos/' + movimento.Veiculos[0].TipoVeiculo + '.png' }}" />
       </ion-col>
     </ion-row>
     <ion-row>
@@ -27,15 +45,21 @@
     </ion-row>
     <ion-row *ngIf="movimento.Veiculos != null && movimento.Veiculos.length > 0">
       <ion-col size-xs="12" class="ion-no-margin ion-no-padding" *ngFor="let veiculo of movimento.Veiculos">
-        <ion-list [@listAnimation]="movimento.Veiculos.length" lines="full">
-          <ion-header>
-            {{ veiculo.Placa }}
-          </ion-header>
+        <div id="divCabecalho" class="fundoSecundario ion-text-center">
+          <h3>Entrada: {{ veiculo.Entrada | date:"dd/MM/yyyy - HH:mm" }}</h3>
+        </div>
+        <ion-list lines="full">
           <ion-item *ngFor="let servico of veiculo.Servicos">
-            <h3 class="textoLimitado espacadorCampo">{{ servico.Nome }}</h3>
-            <ion-note slot="end">
-              <h3>{{ veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h3>
-            </ion-note>
+            <ion-grid class="ion-no-margin ion-no-padding">
+              <ion-row>
+                <ion-col size-xs="9">
+                  <h3>{{ servico.Nome }}</h3>
+                </ion-col>
+                <ion-col class="ion-text-right">
+                  <h3>{{ veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h3>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
           </ion-item>
         </ion-list>
       </ion-col>
@@ -66,7 +90,7 @@
         <h4>Dinheiro</h4>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="number" [ngModel]="movimento.ValorDinheiro | decimalInputPipe" (ionInput)="movimento.ValorDinheiro=utils.trataCampoNumero($event.target.value)"></ion-input>
+          <ion-input autocorrect="off" [disabled]="somenteLeitura" type="number" [ngModel]="movimento.ValorDinheiro | decimalInputPipe" (ionInput)="movimento.ValorDinheiro=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col class="ion-text-center">
@@ -74,7 +98,7 @@
         <h4>Débito</h4>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="number" [ngModel]="movimento.ValorDebito | decimalInputPipe" (ionInput)="movimento.ValorDebito=utils.trataCampoNumero($event.target.value)"></ion-input>
+          <ion-input autocorrect="off" [disabled]="somenteLeitura" type="number" [ngModel]="movimento.ValorDebito | decimalInputPipe" (ionInput)="movimento.ValorDebito=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col class="ion-text-center">
@@ -82,11 +106,11 @@
         <h4>Crédito</h4>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="number" [ngModel]="movimento.ValorCredito | decimalInputPipe" (ionInput)="movimento.ValorCredito=utils.trataCampoNumero($event.target.value)"></ion-input>
+          <ion-input autocorrect="off" [disabled]="somenteLeitura" type="number" [ngModel]="movimento.ValorCredito | decimalInputPipe" (ionInput)="movimento.ValorCredito=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>    
-    <ion-row>
+    <ion-row *ngIf="!somenteLeitura">
       <ion-col class="fundoSecundario">
         <ion-grid>
           <ion-row>
@@ -106,19 +130,19 @@
 <ion-footer *ngIf="movimento != null">
   <ion-grid class="ion-no-padding ion-no-margin">
     <ion-row>
-      <ion-col>
+      <ion-col *ngIf="!somenteLeitura">
         <ion-button expand="block" color="success" (click)="concluir()">
           <ion-icon slot="start" name="checkmark-done"></ion-icon>
           Finalizar
         </ion-button>
       </ion-col>
-      <ion-col size-xs="5" *ngIf="movimento.Veiculos[0].Ativo == true">
+      <ion-col size-xs="5" *ngIf="!somenteLeitura && movimento.Veiculos[0].Ativo == true">
         <ion-button expand="block" color="danger" (click)="concluirDepois()">
           <ion-icon slot="start" name="document-attach"></ion-icon>
           Receber depois
         </ion-button>
       </ion-col>
-      <ion-col size-xs="2" (click)="concluir('excluir')">
+      <ion-col size-xs="{{ somenteLeitura ? 12 : 2 }}" *ngIf="!somenteLeitura" (click)="concluir('excluir')">
         <ion-button expand="block" color="danger">
           <ion-icon name="trash"></ion-icon>
         </ion-button>

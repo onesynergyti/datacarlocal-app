@@ -14,6 +14,7 @@ import { ValidarAcessoPage } from '../../validar-acesso/validar-acesso.page';
 export class SaidaPage {
 
   movimento: Movimento
+  somenteLeitura: boolean = false
 
   constructor(
     private modalCtrl: ModalController,
@@ -24,6 +25,7 @@ export class SaidaPage {
     private alertController: AlertController
   ) { 
     this.movimento = navParams.get('movimento')
+    this.somenteLeitura = navParams.get('somenteLeitura') != null && navParams.get('somenteLeitura')
   }
 
   cancelar() {

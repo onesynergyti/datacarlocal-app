@@ -4,7 +4,7 @@ import { ServicoVeiculo } from './servico-veiculo'
 export class Movimento {
   Id: number = 0
   Data: Date = new Date()
-  Descricao: string
+  Descricao: string = ''
   TipoVeiculo: number
   ValorDinheiro: number = 0
   ValorDebito: number = 0

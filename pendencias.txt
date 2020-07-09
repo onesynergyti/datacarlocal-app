@@ -17,23 +17,33 @@ OK - Controle de acesso para exclusão de Veículos do pátio
 OK - Controle de acesso para exclusão de pendências
 OK - Configuração incial do sistema
 OK - A primeira vez que entra no pátio, os serviços agendados não estão exibindo alertas de agendamento
-BASE CRIADA - Criar um relatório de histórico com filtros por período e funcionário
 OK - Ajustar layout do menu
-- Ajustar layout dos movimentos
+OK - Ajustar layout do cadastro de serviços
+PIPE CRIADA FALTA SÓ INCLUIR NO HTML - Incluir máscara de número nos campos
+INICIADO - Complementar a tela de configurações
+BASE CRIADA - Criar um relatório de histórico com filtros por período e funcionário
+OK - Ao pagar um veículo, não está tirando da lista no pátio
+OK - Consistir preços dos serviços zerados
+TESTAR - Criar consistência no cadastro de veículos
+OK - Ajustar layout da saída de veículo
+OK - Ajustar layout dos movimentos
+SEGUNDA VERSÃO - Permitir e registrar exclusão de movimentos com um flag e tratar movimentos excluídos nas somas e listas
+OK - Ajustar cadastro de movimentos
+TESTAR - Controle de acesso para edição e exclusão de serviços já inseridos no Veículos
+CANCELADO - Controle de acesso e Exclusão de movimentos (Desabilitar sem excluir), tanto na tela de movimentos quanto na tela de mensalistas
 - Ajustar layout do cadastro de funcionários
+- Ajustar layout do cadastro de mensalistas
 - Ajustar consistência no cadastro de funcionários
-- Trocar senha de administrador está errado
-- Criar consistência no cadastro de veículos
+- Trocar senha de administrador está com problema
 - Criar consistência nos formulários, incluindo max length e campos obrigatórios
 - Ao navegar pelas telas, no rodapé e o cabeçalho estão ficando alguns restos das telas de origem. Tem que verificar o motivo e retirar isso
-- Complementar a tela de configurações
-- Controle de acesso para edição e exclusão de serviços já inseridos no Veículos
 - Finalizar gráficos
-- Controle de acesso e Exclusão de movimentos (Desabilitar sem excluir), tanto na tela de movimentos quanto na tela de mensalistas
 - Criar a chaves das tabelas para garantir consistência
 - Permitir fazer backup e exportação de dados
 - Tratar cabeçalhos do veículo na tela de pagamento e no recibo
 - Criar assinatura no recibo de pagar depois, para comprovação do estabelecimento
 - Trabalhar melhor a conexão com a impressora, exibindo status na tela principal da home
 - Permitir incluir uma logomarca no aplicativo
-- Incluir máscara de número nos campos
+- Verificar cada item da configuração e o impacto na utilização
+- Pesquisa de placa no pátio não funciona quando coloca "-"
+- Ajustar recibos de pagamentos, débito registrado e entrada

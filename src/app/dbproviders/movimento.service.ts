@@ -5,6 +5,7 @@ import { DatabaseService } from './database.service';
 import { ServiceBaseService } from '../services/service-base.service';
 import { Movimento } from '../models/movimento';
 import { DatePipe } from '@angular/common';
+import { Veiculo } from '../models/veiculo';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class MovimentoService extends ServiceBaseService {
 
   public lista(inicio: Date, fim: Date, dataMaxima: Date = null): Promise<any> {
     return new Promise((resolve, reject) => {
-      const sql = "SELECT * from movimentos where Date(Data) between Date(?) and Date(?) and (Data <= ?) order by Data desc limit 10";
+      const sql = "SELECT * from movimentos where Date(Data) between Date(?) and Date(?) and (Data <= ?) order by Data desc limit 100";
       const data = [new DatePipe('en-US').transform(inicio, 'yyyy-MM-dd'), 
         new DatePipe('en-US').transform(fim, 'yyyy-MM-dd'),
         dataMaxima == null ? new Date('9999-01-01') : new DatePipe('en-US').transform(dataMaxima, 'yyyy-MM-dd HH:mm:ss')
@@ -30,11 +31,19 @@ export class MovimentoService extends ServiceBaseService {
         db.executeSql(sql, data)
         .then(data => {
           if (data.rows.length > 0) {
-            alert(JSON.stringify(data))
             let movimentos: any[] = [];
             for (var i = 0; i < data.rows.length; i++) {
               var movimento = data.rows.item(i);
-              movimento.Veiculos = JSON.parse(movimento.Veiculos)
+
+              // Cria os veículos do movimento, se houver algum
+              if (movimento.Veiculos != null) {
+                const veiculos = JSON.parse(movimento.Veiculos)
+                movimento.Veiculos = []
+                veiculos.forEach(veiculo => {
+                  movimento.Veiculos.push(new Veiculo(veiculo))
+                });
+              }
+
               movimentos.push(new Movimento(movimento));
             }
             resolve(movimentos)
@@ -61,8 +70,8 @@ export class MovimentoService extends ServiceBaseService {
 
     // Caso seja inclusão
     if (movimento.Id == null || movimento.Id == 0) {
-      sql = 'insert into movimentos (Data, Descricao, ValorDinheiro, ValorDebito, ValorCredito, Veiculo) values (?, ?, ?, ?, ?, ?)'
-      data = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm'), movimento.Descricao, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, JSON.stringify(movimento.Veiculos)]
+      sql = 'insert into movimentos (Data, Descricao, ValorDinheiro, ValorDebito, ValorCredito) values (?, ?, ?, ?, ?)'
+      data = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm'), movimento.Descricao, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito]
     }
     // Caso seja edição
     else {
@@ -84,6 +93,37 @@ export class MovimentoService extends ServiceBaseService {
       })
       .finally(() =>{
         this.ocultarProcessamento() 
+      })
+    })
+  }
+
+  public saldoPeriodo(inicio: Date, fim: Date): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const sql = "SELECT sum(ValorCredito) ValorCredito, sum(ValorDebito) ValorDebito, sum(ValorDinheiro) ValorDinheiro " +
+      "from movimentos where Date(Data) between Date(?) and Date(?)";
+      const data = [new DatePipe('en-US').transform(inicio, 'yyyy-MM-dd'), new DatePipe('en-US').transform(fim, 'yyyy-MM-dd')]
+      this.database.DB.then(db => {
+        db.executeSql(sql, data)
+        .then(data => {
+          if (data.rows.length > 0) {
+            let saldo: any[] = [];
+            for (var i = 0; i < data.rows.length; i++) {
+              saldo.push(data.rows.item(i));
+            }
+            resolve(saldo[0])
+          } else {
+            resolve([])
+          }
+        })
+        .catch((erro) => {
+          reject(erro)
+        })
+      })
+      .catch((erro) => {
+        reject(erro)
+      })
+      .finally(() => {
+        this.ocultarProcessamento()
       })
     })
   }

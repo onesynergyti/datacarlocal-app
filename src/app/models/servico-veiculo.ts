@@ -1,6 +1,6 @@
 export class ServicoVeiculo {
-  Id: number
-  Nome: string
+  Id: number = 0
+  Nome: string = ''
   PrecoMoto: number = 0
   PrecoVeiculoPequeno: number = 0
   PrecoVeiculoMedio: number = 0
@@ -25,10 +25,10 @@ export class ServicoVeiculo {
 
   precoServico(tipoVeiculo) {
     switch(tipoVeiculo) {
-      case 1: return this.PrecoMoto
-      case 2: return this.PrecoVeiculoPequeno
-      case 3: return this.PrecoVeiculoMedio
-      case 4: return this.PrecoVeiculoGrande
+      case 1: return this.PrecoMoto + this.Acrescimo - this.Desconto
+      case 2: return this.PrecoVeiculoPequeno + this.Acrescimo - this.Desconto
+      case 3: return this.PrecoVeiculoMedio + this.Acrescimo - this.Desconto
+      case 4: return this.PrecoVeiculoGrande + this.Acrescimo - this.Desconto
       default: return 0
     }
   }

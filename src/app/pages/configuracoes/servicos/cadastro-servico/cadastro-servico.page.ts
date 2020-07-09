@@ -13,6 +13,7 @@ export class CadastroServicoPage implements OnInit {
 
   servico: Servico
   inclusao: boolean
+  avaliouFormulario = false
 
   constructor(
     private modalController: ModalController,
@@ -36,14 +37,18 @@ export class CadastroServicoPage implements OnInit {
       this.modalController.dismiss({ Operacao: operacao, Servico: this.servico })
     }
     else {
-      await this.providerServico.exibirProcessamento('Salvando servico...')
-      this.providerServico.salvar(this.servico)
-      .then(() => {
-        this.modalController.dismiss({ Operacao: operacao, Servico: this.servico })
-      })
-      .catch(() => {
-        alert('Não foi possível salvar o serviço')
-      })
+      this.avaliouFormulario = true
+
+      if (this.servico.PrecoMoto && this.servico.PrecoVeiculoGrande && this.servico.PrecoVeiculoMedio && this.servico.PrecoVeiculoPequeno && this.servico.Nome != null && this.servico.Nome.length > 0) {
+        await this.providerServico.exibirProcessamento('Salvando servico...')
+        this.providerServico.salvar(this.servico)
+        .then(() => {
+          this.modalController.dismiss({ Operacao: operacao, Servico: this.servico })
+        })
+        .catch(() => {
+          alert('Não foi possível salvar o serviço')
+        })
+      }      
     }
   }
 }

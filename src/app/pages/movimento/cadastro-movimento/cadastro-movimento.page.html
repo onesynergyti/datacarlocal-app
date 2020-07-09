@@ -1,16 +1,65 @@
 <ion-header>
-  <app-header-modal titulo="Cadastro de movimento" cor="{{ debito ? 'danger' : 'success' }}" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+  <app-header-modal titulo="{{ debito ? 'Cadastro de despesa' : 'Cadastro de receita' }}" cor="{{ debito ? 'danger' : 'success' }}" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
 </ion-header>
 
 <ion-content>
   <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="calendar"></ion-icon>
+        Data do pagamento
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="6" class="ion-text-center" (click)="selecionarData()">
+        <h2 class="negrito">{{ movimento.Data | date:"dd/MM/yyyy" }}</h2>
+      </ion-col>
+      <ion-col size-xs="6" class="ion-text-center" (click)="selecionarHora()">
+        <h2 class="negrito">{{ movimento.Data | date:"HH:mm" }}</h2>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="text-document"></ion-icon>
+        Descrição do movimento
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item class="ion-no-margin ion-no-padding">
+          <ion-label position="floating">Descrição</ion-label>
+          <ion-input autocorrect="off" [disabled]="somenteLeitura" type="text" [(ngModel)]="movimento.Descricao"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="movimento.Inicio != null">
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="calendar"></ion-icon>
+        Validade do pagamento
+      </ion-col>
+      <ion-col size-xs="5" class="ion-text-center" (click)="selecionarData()">
+        <h2 class="negrito">{{ movimento.Inicio | date:"dd/MM/yyyy" }}</h2>
+      </ion-col>
+      <ion-col size-xs="2" class="ion-text-center" (click)="selecionarData()">
+        <h4 class="ion-text-uppercase">Até</h4>
+      </ion-col>
+      <ion-col size-xs="5" class="ion-text-center" (click)="selecionarHora()">
+        <h2 class="negrito">{{ movimento.Fim | date:"dd/MM/yyyy" }}</h2>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="wallet"></ion-icon>
+        Forma de pagamento
+      </ion-col>
+    </ion-row>
     <ion-row>
       <ion-col class="ion-text-center">
         <ion-icon name="cash-outline"></ion-icon>        
         <h4>Dinheiro</h4>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="number" [(ngModel)]="movimento.ValorDinheiro"></ion-input>
+          <ion-input autocorrect="off" [disabled]="somenteLeitura" type="number" [ngModel]="movimento.ValorDinheiro | decimalInputPipe" (ionInput)="movimento.ValorDinheiro=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col class="ion-text-center">
@@ -18,7 +67,7 @@
         <h4>Débito</h4>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="number" [(ngModel)]="movimento.ValorDebito"></ion-input>
+          <ion-input autocorrect="off" [disabled]="somenteLeitura" type="number" [ngModel]="movimento.ValorDebito | decimalInputPipe" (ionInput)="movimento.ValorDebito=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col class="ion-text-center">
@@ -26,24 +75,29 @@
         <h4>Crédito</h4>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="number" [(ngModel)]="movimento.ValorCredito"></ion-input>
+          <ion-input autocorrect="off" [disabled]="somenteLeitura" type="number" [ngModel]="movimento.ValorCredito | decimalInputPipe" (ionInput)="movimento.ValorCredito=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>    
-    <ion-row>
-      <ion-col>
-        <ion-item class="ion-no-margin ion-no-padding">
-          <ion-label position="floating">Descrição</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="movimento.Descricao"></ion-input>
-        </ion-item>
-      </ion-col>
-    </ion-row>
   </ion-grid>
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block" color="success" (click)="concluir()">
-    <ion-icon slot="start" name="checkmark-done"></ion-icon>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && (!movimento.ValorDebito && !movimento.ValorCredito && !movimento.ValorDinheiro)" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Informe o valor do movimento
+      </ion-col>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && movimento.Descricao.length == 0" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Informe a descrição do movimento
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-button expand="block" *ngIf="!somenteLeitura" color="success" (click)="concluir()">
+    <ion-icon slot="start" name= "checkmark"></ion-icon>
     Salvar
   </ion-button>
 </ion-footer>
