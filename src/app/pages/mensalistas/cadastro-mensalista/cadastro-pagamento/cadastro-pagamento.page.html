@@ -5,15 +5,26 @@
 <ion-content>
   <ion-grid *ngIf="movimento != null">
     <ion-row>
-      <ion-col size-xs="12" class="ion-text-center">
-        <ion-item (click)="selecionarDataInicio()">
-          <ion-label>Início</ion-label>
-          <ion-label>{{ movimento.Inicio | date:"dd/MM/yyyy" }}</ion-label>
-        </ion-item>
-        <ion-item (click)="selecionarDataFim()">
-          <ion-label>Fim</ion-label>
-          <ion-label>{{ movimento.Fim | date:"dd/MM/yyyy" }}</ion-label>
-        </ion-item>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="calendar"></ion-icon>
+        Período de permissão
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="5" class="ion-text-center" (click)="selecionarDataInicio(movimento.Inicio)">
+        <h2 class="negrito">{{ movimento.Inicio | date:"dd/MM/yyyy" }}</h2>
+      </ion-col>
+      <ion-col size-xs="2" class="ion-text-center">
+        <h4 class="ion-text-uppercase">Até</h4>
+      </ion-col>
+      <ion-col size-xs="5" class="ion-text-center" (click)="selecionarDataFim(movimento.Fim)">
+        <h2 class="negrito">{{ movimento.Fim | date:"dd/MM/yyyy" }}</h2>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="wallet"></ion-icon>
+        Forma de pagamento
       </ion-col>
     </ion-row>
     <ion-row>
@@ -22,7 +33,7 @@
         <h4>Dinheiro</h4>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="number" [(ngModel)]="movimento.ValorDinheiro"></ion-input>
+          <ion-input autocorrect="off" type="number" [ngModel]="movimento.ValorDinheiro | decimalInputPipe" (ionInput)="movimento.ValorDinheiro=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col class="ion-text-center">
@@ -30,7 +41,7 @@
         <h4>Débito</h4>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="number" [(ngModel)]="movimento.ValorDebito"></ion-input>
+          <ion-input autocorrect="off" type="number" [ngModel]="movimento.ValorDebito | decimalInputPipe" (ionInput)="movimento.ValorDebito=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col class="ion-text-center">
@@ -38,15 +49,36 @@
         <h4>Crédito</h4>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="number" [(ngModel)]="movimento.ValorCredito"></ion-input>
+          <ion-input autocorrect="off" type="number" [ngModel]="movimento.ValorCredito | decimalInputPipe" (ionInput)="movimento.ValorCredito=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
-    </ion-row>      </ion-grid>
+    </ion-row>
+  </ion-grid>
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block" color="success" (click)="concluir()">
-    <ion-icon slot="start" name="checkmark-done"></ion-icon>
-    Salvar
-  </ion-button>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && !movimento.ValorDebito && !movimento.ValorCredito && !movimento.ValorDinheiro" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Informe o valor do pagamento
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid class="ion-no-padding ion-no-margin">
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="success" (click)="concluir()">
+          <ion-icon slot="start" name="checkmark"></ion-icon>
+          Salvar
+        </ion-button>
+      </ion-col>
+      <ion-col size-xs="2" *ngIf="!inclusao" (click)="concluir('excluir')">
+        <ion-button expand="block" color="danger">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-footer>

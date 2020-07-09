@@ -11,13 +11,16 @@ import { ModalController, NavParams } from '@ionic/angular';
 export class CadastroPagamentoPage implements OnInit {
 
   movimento: Movimento
+  inclusao = false
+  avaliouFormulario = false
 
   constructor(
-    private utils: Utils,
+    public utils: Utils,
     private modalCtrl: ModalController,
     public navParams: NavParams,
   ) { 
-    //this.movimento = navParams.get('movimento')
+    this.movimento = navParams.get('movimento')
+    this.inclusao = navParams.get('inclusao')
   }
 
   ngOnInit() {
@@ -35,7 +38,16 @@ export class CadastroPagamentoPage implements OnInit {
     this.utils.selecionarData(this.movimento.Fim ? new Date(this.movimento.Fim) : new Date()).then(data => { this.movimento.Fim = data });
   }  
 
-  concluir() {
-    this.modalCtrl.dismiss(this.movimento)
+  concluir(operacao = 'cadastro') {
+    if (operacao != 'cadastro') {
+      this.modalCtrl.dismiss({ Operacao: operacao, Movimento: this.movimento })
+    }
+    else {
+      this.avaliouFormulario = true
+
+      if (this.movimento.ValorCredito || this.movimento.ValorDebito || this.movimento.ValorDinheiro) {
+        this.modalCtrl.dismiss({ Operacao: operacao, Movimento: this.movimento })
+      }
+    }
   }
 }

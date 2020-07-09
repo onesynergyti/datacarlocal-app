@@ -9,6 +9,7 @@ import { FuncionariosPageRoutingModule } from './funcionarios-routing.module';
 import { FuncionariosPage } from './funcionarios.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { CadastroFuncionarioPage } from './cadastro-funcionario/cadastro-funcionario.page';
+import { PipeModule } from 'src/app/pipes/pipe.module';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { CadastroFuncionarioPage } from './cadastro-funcionario/cadastro-funcion
     FormsModule,
     IonicModule,
     FuncionariosPageRoutingModule,
-    ComponentsModule
+    ComponentsModule,
+    PipeModule.forRoot() 
   ],
   entryComponents: [CadastroFuncionarioPage],
   declarations: [FuncionariosPage, CadastroFuncionarioPage]

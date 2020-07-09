@@ -31,19 +31,19 @@ SEGUNDA VERSÃO - Permitir e registrar exclusão de movimentos com um flag e tra
 OK - Ajustar cadastro de movimentos
 TESTAR - Controle de acesso para edição e exclusão de serviços já inseridos no Veículos
 CANCELADO - Controle de acesso e Exclusão de movimentos (Desabilitar sem excluir), tanto na tela de movimentos quanto na tela de mensalistas
-- Ajustar layout do cadastro de funcionários
+OK - Ajustar layout do cadastro de funcionários
+OK - Ajustar consistência no cadastro de funcionários
 - Ajustar layout do cadastro de mensalistas
-- Ajustar consistência no cadastro de funcionários
+- Criar consistência cadastro de serviços
 - Trocar senha de administrador está com problema
 - Criar consistência nos formulários, incluindo max length e campos obrigatórios
 - Ao navegar pelas telas, no rodapé e o cabeçalho estão ficando alguns restos das telas de origem. Tem que verificar o motivo e retirar isso
 - Finalizar gráficos
 - Criar a chaves das tabelas para garantir consistência
 - Permitir fazer backup e exportação de dados
-- Tratar cabeçalhos do veículo na tela de pagamento e no recibo
-- Criar assinatura no recibo de pagar depois, para comprovação do estabelecimento
 - Trabalhar melhor a conexão com a impressora, exibindo status na tela principal da home
 - Permitir incluir uma logomarca no aplicativo
 - Verificar cada item da configuração e o impacto na utilização
 - Pesquisa de placa no pátio não funciona quando coloca "-"
 - Ajustar recibos de pagamentos, débito registrado e entrada
+- Criar assinatura no recibo de pagar depois, para comprovação do estabelecimento

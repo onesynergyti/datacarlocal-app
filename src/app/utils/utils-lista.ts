@@ -29,7 +29,6 @@ export class UtilsLista {
   }
 
   excluirDaLista(lista: any[], item: any) {
-    alert()
     if (item != null) {
       let index = lista.findIndex(itemAtual => itemAtual.Id == item.Id)
 

@@ -1,9 +1,9 @@
 export class VeiculoCadastro {
-  Placa: string
+  Placa: string = ''
   TipoVeiculo: number
-  Modelo: string
-  Nome: string
-  Telefone: string
+  Modelo: string = ''
+  Nome: string = ''
+  Telefone: string = ''
 
   constructor(veiculo: VeiculoCadastro = null) {
     if (veiculo != null) {

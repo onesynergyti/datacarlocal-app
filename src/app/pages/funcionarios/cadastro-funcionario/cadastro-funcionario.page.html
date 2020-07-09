@@ -5,16 +5,38 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
-        <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
-        Identificação
+      <ion-col class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="person"></ion-icon>
+        Informações do funcionário
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="12" class="separadorCampo">
+      <ion-col>
         <ion-item>
-          <ion-label position="floating">Dados do funcionário</ion-label>
+          <ion-label position="floating">Nome</ion-label>
           <ion-input autocorrect="off" type="text" [(ngModel)]="funcionario.Nome"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Documento (CNPJ / CPF)</ion-label>
+          <ion-input autocorrect="off" type="tel" [ngModel]="funcionario.Documento | documentoPipe" (ionInput)="funcionario.Documento = utils.somenteNumeros($event.target.value)"></ion-input>
+        </ion-item>        
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Telefone</ion-label>
+          <ion-input autocorrect="off" type="tel" maxlength="15" [ngModel]="funcionario.Telefone | telefonePipe" (ionInput)="funcionario.Telefone = utils.somenteNumeros($event.target.value)"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">E-mail</ion-label>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="funcionario.Email"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -22,5 +44,28 @@
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="full" (click)="concluir()">Salvar Funcionário</ion-button>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && (funcionario.Nome == null || funcionario.Nome.length == 0)" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Informe o nome do funcionário
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid class="ion-no-padding ion-no-margin">
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="success" (click)="concluir()">
+          <ion-icon slot="start" name="checkmark"></ion-icon>
+          Salvar
+        </ion-button>
+      </ion-col>
+      <ion-col size-xs="2" *ngIf="!inclusao" (click)="concluir('excluir')">
+        <ion-button expand="block" color="danger">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-footer>

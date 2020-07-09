@@ -2,24 +2,42 @@
   <app-header titulo="Funcionários"></app-header>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="carregandoFuncionarios">
+  <ion-spinner class="spinnerCentro"></ion-spinner>
+</ion-content>
+
+
+<ion-content *ngIf="!carregandoFuncionarios">
+  <div class="divInformativo" *ngIf="funcionarios.length == 0">
+    <h2>Nenhum funcionário cadastrado</h2>
+    <ion-icon name="person-outline"></ion-icon>
+    <h5>Utilize o botão abaixo para adicionar um funcionário</h5>
+  </div>
   <ion-list [@listAnimation]="funcionarios.length" lines="full">
     <ion-item-sliding id="funcionario.Id" *ngFor="let funcionario of funcionarios">
-      <ion-item>
+      <ion-item (click)="cadastrarFuncionario(funcionario)">
         <ion-grid class="ion-no-margin ion-no-padding ">
+          <ion-row class="espacadorCampo">
+            <ion-col size-xs="7">
+              <h3 class="negrito textoLimitado">{{ funcionario.Nome }}</h3>
+            </ion-col>
+            <ion-col size-xs="5">
+              <h4 class="ion-text-right">{{ funcionario.Documento | documentoPipe }}</h4>
+            </ion-col>
+          </ion-row>
           <ion-row>
-            <ion-col size-xs="8">
-              <h4>{{ funcionario.Nome }}</h4>
+            <ion-col size-xs="7">
+              <h4 class="textoLimitado">{{ funcionario.Email }}</h4>
+            </ion-col>
+            <ion-col size-xs="5" class="ion-text-right">
+              <h4>{{ funcionario.Telefone | telefonePipe }}</h4>
             </ion-col>
           </ion-row>
         </ion-grid>
-        <ion-note slot="end">
-          <ion-toggle color="primary" [(ngModel)]="funcionario.Ativo"></ion-toggle>
-        </ion-note>
       </ion-item>
   
       <ion-item-options side="end">
-        <ion-item-option color="danger">
+        <ion-item-option color="danger" (click)="excluir(funcionario)">
           <ion-icon slot="icon-only" name="trash"></ion-icon>
         </ion-item-option>
       </ion-item-options>

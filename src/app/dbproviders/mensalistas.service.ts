@@ -82,7 +82,7 @@ export class MensalistasService extends ServiceBaseService {
     })
   }
 
-  public salvar(mensalista: Mensalista, movimentos: Movimento[] = null) {
+  public salvar(mensalista: Mensalista, movimentos: Movimento[] = [], movimentosExclusao: Movimento[] = []) {
     return new Promise((resolve, reject) => {
       this.database.DB.then(db => {
         db.transaction(tx => {
@@ -92,39 +92,56 @@ export class MensalistasService extends ServiceBaseService {
       
           // Caso seja inclusão
           if (mensalista.Id == null || mensalista.Id == 0) {
-            sqlMensalista = 'insert into mensalistas (Nome, Documento, Valor, Telefone, Email, Ativo, Veiculos) values (?, ?, ?, ?, ?, ?, ?)'
-            dataMensalista = [mensalista.Nome, mensalista.Documento, mensalista.Valor, mensalista.Telefone, mensalista.Email, mensalista.Ativo, JSON.stringify(mensalista.Veiculos)]
+            sqlMensalista = 'insert into mensalistas (Nome, Documento, Telefone, Email, Ativo, Veiculos) values (?, ?, ?, ?, ?, ?)'
+            dataMensalista = [mensalista.Nome, mensalista.Documento, mensalista.Telefone, mensalista.Email, mensalista.Ativo, JSON.stringify(mensalista.Veiculos)]
           }
           // Caso seja edição
           else {
-            sqlMensalista = 'update mensalistas set Nome = ?, Documento = ?, Valor = ?, Telefone = ?, Email = ?, Ativo = ?, Veiculos = ? where Id = ?'
-            dataMensalista = [mensalista.Nome, mensalista.Documento, mensalista.Valor, mensalista.Telefone, mensalista.Email, mensalista.Ativo, JSON.stringify(mensalista.Veiculos), mensalista.Id]
+            sqlMensalista = 'update mensalistas set Nome = ?, Documento = ?, Telefone = ?, Email = ?, Ativo = ?, Veiculos = ? where Id = ?'
+            dataMensalista = [mensalista.Nome, mensalista.Documento, mensalista.Telefone, mensalista.Email, mensalista.Ativo, JSON.stringify(mensalista.Veiculos), mensalista.Id]
           }      
           tx.executeSql(sqlMensalista, dataMensalista, (tx, result) => {
-            if (movimentos == null)
-              resolve()
-            else {
-              let promisesTx = []
-              // Inclui movimento dos novos pagamentos
-              movimentos.forEach(movimento => {
-                if (movimento.Id == 0) {
-                  // Se não foi definido um mensalista dono do movimento antes, insere nesse momento
-                  if (movimento.IdMensalista == 0)
-                    movimento.IdMensalista = result.insertId
-                  promisesTx.push(
-                    new Promise((resolve, reject) => {
-                      const sqlInclusaoMovimento = 'insert into movimentos (Data, Descricao, ValorDinheiro, ValorDebito, ValorCredito, IdMensalista, Inicio, Fim) values (?, ?, ?, ?, ?, ?, ?, ?)';
-                      const dataInclusaoMovimento = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss'), movimento.Descricao, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, movimento.IdMensalista, new DatePipe('en-US').transform(movimento.Inicio, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(movimento.Fim, 'yyyy-MM-dd HH:mm:ss')];    
-                      tx.executeSql(sqlInclusaoMovimento, dataInclusaoMovimento, () => { resolve() }, (erro) => { reject(erro) })
-                    })
-                  )      
-                }
-              });
-              Promise.all(promisesTx).then(() => { 
-                resolve() 
-              }, 
-              (erro) => { reject(erro) })
-            }
+            let promisesTx = []
+
+            // Inclui movimento dos novos pagamentos e edições
+            movimentos.forEach(movimento => {
+              // Se não foi definido um mensalista dono do movimento antes, insere nesse momento
+              if (movimento.IdMensalista == 0)
+                movimento.IdMensalista = result.insertId
+              promisesTx.push(
+                new Promise((resolve, reject) => {
+                  // Inclusão
+                  if (movimento.Id == 0) {
+                    const sqlInclusaoMovimento = 'insert into movimentos (Data, Descricao, ValorDinheiro, ValorDebito, ValorCredito, IdMensalista, Inicio, Fim) values (?, ?, ?, ?, ?, ?, ?, ?)';
+                    const dataInclusaoMovimento = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss'), movimento.Descricao, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, movimento.IdMensalista, new DatePipe('en-US').transform(movimento.Inicio, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(movimento.Fim, 'yyyy-MM-dd HH:mm:ss')];
+                    tx.executeSql(sqlInclusaoMovimento, dataInclusaoMovimento, () => { resolve() }, (erro) => { reject(erro) })
+                  }
+                  // Atualização
+                  else {
+                    const sqlEdicaoMovimento = 'update movimentos set Data = ?, Descricao = ?, ValorDinheiro = ?, ValorDebito = ?, ValorCredito = ?, IdMensalista = ?, Inicio = ?, Fim = ? where Id = ?';
+                    const dataEdicaoMovimento = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss'), movimento.Descricao, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, movimento.IdMensalista, new DatePipe('en-US').transform(movimento.Inicio, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(movimento.Fim, 'yyyy-MM-dd HH:mm:ss'), movimento.Id];
+                    tx.executeSql(sqlEdicaoMovimento, dataEdicaoMovimento, () => { resolve() }, (erro) => { reject(erro) })
+                  }
+                })
+              )      
+            });
+
+            // Inclui os movimentos que devem ser excluidos
+            movimentosExclusao.forEach(movimento => {
+              promisesTx.push(
+                new Promise((resolve, reject) => {
+                  // Inclusão
+                  const sqlExclusaoMovimento = 'delete from movimentos where Id = ?';
+                  const dataExclusaoMovimento = [movimento.Id];
+                  tx.executeSql(sqlExclusaoMovimento, dataExclusaoMovimento, () => { resolve() }, (erro) => { reject(erro) })
+                })
+              )      
+            })
+
+            Promise.all(promisesTx).then(() => { 
+              resolve() 
+            }, 
+            (erro) => { reject(erro) })
           }, (erro) => { reject(erro) })
         })
         .catch(erro => {

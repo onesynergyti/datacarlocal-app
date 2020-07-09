@@ -10,12 +10,15 @@ import { VeiculoCadastro } from 'src/app/models/veiculo-cadastro';
 export class CadastroVeiculoPage implements OnInit {
 
   veiculo: VeiculoCadastro
+  avaliouFormulario = false
+  inclusao = false
 
   constructor(
     private modalCtrl: ModalController,
     public navParams: NavParams,
   ) { 
     this.veiculo = navParams.get('veiculoMensalista')
+    this.inclusao = navParams.get('inclusao')
   }
 
   ngOnInit() {
@@ -25,8 +28,17 @@ export class CadastroVeiculoPage implements OnInit {
     this.modalCtrl.dismiss()
   }
 
-  concluir() {
-    this.modalCtrl.dismiss(this.veiculo)
+  concluir(operacao = 'cadastro') {
+    if (operacao != 'cadastro')
+      this.modalCtrl.dismiss({ Operacao: operacao, Veiculo: this.veiculo })
+    else {
+      this.avaliouFormulario = true
+      if (this.veiculo.Placa.length == 7)
+        this.modalCtrl.dismiss({ Operacao: operacao, Veiculo: this.veiculo })
+    }
   }
 
+  tratarPlaca(valor) {
+    return valor.toUpperCase().replace(/[^a-zA-Z0-9]/g,'')
+  }
 }

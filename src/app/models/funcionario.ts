@@ -1,10 +1,9 @@
 export class Funcionario {
   Id: number = 0
-  Nome: string
+  Nome: string = ''
   Documento: string
-  Telefone: string
+  Telefone: string  
   Email: string
-  Ativo: boolean = true
 
   constructor(funcionario: Funcionario = null) {
     if (funcionario != null) {
@@ -13,7 +12,6 @@ export class Funcionario {
       this.Documento = funcionario.Documento
       this.Telefone = funcionario.Telefone
       this.Email = funcionario.Email
-      this.Ativo = funcionario.Ativo
     }
   }
 }

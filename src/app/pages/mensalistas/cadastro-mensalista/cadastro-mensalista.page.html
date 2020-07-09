@@ -16,6 +16,14 @@
 <ion-content *ngIf="mensalista != null">
   <ion-grid *ngIf="pagina == 'veiculos'">
     <ion-row>
+      <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
+        <ion-item>
+          <ion-label>Ativo</ion-label>
+          <ion-toggle color="primary" [(ngModel)]="mensalista.Ativo"></ion-toggle>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
         <ion-icon class="iconeSubTitulo" name="person"></ion-icon>
         Dados do mensalista
@@ -30,8 +38,30 @@
       </ion-col>
     </ion-row>
     <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Documento (CNPJ / CPF)</ion-label>
+          <ion-input autocorrect="off" type="tel" [ngModel]="mensalista.Documento | documentoPipe" (ionInput)="mensalista.Documento = utils.somenteNumeros($event.target.value)"></ion-input>
+        </ion-item>        
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Telefone</ion-label>
+          <ion-input autocorrect="off" type="tel" maxlength="15" [ngModel]="mensalista.Telefone | telefonePipe" (ionInput)="mensalista.Telefone = utils.somenteNumeros($event.target.value)"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">E-mail</ion-label>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="mensalista.Email"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLigth">
-        <ion-icon class="iconeSubTitulo" name="sport-car"></ion-icon>
+        <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
         Veículos
       </ion-col>
     </ion-row>
@@ -39,16 +69,23 @@
       <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
         <ion-list [@listAnimation]="mensalista.Veiculos.length" lines="full">
           <ion-item-sliding id="veiculo.Placa" *ngFor="let veiculo of mensalista.Veiculos">
-            <ion-item>
-              <div>
-                <h3 class="textoLimitado espacadorCampo">{{ veiculo.Placa }}</h3>
-              </div>
-              <ion-note slot="end">
-              </ion-note>
+            <ion-item (click)="cadastrarVeiculo(veiculo)">
+              <ion-grid class="ion-no-margin ion-no-padding">
+                <ion-row>
+                  <ion-col>
+                    <h3 class="textoLimitado espacadorCampo negrito">{{ veiculo.Placa | placaPipe }}</h3>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <h4 class="textoLimitado">{{ veiculo.Modelo && veiculo.Modelo.length > 0 ? veiculo.Modelo : 'Modelo não informado' }}</h4>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
             </ion-item>
-        
+
             <ion-item-options side="end">
-              <ion-item-option color="danger">
+              <ion-item-option color="danger" (click)="excluir(veiculo)">
                 <ion-icon slot="icon-only" name="trash"></ion-icon>
               </ion-item-option>
             </ion-item-options>
@@ -58,44 +95,61 @@
     </ion-row>
     <ion-row *ngIf="mensalista.Veiculos == null || mensalista.Veiculos.length == 0">
       <ion-col size-xs="12">
-        <h5>Nenhum veículo adicionado</h5>
+        <div class="divInformativo">
+          <h2>Nenhum veículo cadastrado</h2>
+          <ion-icon name="car-sport-outline"></ion-icon>
+          <h5>Utilize o botão abaixo para adicionar um veículo</h5>
+        </div>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
         <ion-button expand="block" (click)="cadastrarVeiculo()">
-          <ion-icon name="add-circle"></ion-icon>
-          Adicionar Veículo
+          <ion-icon slot="start" name="add-circle"></ion-icon>
+          Adicionar veículo
         </ion-button>
       </ion-col>
     </ion-row>    
   </ion-grid>
   
   <div *ngIf="pagina == 'pagamentos'">
+    <ion-spinner *ngIf="carregandoMovimentos" class="spinnerCentro"></ion-spinner>
+
+    <div class="divInformativo" *ngIf="!carregandoMovimentos && movimentos.length == 0">
+      <h2>Nenhum pagamento cadastrado</h2>
+      <ion-icon name="cash-outline"></ion-icon>
+      <h5>Utilize o botão abaixo para adicionar um pagamento</h5>
+    </div>
+
     <ion-list [@listAnimation]="movimentos.length" lines="full">
       <ion-item-sliding id="movimento.Id" *ngFor="let movimento of movimentos; let i = index">
-        <ion-item>
+        <ion-item (click)="cadastrarPagamento(movimento)">
           <ion-grid class="ion-no-margin ion-no-padding ">
-            <ion-row>
-              <ion-col size-xs="8">
-                <h4 class="textoLimitado">{{ movimento.Data | date:"dd/MM/yyyy" }} - {{ movimento.Descricao }}</h4>
+            <ion-row class="espacadorCampo">
+              <ion-col size-xs="12">
+                <h3 class="textoLimitado negrito">Pagamento em {{ movimento.Data | date:"dd/MM/yyyy" }}</h3>
               </ion-col>
-              <ion-col size-xs="4" class="ion-text-right">
-                <h4>{{ movimento.Valor | decimalPipe:"R$ " }}</h4>
+            </ion-row>
+            <ion-row>
+              <ion-col size-xs="12">
+                <h4>Válido de {{ movimento.Inicio | date:"dd/MM/yyyy" }} até {{ movimento.Fim | date:"dd/MM/yyyy" }}</h4>
               </ion-col>
             </ion-row>
           </ion-grid>
+          <ion-note slot="end">
+            <h3>{{ movimento.Valor | decimalPipe:"R$ " }}</h3>
+          </ion-note>
         </ion-item>
-    
+        
         <ion-item-options side="end">
-          <ion-item-option color="danger">
+          <ion-item-option color="danger" (click)="excluirMovimento(movimento)">
             <ion-icon slot="icon-only" name="trash"></ion-icon>
           </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
     <ion-button expand="block" (click)="cadastrarPagamento()">
-      <ion-icon name="add-circle"></ion-icon>
+      <ion-icon slot="start" name="add-circle"></ion-icon>
       Adicionar Pagamento
     </ion-button>
   </div>  
@@ -103,7 +157,7 @@
 
 <ion-footer>
   <ion-button expand="block" color="success" (click)="concluir()">
-    <ion-icon slot="start" name="checkmark-done"></ion-icon>
+    <ion-icon slot="start" name="checkmark"></ion-icon>
     Salvar
   </ion-button>
 </ion-footer>
