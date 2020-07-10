@@ -70,11 +70,11 @@
             </ion-grid>
           </ion-item>
       
-          <!--<ion-item-options side="end">
-            <ion-item-option color="danger">
+          <ion-item-options *ngIf="movimento.Veiculos == null || movimento.Veiculos[0] == null" side="end">
+            <ion-item-option color="danger" (click)="excluir(movimento)">
               <ion-icon slot="icon-only" name="trash"></ion-icon>
             </ion-item-option>
-          </ion-item-options> -->
+          </ion-item-options>
         </ion-item-sliding>
       </div>
     </ion-list>

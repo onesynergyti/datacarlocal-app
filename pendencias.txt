@@ -35,7 +35,11 @@ OK - Ajustar layout do cadastro de funcionários
 OK - Ajustar consistência no cadastro de funcionários
 TESTAR - Pesquisa de placa no pátio não funciona quando coloca "-"
 OK - Ajustar layout do cadastro de mensalistas
-- Permitir excluir movimentos de mensalidade ou receitas e despesas avulsas
+OK - Permitir excluir movimentos de mensalidade ou receitas e despesas avulsas
+- Ajustar layout do histórico de vendas
+- Criar informações de listagem vazia nos pagamentos pendentes
+- Adequar campos de número decimal no sistema todo
+- Melhorar nome e agrupamento dos itens do menu
 - Criar consistência cadastro de serviços
 - Trocar senha de administrador está com problema
 - Criar consistência nos formulários, incluindo max length e campos obrigatórios

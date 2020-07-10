@@ -5,7 +5,7 @@ import { Chart } from 'chart.js';
 import { Utils } from 'src/app/utils/utils';
 import { DatePipe } from '@angular/common';
 import { Movimento } from 'src/app/models/movimento';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 import { CadastroMovimentoPage } from './cadastro-movimento/cadastro-movimento.page';
 import { UtilsLista } from 'src/app/utils/utils-lista';
 import { SaidaPage } from '../home/saida/saida.page';
@@ -45,7 +45,7 @@ export class MovimentoPage implements OnInit {
     private providerMovimentos: MovimentoService,
     private utils: Utils,
     private modalController: ModalController,
-    private utilsLista: UtilsLista
+    private alertController: AlertController
   ) { 
     const dataAtual = new Date()
     this.dataFim = dataAtual
@@ -87,21 +87,32 @@ export class MovimentoPage implements OnInit {
     }
     else {
       let movimentoEdicao = new Movimento(movimento)
+      const edicaoDebito = (movimentoEdicao.ValorDebito < 0) || (movimentoEdicao.ValorCredito < 0) || (movimentoEdicao.ValorDinheiro < 0) || debito 
+      // Define so valores como positivos
+      movimentoEdicao.ValorCredito = Math.abs(movimentoEdicao.ValorCredito)
+      movimentoEdicao.ValorDebito = Math.abs(movimentoEdicao.ValorDebito)
+      movimentoEdicao.ValorDinheiro = Math.abs(movimentoEdicao.ValorDinheiro)
+      
       const modal = await this.modalController.create({
         component: CadastroMovimentoPage,
         componentProps: {
           'movimento': movimentoEdicao,
-          'debito': (movimentoEdicao.ValorDebito < 0) || (movimentoEdicao.ValorCredito < 0) || (movimentoEdicao.ValorDinheiro < 0) || debito,
-          'somenteLeitura': movimento != null
+          'debito': edicaoDebito,
+          'inclusao': movimento == null
         }
       });
   
       modal.onWillDismiss().then((retorno) => {
         if (retorno.data != null) {
-          this.utils.mostrarToast('Movimento inserido com sucesso.', 'success')
-          this.atualizarMovimentos(true)
-          this.criarGraficosReceitas()
-          this.atualizarSaldoPeriodo()
+          if (retorno.data.Operacao == 'excluir') {
+            this.excluir(retorno.data.Movimento)
+          }
+          else {
+            this.utils.mostrarToast(movimento == null ? 'Movimento inserido com sucesso.' : 'Movimento alterado com sucesso.', 'success')
+            this.atualizarMovimentos(true)
+            this.criarGraficosReceitas()
+            this.atualizarSaldoPeriodo()
+          }
         }
       })
   
@@ -205,6 +216,40 @@ export class MovimentoPage implements OnInit {
     .catch((erro) => {
       alert(JSON.stringify(erro))
     })
+  }
+
+  async confirmarExclusao(movimento) {
+    await this.providerMovimentos.exibirProcessamento('Excluindo veículo...')
+    this.providerMovimentos.excluir(movimento.Id)
+    .then(() => {
+      this.atualizarMovimentos(true)
+      this.criarGraficosReceitas()
+      this.atualizarSaldoPeriodo()
+    })
+    .catch(() => {
+      this.utils.mostrarToast('Não foi possível excluir o serviço.', 'danger')
+    })
+  }
+
+  async excluir(movimento) {
+    const alert = await this.alertController.create({
+      header: 'Excluir movimento',
+      message: `Deseja realmente excluir o movimento?`,
+      buttons: [
+        {
+          text: 'Não',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Sim',
+          handler: () => {
+            this.confirmarExclusao(movimento)
+          }
+        }
+      ]  
+    });
+  
+    await alert.present();
   }
 
   exibirCabecalhoData(index) {

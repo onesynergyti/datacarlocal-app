@@ -20,6 +20,24 @@ export class MovimentoService extends ServiceBaseService {
     super(loadingController)
   }
 
+  public excluir(id) {
+    return new Promise((resolve, reject) => { 
+      this.database.DB.then(db => { 
+        let sql = 'delete from movimentos where Id = ?';
+        let data = [id];
+        db.executeSql(sql, data).then(() => {
+          resolve()
+        })
+        .catch(erro => {
+          reject(erro)
+        })
+      })
+      .finally(() => {
+        this.ocultarProcessamento()
+      })
+    })
+  }
+
   public lista(inicio: Date, fim: Date, dataMaxima: Date = null): Promise<any> {
     return new Promise((resolve, reject) => {
       const sql = "SELECT * from movimentos where Date(Data) between Date(?) and Date(?) and (Data <= ?) order by Data desc limit 100";

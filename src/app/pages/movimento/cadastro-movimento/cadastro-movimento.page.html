@@ -96,8 +96,19 @@
     </ion-row>
   </ion-grid>
 
-  <ion-button expand="block" *ngIf="!somenteLeitura" color="success" (click)="concluir()">
-    <ion-icon slot="start" name= "checkmark"></ion-icon>
-    Salvar
-  </ion-button>
+  <ion-grid class="ion-no-padding ion-no-margin">
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="success" (click)="concluir()">
+          <ion-icon slot="start" name="checkmark"></ion-icon>
+          Salvar
+        </ion-button>
+      </ion-col>
+      <ion-col size-xs="2" *ngIf="!inclusao" (click)="concluir('excluir')">
+        <ion-button expand="block" color="danger">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-footer>
