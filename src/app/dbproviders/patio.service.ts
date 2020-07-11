@@ -150,8 +150,8 @@ export class PatioService extends ServiceBaseService {
                 movimento.Veiculos.forEach(veiculoAtual => {
                   promisesTx.push(
                     new Promise((resolve, reject) => {
-                      const sqlInclusaoHistoricoVeiculo = 'insert into veiculosHistorico (Placa, TipoVeiculo, IdFuncionario, Valor, Descontos, Acrescimos, Entrada, Saida, Pagamento) values (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-                      const dataInclusaoHistoricoVeiculo = [veiculoAtual.Placa, veiculoAtual.TipoVeiculo, veiculoAtual.Funcionario ? veiculoAtual.Funcionario.Id : null, veiculoAtual.TotalServicos, veiculoAtual.TotalDescontos, veiculoAtual.TotalAcrescimos, new DatePipe('en-US').transform(veiculoAtual.Entrada, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(veiculoAtual.Saida, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss')];
+                      const sqlInclusaoHistoricoVeiculo = 'insert into veiculosHistorico (Placa, TipoVeiculo, IdFuncionario, funcionario, Valor, Descontos, Acrescimos, Entrada, Saida, Pagamento) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                      const dataInclusaoHistoricoVeiculo = [veiculoAtual.Placa, veiculoAtual.TipoVeiculo, veiculoAtual.Funcionario ? veiculoAtual.Funcionario.Id : null, veiculoAtual.Funcionario ? JSON.stringify(veiculoAtual.Funcionario) : null, veiculoAtual.TotalServicos, veiculoAtual.TotalDescontos, veiculoAtual.TotalAcrescimos, new DatePipe('en-US').transform(veiculoAtual.Entrada, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(veiculoAtual.Saida, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss')];
                       tx.executeSql(sqlInclusaoHistoricoVeiculo, dataInclusaoHistoricoVeiculo, () => { resolve() }, (erro) => { reject(erro) })
                     })
                   )      

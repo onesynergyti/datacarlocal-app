@@ -2,6 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
 import { HistoricoVeiculosService } from 'src/app/dbproviders/historico-veiculos.service';
 import { Chart } from 'chart.js';
+import { Utils } from 'src/app/utils/utils';
+import { SaidaPage } from '../home/saida/saida.page';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-historico-veiculos',
@@ -35,7 +38,9 @@ export class HistoricoVeiculosPage implements OnInit {
   finalizouCarregamento = false
 
   constructor(
-    private providerHistorico: HistoricoVeiculosService
+    private providerHistorico: HistoricoVeiculosService,
+    private modalController: ModalController,
+    public utils: Utils
   ) { 
     const dataAtual = new Date()
     this.dataFim = dataAtual
@@ -118,4 +123,24 @@ export class HistoricoVeiculosPage implements OnInit {
       alert(erro)
     })
   }  
+
+  selecionarDataInicial(dataAtual) {
+    this.utils.selecionarData(dataAtual ? new Date(dataAtual) : new Date())
+    .then(data => {
+      this.dataInicio = data
+      this.atualizarHistorico(true)
+      this.criarGraficosReceitas()
+//      this.atualizarSaldoPeriodo()
+    });
+  }
+
+  selecionarDataFinal(dataAtual) {
+    this.utils.selecionarData(dataAtual ? new Date(dataAtual) : new Date())
+    .then(data => {
+      this.dataFim = data
+      this.atualizarHistorico(true)
+      this.criarGraficosReceitas()
+//      this.atualizarSaldoPeriodo()
+    });
+  }
 }

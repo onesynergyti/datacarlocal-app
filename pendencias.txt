@@ -36,10 +36,15 @@ OK - Ajustar consistência no cadastro de funcionários
 TESTAR - Pesquisa de placa no pátio não funciona quando coloca "-"
 OK - Ajustar layout do cadastro de mensalistas
 OK - Permitir excluir movimentos de mensalidade ou receitas e despesas avulsas
-- Ajustar layout do histórico de vendas
+OK - Ajustar layout do histórico de vendas
 - Incluir filtro por funcionário no histórico de vendas
+- Incluir um totalizador total no histórico de vendas
+- Alterar gráfico de vendas por funcionário para barras
+- Não está atualizando a lista quando salva um mensalista
 - Criar informações de listagem vazia nos pagamentos pendentes
 - Adequar campos de número decimal no sistema todo
+- Criar consistência no cadastro de mensalista. Está permitindo cadastro sem veículos
+- Exibir os dados do mensalista sempre, mesmo que forem vazios, porque tem os cabeçalhos presentes
 - Melhorar nome e agrupamento dos itens do menu
 - Criar consistência cadastro de serviços
 - Trocar senha de administrador está com problema

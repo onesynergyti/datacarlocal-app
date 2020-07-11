@@ -1,15 +1,21 @@
 <ion-header>
-  <app-header titulo="Movimentos"></app-header>
+  <app-header titulo="Histórico Vendas"></app-header>
   <ion-grid>
     <ion-row>
-      <ion-col size-xs="5" class="ion-text-center">
-        <ion-label>{{ dataInicio | date:"dd/MM/yyyy" }}</ion-label>
+      <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-icon class="iconeSubTitulo" name="calendar"></ion-icon>
+        Período
       </ion-col>
-      <ion-col class="ion-text-center">
-        Até
+    </ion-row>
+    <ion-row class="separadorCampo">
+      <ion-col size-xs="5" class="ion-text-center" (click)="selecionarDataInicial(dataInicio)">
+        <h2 class="negrito">{{ dataInicio | date:"dd/MM/yyyy" }}</h2>
       </ion-col>
-      <ion-col size-xs="5" class="ion-text-center">
-        <ion-label>{{ dataFim | date:"dd/MM/yyyy" }}</ion-label>
+      <ion-col size-xs="2" class="ion-text-center">
+        <h4 class="ion-text-uppercase">Até</h4>
+      </ion-col>
+      <ion-col size-xs="5" class="ion-text-center" (click)="selecionarDataFinal(dataFim)">
+        <h2 class="negrito">{{ dataFim | date:"dd/MM/yyyy" }}</h2>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -27,26 +33,83 @@
 
 <ion-content>
   <div [ngClass]="{'invisivel': pagina == 'graficos'}">
-    <ion-list [@listAnimation]="vendas.length" lines="full">
-      <ion-item-sliding id="vendas.Id" *ngFor="let venda of vendas; let i = index">
+    <ion-list [@listAnimation]="vendas.length" lines="none">
+      <ion-item-sliding id="venda.Id" *ngFor="let venda of vendas; let i = index">
         <ion-item>
-          <ion-grid class="ion-no-margin ion-no-padding">
-            <ion-row>
-              <ion-col size-xs="8">
-                <h4 class="textoLimitado">{{ venda.Saida | date:"dd/MM/yyyy HH:mm" }} - {{ venda.Placa }}</h4>
-              </ion-col>
-              <ion-col size-xs="4" class="ion-text-right">
-                <h4>{{ venda.Valor | decimalPipe:"R$ " }}</h4>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
+          <div class="cartao">
+            <ion-grid>
+              <ion-row>
+                <ion-col size-xs="12" class="fundoPrimario tituloCartao ion-text-center"> 
+                  <h3>{{ venda.Placa | placaPipe }}</h3>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size-xs="12" class="subTitulo fundoLigth">
+                  <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
+                  Dados do veículo
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size-xs="8">
+                  <h4 class="textoLimitado">{{ venda.Modelo ? venda.Modelo : 'Modelo não informado' }}</h4>
+                </ion-col>
+                <ion-col size-xs="4" class="ion-text-right">
+                  <img id="imgTipoVeiculo" src="{{ '../../../assets/img/veiculos/' + venda.TipoVeiculo + '.png' }}" />
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size-xs="12" class="subTitulo fundoLigth">
+                  <ion-icon class="iconeSubTitulo" name="reader"></ion-icon>
+                  Dados da venda
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <h4 class="negrito">Entrada</h4>
+                  <h4>{{ venda.Entrada }}</h4>
+                </ion-col>
+                <ion-col>
+                  <h4 class="negrito">Saida</h4>
+                  <h4>{{ venda.Saida }}</h4>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <h4 class="negrito">Pagamento</h4>
+                  <h4>{{ venda.Pagamento }}</h4>
+                </ion-col>
+                <ion-col>
+                  <h4 class="negrito">Responsável</h4>
+                  <h4>{{ venda.Funcionario != null ? venda.Funcionario.Nome : 'Não informado' }}</h4>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size-xs="12" class="subTitulo fundoLigth">
+                  <ion-icon class="iconeSubTitulo" name="wallet"></ion-icon>
+                  Totais
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <h4 class="negrito">Descontos</h4>
+                  <h4>{{ venda.Descontos | decimalPipe:"R$ " }}</h4>
+                </ion-col>
+                <ion-col>
+                  <h4 class="negrito">Acréscimos</h4>
+                  <h4>{{ venda.Acrescimos | decimalPipe:"R$ " }}</h4>
+                </ion-col>
+              </ion-row>
+              <ion-row class="fundoLigth">
+                <ion-col>
+                  <h3 class="negrito ion-text-uppercase">Total</h3>
+                </ion-col>
+                <ion-col>
+                  <h4 class="negrito ion-text-right">{{ venda.Valor | decimalPipe:"R$ " }}</h4>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
         </ion-item>
-    
-        <ion-item-options side="end">
-          <ion-item-option color="danger">
-            <ion-icon slot="icon-only" name="trash"></ion-icon>
-          </ion-item-option>
-        </ion-item-options>
       </ion-item-sliding>
     </ion-list>
   </div>
@@ -54,7 +117,7 @@
   <div [ngClass]="{'invisivel': pagina == 'vendas'}">
     <ion-card>
       <ion-card-header>
-        <ion-card-subtitle>Evolução de receitas</ion-card-subtitle>
+        <ion-card-subtitle>Receita x Funcionário</ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
         <canvas #graficoEvolucaoReceita></canvas>

@@ -7,7 +7,6 @@ import { DatePipe } from '@angular/common';
 import { Movimento } from 'src/app/models/movimento';
 import { ModalController, AlertController } from '@ionic/angular';
 import { CadastroMovimentoPage } from './cadastro-movimento/cadastro-movimento.page';
-import { UtilsLista } from 'src/app/utils/utils-lista';
 import { SaidaPage } from '../home/saida/saida.page';
 
 @Component({

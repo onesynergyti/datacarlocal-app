@@ -32,6 +32,8 @@ export class HistoricoVeiculosService extends ServiceBaseService {
             let vendas: any[] = [];
 
             for (var i = 0; i < data.rows.length; i++) {
+              if (data.rows.item(i).Funcionario != null)
+                data.rows.item(i).Funcionario = JSON.parse(data.rows.item(i).Funcionario)
               vendas.push(data.rows.item(i));
             }
             resolve(vendas)
@@ -66,7 +68,7 @@ export class HistoricoVeiculosService extends ServiceBaseService {
               for (var i = 0; i < data.rows.length; i++) {
                 let receita = data.rows.item(i)
                 let funcionarioLocalizado = funcionarios.find(funcionarioAtual => funcionarioAtual.Id == receita.IdFuncionario)
-                receita.Funcionario = funcionarioLocalizado != null ? funcionarioLocalizado : { Id: 0, Nome: 'Não Informado'}
+                receita.Funcionario = funcionarioLocalizado != null ? funcionarioLocalizado : { Id: 0, Nome: 'Indefinido'}
                 receitas.push(receita);
               }
               resolve(receitas)

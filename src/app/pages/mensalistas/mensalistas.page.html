@@ -18,7 +18,7 @@
     <ion-icon name="search-outline"></ion-icon>
   </div>
 
-  <ion-list [@listAnimation]="listaFiltrada.length" lines="full" lines="none">
+  <ion-list [@listAnimation]="listaFiltrada.length" lines="none">
     <ion-item-sliding id="mensalista.Id" *ngFor="let mensalista of listaFiltrada">
       <ion-item (click)="cadastrarMensalista(mensalista)">
         <div class="cartao">
