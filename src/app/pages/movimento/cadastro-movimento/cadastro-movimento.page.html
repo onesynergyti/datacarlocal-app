@@ -28,7 +28,7 @@
       <ion-col>
         <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">Descrição</ion-label>
-          <ion-input autocorrect="off" [disabled]="somenteLeitura" type="text" [(ngModel)]="movimento.Descricao"></ion-input>
+          <ion-input autocorrect="off" type="text" [(ngModel)]="movimento.Descricao"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -59,7 +59,7 @@
         <h4>Dinheiro</h4>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" [disabled]="somenteLeitura" type="number" [ngModel]="movimento.ValorDinheiro | decimalInputPipe" (ionInput)="movimento.ValorDinheiro=utils.trataCampoNumero($event.target.value)"></ion-input>
+          <ion-input autocorrect="off" type="number" [ngModel]="movimento.ValorDinheiro | decimalInputPipe" (ionInput)="movimento.ValorDinheiro=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col class="ion-text-center">
@@ -67,7 +67,7 @@
         <h4>Débito</h4>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" [disabled]="somenteLeitura" type="number" [ngModel]="movimento.ValorDebito | decimalInputPipe" (ionInput)="movimento.ValorDebito=utils.trataCampoNumero($event.target.value)"></ion-input>
+          <ion-input autocorrect="off" type="number" [ngModel]="movimento.ValorDebito | decimalInputPipe" (ionInput)="movimento.ValorDebito=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col class="ion-text-center">
@@ -75,7 +75,7 @@
         <h4>Crédito</h4>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" [disabled]="somenteLeitura" type="number" [ngModel]="movimento.ValorCredito | decimalInputPipe" (ionInput)="movimento.ValorCredito=utils.trataCampoNumero($event.target.value)"></ion-input>
+          <ion-input autocorrect="off" type="number" [ngModel]="movimento.ValorCredito | decimalInputPipe" (ionInput)="movimento.ValorCredito=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>    

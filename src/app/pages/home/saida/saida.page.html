@@ -142,7 +142,7 @@
           Receber depois
         </ion-button>
       </ion-col>
-      <ion-col size-xs="{{ somenteLeitura ? 12 : 2 }}" *ngIf="!somenteLeitura" (click)="concluir('excluir')">
+      <ion-col size-xs="tamanhoBotaoExcluir" *ngIf="!somenteLeitura" (click)="concluir('excluir')">
         <ion-button expand="block" color="danger">
           <ion-icon name="trash"></ion-icon>
         </ion-button>

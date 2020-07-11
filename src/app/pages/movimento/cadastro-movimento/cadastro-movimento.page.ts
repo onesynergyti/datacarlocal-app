@@ -14,6 +14,7 @@ export class CadastroMovimentoPage implements OnInit {
   movimento: Movimento
   debito: boolean
   avaliouFormulario = false
+  inclusao = false
 
   constructor(
     private modalCtrl: ModalController,
@@ -23,6 +24,7 @@ export class CadastroMovimentoPage implements OnInit {
   ) {
     this.movimento = navParams.get('movimento')
     this.debito = navParams.get('debito')
+    this.inclusao = navParams.get('inclusao')
   }
 
   ngOnInit() {

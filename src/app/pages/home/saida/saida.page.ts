@@ -109,6 +109,10 @@ export class SaidaPage {
     }, 200);
   }
 
+  get tamanhoBotaoExcluir() {
+    return this.somenteLeitura ? 12 : 2
+  }
+
   get totalPago() {
     return this.movimento.ValorCredito + this.movimento.ValorDebito + this.movimento.ValorDinheiro
   }

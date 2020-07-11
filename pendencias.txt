@@ -37,6 +37,7 @@ TESTAR - Pesquisa de placa no pátio não funciona quando coloca "-"
 OK - Ajustar layout do cadastro de mensalistas
 OK - Permitir excluir movimentos de mensalidade ou receitas e despesas avulsas
 - Ajustar layout do histórico de vendas
+- Incluir filtro por funcionário no histórico de vendas
 - Criar informações de listagem vazia nos pagamentos pendentes
 - Adequar campos de número decimal no sistema todo
 - Melhorar nome e agrupamento dos itens do menu
@@ -52,3 +53,6 @@ OK - Permitir excluir movimentos de mensalidade ou receitas e despesas avulsas
 - Verificar cada item da configuração e o impacto na utilização
 - Ajustar recibos de pagamentos, débito registrado e entrada
 - Criar assinatura no recibo de pagar depois, para comprovação do estabelecimento
+- Definir whatsapp para suporte
+- Incluir opção de envio de mensagem de conclusão dos serviços nas mensagens de veículo para o cliente no pátio. Sugestão, incluir menu com oções personalizadas
+- Criar opções de whatsapp nas configurações com mensagens personalizadas

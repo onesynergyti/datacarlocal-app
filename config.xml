@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.reuztecnologia.datacar.local" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Datacar Local</name>
-    <description>Sistema Datacar local</description>
+<widget id="com.reuztecnologia.estacionamento.lite" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Estacionamento Reuz</name>
+    <description>Sistema de controle para estacionamento</description>
     <author email="ti@reuztecnologia.com" href="http://www.reuztecnologia.com/">Reuz Tecnologia</author>
     <content src="index.html" />
     <access origin="*" />
