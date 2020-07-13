@@ -39,6 +39,7 @@ export class MovimentoPage implements OnInit {
   dataMaxima = null
   finalizouCarregamento = false
   saldoPeriodo = null
+  carregandoGraficos = false
 
   constructor(
     private providerMovimentos: MovimentoService,
@@ -121,7 +122,6 @@ export class MovimentoPage implements OnInit {
 
   atualizarMovimentos(recarregar = false, event = null) {
     if (recarregar) {
-      this.saldoPeriodo = null
       this.dataMaxima = null
       this.movimentos = []
       this.finalizouCarregamento = false
@@ -156,12 +156,15 @@ export class MovimentoPage implements OnInit {
   }
 
   atualizarSaldoPeriodo() {
+    this.saldoPeriodo = null
     this.providerMovimentos.saldoPeriodo(this.dataInicio, this.dataFim).then(saldos => {
       this.saldoPeriodo = saldos.ValorCredito + saldos.ValorDebito + saldos.ValorDinheiro
     })
   }
 
   criarGraficosReceitas() {
+    this.carregandoGraficos = true
+
     this.providerMovimentos.valorXtipoReceita(this.dataInicio, this.dataFim).then((movimentosMes: any) => {
       // Grafico de tipo de receita 
       this.bars = new Chart(this.graficoTipoReceita.nativeElement, {
@@ -214,6 +217,9 @@ export class MovimentoPage implements OnInit {
     })
     .catch((erro) => {
       alert(JSON.stringify(erro))
+    })
+    .finally(() => {
+      this.carregandoGraficos = false
     })
   }
 

@@ -3,8 +3,7 @@ import { trigger, transition, query, style, stagger, animate } from '@angular/an
 import { HistoricoVeiculosService } from 'src/app/dbproviders/historico-veiculos.service';
 import { Chart } from 'chart.js';
 import { Utils } from 'src/app/utils/utils';
-import { SaidaPage } from '../home/saida/saida.page';
-import { ModalController } from '@ionic/angular';
+import { FuncionariosService } from 'src/app/dbproviders/funcionarios.service';
 
 @Component({
   selector: 'app-historico-veiculos',
@@ -16,10 +15,6 @@ import { ModalController } from '@ionic/angular';
         query(':enter',
           [style({ opacity: 0 }), stagger('40ms', animate('800ms ease-out', style({ opacity: 1 })))],
           { optional: true }
-        ),
-        query(':leave',
-          [style({ opacity: 1 }), stagger('40ms', animate('800ms ease-out', style({ opacity: 0 })))],
-          { optional: true }
         )
       ])
     ])
@@ -28,6 +23,7 @@ import { ModalController } from '@ionic/angular';
 export class HistoricoVeiculosPage implements OnInit {
 
   @ViewChild('graficoEvolucaoReceita') graficoEvolucaoReceita;
+  @ViewChild('graficoTotalReceita') graficoTotalReceita;
 
   vendas = []
   dataInicio: Date
@@ -36,10 +32,13 @@ export class HistoricoVeiculosPage implements OnInit {
   carregandoHistorico = false
   idMaximo = 0
   finalizouCarregamento = false
+  saldoPeriodo = null
+  carregandoGraficos = false
+  funcionarios = []
 
   constructor(
     private providerHistorico: HistoricoVeiculosService,
-    private modalController: ModalController,
+    private providerFuncionarios: FuncionariosService,
     public utils: Utils
   ) { 
     const dataAtual = new Date()
@@ -51,17 +50,34 @@ export class HistoricoVeiculosPage implements OnInit {
   ngOnInit() {
   }
 
-  ionViewDidEnter() {
-    this.atualizarHistorico()
-    this.criarGraficosReceitas()
+  ionViewWillEnter() {
+    this.finalizouCarregamento = false
+    this.carregandoGraficos = true
+    this.carregandoHistorico = true
+    this.vendas = []
+    this.idMaximo = 0
   }
 
-  atualizarHistorico(event = null) {
+  ionViewDidEnter() {
+    // Carrega a lista de funcionários
+    this.providerFuncionarios.lista().then((funcionarios: any) => {
+      this.funcionarios = funcionarios
+      this.atualizarHistorico()
+      this.criarGraficosReceitas()
+      this.atualizarSaldoPeriodo() 
+    })
+  }
+
+  atualizarHistorico(recarregar = false, event = null) {
+    if (recarregar) {
+      this.idMaximo = 0
+      this.vendas = []
+      this.finalizouCarregamento = false
+    }
+
     this.carregandoHistorico = true
     let inseriuItem = false
     this.providerHistorico.lista(this.dataInicio, this.dataFim, this.idMaximo).then((lista: any) => {
-      alert(JSON.stringify(lista))
-
       lista.forEach(itemAtual => {
         if (this.vendas.find(itemExistente => itemExistente.Id === itemAtual.Id) == null) {
           this.vendas.push(itemAtual)
@@ -84,45 +100,107 @@ export class HistoricoVeiculosPage implements OnInit {
     })
   }
 
+  atualizarSaldoPeriodo() {
+    this.saldoPeriodo = null
+    this.providerHistorico.saldoPeriodo(this.dataInicio, this.dataFim).then(saldo => {      
+      this.saldoPeriodo = saldo.Valor
+    })
+    .catch(erro => {alert(erro)})
+  }
+
   criarGraficosReceitas() {
-    this.providerHistorico.receitaXfuncionario(this.dataInicio, this.dataFim).then((receitas: any) => {
-      // Grafico de evolução de receita
-      let labels = []
-      let funcionarios = []
-      let dataset = []
-      receitas.forEach(receitaAtual => {
-        // Insere os períodos
-        if (!labels.find(itemAtual => itemAtual == receitaAtual.Periodo))
-          labels.push(receitaAtual.Periodo)
-
-        if (!funcionarios.find(itemAtual => itemAtual == receitaAtual.Funcionario.Nome))
-          funcionarios.push(receitaAtual.Funcionario.Nome)
-      });
-
-      funcionarios.forEach(funcionarioAtual => {
-        let data = { label: funcionarioAtual, fill: false, borderColor: 'green', data: [] }
-        // Percorre o período informando o valor
-
-        labels.forEach(periodoAtual => {
-          const receitaLocalizada = receitas.find(receitaAtual => receitaAtual.Periodo == periodoAtual && receitaAtual.Funcionario.Nome == funcionarioAtual)
-          data.data.push(receitaLocalizada != null ? receitaLocalizada.Valor : 0)
+    this.carregandoGraficos = true
+    let promessas = []
+    
+    promessas.push(new Promise((resolve, reject) => {
+      this.providerHistorico.receitaXfuncionario(this.dataInicio, this.dataFim).then((receitas: any) => {
+        // Grafico de evolução de receita
+        let labels = []
+        let funcionarios = []
+        let dataset = []
+        receitas.forEach(receitaAtual => {
+          // Insere os períodos
+          if (!labels.find(itemAtual => itemAtual == receitaAtual.Periodo))
+            labels.push(receitaAtual.Periodo)
+  
+          if (!funcionarios.find(itemAtual => itemAtual == receitaAtual.Funcionario.Nome))
+            funcionarios.push(receitaAtual.Funcionario.Nome)
+        });
+  
+        funcionarios.forEach(funcionarioAtual => {
+          let data = { label: funcionarioAtual, fill: false, borderColor: 'green', data: [] }
+          // Percorre o período informando o valor
+  
+          labels.forEach(periodoAtual => {
+            const receitaLocalizada = receitas.find(receitaAtual => receitaAtual.Periodo == periodoAtual && receitaAtual.Funcionario.Nome == funcionarioAtual)
+            data.data.push(receitaLocalizada != null ? receitaLocalizada.Valor : 0)
+          })
+  
+          dataset.push(data)
         })
+  
+        new Chart(this.graficoEvolucaoReceita.nativeElement, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: dataset
+          }
+        });
 
-        dataset.push(data)
+        resolve()
       })
+      .catch((erro) => {
+        reject()
+      })
+    }))
 
-      new Chart(this.graficoEvolucaoReceita.nativeElement, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: dataset
-        }
-      });
-    })
-    .catch((erro) => {
-      alert(erro)
-    })
+    promessas.push(new Promise((resolve, reject) => {
+      // Grafico de total de receita
+      this.providerHistorico.receitaXfuncionario(this.dataInicio, this.dataFim, false).then((receitas: any) => { 
+        let labels = []
+        let dataset = []
+        receitas.forEach(receitaAtual => {
+          labels.push(receitaAtual.Funcionario.Nome)
+          dataset.push(receitaAtual.Valor)
+        });
+
+        new Chart(this.graficoTotalReceita.nativeElement, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Receita do período',
+              data: dataset,
+              backgroundColor: 'rgb(38, 194, 129)', // array should have same number of elements as number of dataset
+              borderColor: 'rgb(38, 194, 129)',// array should have same number of elements as number of dataset
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            }
+          }        
+        });
+        resolve()
+      })
+      .catch(() => {
+        reject()
+      })
+    }))
+
+    // Executa a busca dos gráficos em paralelo
+    Promise.all(promessas).finally(() => { this.carregandoGraficos = false })
   }  
+
+  nomeFuncionario(idFuncionario) {
+    let funcionario = this.funcionarios.find(itemAtual => itemAtual.Id == idFuncionario)
+    return funcionario == null ? 'Não informado' : funcionario.Nome
+  }
 
   selecionarDataInicial(dataAtual) {
     this.utils.selecionarData(dataAtual ? new Date(dataAtual) : new Date())
@@ -130,7 +208,7 @@ export class HistoricoVeiculosPage implements OnInit {
       this.dataInicio = data
       this.atualizarHistorico(true)
       this.criarGraficosReceitas()
-//      this.atualizarSaldoPeriodo()
+      this.atualizarSaldoPeriodo()
     });
   }
 
@@ -140,7 +218,7 @@ export class HistoricoVeiculosPage implements OnInit {
       this.dataFim = data
       this.atualizarHistorico(true)
       this.criarGraficosReceitas()
-//      this.atualizarSaldoPeriodo()
+      this.atualizarSaldoPeriodo()
     });
   }
 }

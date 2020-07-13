@@ -37,17 +37,27 @@ TESTAR - Pesquisa de placa no pátio não funciona quando coloca "-"
 OK - Ajustar layout do cadastro de mensalistas
 OK - Permitir excluir movimentos de mensalidade ou receitas e despesas avulsas
 OK - Ajustar layout do histórico de vendas
-- Incluir filtro por funcionário no histórico de vendas
-- Incluir um totalizador total no histórico de vendas
-- Alterar gráfico de vendas por funcionário para barras
+CANCELADO - Incluir filtro por funcionário no histórico de vendas
+OK - Incluir um totalizador total no histórico de vendas
+OK - Indicadores de carregamento no histórico de vendas
+OK - Alterar gráfico de vendas por funcionário para barras
+OK - Trocar senha de administrador está com problema
+- Erro ao editar um funcionário
+- Criar um atalho para alterar senha de administrador nas configurações de segurança
+- Não permitir excluir um funcionário, apenas desativar e manter oculto
+- Impedir incluir um veículo com data retroativa ao último veículo inserido sem senha de administrador. Salvar a última data no localstorage
+- Verificar eliminiação do valor do troco ao salvar um movimento
 - Não está atualizando a lista quando salva um mensalista
+- Finalizar tela que valida o acesso com senha do usuário
+- Melhorar cores nos gráficos
 - Criar informações de listagem vazia nos pagamentos pendentes
+- Criar informações de listagem vazia no relatório de histórico de vendas
+- Criar informações de listagem vazia no relatório de movimentos
 - Adequar campos de número decimal no sistema todo
 - Criar consistência no cadastro de mensalista. Está permitindo cadastro sem veículos
 - Exibir os dados do mensalista sempre, mesmo que forem vazios, porque tem os cabeçalhos presentes
 - Melhorar nome e agrupamento dos itens do menu
 - Criar consistência cadastro de serviços
-- Trocar senha de administrador está com problema
 - Criar consistência nos formulários, incluindo max length e campos obrigatórios
 - Ao navegar pelas telas, no rodapé e o cabeçalho estão ficando alguns restos das telas de origem. Tem que verificar o motivo e retirar isso
 - Finalizar gráficos

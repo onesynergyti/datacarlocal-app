@@ -33,7 +33,8 @@
 
 <ion-content>
   <div [ngClass]="{'invisivel': pagina == 'graficos'}">
-    <ion-list [@listAnimation]="vendas.length" lines="none">
+    <ion-spinner *ngIf="carregandoHistorico" class="spinnerCentro"></ion-spinner>
+    <ion-list *ngIf="!carregandoHistorico" [@listAnimation]="vendas.length" lines="none">
       <ion-item-sliding id="venda.Id" *ngFor="let venda of vendas; let i = index">
         <ion-item>
           <div class="cartao">
@@ -80,7 +81,7 @@
                 </ion-col>
                 <ion-col>
                   <h4 class="negrito">Responsável</h4>
-                  <h4>{{ venda.Funcionario != null ? venda.Funcionario.Nome : 'Não informado' }}</h4>
+                  <h4>{{ nomeFuncionario(venda.IdFuncionario) }}</h4>
                 </ion-col>
               </ion-row>
               <ion-row>
@@ -115,13 +116,42 @@
   </div>
 
   <div [ngClass]="{'invisivel': pagina == 'vendas'}">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-subtitle>Receita x Funcionário</ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content>
-        <canvas #graficoEvolucaoReceita></canvas>
-      </ion-card-content>
-    </ion-card>
+    <ion-spinner *ngIf="carregandoGraficos" class="spinnerCentro"></ion-spinner>
+
+    <div [ngClass]="{'invisivel': carregandoGraficos}">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-subtitle>Evolução de receitas x Funcionário</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <canvas #graficoEvolucaoReceita></canvas>
+        </ion-card-content>
+      </ion-card>
+  
+      <ion-card>
+        <ion-card-header>
+          <ion-card-subtitle>Total de receitas x Funcionário</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <canvas #graficoTotalReceita></canvas>
+        </ion-card-content>
+      </ion-card>
+    </div>
   </div>
 </ion-content>
+
+<ion-footer>
+  <div id="divSaldo" class="fundoPrimario">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-xs="7">
+          <h2 class="ion-text-left">Saldo de período</h2>
+        </ion-col>
+        <ion-col class="ion-text-right">
+          <ion-spinner *ngIf="saldoPeriodo == null"></ion-spinner>
+          <h2 *ngIf="saldoPeriodo != null" class="negrito">{{ saldoPeriodo | decimalPipe:"R$ " }}</h2>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-footer>

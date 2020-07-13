@@ -28,12 +28,9 @@ export class HistoricoVeiculosService extends ServiceBaseService {
         db.executeSql(sql, data)
         .then(data => {
           if (data.rows.length > 0) {
-            alert(JSON.stringify(data))
             let vendas: any[] = [];
 
             for (var i = 0; i < data.rows.length; i++) {
-              if (data.rows.item(i).Funcionario != null)
-                data.rows.item(i).Funcionario = JSON.parse(data.rows.item(i).Funcionario)
               vendas.push(data.rows.item(i));
             }
             resolve(vendas)
@@ -54,10 +51,19 @@ export class HistoricoVeiculosService extends ServiceBaseService {
     })
   }  
 
-  public receitaXfuncionario(inicio: Date, fim: Date): Promise<any> {
+  public receitaXfuncionario(inicio: Date, fim: Date, agruparPeriodo = true): Promise<any> {
     return new Promise((resolve, reject) => {
-      const sql = "SELECT strftime('%Y %m', Pagamento) Periodo, IdFuncionario, sum(Valor) Valor " +
-      "from veiculosHistorico where Date(Pagamento) between Date(?) and Date(?) group by strftime('%Y %m', Pagamento), IdFuncionario order by IdFuncionario, strftime('%Y %m', Pagamento)";
+      let sql = ''
+
+      if (agruparPeriodo) {
+        sql = "SELECT strftime('%Y %m', Pagamento) Periodo, IdFuncionario, sum(Valor) Valor " +
+        "from veiculosHistorico where Date(Pagamento) between Date(?) and Date(?) group by strftime('%Y %m', Pagamento), IdFuncionario order by IdFuncionario, strftime('%Y %m', Pagamento)";
+      }
+      else {
+        sql = "SELECT IdFuncionario, sum(Valor) Valor " +
+        "from veiculosHistorico where Date(Pagamento) between Date(?) and Date(?) group by IdFuncionario order by IdFuncionario";
+      }
+
       const data = [new DatePipe('en-US').transform(inicio, 'yyyy-MM-dd'), new DatePipe('en-US').transform(fim, 'yyyy-MM-dd')]
       this.database.DB.then(db => {
         db.executeSql(sql, data)
@@ -79,6 +85,37 @@ export class HistoricoVeiculosService extends ServiceBaseService {
           .catch((erro) => {
             reject(erro)
           })
+        })
+        .catch((erro) => {
+          reject(erro)
+        })
+      })
+      .catch((erro) => {
+        reject(erro)
+      })
+      .finally(() => {
+        this.ocultarProcessamento()
+      })
+    })
+  }  
+
+  public saldoPeriodo(inicio: Date, fim: Date): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const sql = "SELECT sum(Valor) Valor " +
+      "from veiculosHistorico where Date(Pagamento) between Date(?) and Date(?)";
+      const data = [new DatePipe('en-US').transform(inicio, 'yyyy-MM-dd'), new DatePipe('en-US').transform(fim, 'yyyy-MM-dd')]
+      this.database.DB.then(db => {
+        db.executeSql(sql, data)
+        .then(data => {
+          if (data.rows.length > 0) {
+            let saldo: any[] = [];
+            for (var i = 0; i < data.rows.length; i++) {
+              saldo.push(data.rows.item(i));
+            }
+            resolve(saldo[0])
+          } else {
+            resolve([])
+          }
         })
         .catch((erro) => {
           reject(erro)
