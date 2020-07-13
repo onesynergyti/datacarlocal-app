@@ -156,6 +156,19 @@
 </ion-content>
 
 <ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && (mensalista.Nome == null || mensalista.Nome.length == 0)" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Informe o nome do mensalista
+      </ion-col>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && (mensalista.Veiculos == null || mensalista.Veiculos.length == 0)" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Informe o(s) veículo(s) do mensalista
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
   <ion-button expand="block" color="success" (click)="concluir()">
     <ion-icon slot="start" name="checkmark"></ion-icon>
     Salvar

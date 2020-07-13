@@ -34,6 +34,13 @@
 <ion-content>
   <div [ngClass]="{'invisivel': pagina == 'graficos'}">
     <ion-spinner *ngIf="carregandoHistorico" class="spinnerCentro"></ion-spinner>
+    <div *ngIf="!carregandoHistorico">
+      <div class="divInformativo" *ngIf="vendas.length == 0">
+        <h2>Sem movimentação</h2>
+        <ion-icon name="bar-chart-outline"></ion-icon>
+        <h5>Nenhum veículo foi identificado no período</h5>
+      </div>
+    </div>
     <ion-list *ngIf="!carregandoHistorico" [@listAnimation]="vendas.length" lines="none">
       <ion-item-sliding id="venda.Id" *ngFor="let venda of vendas; let i = index">
         <ion-item>
@@ -116,9 +123,15 @@
   </div>
 
   <div [ngClass]="{'invisivel': pagina == 'vendas'}">
-    <ion-spinner *ngIf="carregandoGraficos" class="spinnerCentro"></ion-spinner>
+    <ion-spinner *ngIf="carregandoGraficos || carregandoHistorico" class="spinnerCentro"></ion-spinner>
 
-    <div [ngClass]="{'invisivel': carregandoGraficos}">
+    <div class="divInformativo" *ngIf="(vendas.length == 0) && !carregandoGraficos && !carregandoHistorico">
+      <h2>Sem movimentação</h2>
+      <ion-icon name="bar-chart-outline"></ion-icon>
+      <h5>Nenhum veículo foi identificado no período</h5>
+    </div>
+
+    <div [ngClass]="{'invisivel': carregandoGraficos || carregandoHistorico || (vendas.length == 0)}">
       <ion-card>
         <ion-card-header>
           <ion-card-subtitle>Evolução de receitas x Funcionário</ion-card-subtitle>

@@ -41,12 +41,13 @@ export class SaidaPage {
       }
       else {
         await this.patio.exibirProcessamento('Registrando saida...')
-        this.patio.registrarSaida(this.movimento)
+
+        this.patio.registrarSaida(this.movimento, this.movimento.TotalServicos)
         .then(() => {
           this.modalCtrl.dismiss({ Operacao: operacao, Movimento: this.movimento })
         })
         .catch((erro) => {
-          alert(JSON.stringify(erro))
+          alert(JSON.stringify(erro)) 
         })
       }
     }

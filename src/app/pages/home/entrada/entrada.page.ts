@@ -11,6 +11,7 @@ import { SelectPopupModalPage } from 'src/app/components/select-popup-modal/sele
 import { Funcionario } from 'src/app/models/funcionario';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { ValidarAcessoPage } from '../../validar-acesso/validar-acesso.page';
+import { MensalistasService } from 'src/app/dbproviders/mensalistas.service';
 
 @Component({
   selector: 'app-entrada',
@@ -48,6 +49,7 @@ export class EntradaPage implements OnInit {
     private alertController: AlertController,
     private funcionariosProvider: FuncionariosService,
     public configuracoesService: ConfiguracoesService,
+    private providerMensalistas: MensalistasService
   ) { 
     this.veiculo = navParams.get('veiculo')
     this.inclusao = navParams.get('inclusao')
@@ -174,12 +176,19 @@ export class EntradaPage implements OnInit {
       // Edição ou inclusão
       else if (operacao != 'excluir') {
         await this.patioProvider.exibirProcessamento('Registrando entrada...')
-        this.patioProvider.salvar(this.veiculo)
-        .then((veiculo) => {
-          this.modalCtrl.dismiss({ Operacao: operacao, Veiculo: veiculo })
+        this.providerMensalistas.validarMensalista(this.veiculo.Entrada, this.veiculo.Placa).then((mensalistaValido: boolean) => {
+          this.veiculo.Mensalista = mensalistaValido
+
+          this.patioProvider.salvar(this.veiculo)
+          .then((veiculo) => {
+            this.modalCtrl.dismiss({ Operacao: operacao, Veiculo: veiculo })
+          })
+          .catch((erro) => {
+            alert('Não foi possível inserir o veículo. ' + JSON.stringify(erro))
+          })
         })
-        .catch((erro) => {
-          alert('Não foi possível inserir o veículo. ' + JSON.stringify(erro))
+        .finally(() => {
+          this.patioProvider.ocultarProcessamento()
         })
       }
       // Exclusão

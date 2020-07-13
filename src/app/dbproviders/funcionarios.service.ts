@@ -21,7 +21,7 @@ export class FuncionariosService extends ServiceBaseService {
   public excluir(id) {
     return new Promise((resolve, reject) => { 
       this.database.DB.then(db => { 
-        let sql = 'delete from funcionarios where Id = ?';
+        let sql = "update funcionarios set Ativo = false where Id = ?";
         let data = [id];
         db.executeSql(sql, data).then(() => {
           resolve()
@@ -36,9 +36,13 @@ export class FuncionariosService extends ServiceBaseService {
     })
   }
 
-  public lista(): Promise<any> {
+  public lista(exibirInativos = false): Promise<any> {
     return new Promise((resolve, reject) => {
-      let sql = 'SELECT * from funcionarios';
+      let sql
+      if (exibirInativos)
+        sql = "SELECT * from funcionarios"
+      else
+        sql = "SELECT * from funcionarios where Ativo = 'true'"
       this.database.DB.then(db => {
         db.executeSql(sql, [])
         .then(data => {
@@ -72,12 +76,12 @@ export class FuncionariosService extends ServiceBaseService {
 
     // Caso seja inclusão
     if (funcionario.Id == null || funcionario.Id == 0) {
-      sql = 'insert into funcionarios (Nome, Documento, Email, Telefone) values (?, ?, ?, ?)';
-      data = [funcionario.Nome, funcionario.Documento, funcionario.Email, funcionario.Telefone];
+      sql = 'insert into funcionarios (Nome, Documento, Email, Telefone, Ativo) values (?, ?, ?, ?, ?)';
+      data = [funcionario.Nome, funcionario.Documento, funcionario.Email, funcionario.Telefone, funcionario.Ativo];
     }
     // Caso seja edição
     else {
-      sql = 'update servicos set Nome = ?, Documento = ?, Email = ?, Telefone = ? where Id = ?';
+      sql = 'update funcionarios set Nome = ?, Documento = ?, Email = ?, Telefone = ? where Id = ?';
       data = [funcionario.Nome, funcionario.Documento, funcionario.Email, funcionario.Telefone, funcionario.Id];
     }
 

@@ -32,6 +32,7 @@ export class MensalistasService extends ServiceBaseService {
             for (var i = 0; i < data.rows.length; i++) {
               var mensalista = data.rows.item(i);
               mensalista.Veiculos = JSON.parse(mensalista.Veiculos)
+              mensalista.Ativo = mensalista.Ativo == 'true'
               mensalistas.push(new Mensalista(mensalista));
             }
             resolve(mensalistas)
@@ -169,12 +170,7 @@ export class MensalistasService extends ServiceBaseService {
             and Date(?) between Date(mov.Inicio) and Date(mov.Fim)`
           const data = [new DatePipe('en-US').transform(dataReferencia, 'yyyy-MM-dd')]
           db.executeSql(sql, data)
-          .then(data => {
-
-            for (var i = 0; i < data.rows.length; i++) {
-              alert(JSON.stringify(data.rows.item(i)))
-            }
-            
+          .then(data => {            
             resolve(data.rows.length > 0)
           })
           .catch((erro) => {

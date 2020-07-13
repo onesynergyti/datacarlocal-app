@@ -34,6 +34,13 @@
 <ion-content>
   <div [ngClass]="{'invisivel': pagina == 'graficos'}">
     <ion-spinner *ngIf="carregandoMovimentos" class="spinnerCentro"></ion-spinner>
+    <div *ngIf="!carregandoMovimentos">
+      <div class="divInformativo" *ngIf="movimentos.length == 0">
+        <h2>Sem movimentação</h2>
+        <ion-icon name="trending-up-outline"></ion-icon>
+        <h5>Nenhuma movimentação localizada</h5>
+      </div>
+    </div>
     <ion-list *ngIf="!carregandoMovimentos" [@listAnimation]="movimentos.length" lines="full">
       <div *ngFor="let movimento of movimentos; let i = index">
         <div id="divCabecalho" *ngIf=exibirCabecalhoData(i) size-xs="12" class="fundoSecundario ion-text-center">
@@ -87,9 +94,15 @@
   </div>
 
   <div [ngClass]="{'invisivel': pagina == 'movimentos'}">
-    <ion-spinner *ngIf="carregandoGraficos" class="spinnerCentro"></ion-spinner>
+    <ion-spinner *ngIf="carregandoGraficos || carregandoMovimentos" class="spinnerCentro"></ion-spinner>
 
-    <div [ngClass]="{'invisivel': carregandoGraficos}">
+    <div class="divInformativo" *ngIf="movimentos.length == 0 && !carregandoGraficos && !carregandoMovimentos">
+      <h2>Sem movimentação</h2>
+      <ion-icon name="trending-up-outline"></ion-icon>
+      <h5>Nenhuma movimentação localizada</h5>
+    </div>
+
+    <div [ngClass]="{'invisivel': carregandoGraficos || carregandoMovimentos || !movimentos.length}">
       <ion-card>
         <ion-card-header>
           <ion-card-subtitle>Evolução de receitas</ion-card-subtitle>

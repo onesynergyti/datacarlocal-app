@@ -24,21 +24,18 @@
         <div class="cartao">
           <ion-grid>
             <ion-row>
-              <ion-col size-xs="12" class="fundoPrimario tituloCartao ion-text-center"> 
+              <ion-col size-xs="12" class="tituloCartao ion-text-center" [ngClass]="{'fundoPrimario': mensalista.Ativo, 'fundoLigth': !mensalista.Ativo}"> 
                 <h3>{{ mensalista.Nome }}</h3>
               </ion-col>
               <ion-col size-xs="12" *ngIf="!mensalista.Ativo" class="fundoAlerta ion-text-center"> 
-                <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
                 Mensalista inativo
               </ion-col>
             </ion-row>
-            <ion-row>
+            <ion-row *ngIf="(mensalista.Documento != null && mensalista.Documento.length > 0) || (mensalista.Telefone != null && mensalista.Telefone.length > 0)">
               <ion-col size-xs="12" class="subTitulo fundoLigth">
                 <ion-icon class="iconeSubTitulo" name="person"></ion-icon>
                 Dados do mensalista
               </ion-col>
-            </ion-row>
-            <ion-row *ngIf="(mensalista.Documento != null && mensalista.Documento.length > 0) || (mensalista.Telefone != null && mensalista.Telefone.length > 0)">
               <ion-col>
                 <h4 class="negrito">Documento</h4>
                 <h4>{{ mensalista.Documento | documentoPipe }}</h4>

@@ -114,7 +114,7 @@ export class HistoricoVeiculosService extends ServiceBaseService {
             }
             resolve(saldo[0])
           } else {
-            resolve([])
+            resolve(0)
           }
         })
         .catch((erro) => {

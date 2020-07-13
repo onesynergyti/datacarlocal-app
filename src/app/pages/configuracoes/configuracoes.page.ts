@@ -3,8 +3,9 @@ import { Configuracoes } from 'src/app/models/configuracoes';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { Utils } from 'src/app/utils/utils';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
-import { NavController } from '@ionic/angular';
+import { NavController, ModalController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
+import { SenhaAdministradorPage } from '../senha-administrador/senha-administrador.page';
 
 @Component({
   selector: 'app-configuracoes',
@@ -34,7 +35,8 @@ export class ConfiguracoesPage implements OnInit {
     private configuracoesService: ConfiguracoesService,
     public utils: Utils,
     private navController: NavController,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private modalController: ModalController
   ) { }
 
   ngOnInit() {
@@ -55,6 +57,21 @@ export class ConfiguracoesPage implements OnInit {
 
   abrirPagina(pagina) {
     this.pagina = pagina
+  }
+
+  async abrirSenhaAdministrador() {
+    const modal = await this.modalController.create({
+      component: SenhaAdministradorPage,
+      componentProps: {}
+    });
+
+    modal.onWillDismiss().then((retorno) => {
+      if (retorno != null) {
+        this.utils.mostrarToast('Senha alterada com sucesso', 'success')
+      }
+    })
+
+    return await modal.present(); 
   }
 
   fecharItem() {

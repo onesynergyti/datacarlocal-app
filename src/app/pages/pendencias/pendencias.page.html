@@ -8,6 +8,15 @@
 </ion-content>
 
 <ion-content *ngIf="!carregandoVeiculos">
+  <div class="divInformativo" *ngIf="veiculos.length == 0">
+    <h2>Nenhum pagamento pendente</h2>
+    <ion-icon name="checkmark-circle"></ion-icon>
+    <h5>Tudo certo por aqui, não há cobranças a serem feitas</h5>
+  </div>
+  <div class="divInformativo" *ngIf="veiculos.length > 0 && listaFiltrada.length == 0">
+    <h2>Nenhuma pendência localizada</h2>
+    <ion-icon name="search-outline"></ion-icon>
+  </div>
   <ion-list [@listAnimation]="listaFiltrada.length" lines="none">
     <ion-item-sliding id="veiculo.Placa" *ngFor="let veiculo of listaFiltrada">
       <ion-item (click)="registrarSaida([veiculo])">

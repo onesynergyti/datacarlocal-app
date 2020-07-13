@@ -28,6 +28,7 @@ TESTAR - Criar consistência no cadastro de veículos
 OK - Ajustar layout da saída de veículo
 OK - Ajustar layout dos movimentos
 SEGUNDA VERSÃO - Permitir e registrar exclusão de movimentos com um flag e tratar movimentos excluídos nas somas e listas
+SEGUNDA VERSÃO - Criar um campo que informa se o movimento foi concretizado ou não
 OK - Ajustar cadastro de movimentos
 TESTAR - Controle de acesso para edição e exclusão de serviços já inseridos no Veículos
 CANCELADO - Controle de acesso e Exclusão de movimentos (Desabilitar sem excluir), tanto na tela de movimentos quanto na tela de mensalistas
@@ -42,29 +43,31 @@ OK - Incluir um totalizador total no histórico de vendas
 OK - Indicadores de carregamento no histórico de vendas
 OK - Alterar gráfico de vendas por funcionário para barras
 OK - Trocar senha de administrador está com problema
-- Erro ao editar um funcionário
-- Criar um atalho para alterar senha de administrador nas configurações de segurança
-- Não permitir excluir um funcionário, apenas desativar e manter oculto
-- Impedir incluir um veículo com data retroativa ao último veículo inserido sem senha de administrador. Salvar a última data no localstorage
-- Verificar eliminiação do valor do troco ao salvar um movimento
-- Não está atualizando a lista quando salva um mensalista
-- Finalizar tela que valida o acesso com senha do usuário
-- Melhorar cores nos gráficos
-- Criar informações de listagem vazia nos pagamentos pendentes
-- Criar informações de listagem vazia no relatório de histórico de vendas
-- Criar informações de listagem vazia no relatório de movimentos
+OK - Erro ao editar um funcionário
+OK - Não permitir excluir um funcionário, apenas desativar e manter oculto
+OK - Não está atualizando a lista quando salva um mensalista
+OK - Exibir os dados do mensalista sempre, mesmo que forem vazios, porque tem os cabeçalhos presentes
+OK - Criar consistência no cadastro de mensalista. Está permitindo cadastro sem veículos
+OK - Tratar mensalista ativos e inativos. Verificar inclusive na busca no momento de verificar se uma placa está liberada
+SEGUNDA VERSÃO - Impedir incluir um veículo com data retroativa ao último veículo inserido sem senha de administrador. Salvar a última data no localstorage
+SEGUNDA VERSÃO - Melhorar cores nos gráficos
+SEGUNDA VERSÃO - Ao navegar pelas telas, no rodapé e o cabeçalho estão ficando alguns restos das telas de origem. Tem que verificar o motivo e retirar isso
+SEGUNDA VERSÃO - Permitir fazer backup e exportação de dados
+SEGUNDA VERSÃO - Permitir incluir uma logomarca no aplicativo
+OK - Definir os veículos de mensalistas na entrada
+OK - Criar um atalho para alterar senha de administrador nas configurações de segurança
+OK - Verificar eliminiação do valor do troco ao salvar um movimento
+OK - Criar informações de listagem vazia nos pagamentos pendentes
+OK - Criar informações de listagem vazia no relatório de histórico de vendas
+OK - Criar informações de listagem vazia no relatório de movimentos
+OK - Finalizar gráficos
+- Criar consistência no cadastro de serviços
 - Adequar campos de número decimal no sistema todo
-- Criar consistência no cadastro de mensalista. Está permitindo cadastro sem veículos
-- Exibir os dados do mensalista sempre, mesmo que forem vazios, porque tem os cabeçalhos presentes
-- Melhorar nome e agrupamento dos itens do menu
-- Criar consistência cadastro de serviços
-- Criar consistência nos formulários, incluindo max length e campos obrigatórios
-- Ao navegar pelas telas, no rodapé e o cabeçalho estão ficando alguns restos das telas de origem. Tem que verificar o motivo e retirar isso
-- Finalizar gráficos
-- Criar a chaves das tabelas para garantir consistência
-- Permitir fazer backup e exportação de dados
 - Trabalhar melhor a conexão com a impressora, exibindo status na tela principal da home
-- Permitir incluir uma logomarca no aplicativo
+- Finalizar tela que valida o acesso com senha do usuário
+- Melhorar nome e agrupamento dos itens do menu
+- Criar consistência nos formulários, incluindo max length e campos obrigatórios
+- Criar a chaves das tabelas para garantir consistência
 - Verificar cada item da configuração e o impacto na utilização
 - Ajustar recibos de pagamentos, débito registrado e entrada
 - Criar assinatura no recibo de pagar depois, para comprovação do estabelecimento

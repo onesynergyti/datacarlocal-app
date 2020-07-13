@@ -316,32 +316,28 @@ export class HomePage {
     this.bluetooth.imprimirRecibo(veiculo)
   }
    
-  async registrarSaida(veiculo) {
+  async registrarSaida(veiculo: Veiculo) {
     if (veiculo.PossuiServicosPendentes) 
       this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve finalizar todos os serviços ou excluir antes de realizar o pagamento.', 'danger', 3000)
     else {
       veiculo.Saida = new Date()
       let servicoEstacionamento = veiculo.PossuiServicoEstacionamento
-      if (servicoEstacionamento) {
-        await this.providerMensalistas.exibirProcessamento('Avaliando mensalistas...')
-        this.providerMensalistas.validarMensalista(veiculo.Saida, veiculo.Placa).then(mensalistaValido => {
-          if (mensalistaValido) {
-            servicoEstacionamento.PrecoMoto = 0
-            servicoEstacionamento.PrecoVeiculoPequeno = 0
-            servicoEstacionamento.PrecoVeiculoMedio = 0
-            servicoEstacionamento.PrecoVeiculoGrande = 0
-          }
-          else {
-            servicoEstacionamento.PrecoMoto = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 1)
-            servicoEstacionamento.PrecoVeiculoPequeno = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 2)
-            servicoEstacionamento.PrecoVeiculoMedio = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 3)
-            servicoEstacionamento.PrecoVeiculoGrande = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 4)
-          }
-        })
-        .catch(erro => {
-          alert('erro: ' + JSON.stringify(erro))
-        })
+
+      if (servicoEstacionamento != null) {
+        if (veiculo.Mensalista) {
+          servicoEstacionamento.PrecoMoto = 0
+          servicoEstacionamento.PrecoVeiculoPequeno = 0
+          servicoEstacionamento.PrecoVeiculoMedio = 0
+          servicoEstacionamento.PrecoVeiculoGrande = 0
+        }
+        else {
+          servicoEstacionamento.PrecoMoto = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 1)
+          servicoEstacionamento.PrecoVeiculoPequeno = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 2)
+          servicoEstacionamento.PrecoVeiculoMedio = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 3)
+          servicoEstacionamento.PrecoVeiculoGrande = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 4)
+        }          
       }
+      
       let movimento = new Movimento()
       movimento.Veiculos.push(veiculo)
       movimento.Data = new Date()

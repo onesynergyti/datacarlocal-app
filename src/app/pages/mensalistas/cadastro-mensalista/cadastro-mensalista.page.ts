@@ -36,6 +36,7 @@ export class CadastroMensalistaPage implements OnInit {
   movimentos = []
   carregandoMovimentos = false
   movimentosExclusao = []
+  avaliouFormulario = false
 
   constructor(
     private alertController: AlertController,
@@ -96,9 +97,15 @@ export class CadastroMensalistaPage implements OnInit {
 
     // Se for um novo movimento, calcula a data da próxima validade
     if (movimento == null) {
-      // Obtem a maior validade atual do mensalista
-      var maiorData = new Date(Math.max.apply(null, this.movimentos.map(movimentoAtual => movimentoAtual.Fim)));
+      // Inicia o cálculo com a data do dia anterior, porque o cálculo é feito sempre obtendo o próximo dia baseado no último dia válido de mensalidade
+      let maiorData = new Date()
+      maiorData.setDate(maiorData.getDate() - 1)
 
+      // Obtem a maior validade atual do mensalista
+      if (this.movimentos.length) {
+        maiorData = new Date(Math.max.apply(null, this.movimentos.map(movimentoAtual => movimentoAtual.Fim)));
+      }
+      
       // Obtem o início do periodo um dia depois
       movimentoEdicao.Inicio = new Date(maiorData)
       movimentoEdicao.Inicio.setDate(maiorData.getDate() + 1)
@@ -136,13 +143,17 @@ export class CadastroMensalistaPage implements OnInit {
   }
 
   async concluir(){
-    await this.mensalistasProvider.exibirProcessamento('Salvando mensalista...')
-    this.mensalistasProvider.salvar(this.mensalista, this.movimentos, this.movimentosExclusao).then(mensalista => {
-      this.modalCtrl.dismiss(mensalista)
-    })
-    .catch(erro => {
-      alert(erro)
-    })
+    this.avaliouFormulario = true
+    if (this.mensalista.Nome != null && this.mensalista.Nome.length > 0 && this.mensalista.Veiculos.length > 0)
+    {
+      await this.mensalistasProvider.exibirProcessamento('Salvando mensalista...')
+      this.mensalistasProvider.salvar(this.mensalista, this.movimentos, this.movimentosExclusao).then(() => {
+        this.modalCtrl.dismiss(true)
+      })
+      .catch(erro => {
+        alert(erro)
+      })
+    }
   }
 
   async excluir(veiculo) {

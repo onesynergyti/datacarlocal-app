@@ -60,7 +60,7 @@ export class HistoricoVeiculosPage implements OnInit {
 
   ionViewDidEnter() {
     // Carrega a lista de funcionários
-    this.providerFuncionarios.lista().then((funcionarios: any) => {
+    this.providerFuncionarios.lista(true).then((funcionarios: any) => {
       this.funcionarios = funcionarios
       this.atualizarHistorico()
       this.criarGraficosReceitas()

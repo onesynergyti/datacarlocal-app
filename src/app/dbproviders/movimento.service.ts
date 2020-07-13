@@ -130,7 +130,7 @@ export class MovimentoService extends ServiceBaseService {
             }
             resolve(saldo[0])
           } else {
-            resolve([])
+            resolve({ ValorCredito: 0, ValorDebito: 0, ValorDinheiro: 0 })
           }
         })
         .catch((erro) => {

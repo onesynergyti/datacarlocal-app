@@ -2,7 +2,7 @@ import { VeiculoCadastro } from './veiculo-cadastro'
 
 export class Mensalista {
   Id: number = 0
-  Nome: string
+  Nome: string = ''
   Documento: string
   Telefone: string
   Email: string

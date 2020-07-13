@@ -17,10 +17,6 @@ import { Utils } from 'src/app/utils/utils';
         query(':enter',
           [style({ opacity: 0 }), stagger('40ms', animate('800ms ease-out', style({ opacity: 1 })))],
           { optional: true }
-        ),
-        query(':leave',
-          [style({ opacity: 1 }), stagger('40ms', animate('800ms ease-out', style({ opacity: 0 })))],
-          { optional: true }
         )
       ])
     ])
@@ -49,11 +45,16 @@ export class MensalistasPage implements OnInit {
   }
 
   ionViewDidEnter() {
-    this.atualizarMensalistas()
+    this.atualizarMensalistas(true)
   }
 
-  atualizarMensalistas(event = null) {
+  atualizarMensalistas(recarregar = false, event = null) {
     this.carregandoMensalistas = true
+    if (recarregar) {
+      this.finalizouCarregamento = false
+      this.mensalistas = []
+    }
+
     let inseriuItem = false
     this.providerMensalistas.lista().then((lista: any) => {
       lista.forEach(itemAtual => {
@@ -88,8 +89,10 @@ export class MensalistasPage implements OnInit {
     });
 
     modal.onWillDismiss().then((retorno) => {
-      if (retorno.data != null)
-        this.utilsLista.atualizarLista(this.mensalistas, retorno.data, true)
+      if (retorno.data != null) {
+        this.atualizarMensalistas(true)
+        this.utils.mostrarToast(mensalista == null ? 'Mensalista cadastrado com sucesso' : 'Mensalista alterado com sucesso', 'success')
+      }
     })
 
     return await modal.present(); 

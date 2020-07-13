@@ -17,6 +17,7 @@ export class Veiculo {
   Funcionario: Funcionario
   Localizacao: string = ''
   Ativo: boolean = true
+  Mensalista : boolean = false
 
   constructor(veiculo: Veiculo = null) {
     if (veiculo != null) {
@@ -40,6 +41,7 @@ export class Veiculo {
       this.Funcionario = veiculo.Funcionario != null ? new Funcionario(veiculo.Funcionario) : null
       this.Localizacao = veiculo.Localizacao
       this.Ativo = veiculo.Ativo
+      this.Mensalista = veiculo.Mensalista
     }
   }
 
