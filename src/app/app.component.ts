@@ -93,7 +93,7 @@ export class AppComponent {
     });
 
     modal.onWillDismiss().then((retorno) => {
-      if (retorno != null) {
+      if (retorno.data) {
         this.utils.mostrarToast('Senha alterada com sucesso', 'success')
       }
     })

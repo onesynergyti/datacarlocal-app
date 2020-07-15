@@ -6,6 +6,7 @@ import { Estabelecimento } from '../models/estabelecimento';
 import { ConfiguracaoPatio } from '../models/configuracao-patio';
 import { ConfiguracaoSeguranca } from '../models/configuracao-seguranca';
 import { ConfiguracaoManualUso } from '../models/configuracao-manual-uso';
+import { ConfiguracaoMensagens } from '../models/configuracao-mensagens';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,9 @@ export class ConfiguracoesService {
 
     if (valor.ManualUso == null)
       valor.ManualUso = new ConfiguracaoManualUso()
+
+    if (valor.Mensagens == null)
+      valor.Mensagens = new ConfiguracaoMensagens()
 
     return valor
 }

@@ -6,6 +6,8 @@ import { ModalController } from '@ionic/angular';
 import { Mensalista } from 'src/app/models/mensalista';
 import { CadastroMensalistaPage } from './cadastro-mensalista/cadastro-mensalista.page';
 import { Utils } from 'src/app/utils/utils';
+import { ServicosService } from 'src/app/dbproviders/servicos.service';
+import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 
 @Component({
   selector: 'app-mensalistas',
@@ -31,8 +33,10 @@ export class MensalistasPage implements OnInit {
 
   constructor(
     private providerMensalistas: MensalistasService,
+    private providerServicos: ServicosService,
     private utils: Utils,
     private modalController: ModalController,
+    private configuracoesService: ConfiguracoesService,
     private utilsLista: UtilsLista
   ) { }
 
@@ -80,11 +84,19 @@ export class MensalistasPage implements OnInit {
   }
 
   async cadastrarMensalista(mensalista = null) {
+    await this.providerServicos.exibirProcessamento('Carregando serviços...')
+    this.providerServicos.lista().then(servicos => {
+      this.procederCadastrarMensalista(mensalista, servicos)
+    })
+  }
+
+  async procederCadastrarMensalista(mensalista = null, servicos) {
     let mensalistaEdicao = new Mensalista(mensalista)
     const modal = await this.modalController.create({
       component: CadastroMensalistaPage,
       componentProps: {
         'mensalista': mensalistaEdicao,
+        'servicos': servicos
       }
     });
 

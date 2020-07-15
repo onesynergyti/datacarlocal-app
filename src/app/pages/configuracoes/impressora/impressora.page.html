@@ -1,11 +1,49 @@
 <app-header titulo="Impressora"></app-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item *ngFor="let dispositivo of dispositivos">
-      <ion-label (click)="selecionarDispositivo(dispositivo)">{{ dispositivo.name }}</ion-label>
-      <ion-label *ngIf="dispositivoConectado != null && dispositivoConectado.id === dispositivo.id"> (Conectado)</ion-label>
-    </ion-item>
-  </ion-list>
-  <ion-button (click)="testarImpressora()">teste</ion-button>
+  <ion-grid *ngIf="!carregandoDispositivos">
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="bluetooth"></ion-icon>
+        Dispositivos disponíveis
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
+        <ion-spinner *ngIf="carregandoDispositivos" class="spinnerCentro"></ion-spinner>
+
+        <div class="divInformativo" *ngIf="dispositivos.length == 0 && !carregandoDispositivos">
+          <h2>Nenhum dispositivo localizado</h2>
+          <ion-icon name="bluetooth-outline"></ion-icon>
+          <h5>Verifique se você realizou a conexão com a impressora no seu aparelho e se o bluetooth está ativo</h5>
+        </div>
+
+        <ion-list *ngIf="!carregandoDispositivos" [@listAnimation]="dispositivos.length" lines="full">
+          <ion-item *ngFor="let dispositivo of dispositivos" (click)="selecionarDispositivo(dispositivo)">
+            <ion-label [ngClass]="{'negrito': dispositivoConectado != null && dispositivoConectado.id === dispositivo.id}">{{ dispositivo.name }}</ion-label>
+            <ion-icon class="fontCorSucesso iconeAcao ion-text-right" *ngIf="dispositivoConectado != null && dispositivoConectado.id === dispositivo.id" name="checkbox"></ion-icon>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
+
+<ion-footer>
+  <ion-grid class="ion-no-padding ion-no-margin">
+    <ion-row>
+      <ion-col size-xs="6">
+        <ion-button color="success" expand="block" (click)="atualizarLista()">
+          <ion-icon slot="start" name="reload"></ion-icon>
+          Atualizar
+        </ion-button>
+      </ion-col>
+      <ion-col size-xs="6">
+        <ion-button color="primary" [disabled]="dispositivoConectado == null" expand="block" (click)="testarImpressora()">
+          <ion-icon slot="start" name="print"></ion-icon>
+          Testar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

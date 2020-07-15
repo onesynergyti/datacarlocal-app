@@ -15,7 +15,7 @@
 <ion-content>
   <ion-grid *ngIf="veiculo != null && pagina == 'veiculo'">
     <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
+      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="calendar"></ion-icon>
         Horário da entrada
       </ion-col>
@@ -26,7 +26,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
+      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
         Dados do veículo
       </ion-col>
@@ -78,7 +78,7 @@
       </ion-col>
     </ion-row>
     <ion-row *ngIf="configuracoesService.configuracoes.Patio.CampoResponsavel">
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
+      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="person"></ion-icon>
         Responsável pelo atendimento
       </ion-col>
@@ -89,7 +89,7 @@
       </ion-col>
     </ion-row>
     <ion-row *ngIf="configuracoesService.configuracoes.Patio.CampoLocalizacao">
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
+      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="pin"></ion-icon>
         Localização do veículo
       </ion-col>
@@ -101,25 +101,32 @@
       </ion-col>
     </ion-row>
     <ion-row *ngIf="configuracoesService.configuracoes.Patio.CampoCliente">
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
+      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="call"></ion-icon>
         Contato do cliente
       </ion-col>
-      <ion-col size-xs="7">
+    </ion-row>
+    <ion-row *ngIf="configuracoesService.configuracoes.Patio.CampoCliente">
+      <ion-col size-xs="12">
         <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">Nome</ion-label>
           <ion-input autocorrect="off" type="text" maxlength="100" [(ngModel)]="veiculo.Nome"></ion-input>
         </ion-item>
       </ion-col>
-      <ion-col size-xs="5">
+    </ion-row>
+    <ion-row *ngIf="configuracoesService.configuracoes.Patio.CampoCliente">
+      <ion-col>
         <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">Telefone</ion-label>
           <ion-input autocorrect="off" type="tel" maxlength="15" [ngModel]="veiculo.Telefone | telefonePipe" (ionInput)="veiculo.Telefone = utils.somenteNumeros($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
+      <ion-col size-xs="2" (click)="utils.abrirWhatsapp(veiculo.Telefone)">
+        <ion-icon id="iconeWhatsapp" [ngClass]="{'fontCorLight': veiculo.Telefone == null || veiculo.Telefone.length < 10, 'fontCorSucesso': veiculo.Telefone != null && veiculo.Telefone.length >= 10}" name="logo-whatsapp"></ion-icon>
+      </ion-col>
     </ion-row>
-    <ion-row *ngIf="configuracoesService.configuracoes.Patio.CampoObservacao">
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
+    <ion-row *ngIf="configuracoesService.configuracoes.Patio.CampoObservacao"> 
+      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="reader"></ion-icon>
         Observações (opcional)
       </ion-col>
@@ -127,13 +134,13 @@
         <ion-item>
           <ion-label position="floating">Informações adicionais</ion-label>
           <ion-textarea rows="1" auto-grow [(ngModel)]="veiculo.Observacoes"></ion-textarea>
-        </ion-item>
+        </ion-item> 
       </ion-col>
     </ion-row>
   </ion-grid>
   <ion-grid *ngIf="veiculo != null && pagina == 'servicos'">
     <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
+      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
         Serviços contratados
       </ion-col>
@@ -181,13 +188,21 @@
     <ion-row>
       <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
         <ion-button expand="block" (click)="cadastrarServico()">
-          <ion-icon name="add-circle"></ion-icon>
+          <ion-icon slot="start" name="add-circle"></ion-icon>
           Adicionar Serviço
         </ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
+      <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
+        <ion-button expand="block" [disabled]="veiculo.Telefone == null || veiculo.Telefone.length < 10" color="success" (click)="informarConclusaoWhatsapp()">
+          <ion-icon slot="start" name="logo-whatsapp"></ion-icon>
+          Informar conclusão
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="timer"></ion-icon>
         Previsão de entrega
       </ion-col>

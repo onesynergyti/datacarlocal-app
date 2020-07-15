@@ -117,7 +117,7 @@ export class MovimentoService extends ServiceBaseService {
 
   public saldoPeriodo(inicio: Date, fim: Date): Promise<any> {
     return new Promise((resolve, reject) => {
-      const sql = "SELECT sum(ValorCredito) ValorCredito, sum(ValorDebito) ValorDebito, sum(ValorDinheiro) ValorDinheiro " +
+      const sql = "SELECT coalesce(sum(ValorCredito), 0) ValorCredito, coalesce(sum(ValorDebito), 0) ValorDebito, coalesce(sum(ValorDinheiro), 0) ValorDinheiro " +
       "from movimentos where Date(Data) between Date(?) and Date(?)";
       const data = [new DatePipe('en-US').transform(inicio, 'yyyy-MM-dd'), new DatePipe('en-US').transform(fim, 'yyyy-MM-dd')]
       this.database.DB.then(db => {

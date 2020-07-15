@@ -116,15 +116,6 @@ export class CadastroServicoPage implements OnInit {
   async selecionarServico() {
     await this.servicosProvider.exibirProcessamento('Listando serviços...')
     this.servicosProvider.lista().then((servicos => {
-      // Se utilizar estacionamento adiciona automaticamente o serviço equivalente
-      if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento)
-      {
-        const servicoEstacionamento = new Servico()
-        servicoEstacionamento.Id = 0
-        servicoEstacionamento.Nome = "Estacionamento"
-        servicos.unshift(servicoEstacionamento)
-      }
-
       this.abrirModalServico(servicos)
     }))    
   }

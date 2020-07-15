@@ -24,7 +24,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
+      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="person"></ion-icon>
         Dados do mensalista
       </ion-col>
@@ -60,7 +60,53 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
+        Serviços disponíveis
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="mensalista != null && listaServicos != null">
+      <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
+        <ion-list [@listAnimation]="servicosMensalista.length" lines="full">
+          <ion-item-sliding id="servico.Id" *ngFor="let servico of servicosMensalista">
+            <ion-item>
+              <ion-grid class="ion-no-margin ion-no-padding">
+                <ion-row>
+                  <ion-col>
+                    <h3 class="textoLimitado">{{ servico.Nome }}</h3>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-item>
+
+            <ion-item-options side="end">
+              <ion-item-option color="danger">
+                <ion-icon slot="icon-only" name="trash"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="mensalista != null && listaServicos != null && servicosMensalista.length == 0">
+      <ion-col size-xs="12">
+        <div class="divInformativo">
+          <h2>Nenhum serviço cadastrado</h2>
+          <ion-icon name="construct-outline"></ion-icon>
+          <h5>Utilize o botão abaixo para adicionar um serviço</h5>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
+        <ion-button expand="block" (click)="cadastrarServico()">
+          <ion-icon slot="start" name="add-circle"></ion-icon>
+          Adicionar serviço
+        </ion-button>
+      </ion-col>
+    </ion-row>    
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
         Veículos
       </ion-col>
@@ -165,6 +211,10 @@
       <ion-col size-xs="12" *ngIf="avaliouFormulario && (mensalista.Veiculos == null || mensalista.Veiculos.length == 0)" class="subTitulo fundoPerigo">
         <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
         Informe o(s) veículo(s) do mensalista
+      </ion-col>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && (mensalista.IdsServicos == null || mensalista.IdsServicos.length == 0)" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Informe o(s) serviços(s) do mensalista
       </ion-col>
     </ion-row>
   </ion-grid>

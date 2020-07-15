@@ -2,60 +2,59 @@
   <ion-menu side="start" menuId="first" contentId="principal">
     <ion-header>
       <ion-toolbar color="primary">
-        <ion-title class="ion-text-center">Menu Principal</ion-title>
+        <ion-title class="ion-text-center">Menu Principal</ion-title>              
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-no-margin ion-no-padding">
       <ion-list class="ion-no-margin ion-no-padding">
         <ion-menu-toggle color="secondary">
-          <ion-header>Suporte</ion-header>
-          <ion-item (click)="abrirWhatsAppSuporte()">
-            <ion-icon name="logo-whatsapp"></ion-icon>
-            Whatsapp
+          <ion-item (click)="navegar('home')" detail button>
+            <ion-icon name="car-sport"></ion-icon>
+            Meu pátio
           </ion-item>
-          <ion-header>Pátio</ion-header>
-          <ion-item (click)="navegar('mensalistas')">
+          <ion-header>Clientes</ion-header>
+          <ion-item (click)="navegar('mensalistas')" detail button>
             <ion-icon name="people"></ion-icon>
             Mensalistas
           </ion-item>
-          <ion-item (click)="navegar('pendencias')">
+          <ion-item (click)="navegar('pendencias')" detail button>
             <ion-icon name="wallet"></ion-icon>
-            Pagamentos pendentes
-          </ion-item>
-          <ion-item (click)="navegar('home')">
-            <ion-icon name="car-sport"></ion-icon>
-            Veículos ativos
+            Pagamentos prorrogados
           </ion-item>
           <ion-header>Financeiro</ion-header>
-          <ion-item (click)="navegar('historico-veiculos')">
+          <ion-item (click)="navegar('historico-veiculos')" detail button>
             <ion-icon name="stats-chart"></ion-icon>
-            Histórico de vendas
+            Histórico de veículos
           </ion-item>
-          <ion-item (click)="navegar('movimento')">
+          <ion-item (click)="navegar('movimento')" detail button>
             <ion-icon name="trending-up"></ion-icon>
-            Movimentos
+            Extrato
           </ion-item>
           <ion-header>Configurações</ion-header>
-          <ion-item (click)="navegar('configuracoes')">
-            <ion-icon name="settings"></ion-icon>
-            Configurações Gerais
-          </ion-item>
-          <ion-item (click)="navegar('funcionarios')">
-            <ion-icon name="person"></ion-icon>
-            Funcionários
-          </ion-item>
-          <ion-item (click)="navegar('impressora')">
-            <ion-icon name="print"></ion-icon>
-            Impressora
-          </ion-item>
-          <ion-item (click)="navegar('servicos', configuracoes.Seguranca.ExigirSenhaCadastroServicos)">
-            <ion-icon name="construct"></ion-icon>
-            Serviços
-          </ion-item>
-          <ion-header>Segurança</ion-header>
-          <ion-item (click)="abrirSenhaAdministrador()">
+          <ion-item (click)="abrirSenhaAdministrador()" detail button>
             <ion-icon name="lock-closed"></ion-icon>
-            Senha de Administrador
+            Alterar senha
+          </ion-item>
+          <ion-item (click)="navegar('funcionarios')" detail button>
+            <ion-icon name="person"></ion-icon>
+            Meus funcionários
+          </ion-item>
+          <ion-item (click)="navegar('servicos', configuracoes.Seguranca.ExigirSenhaCadastroServicos)" detail button>
+            <ion-icon name="construct"></ion-icon>
+            Meus Serviços
+          </ion-item>
+          <ion-item (click)="navegar('configuracoes')" detail button>
+            <ion-icon name="settings"></ion-icon>
+            Opções gerais
+          </ion-item>
+          <ion-item (click)="navegar('impressora')" detail button>
+            <ion-icon name="print"></ion-icon>
+            Conexão impressora
+          </ion-item>
+          <ion-header>Suporte online</ion-header>
+          <ion-item (click)="abrirWhatsAppSuporte()" detail button>
+            <ion-icon name="logo-whatsapp"></ion-icon>
+            Whatsapp
           </ion-item>
         </ion-menu-toggle>
       </ion-list>

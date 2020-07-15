@@ -14,6 +14,6 @@ export class PlacaPipe {
     }
     else
       return value
-}
+  }
 
 }

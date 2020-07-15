@@ -30,7 +30,7 @@
               <ion-col size-xs="12" class="fundoPrimario tituloCartao ion-text-center"> 
                 <h3>{{ veiculo.Placa | placaPipe }}</h3>
               </ion-col>
-              <ion-col size-xs="12" *ngIf="veiculo.Mensalista" class="subTitulo fundoSucesso">
+              <ion-col size-xs="12" *ngIf="veiculo.IdMensalista" class="subTitulo fundoSucesso">
                 <ion-icon class="iconeSubTitulo" name="person"></ion-icon>
                 Mensalista
               </ion-col>
@@ -40,7 +40,7 @@
               </ion-col>
             </ion-row>
             <ion-row>
-              <ion-col size-xs="12" class="subTitulo fundoLigth">
+              <ion-col size-xs="12" class="subTitulo fundoLight">
                 <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
                 Dados do veículo
               </ion-col>
@@ -55,7 +55,7 @@
               </ion-col>
             </ion-row>
             <ion-row *ngIf="veiculo.Telefone || veiculo.Nome">
-              <ion-col size-xs="12" class="subTitulo fundoLigth">
+              <ion-col size-xs="12" class="subTitulo fundoLight">
                 <ion-icon class="iconeSubTitulo" name="call"></ion-icon>
                 Contato
               </ion-col>
@@ -69,7 +69,7 @@
               </ion-col>
             </ion-row>
             <ion-row *ngIf="veiculo.Servicos && veiculo.Servicos.length > 0">
-              <ion-col size-xs="12" class="subTitulo fundoLigth">
+              <ion-col size-xs="12" class="subTitulo fundoLight">
                 <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
                 Serviços do veículo
               </ion-col>

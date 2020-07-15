@@ -51,6 +51,7 @@ export class MovimentoPage implements OnInit {
     this.dataFim = dataAtual
     // A data de início é o primeiro dia do mês
     this.dataInicio = new Date(dataAtual.getFullYear() + '-' + (dataAtual.getMonth() + 1) + '-01')
+    this.dataInicio.setMonth(this.dataInicio.getMonth() - 6)
   }
 
   ngOnInit() {
@@ -167,6 +168,8 @@ export class MovimentoPage implements OnInit {
 
     this.providerMovimentos.valorXtipoReceita(this.dataInicio, this.dataFim).then((movimentosMes: any) => {
       // Grafico de tipo de receita 
+      const canvasgraficoTipoReceita = this.graficoTipoReceita.nativeElement.getContext('2d');
+      canvasgraficoTipoReceita.clearRect(0, 0, this.graficoTipoReceita.nativeElement.width, this.graficoTipoReceita.nativeElement.height);
       this.bars = new Chart(this.graficoTipoReceita.nativeElement, {
         type: 'pie',
         data: {
@@ -194,6 +197,9 @@ export class MovimentoPage implements OnInit {
         dataDespesa.push(Math.abs(itemAtual.DespesaValorCredito + itemAtual.DespesaValorDebito + itemAtual.DespesaValorDinheiro))
       });
 
+      // Gráfico de evolução de receitas
+      const canvasGraficoEvolucaoReceita = this.graficoEvolucaoReceita.nativeElement.getContext('2d');
+      canvasGraficoEvolucaoReceita.clearRect(0, 0, this.graficoEvolucaoReceita.nativeElement.width, this.graficoEvolucaoReceita.nativeElement.height);
       this.bars = new Chart(this.graficoEvolucaoReceita.nativeElement, {
         type: 'line',
         data: {

@@ -45,6 +45,7 @@ export class HistoricoVeiculosPage implements OnInit {
     this.dataFim = dataAtual
     // A data de início é o primeiro dia do mês
     this.dataInicio = new Date(dataAtual.getFullYear() + '-' + (dataAtual.getMonth() + 1) + '-01')
+    this.dataInicio.setMonth(this.dataInicio.getMonth() - 6)
   }
 
   ngOnInit() {
@@ -139,6 +140,8 @@ export class HistoricoVeiculosPage implements OnInit {
           dataset.push(data)
         })
   
+        const canvasgraficoEvolucaoReceita = this.graficoEvolucaoReceita.nativeElement.getContext('2d');
+        canvasgraficoEvolucaoReceita.clearRect(0, 0, this.graficoEvolucaoReceita.nativeElement.width, this.graficoEvolucaoReceita.nativeElement.height);
         new Chart(this.graficoEvolucaoReceita.nativeElement, {
           type: 'line',
           data: {
@@ -164,6 +167,8 @@ export class HistoricoVeiculosPage implements OnInit {
           dataset.push(receitaAtual.Valor)
         });
 
+        const canvasgraficoTotalReceita = this.graficoTotalReceita.nativeElement.getContext('2d');
+        canvasgraficoTotalReceita.clearRect(0, 0, this.graficoTotalReceita.nativeElement.width, this.graficoTotalReceita.nativeElement.height);
         new Chart(this.graficoTotalReceita.nativeElement, {
           type: 'bar',
           data: {

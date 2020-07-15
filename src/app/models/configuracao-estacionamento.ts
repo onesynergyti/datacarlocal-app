@@ -1,11 +1,11 @@
 export class ConfiguracaoEstacionamento {
   UtilizarEstacionamento: boolean = true
   IncluirServicoEstacionamento: boolean = true
-  MinutosCarencia: number
+  MinutosCarencia: number = 0
   UtilizaFracao15Minutos: boolean
   UtilizaFracao30Minutos: boolean
   UtilizaPrimeirosMinutos: boolean
-  QuantidadePrimeirosMinutos: number
+  QuantidadePrimeirosMinutos: number = 0
   UtilizaHora: boolean
   UtilizaDiaria: boolean
   Fracao15MinutosMoto: number

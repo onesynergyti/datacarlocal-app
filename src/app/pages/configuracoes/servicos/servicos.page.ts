@@ -58,7 +58,7 @@ export class ServicosPage implements OnInit {
   atualizarServicos() {
     this.servicos = []
     this.carregandoServicos = true
-    this.providerServicos.lista().then((lista: any) => {
+    this.providerServicos.lista(false).then((lista: any) => {
       this.servicos = lista
     })    
     // Em caso de erro

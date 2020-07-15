@@ -164,7 +164,7 @@ export class BluetoothService extends ServiceBaseService {
     private bluetoothSerial: BluetoothSerial,
     public loadingController: LoadingController,
     private utils: Utils,
-    private configuracoes: ConfiguracoesService
+    private configuracoesService: ConfiguracoesService
   ) { 
     super(loadingController)
     // Tenta iniciar a conexão com a impressora se o bluetooth estiver ligado
@@ -176,10 +176,14 @@ export class BluetoothService extends ServiceBaseService {
         (erro) => {
           // Verifica se a conexão salva existe na lista de dispositivos pareados
           this.listaDispositivosPareados().then((lista) => {
-            let dispositivoLocalizado = lista.find(itemAtual => itemAtual.id === this.dispositivoSalvo.id)
-            // Cancela a conexão salva se não existir
-            if (dispositivoLocalizado == null) 
-              localStorage.removeItem('impressoraConectada')
+            // Se listou os dispositivos, verifica se o dispositivo salvo está pareado.
+            // Caso não esteja, cancela a conexão salva
+            if (lista.length) {
+              let dispositivoLocalizado = lista.find(itemAtual => itemAtual.id === this.dispositivoSalvo.id)
+              // Cancela a conexão salva se não existir
+              if (dispositivoLocalizado == null) 
+                localStorage.removeItem('impressoraConectada')
+            }
           })
           this.utils.mostrarToast('Não foi possível conectar a impressora configurada', 'warning')
         })  
@@ -192,48 +196,56 @@ export class BluetoothService extends ServiceBaseService {
   }
 
   desconectar(): Promise<boolean> {
-    return this.bluetoothSerial.disconnect().then(() => {
-      localStorage.removeItem('impressoraConectada')
-      this.onDefinirDispositivo.next(null)
-      return true
-    })
-    .catch(() => {
-      return false
+    return new Promise((resolve, reject) => {
+      this.bluetoothSerial.disconnect().then(() => {
+        localStorage.removeItem('impressoraConectada')
+        resolve(true)
+      })
+      .catch(() => {
+        reject
+      })
     })
   }
 
   public conectarDispositivo(dispositivo) {
-    this.bluetoothSerial.isConnected().then((retorno) => {
-      this.ocultarProcessamento()
-      this.utils.mostrarToast('Já existe um dispositivo conectado', 'warning')
-    })
-    .catch((erro) => {
-      this.bluetoothSerial.connect(dispositivo.id).subscribe((retorno) => {
+    return new Promise((resolve, reject) => {
+      this.bluetoothSerial.isConnected().then((retorno) => {
         this.ocultarProcessamento()
-        localStorage.setItem('impressoraConectada', JSON.stringify(dispositivo))
-        this.onDefinirDispositivo.next(dispositivo)
-
-        // Verifica se houve uma falha na impressão para tentar reimprimir
-        if (this.falhaImpressao != null) {
-          // Se houve sucesso na conexão faz a impressão
-          if (dispositivo != null) {
-            switch (this.falhaImpressao.Operacao) {
-              case 'entrada': this.imprimirReciboEntrada(this.falhaImpressao.Objeto); break;
-              case 'pagamento': this.imprimirReciboSaida(this.falhaImpressao.Objeto); break;
-              case 'postergar': this.imprimirReciboPendencia(this.falhaImpressao.Objeto); break;
+        this.utils.mostrarToast('Já existe um dispositivo conectado', 'warning')
+        reject()
+      })
+      .catch(() => {
+        this.bluetoothSerial.connect(dispositivo.id).subscribe(() => {
+          this.ocultarProcessamento()
+          localStorage.setItem('impressoraConectada', JSON.stringify(dispositivo))
+          this.onDefinirDispositivo.next(dispositivo)
+  
+          // Verifica se houve uma falha na impressão para tentar reimprimir
+          if (this.falhaImpressao != null) {
+            // Se houve sucesso na conexão faz a impressão
+            if (dispositivo != null) {
+              switch (this.falhaImpressao.Operacao) {
+                case 'entrada': this.imprimirReciboEntrada(this.falhaImpressao.Objeto); break;
+                case 'pagamento': this.imprimirReciboSaida(this.falhaImpressao.Objeto); break;
+                case 'postergar': this.imprimirReciboSaida(this.falhaImpressao.Objeto, true); break;
+                case 'teste': this.testarImpressora(); break;
+              }
             }
+            else 
+              this.utils.mostrarToast('Houve uma falha na tentativa de impressão. Verifique sua impressora.', 'warning')
           }
-          else 
-            this.utils.mostrarToast('Houve uma falha na tentativa de impressão. Verifique sua impressora.', 'warning')
-        }
-        // Limpa o registro de falha, pois só tenta reimprimir uma vez
-        this.falhaImpressao = null
-      },
-      (erro) => {
-        this.ocultarProcessamento()
-        this.utils.mostrarToast('Houve uma falha na tentativa de impressão. Verifique sua impressora.', 'warning')
-        this.onDefinirDispositivo.next(null)
-      })  
+          // Limpa o registro de falha, pois só tenta reimprimir uma vez
+          this.falhaImpressao = null
+
+          resolve()
+        },
+        () => {
+          this.ocultarProcessamento()
+          this.utils.mostrarToast('Houve uma falha na conexão com o dispositivo. Verifique sua impressora.', 'warning')
+          this.onDefinirDispositivo.next(null)
+          reject()
+        })  
+      })
     })
   }
 
@@ -267,18 +279,19 @@ export class BluetoothService extends ServiceBaseService {
             switch (operacao) {
               case 'entrada': this.imprimirReciboEntrada(objeto); break;
               case 'pagamento': this.imprimirReciboSaida(objeto); break;
-              case 'postergar': this.imprimirReciboPendencia(objeto); break;
+              case 'postergar': this.imprimirReciboSaida(objeto, true); break;
+              case 'teste': this.testarImpressora(); break;
             }
           }
           else {
             this.falhaImpressao = {Operacao: operacao, Objeto: objeto}
-            // Tenta conectar novamente para imprimir se conseguir
+            // Tenta conectar novamente para imprimir, se conseguir
             // Veja onDefinirDispositivo no construtor
-            // Aguarda 5 segundos para que o usuário possa visualizar a mensagem de sucesso no registro
+            // Aguarda 2 segundos para que o usuário possa visualizar a mensagem de sucesso no registro
             setTimeout(() => { this.conectarDispositivo(this.dispositivoSalvo) }, 2000);
           }
         })
-        .catch(() => {
+        .catch(() => { 
           this.ocultarProcessamento()
           this.utils.mostrarToast('Ocorreu um erro inesperado. Tente novamente.', 'danger')
         })
@@ -295,71 +308,33 @@ export class BluetoothService extends ServiceBaseService {
   }
 
   testarImpressora() {
-
-  }
-
-  imprimirReciboPendencia(veiculo: Veiculo) {
-    let configuracao = this.configuracoes.configuracoes
-    if (configuracao.Recibo.CaractersImpressao == null)
-      configuracao.Recibo.CaractersImpressao = 32 // Tamanho considerado padrão para impressoras de pequeno porte
-        
     this.bluetoothSerial.write('\x1C\x2E\x1B\x74\x10'); // UTF-8
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_CT);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_FONT_A);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_4SQUARE);
-    this.bluetoothSerial.write('DÉBITO PENDENTE');
+    this.bluetoothSerial.write('PARABÉNS');
     this.bluetoothSerial.write(this.CMD.EOL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
-    this.bluetoothSerial.write(new DatePipe('en-US').transform(veiculo.Saida, 'dd/MM/yyyy HH:mm'));
     this.bluetoothSerial.write(this.CMD.EOL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
-    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_2HEIGHT);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
-    this.bluetoothSerial.write(configuracao.Estabelecimento.Nome);
-    this.bluetoothSerial.write(this.CMD.EOL);
+    this.bluetoothSerial.write('CONECTADO COM SUCESSO');
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
-    this.bluetoothSerial.write('CPNJ: ');
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
-    this.bluetoothSerial.write(configuracao.Estabelecimento.Documento);
     this.bluetoothSerial.write(this.CMD.EOL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_CT);
-    this.bluetoothSerial.write(configuracao.Estabelecimento.Endereco);
-    this.bluetoothSerial.write(this.CMD.EOL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
-    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
-    this.bluetoothSerial.write(this.CMD.EOL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
-    this.bluetoothSerial.write('SERVIÇOS');
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_LT);
-    this.bluetoothSerial.write(veiculo.Placa);
-    this.bluetoothSerial.write(this.CMD.EOL);  
-    veiculo.Servicos.forEach(servico => {
-      this.bluetoothSerial.write(servico.Nome.substr(0, configuracao.Recibo.CaractersImpressao - 12));
-      this.bluetoothSerial.write(this.utils.completarCaracter(veiculo.precoServico(servico).toFixed(2).replace('.', ','), configuracao.Recibo.CaractersImpressao - servico.Nome.substr(0, configuracao.Recibo.CaractersImpressao - 12).length));
-      this.bluetoothSerial.write(this.CMD.EOL);  
-    })
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
-    this.bluetoothSerial.write('TOTAL');
-    this.bluetoothSerial.write(this.utils.completarCaracter(veiculo.TotalServicos.toFixed(2).replace('.', ','), configuracao.Recibo.CaractersImpressao - 'TOTAL'.length));
+    this.bluetoothSerial.write('Se você consegue ler essa mensagem significa que já podemos utilizar a impressão dos recibos no aplicativo!');
     this.bluetoothSerial.write(this.CMD.EOL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
-    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
-    this.bluetoothSerial.write(this.CMD.EOL);    
-    this.bluetoothSerial.write('VOLTE SEMPRE');
+    this.bluetoothSerial.write(this.CMD.EOL);
+    this.bluetoothSerial.write(this.CMD.EOL);
+    this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.CMD.FEED_CONTROL_SEQUENCES.CTL_LF);
-    this.bluetoothSerial.write(this.CMD.FEED_CONTROL_SEQUENCES.CTL_LF);
-    this.bluetoothSerial.write(this.CMD.FEED_CONTROL_SEQUENCES.CTL_LF);  
   }
 
   imprimirReciboEntrada(veiculo: Veiculo) {
-    let configuracao = this.configuracoes.configuracoes
+    let configuracao = this.configuracoesService.configuracoes
     if (configuracao.Recibo.CaractersImpressao == null)
       configuracao.Recibo.CaractersImpressao = 32 // Tamanho considerado padrão para impressoras de pequeno porte
         
@@ -380,15 +355,24 @@ export class BluetoothService extends ServiceBaseService {
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
     this.bluetoothSerial.write(configuracao.Estabelecimento.Nome);
     this.bluetoothSerial.write(this.CMD.EOL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
-    this.bluetoothSerial.write('CPNJ: ');
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
-    this.bluetoothSerial.write(configuracao.Estabelecimento.Documento);
-    this.bluetoothSerial.write(this.CMD.EOL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_CT);
-    this.bluetoothSerial.write(configuracao.Estabelecimento.Endereco);
-    this.bluetoothSerial.write(this.CMD.EOL);
+    if (configuracao.Recibo.ExibirCNPJ) {
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
+      this.bluetoothSerial.write('CPNJ: ');
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
+      this.bluetoothSerial.write(this.utils.formatarDocumento(configuracao.Estabelecimento.Documento));
+      this.bluetoothSerial.write(this.CMD.EOL);
+    }
+    if (configuracao.Recibo.EnderecoLinha1 != null && configuracao.Recibo.EnderecoLinha1.length) {
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_CT);
+      this.bluetoothSerial.write(configuracao.Recibo.EnderecoLinha1);
+      this.bluetoothSerial.write(this.CMD.EOL);
+    }
+    if (configuracao.Recibo.EnderecoLinha2 != null && configuracao.Recibo.EnderecoLinha2.length) {
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_CT);
+      this.bluetoothSerial.write(configuracao.Recibo.EnderecoLinha2);
+      this.bluetoothSerial.write(this.CMD.EOL);
+    }
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
     this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
     this.bluetoothSerial.write(this.CMD.EOL);
@@ -428,7 +412,7 @@ export class BluetoothService extends ServiceBaseService {
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_CT);
-    this.bluetoothSerial.write(veiculo.Placa + (veiculo.Modelo != null ? ' - ' + veiculo.Modelo : ''));
+    this.bluetoothSerial.write(this.utils.formatarPlaca(veiculo.Placa) + (veiculo.Modelo != null && veiculo.Modelo.length ? ' - ' + veiculo.Modelo : ''));
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.qrCode(veiculo.Placa));
@@ -446,16 +430,20 @@ export class BluetoothService extends ServiceBaseService {
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_CT);
-    this.bluetoothSerial.write('SE PRECISAR LIGUE 31 99999-9999');
-    this.bluetoothSerial.write(this.CMD.EOL);
-    this.bluetoothSerial.write('AGRADEÇEMOS A PREFERÊNCIA');
+    if (configuracao.Recibo.ExibirTelefoneRodape && configuracao.Estabelecimento.Telefone != null && configuracao.Estabelecimento.Telefone.length) {
+      this.bluetoothSerial.write('FALE CONOSCO ' + this.utils.formatarTelefone(configuracao.Estabelecimento.Telefone));
+      this.bluetoothSerial.write(this.CMD.EOL);
+    }
+    if (configuracao.Recibo.MensagemReciboEntrada != null && configuracao.Recibo.MensagemReciboEntrada.length) {
+      this.bluetoothSerial.write(configuracao.Recibo.MensagemReciboEntrada);
+    }
     this.bluetoothSerial.write(this.CMD.FEED_CONTROL_SEQUENCES.CTL_LF);
     this.bluetoothSerial.write(this.CMD.FEED_CONTROL_SEQUENCES.CTL_LF);
     this.bluetoothSerial.write(this.CMD.FEED_CONTROL_SEQUENCES.CTL_LF);
   }
 
-  imprimirReciboSaida(movimento: Movimento) {
-    let configuracao = this.configuracoes.configuracoes
+  imprimirReciboSaida(movimento: Movimento, pendente = false) {
+    let configuracao = this.configuracoesService.configuracoes
     if (configuracao.Recibo.CaractersImpressao == null)
       configuracao.Recibo.CaractersImpressao = 32 // Tamanho considerado padrão para impressoras de pequeno porte
         
@@ -465,7 +453,10 @@ export class BluetoothService extends ServiceBaseService {
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_4SQUARE);
-    this.bluetoothSerial.write('COMPROVANTE');
+    if (pendente)
+      this.bluetoothSerial.write('DÉBITO');
+    else
+      this.bluetoothSerial.write('COMPROVANTE');
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
     this.bluetoothSerial.write(new DatePipe('en-US').transform(movimento.Data, 'dd/MM/yyyy HH:mm'));
@@ -476,27 +467,48 @@ export class BluetoothService extends ServiceBaseService {
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
     this.bluetoothSerial.write(configuracao.Estabelecimento.Nome);
     this.bluetoothSerial.write(this.CMD.EOL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
-    this.bluetoothSerial.write('CPNJ: ');
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
-    this.bluetoothSerial.write(configuracao.Estabelecimento.Documento);
-    this.bluetoothSerial.write(this.CMD.EOL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_CT);
-    this.bluetoothSerial.write(configuracao.Estabelecimento.Endereco);
-    this.bluetoothSerial.write(this.CMD.EOL);
+    if (configuracao.Recibo.ExibirCNPJ) {
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
+      this.bluetoothSerial.write('CPNJ: ');
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
+      this.bluetoothSerial.write(this.utils.formatarDocumento(configuracao.Estabelecimento.Documento));
+      this.bluetoothSerial.write(this.CMD.EOL);
+    }
+    if (configuracao.Recibo.EnderecoLinha1 != null && configuracao.Recibo.EnderecoLinha1.length) {
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_CT);
+      this.bluetoothSerial.write(configuracao.Recibo.EnderecoLinha1);
+      this.bluetoothSerial.write(this.CMD.EOL);
+    }
+    if (configuracao.Recibo.EnderecoLinha2 != null && configuracao.Recibo.EnderecoLinha2.length) {
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_CT);
+      this.bluetoothSerial.write(configuracao.Recibo.EnderecoLinha2);
+      this.bluetoothSerial.write(this.CMD.EOL);
+    }
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
     this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
     this.bluetoothSerial.write(this.CMD.EOL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
+    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
+    this.bluetoothSerial.write(this.utils.formatarPlaca(movimento.Veiculos[0].Placa) + (movimento.Veiculos[0].Modelo != null && movimento.Veiculos[0].Modelo.length ? ' - ' + movimento.Veiculos[0].Modelo : ''));
+    this.bluetoothSerial.write(this.CMD.EOL);
+    this.bluetoothSerial.write(this.CMD.EOL);
+    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_2HEIGHT);
     this.bluetoothSerial.write('SERVIÇOS');
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
     this.bluetoothSerial.write(this.CMD.EOL);
-    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_LT);
+    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
     movimento.Veiculos.forEach(veiculoAtual => {
-      this.bluetoothSerial.write(veiculoAtual.Placa);
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_CT);
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
+      this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
       this.bluetoothSerial.write(this.CMD.EOL);  
+      this.bluetoothSerial.write(new DatePipe('en-US').transform(veiculoAtual.Entrada, 'dd/MM/yy HH:mm') + ' - ' + new DatePipe('en-US').transform(veiculoAtual.Saida, 'dd/MM/yy HH:mm'));
+      this.bluetoothSerial.write(this.CMD.EOL);  
+      this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
+      this.bluetoothSerial.write(this.CMD.EOL);  
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_LT);
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
 
       veiculoAtual.Servicos.forEach(servico => {
         this.bluetoothSerial.write(servico.Nome.substr(0, configuracao.Recibo.CaractersImpressao - 12));
@@ -504,6 +516,7 @@ export class BluetoothService extends ServiceBaseService {
         this.bluetoothSerial.write(this.CMD.EOL);  
       })
     })
+    this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
     this.bluetoothSerial.write('TOTAL');
     this.bluetoothSerial.write(this.utils.completarCaracter(movimento.TotalServicos.toFixed(2).replace('.', ','), configuracao.Recibo.CaractersImpressao - 'TOTAL'.length));
@@ -511,14 +524,39 @@ export class BluetoothService extends ServiceBaseService {
     this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
     this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
     this.bluetoothSerial.write(this.CMD.EOL);    
-    this.bluetoothSerial.write('VOLTE SEMPRE');
+    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
+
+    // Se for registro de pendência cria a assinatura do cliente
+    if (pendente) {
+      this.bluetoothSerial.write('Declaro que o débito acima descrito é procedente e me comprometo a realizar a quitação do mesmo.');
+      this.bluetoothSerial.write(this.CMD.EOL);    
+      this.bluetoothSerial.write(this.CMD.EOL);    
+      this.bluetoothSerial.write(this.CMD.EOL);    
+      this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '_'));
+      this.bluetoothSerial.write(this.CMD.EOL);    
+      this.bluetoothSerial.write(movimento.Veiculos[0].Nome != null && movimento.Veiculos[0].Nome.length ? movimento.Veiculos[0].Nome : 'Nome:');
+      this.bluetoothSerial.write(this.CMD.EOL);    
+      this.bluetoothSerial.write('Doc:');
+      this.bluetoothSerial.write(this.CMD.EOL);    
+      this.bluetoothSerial.write(this.CMD.EOL);    
+    }
+
+    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
+    this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_CT);
+    if (configuracao.Recibo.ExibirTelefoneRodape && configuracao.Estabelecimento.Telefone != null && configuracao.Estabelecimento.Telefone.length) {
+      this.bluetoothSerial.write('FALE CONOSCO ' + this.utils.formatarTelefone(configuracao.Estabelecimento.Telefone));
+      this.bluetoothSerial.write(this.CMD.EOL);
+    }
+    if (configuracao.Recibo.MensagemReciboEntrada != null && configuracao.Recibo.MensagemReciboEntrada.length) {
+      this.bluetoothSerial.write(configuracao.Recibo.MensagemReciboSaida);
+    }
     this.bluetoothSerial.write(this.CMD.FEED_CONTROL_SEQUENCES.CTL_LF);
     this.bluetoothSerial.write(this.CMD.FEED_CONTROL_SEQUENCES.CTL_LF);
     this.bluetoothSerial.write(this.CMD.FEED_CONTROL_SEQUENCES.CTL_LF);
   }
 
-  async validarConexao(): Promise<any> {
-    return this.bluetoothSerial.isConnected()
+  async validarConexao() {
+    return await this.bluetoothSerial.isConnected()
     .then(() => {
       return true
     })

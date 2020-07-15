@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { ModalController } from '@ionic/angular';
 import { Configuracoes } from 'src/app/models/configuracoes';
-import {Md5} from 'ts-md5/dist/md5'
+import { Md5 } from 'ts-md5/dist/md5'
 import { Utils } from 'src/app/utils/utils';
 
 @Component({
@@ -40,7 +40,7 @@ export class SenhaAdministradorPage implements OnInit {
     else {
       this.configuracoes.Seguranca.SenhaAdministrador = Md5.hashStr(this.senhaNova)
       this.configuracoesService.configuracoes = this.configuracoes
-      this.modalCtrl.dismiss({ retorno: 'Sucesso' })
+      this.modalCtrl.dismiss(true)
     }
   }
 }

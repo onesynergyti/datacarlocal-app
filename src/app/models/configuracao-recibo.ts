@@ -7,4 +7,5 @@ export class ConfiguracaoRecibo {
   ImprimirReciboSaida: boolean = true
   MensagemReciboEntrada: string = 'AGRADECEMOS A PREFERÊNCIA'
   MensagemReciboSaida: string = 'VOLTE SEMPRE'
+  ExibirTelefoneRodape: boolean = true
 }

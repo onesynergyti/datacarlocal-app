@@ -25,13 +25,17 @@
         <ion-icon name="key"></ion-icon>
         Segurança
       </ion-item>
+      <ion-item button (click)="abrirPagina('mensagens')">
+        <ion-icon name="logo-whatsapp"></ion-icon>
+        Whatsapp
+      </ion-item>
     </ion-list>
   </div>
 
   <div *ngIf="pagina == 'empresa'">
     <ion-grid>
       <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-col size-xs="12" class="subTitulo fundoLight">
           <ion-icon class="iconeSubTitulo" name="business"></ion-icon>
           Dados da empresa
         </ion-col>
@@ -53,7 +57,7 @@
             </ion-item>
             <ion-item>
               <ion-label position="floating">Telefone</ion-label>
-              <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estabelecimento.Telefone"></ion-input>
+              <ion-input autocorrect="off" type="tel" maxlength="15" [ngModel]="configuracoes.Estabelecimento.Telefone | telefonePipe" (ionInput)="configuracoes.Estabelecimento.Telefone = utils.somenteNumeros($event.target.value)"></ion-input>
             </ion-item>
           </ion-list>
         </ion-col>
@@ -64,7 +68,7 @@
   <div *ngIf="pagina == 'patio'">
     <ion-grid>
       <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-col size-xs="12" class="subTitulo fundoLight">
           <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
           Configurações do pátio
         </ion-col>
@@ -74,7 +78,7 @@
           <ion-list *ngIf="configuracoes != null">
             <ion-item>
               <ion-label position="floating">Total de vagas</ion-label>
-              <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Patio.QuantidadeVagas"></ion-input>
+              <ion-input autocorrect="off" type="number" [(ngModel)]="configuracoes.Patio.QuantidadeVagas"></ion-input>
             </ion-item>
             <ion-item>
               <ion-label>Bloquear entrada em lotação</ion-label>
@@ -105,7 +109,7 @@
   <div *ngIf="pagina == 'seguranca'">
     <ion-grid>
       <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-col size-xs="12" class="subTitulo fundoLight">
           <ion-icon class="iconeSubTitulo" name="person-circle"></ion-icon>
           Dados do administrador
         </ion-col>
@@ -125,7 +129,7 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-col size-xs="12" class="subTitulo fundoLight">
           <ion-icon class="iconeSubTitulo" name="lock-closed"></ion-icon>
           Exigir senha nos seguinte itens
         </ion-col>
@@ -187,7 +191,7 @@
 
     <ion-grid *ngIf="configuracoes.Estacionamento.UtilizarEstacionamento">
       <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLigth ion-text-center">
+        <ion-col size-xs="12" class="subTitulo fundoLight ion-text-center">
           Configuração de tabela de preços
         </ion-col>
       </ion-row>
@@ -200,7 +204,7 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-col size-xs="12" class="subTitulo fundoLight ion-no-margin ion-no-padding">
           <ion-item>
             <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaPrimeirosMinutos"></ion-toggle>
             <h4>Cobrar preço fixo nos minutos iniciais</h4>
@@ -222,7 +226,7 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.PrimeirosMinutosMoto"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.PrimeirosMinutosMoto | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.PrimeirosMinutosMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -231,7 +235,7 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.PrimeirosMinutosCarroPequeno"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.PrimeirosMinutosCarroPequeno | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.PrimeirosMinutosCarroPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -240,7 +244,7 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.PrimeirosMinutosCarroMedio"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.PrimeirosMinutosCarroMedio | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.PrimeirosMinutosCarroMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -249,12 +253,12 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.PrimeirosMinutosCarroGrande"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.PrimeirosMinutosCarroGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.PrimeirosMinutosCarroGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>    
       <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-col size-xs="12" class="subTitulo fundoLight ion-no-margin ion-no-padding">
           <ion-item>
             <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaFracao15Minutos"></ion-toggle>
             <h4>Cobrar fração de 15 minutos</h4>
@@ -268,7 +272,7 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.Fracao15MinutosMoto"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.Fracao15MinutosMoto | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao15MinutosMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -277,7 +281,7 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.Fracao15MinutosCarroPequeno"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.Fracao15MinutosCarroPequeno | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao15MinutosCarroPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -286,7 +290,7 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.Fracao15MinutosCarroMedio"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.Fracao15MinutosCarroMedio | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao15MinutosCarroMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -295,12 +299,12 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.Fracao15MinutosCarroGrande"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.Fracao15MinutosCarroGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao15MinutosCarroGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-col size-xs="12" class="subTitulo fundoLight ion-no-margin ion-no-padding">
           <ion-item>
             <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaFracao30Minutos"></ion-toggle>
             <h4>Cobrar fração de 30 minutos</h4>
@@ -314,7 +318,7 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.Fracao30MinutosMoto"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.Fracao30MinutosMoto | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao30MinutosMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -323,7 +327,7 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.Fracao30MinutosCarroPequeno"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.Fracao30MinutosCarroPequeno | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao30MinutosCarroPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -332,7 +336,7 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.Fracao30MinutosCarroMedio"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.Fracao30MinutosCarroMedio | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao30MinutosCarroMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -341,12 +345,12 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.Fracao30MinutosCarroGrande"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.Fracao30MinutosCarroGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao30MinutosCarroGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-col size-xs="12" class="subTitulo fundoLight ion-no-margin ion-no-padding">
           <ion-item>
             <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaHora"></ion-toggle>
             <h4>Cobrar valor por hora adicional</h4>
@@ -360,7 +364,7 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.HoraMoto"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.HoraMoto | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.HoraMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -369,7 +373,7 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.HoraCarroPequeno"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.HoraCarroPequeno | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.HoraCarroPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -378,7 +382,7 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.HoraCarroMedio"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.HoraCarroMedio | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.HoraCarroMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -387,12 +391,12 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.HoraCarroGrande"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.HoraCarroGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.HoraCarroGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-col size-xs="12" class="subTitulo fundoLight ion-no-margin ion-no-padding">
           <ion-item>
             <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaDiaria"></ion-toggle>
             <h4>Cobrar valor por dia</h4>
@@ -406,7 +410,7 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.DiariaMoto"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.DiariaMoto | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.DiariaMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -415,7 +419,7 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.DiariaCarroPequeno"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.DiariaCarroPequeno | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.DiariaCarroPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -424,7 +428,7 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.DiariaCarroMedio"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.DiariaCarroMedio | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.DiariaCarroMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
@@ -433,17 +437,51 @@
           </div>
           <ion-item>
             <ion-label position="floating">R$</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.DiariaCarroGrande"></ion-input>
+            <ion-input autocorrect="off" type="number" [ngModel]="configuracoes.Estacionamento.DiariaCarroGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.DiariaCarroGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
     </ion-grid>
   </div>
 
+  <div *ngIf="pagina == 'mensagens'">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="logo-whatsapp"></ion-icon>
+          Configurações do Whatsapp
+        </ion-col>
+      </ion-row>    
+      <ion-row>
+        <ion-col class="ion-no-padding">
+          <ion-item>
+            <ion-label>Utilizar Whatsapp Businnes</ion-label>
+            <ion-toggle color="primary" [(ngModel)]="configuracoes.Mensagens.WhatsAppBusinnes"></ion-toggle>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="mail"></ion-icon>
+          Mensagens
+        </ion-col>
+      </ion-row>    
+      <ion-row>
+        <ion-col size-xs="12">
+          <ion-item>
+            <ion-label position="floating">Conclusão dos serviços</ion-label>
+            <ion-textarea rows="2" auto-grow [(ngModel)]="configuracoes.Mensagens.ConclusaoServicos"></ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>    
+    </ion-grid>
+  </div>
+
+
   <div *ngIf="pagina == 'recibo'">
     <ion-grid>
       <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLigth">
+        <ion-col size-xs="12" class="subTitulo fundoLight">
           <ion-icon class="iconeSubTitulo" name="receipt"></ion-icon>
           Informações do recibo
         </ion-col>
@@ -453,7 +491,7 @@
           <ion-list *ngIf="configuracoes != null">
             <ion-item>
               <ion-label position="floating">Quantidade de colunas do recibo</ion-label>
-              <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Recibo.CaractersImpressao"></ion-input>
+              <ion-input autocorrect="off" type="number" [(ngModel)]="configuracoes.Recibo.CaractersImpressao"></ion-input>
             </ion-item>
             <ion-item>
               <ion-label>Imprimir recibo na entrada</ion-label>
@@ -476,6 +514,10 @@
               <ion-toggle color="primary" [(ngModel)]="configuracoes.Recibo.ExibirCNPJ"></ion-toggle>
             </ion-item>
             <ion-item>
+              <ion-label>Exibir telefone no rodapé</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Recibo.ExibirTelefoneRodape"></ion-toggle>
+            </ion-item>
+            <ion-item>
               <ion-label position="floating">Endereço primeira linha</ion-label>
               <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Recibo.EnderecoLinha1"></ion-input>
             </ion-item>
@@ -488,6 +530,4 @@
       </ion-row>
     </ion-grid>
   </div>
-
-
 </ion-content>

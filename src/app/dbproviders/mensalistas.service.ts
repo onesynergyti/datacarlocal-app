@@ -20,9 +20,9 @@ export class MensalistasService extends ServiceBaseService {
     super(loadingController)
   }
 
-  public lista(): Promise<any> {
+  public lista(id = 0): Promise<any> {
     return new Promise((resolve, reject) => {
-      const sql = "SELECT * from mensalistas";
+      const sql = `SELECT * from mensalistas where (${id} = 0) or (${id} = Id)`;
       const data = []
       this.database.DB.then(db => {
         db.executeSql(sql, data)
@@ -32,6 +32,7 @@ export class MensalistasService extends ServiceBaseService {
             for (var i = 0; i < data.rows.length; i++) {
               var mensalista = data.rows.item(i);
               mensalista.Veiculos = JSON.parse(mensalista.Veiculos)
+              mensalista.IdsServicos = JSON.parse(mensalista.IdsServicos)
               mensalista.Ativo = mensalista.Ativo == 'true'
               mensalistas.push(new Mensalista(mensalista));
             }
@@ -93,13 +94,13 @@ export class MensalistasService extends ServiceBaseService {
       
           // Caso seja inclusão
           if (mensalista.Id == null || mensalista.Id == 0) {
-            sqlMensalista = 'insert into mensalistas (Nome, Documento, Telefone, Email, Ativo, Veiculos) values (?, ?, ?, ?, ?, ?)'
-            dataMensalista = [mensalista.Nome, mensalista.Documento, mensalista.Telefone, mensalista.Email, mensalista.Ativo, JSON.stringify(mensalista.Veiculos)]
+            sqlMensalista = 'insert into mensalistas (Nome, Documento, Telefone, Email, Ativo, Veiculos, IdsServicos) values (?, ?, ?, ?, ?, ?, ?)'
+            dataMensalista = [mensalista.Nome, mensalista.Documento, mensalista.Telefone, mensalista.Email, mensalista.Ativo, JSON.stringify(mensalista.Veiculos), JSON.stringify(mensalista.IdsServicos)]
           }
           // Caso seja edição
           else {
-            sqlMensalista = 'update mensalistas set Nome = ?, Documento = ?, Telefone = ?, Email = ?, Ativo = ?, Veiculos = ? where Id = ?'
-            dataMensalista = [mensalista.Nome, mensalista.Documento, mensalista.Telefone, mensalista.Email, mensalista.Ativo, JSON.stringify(mensalista.Veiculos), mensalista.Id]
+            sqlMensalista = 'update mensalistas set Nome = ?, Documento = ?, Telefone = ?, Email = ?, Ativo = ?, Veiculos = ?, IdsServicos = ? where Id = ?'
+            dataMensalista = [mensalista.Nome, mensalista.Documento, mensalista.Telefone, mensalista.Email, mensalista.Ativo, JSON.stringify(mensalista.Veiculos), JSON.stringify(mensalista.IdsServicos), mensalista.Id]
           }      
           tx.executeSql(sqlMensalista, dataMensalista, (tx, result) => {
             let promisesTx = []
@@ -171,7 +172,16 @@ export class MensalistasService extends ServiceBaseService {
           const data = [new DatePipe('en-US').transform(dataReferencia, 'yyyy-MM-dd')]
           db.executeSql(sql, data)
           .then(data => {            
-            resolve(data.rows.length > 0)
+            if (data.rows.length > 0) {
+              this.lista(data.rows.item(0).IdMensalista).then(mensalistas => {
+                if (mensalistas.length > 0)
+                  resolve(new Mensalista(mensalistas[0]))
+                else
+                  resolve()
+              })
+            }
+            else 
+              resolve()
           })
           .catch((erro) => {
             reject(erro)

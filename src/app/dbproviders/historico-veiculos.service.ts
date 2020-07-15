@@ -101,7 +101,7 @@ export class HistoricoVeiculosService extends ServiceBaseService {
 
   public saldoPeriodo(inicio: Date, fim: Date): Promise<any> {
     return new Promise((resolve, reject) => {
-      const sql = "SELECT sum(Valor) Valor " +
+      const sql = "SELECT coalesce(sum(Valor), 0) Valor " +
       "from veiculosHistorico where Date(Pagamento) between Date(?) and Date(?)";
       const data = [new DatePipe('en-US').transform(inicio, 'yyyy-MM-dd'), new DatePipe('en-US').transform(fim, 'yyyy-MM-dd')]
       this.database.DB.then(db => {
@@ -112,9 +112,10 @@ export class HistoricoVeiculosService extends ServiceBaseService {
             for (var i = 0; i < data.rows.length; i++) {
               saldo.push(data.rows.item(i));
             }
+            alert(JSON.stringify(saldo[0]))
             resolve(saldo[0])
           } else {
-            resolve(0)
+            resolve({ Valor: 0 })
           }
         })
         .catch((erro) => {

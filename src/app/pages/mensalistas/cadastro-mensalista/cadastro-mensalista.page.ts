@@ -9,6 +9,7 @@ import { Movimento } from 'src/app/models/movimento';
 import { CadastroPagamentoPage } from './cadastro-pagamento/cadastro-pagamento.page';
 import { Utils } from 'src/app/utils/utils';
 import { Mensalista } from 'src/app/models/mensalista';
+import { SelectPopupModalPage } from 'src/app/components/select-popup-modal/select-popup-modal.page';
 
 @Component({
   selector: 'app-cadastro-mensalista',
@@ -37,6 +38,7 @@ export class CadastroMensalistaPage implements OnInit {
   carregandoMovimentos = false
   movimentosExclusao = []
   avaliouFormulario = false
+  listaServicos = []
 
   constructor(
     private alertController: AlertController,
@@ -47,10 +49,18 @@ export class CadastroMensalistaPage implements OnInit {
     public utils: Utils
   ) {
     this.mensalista = navParams.get('mensalista')
+    this.listaServicos = navParams.get('servicos')
     this.atualizarPagamentos()
   }
 
   ngOnInit() {
+  }
+
+  get servicosMensalista() {
+    if (this.mensalista != null && this.listaServicos != null)
+      return this.listaServicos.filter(servicoAtual => this.mensalista.IdsServicos.find(idAtual => idAtual == servicoAtual.Id) != null)
+    else
+      return []
   }
 
   async atualizarPagamentos() {
@@ -138,13 +148,34 @@ export class CadastroMensalistaPage implements OnInit {
     return await modal.present(); 
   }
 
+  async cadastrarServico() {
+    const modal = await this.modalCtrl.create({
+      component: SelectPopupModalPage,
+      componentProps: {
+        'lista': this.listaServicos,
+        'keyField': 'Nome',
+        'titulo': 'Serviços',
+        'icone': 'construct'
+      }
+    })
+
+    modal.onWillDismiss().then((retorno) => {
+      let servico = retorno.data
+      if (servico != null) {
+        this.mensalista.IdsServicos.push(servico.Id)
+      }
+    })
+
+    return await modal.present(); 
+  }
+
   cancelar() {
     this.modalCtrl.dismiss()
   }
 
   async concluir(){
     this.avaliouFormulario = true
-    if (this.mensalista.Nome != null && this.mensalista.Nome.length > 0 && this.mensalista.Veiculos.length > 0)
+    if (this.mensalista.Nome != null && this.mensalista.Nome.length > 0 && this.mensalista.Veiculos.length > 0 && this.mensalista.IdsServicos.length > 0)
     {
       await this.mensalistasProvider.exibirProcessamento('Salvando mensalista...')
       this.mensalistasProvider.salvar(this.mensalista, this.movimentos, this.movimentosExclusao).then(() => {

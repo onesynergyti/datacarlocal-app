@@ -3,7 +3,7 @@
 <ion-content>
   <ion-grid *ngIf="movimento != null">
     <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
+      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="timer"></ion-icon>
         Data do pagamento
       </ion-col>
@@ -14,7 +14,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
+      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="document-text"></ion-icon>
         Descrição do pagamento
       </ion-col>
@@ -25,7 +25,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
+      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
         Dados do veículo
       </ion-col>
@@ -38,7 +38,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
+      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
         Serviços
       </ion-col>
@@ -54,6 +54,12 @@
               <ion-row>
                 <ion-col size-xs="9">
                   <h3>{{ servico.Nome }}</h3>
+                  <ion-grid>
+                    <ion-row class="ion-no-padding ion-no-margin">
+                      <ion-col *ngIf="servico.Acrescimo > 0"><h5 class="fontCorPerigo">Acrescimo: {{ servico.Acrescimo | decimalPipe:"R$ " }}</h5></ion-col>
+                      <ion-col *ngIf="servico.Desconto > 0"><h5 class="fontCorSucesso">Desconto: {{ servico.Desconto | decimalPipe:"R$ " }}</h5></ion-col>
+                    </ion-row>
+                  </ion-grid>                                
                 </ion-col>
                 <ion-col class="ion-text-right">
                   <h3>{{ veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h3>
@@ -79,7 +85,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLigth">
+      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="wallet"></ion-icon>
         Forma de pagamento
       </ion-col>

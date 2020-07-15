@@ -153,6 +153,12 @@ export class HomePage {
       !this.configuracoesService.configuracoes.Estacionamento.UtilizaPrimeirosMinutos) {
         reject({ Titulo: 'Configurar estacionamento', Mensagem: 'É necessário configurar a tabela de estacionamento ou desabilitar essa função antes de prosseguir. Deseja acessar as configurações agora?', Rota: 'configuracoes?pagina=estacionamento' })
       }
+      // Se configurar que utiliza minutos iniciais, deve informar a quantidade de minutos
+      if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento && 
+      this.configuracoesService.configuracoes.Estacionamento.UtilizaPrimeirosMinutos &&
+      (this.configuracoesService.configuracoes.Estacionamento.QuantidadePrimeirosMinutos == null || this.configuracoesService.configuracoes.Estacionamento.QuantidadePrimeirosMinutos <= 0)) {
+        reject({ Titulo: 'Configurar estacionamento', Mensagem: 'Você optou por cobrar um valor fixo nos minutos iniciais, mas não definiu a quantidade de minutos. Deseja acessar as configurações agora?', Rota: 'configuracoes?pagina=estacionamento' })
+      }
       else {
         // Se não utiliza estacionamento, então tem que ter algum serviço cadastrado
         this.providerServicos.lista().then(servicos => {
@@ -265,9 +271,9 @@ export class HomePage {
         this.veiculos.splice(this.veiculos.indexOf(veiculoLocalizado), 1)
         this.utils.mostrarToast(retorno.data.Operacao == 'postergar' ? 'Pagamento acumulado com sucesso' : 'Pagamento realizado com sucesso', 'success')
 
-        if (this.bluetooth.dispositivoSalvo != null) { 
+        if (this.bluetooth.dispositivoSalvo != null && this.configuracoesService.configuracoes.Recibo.ImprimirReciboSaida) { 
           await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
-          this.bluetooth.imprimirRecibo(retorno.data.Veiculo, retorno.data.Operacao)
+          this.bluetooth.imprimirRecibo(retorno.data.Movimento, retorno.data.Operacao)
         }
 
         // Exibe uma propagando na saída do veículo
@@ -290,7 +296,7 @@ export class HomePage {
 
           this.utils.mostrarToast(inclusao ? 'Veículo adicionado com sucesso' : 'Alteração realizada com sucesso', 'success')        
 
-          if (this.bluetooth.dispositivoSalvo != null) { 
+          if (this.bluetooth.dispositivoSalvo != null && this.configuracoesService.configuracoes.Recibo.ImprimirReciboEntrada) { 
             await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
             this.bluetooth.imprimirRecibo(retorno.data.Veiculo)
           }
@@ -303,8 +309,13 @@ export class HomePage {
     this.barcodeScanner.scan().then(barcodeData => {      
       if (barcodeData.text != '') {
         let veiculo = this.veiculos.find(itemAtual => this.utils.stringPura(itemAtual.Placa) == this.utils.stringPura(barcodeData.text))
-        if (veiculo != null)
-          this.cadastrarEntrada(veiculo)
+        if (veiculo != null) {
+          // Se houver serviços pendentes abre o cadastro do veículo para poder alterar
+          if (veiculo.PossuiServicosPendentes) 
+            this.cadastrarEntrada(veiculo)
+          else
+            this.registrarSaida(veiculo)
+        }
         else
           this.utils.mostrarToast('Não localizamos o código informado.', 'danger')
       }
@@ -316,45 +327,61 @@ export class HomePage {
     this.bluetooth.imprimirRecibo(veiculo)
   }
    
+  async procederRegistroSaida(veiculo: Veiculo) {
+    let movimento = new Movimento()
+    movimento.Veiculos.push(veiculo)
+    movimento.Data = new Date()
+    movimento.Descricao = 'Cobrança de veículo'
+
+    const modal = await this.modalController.create({
+      component: SaidaPage,
+      componentProps: {
+        'movimento': movimento
+      }
+    });
+
+    modal.onWillDismiss().then((retorno) => {
+      this.avaliarRetornoVeiculo(retorno, false)
+    })
+
+    return await modal.present(); 
+  }
+
   async registrarSaida(veiculo: Veiculo) {
     if (veiculo.PossuiServicosPendentes) 
       this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve finalizar todos os serviços ou excluir antes de realizar o pagamento.', 'danger', 3000)
     else {
       veiculo.Saida = new Date()
+      // Calcula os valores do serviço de estacionamento
       let servicoEstacionamento = veiculo.PossuiServicoEstacionamento
-
       if (servicoEstacionamento != null) {
-        if (veiculo.Mensalista) {
-          servicoEstacionamento.PrecoMoto = 0
-          servicoEstacionamento.PrecoVeiculoPequeno = 0
-          servicoEstacionamento.PrecoVeiculoMedio = 0
-          servicoEstacionamento.PrecoVeiculoGrande = 0
-        }
-        else {
-          servicoEstacionamento.PrecoMoto = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 1)
-          servicoEstacionamento.PrecoVeiculoPequeno = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 2)
-          servicoEstacionamento.PrecoVeiculoMedio = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 3)
-          servicoEstacionamento.PrecoVeiculoGrande = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 4)
-        }          
+        servicoEstacionamento.PrecoMoto = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 1)
+        servicoEstacionamento.PrecoVeiculoPequeno = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 2)
+        servicoEstacionamento.PrecoVeiculoMedio = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 3)
+        servicoEstacionamento.PrecoVeiculoGrande = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 4)
       }
-      
-      let movimento = new Movimento()
-      movimento.Veiculos.push(veiculo)
-      movimento.Data = new Date()
-      movimento.Descricao = 'Cobrança de veículo'
 
-      const modal = await this.modalController.create({
-        component: SaidaPage,
-        componentProps: {
-          'movimento': movimento
-        }
-      });
-  
-      modal.onWillDismiss().then((retorno) => {
-        this.avaliarRetornoVeiculo(retorno, false)
-      })
-  
-      return await modal.present(); 
+      // Se for veículo de mensalista zera os serviços contratados
+      if (veiculo.IdMensalista > 0) {
+        await this.providerMensalistas.exibirProcessamento('Calculando valores...')
+        this.providerMensalistas.lista(veiculo.IdMensalista).then(mensalistas => {
+          if (mensalistas.length > 0) {
+            // Zera os valores dos serviços contratados pelo mensalista no momento do pagamento
+            mensalistas[0].IdsServicos.forEach(idServico => {
+              const servicoLocalizado = veiculo.Servicos.find(servicoAtual => servicoAtual.Id == idServico)
+              if (servicoLocalizado != null) {
+                servicoLocalizado.PrecoMoto = 0
+                servicoLocalizado.PrecoVeiculoPequeno = 0
+                servicoLocalizado.PrecoVeiculoMedio = 0
+                servicoLocalizado.PrecoVeiculoGrande = 0
+              }
+            });
+          }
+          this.procederRegistroSaida(veiculo)
+        })
+      }
+      else
+        this.procederRegistroSaida(veiculo)
     }
   }
 }

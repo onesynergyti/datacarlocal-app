@@ -8,6 +8,7 @@ export class Mensalista {
   Email: string
   Ativo: boolean = true
   Veiculos: VeiculoCadastro[] = []
+  IdsServicos = []
 
   constructor(mensalista: Mensalista = null) {
     if (mensalista != null) {
@@ -17,7 +18,8 @@ export class Mensalista {
       this.Telefone = mensalista.Telefone
       this.Email = mensalista.Email
       this.Ativo = mensalista.Ativo
-      this.Veiculos = mensalista.Veiculos.slice()
+      this.Veiculos = mensalista.Veiculos != null ? mensalista.Veiculos.slice() : []
+      this.IdsServicos = mensalista.IdsServicos != null ? mensalista.IdsServicos.slice() : []
     }
   }
 }

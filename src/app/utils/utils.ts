@@ -62,6 +62,41 @@ export class Utils {
     })
   }  
 
+  formatarDocumento(value: string): string {      
+    if (value != null && value.length >= 14)
+      return value.substring(0, 2) + '.' + value.substring(2, 5) + '.' + value.substring(5, 8) + '/' + value.substring(8, 12) + '-' + value.substring(12)
+    else if (value != null && value.length >= 11)
+      return value.substring(0, 3) + '.' + value.substring(3, 6) + '.' + value.substring(6, 9) + '-' + value.substring(9)
+    else
+      return value
+  }
+
+  formatarPlaca(value: string): string {
+    if (value != null) {
+      if (value.length >= 4)
+        return value.substring(0, 3) + '-' + value.substring(3)
+      else
+        return value
+    }
+    else
+      return value
+  }
+
+  formatarTelefone(value) {
+    if (value != null) {
+      if (value.length >= 11)
+        return '(' + value.substring(0, 2) + ') ' + value.substring(2, 7) + '-' + value.substring(7)
+      else if (value.length >= 7)
+        return '(' + value.substring(0, 2) + ') ' + value.substring(2, 6) + '-' + value.substring(6)
+      else if (value.length >= 3)
+        return '(' + value.substring(0, 2) + ') ' + value.substring(2)
+      else
+        return value
+    }
+    else
+      return value
+  }
+
   selecionarHora(hora = null) {
     return this.datePicker.show({      
       date: hora ? hora : new Date(),

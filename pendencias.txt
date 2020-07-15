@@ -54,6 +54,9 @@ SEGUNDA VERSÃO - Melhorar cores nos gráficos
 SEGUNDA VERSÃO - Ao navegar pelas telas, no rodapé e o cabeçalho estão ficando alguns restos das telas de origem. Tem que verificar o motivo e retirar isso
 SEGUNDA VERSÃO - Permitir fazer backup e exportação de dados
 SEGUNDA VERSÃO - Permitir incluir uma logomarca no aplicativo
+SEGUNDA VERSÃO - Listagem paginada no histórico de veículos
+SEGUNDA VERSÃO - Permitir imprimir segunda via de recibo de saída nos movimentos
+SEGUNDA VERSÃO - Permitir imprimir segunda via de recibo de entrada na tela de cadastro
 OK - Definir os veículos de mensalistas na entrada
 OK - Criar um atalho para alterar senha de administrador nas configurações de segurança
 OK - Verificar eliminiação do valor do troco ao salvar um movimento
@@ -61,16 +64,33 @@ OK - Criar informações de listagem vazia nos pagamentos pendentes
 OK - Criar informações de listagem vazia no relatório de histórico de vendas
 OK - Criar informações de listagem vazia no relatório de movimentos
 OK - Finalizar gráficos
-- Criar consistência no cadastro de serviços
-- Adequar campos de número decimal no sistema todo
-- Trabalhar melhor a conexão com a impressora, exibindo status na tela principal da home
-- Finalizar tela que valida o acesso com senha do usuário
-- Melhorar nome e agrupamento dos itens do menu
+OK - Criar consistência no cadastro de serviços
+OK - Adequar campos de número decimal no sistema todo
+OK - Trabalhar melhor a conexão com a impressora, exibindo status na tela principal da home
+OK - Concluir layout e funcionalidades da tela que valida o acesso com senha do usuário
+OK - O trocar senha sempre está exibindo a mensagem de senha alterada com sucesso quando fecha sem alterar
+OK - O desconto e o acréscimo não está aparecendo no valor final
+OK - Melhorar nome e agrupamento dos itens do menu
+OK - Ajustar recibos de pagamentos, débito registrado e entrada
+OK - Criar assinatura no recibo de pagar depois, para comprovação do estabelecimento
+OK - Históricos financeiros buscando sempre os últimos 6 meses
+OK - Criar opções de whatsapp nas configurações com mensagens personalizadas
+OK - Incluir opção de envio de mensagem de conclusão dos serviços nas mensagens de veículo para o cliente no pátio. Sugestão, incluir menu com oções personalizadas
+OK - No cadastro de mensalistas, informar qual serviço o cliente terá direito
+OK - O gráfico do extrato está gerando errado quando altero a data e depois volto ao ponto anterior. A primeira vez que gera funciona
+OK - Saldo não está aparecendo no histórico de veículos e nos movimentos quando está zerado
+- Atendimentos com valores zerados não estão aparecendo no histórico. Provavelmente tem uma condição para não salvar com valores zerados
+- Não permitir pagar posteriormente atendimentos com valores zerados, ocultar o botão na tela de saída
+- Criar indicador de carregamento na listagem de mensalistas
+- Verificar se o gráfico do histórico de vendas está gerando errado quando altera a data e depois volto ao ponto anterior.
+- Houve um erro quando fui tentar finalizar um atendimento pagando valor exato com débito
+- Não obrigar preços nos serviços
+- Exigir senha na edição de serviços do veículo também para exclusão na tela que lista
+- Não permitir fechar veículos com valor total negativo
+- Criar estrutura CSS para ajuda com símbolo de informação e uma função para ser chamada onde aparece uma mensagem informando detalhes sobre os campos
+- Indicar no layout de forma clara os lançamentos de débitos e créditos (vermelho, verde)
+- Tratar o link do Whatsapp businnes na abertura do app
 - Criar consistência nos formulários, incluindo max length e campos obrigatórios
 - Criar a chaves das tabelas para garantir consistência
 - Verificar cada item da configuração e o impacto na utilização
-- Ajustar recibos de pagamentos, débito registrado e entrada
-- Criar assinatura no recibo de pagar depois, para comprovação do estabelecimento
 - Definir whatsapp para suporte
-- Incluir opção de envio de mensagem de conclusão dos serviços nas mensagens de veículo para o cliente no pátio. Sugestão, incluir menu com oções personalizadas
-- Criar opções de whatsapp nas configurações com mensagens personalizadas

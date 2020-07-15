@@ -12,6 +12,7 @@ import { Funcionario } from 'src/app/models/funcionario';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { ValidarAcessoPage } from '../../validar-acesso/validar-acesso.page';
 import { MensalistasService } from 'src/app/dbproviders/mensalistas.service';
+import { Mensalista } from 'src/app/models/mensalista';
 
 @Component({
   selector: 'app-entrada',
@@ -176,8 +177,9 @@ export class EntradaPage implements OnInit {
       // Edição ou inclusão
       else if (operacao != 'excluir') {
         await this.patioProvider.exibirProcessamento('Registrando entrada...')
-        this.providerMensalistas.validarMensalista(this.veiculo.Entrada, this.veiculo.Placa).then((mensalistaValido: boolean) => {
-          this.veiculo.Mensalista = mensalistaValido
+        this.providerMensalistas.validarMensalista(this.veiculo.Entrada, this.veiculo.Placa).then((mensalistaValido: Mensalista) => {
+          alert(JSON.stringify(mensalistaValido))
+          this.veiculo.IdMensalista = mensalistaValido != null ? mensalistaValido.Id : 0
 
           this.patioProvider.salvar(this.veiculo)
           .then((veiculo) => {
@@ -228,6 +230,12 @@ export class EntradaPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  informarConclusaoWhatsapp() {
+    let mensagem = this.configuracoesService.configuracoes.Mensagens.ConclusaoServicos
+    mensagem = mensagem.replace('<PLACA>', this.utils.formatarPlaca(this.veiculo.Placa))
+    this.utils.abrirWhatsapp(this.veiculo.Telefone, mensagem)
   }
 
   selecionarDataPrevisao() {

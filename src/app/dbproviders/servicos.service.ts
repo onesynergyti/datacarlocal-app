@@ -4,6 +4,7 @@ import { LoadingController } from '@ionic/angular';
 import { Utils } from '../utils/utils';
 import { DatabaseService } from './database.service';
 import { Servico } from '../models/servico';
+import { ConfiguracoesService } from '../services/configuracoes.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,8 @@ export class ServicosService extends ServiceBaseService {
   constructor(
     public loadingController: LoadingController,
     private utils: Utils,
-    private database: DatabaseService
+    private database: DatabaseService,
+    private configuracoesService: ConfiguracoesService
   ) { 
     super(loadingController)
   }
@@ -69,22 +71,29 @@ export class ServicosService extends ServiceBaseService {
     })
   }
 
-  public lista(): Promise<any> {
+  public lista(carregarEstacionamento = true): Promise<any> {
     return new Promise((resolve, reject) => {
       let sql = 'SELECT * from servicos';
       this.database.DB.then(db => {
         db.executeSql(sql, [])
         .then(data => {
-          if (data.rows.length > 0) {
-            let servicos: any[] = [];
-            for (var i = 0; i < data.rows.length; i++) {
-              var servico = data.rows.item(i);
-              servicos.push(servico);
-            }
-            resolve(servicos)
-          } else {
-            resolve([])
+          let servicos: any[] = []
+
+          // Se utilizar estacionamento adiciona automaticamente o serviço equivalente
+          if (carregarEstacionamento && this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento)
+          {
+            const servicoEstacionamento = new Servico()
+            servicoEstacionamento.Id = 0
+            servicoEstacionamento.Nome = "Estacionamento"
+            servicos.push(servicoEstacionamento)
           }
+
+          for (var i = 0; i < data.rows.length; i++) {
+            var servico = data.rows.item(i);
+            servicos.push(servico);
+          }
+
+          resolve(servicos)
         })
         .catch((erro) => {
           reject(erro)
