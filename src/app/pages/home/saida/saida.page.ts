@@ -118,7 +118,8 @@ export class SaidaPage {
     return this.movimento.ValorCredito + this.movimento.ValorDebito + this.movimento.ValorDinheiro
   }
 
-  get troco() {
+  get troco() {    
+    // Arredondamento para garantir o valor correto do troco com duas casas decimais
     const troco = this.totalPago - this.movimento.TotalServicos
     return troco > 0 ? troco : 0
   }

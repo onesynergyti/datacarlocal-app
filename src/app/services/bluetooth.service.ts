@@ -358,8 +358,6 @@ export class BluetoothService extends ServiceBaseService {
     if (configuracao.Recibo.ExibirCNPJ) {
       this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
       this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
-      this.bluetoothSerial.write('CPNJ: ');
-      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
       this.bluetoothSerial.write(this.utils.formatarDocumento(configuracao.Estabelecimento.Documento));
       this.bluetoothSerial.write(this.CMD.EOL);
     }
@@ -470,8 +468,6 @@ export class BluetoothService extends ServiceBaseService {
     if (configuracao.Recibo.ExibirCNPJ) {
       this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
       this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
-      this.bluetoothSerial.write('CPNJ: ');
-      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
       this.bluetoothSerial.write(this.utils.formatarDocumento(configuracao.Estabelecimento.Documento));
       this.bluetoothSerial.write(this.CMD.EOL);
     }

@@ -39,7 +39,7 @@ export class CadastroServicoPage implements OnInit {
     else {
       this.avaliouFormulario = true
 
-      if (this.servico.PrecoMoto && this.servico.PrecoVeiculoGrande && this.servico.PrecoVeiculoMedio && this.servico.PrecoVeiculoPequeno && this.servico.Nome != null && this.servico.Nome.length) {
+      if (this.servico.Nome != null && this.servico.Nome.length) {
         await this.providerServico.exibirProcessamento('Salvando servico...')
         this.providerServico.salvar(this.servico)
         .then(() => {

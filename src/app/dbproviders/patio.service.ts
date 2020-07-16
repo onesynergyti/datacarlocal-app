@@ -133,18 +133,23 @@ export class PatioService extends ServiceBaseService {
             reject('Valor pago inválido')
             return
           }
+          else if (valorServicos < 0) {
+            reject('Valor dos serviços não pode ser negativo')
+            return
+          }
           else 
             movimento.ValorDinheiro = movimento.ValorDinheiro - sobra
 
           const sqlExclusao = 'delete from veiculos where Id in ' + '(' +  ids + ')';
           tx.executeSql(sqlExclusao, [], () => {
-            // Movimentos com valor zerado não geram registro
+            let promisesTx = []
+
+            // Movimentos com valor zerado não geram registro no extrato
             if (movimento.Valor > 0) {
               // Inclui o movimento financeiro
               const sqlInclusao = 'insert into movimentos (Data, Descricao, ValorDinheiro, ValorDebito, ValorCredito, Veiculos) values (?, ?, ?, ?, ?, ?)';
               const dataInclusao = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss'), movimento.Descricao, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, JSON.stringify(movimento.Veiculos)];
               tx.executeSql(sqlInclusao, dataInclusao, (tx, result) => {
-                let promisesTx = []
                 // Inclui detalhamento do movimento consolidado dos serviços
                 movimento.servicosConsolidados.forEach(servicoAtual => {
                   promisesTx.push(
@@ -155,28 +160,26 @@ export class PatioService extends ServiceBaseService {
                     })
                   )      
                 });
-
-                // Insere o histórico de todos os veículos
-                movimento.Veiculos.forEach(veiculoAtual => {
-                  promisesTx.push(
-                    new Promise((resolve, reject) => {
-                      const sqlInclusaoHistoricoVeiculo = 'insert into veiculosHistorico (Placa, TipoVeiculo, IdFuncionario, Valor, Descontos, Acrescimos, Entrada, Saida, Pagamento) values (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-                      const dataInclusaoHistoricoVeiculo = [veiculoAtual.Placa, veiculoAtual.TipoVeiculo, veiculoAtual.Funcionario ? veiculoAtual.Funcionario.Id : null, veiculoAtual.TotalServicos, veiculoAtual.TotalDescontos, veiculoAtual.TotalAcrescimos, new DatePipe('en-US').transform(veiculoAtual.Entrada, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(veiculoAtual.Saida, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss')];
-                      tx.executeSql(sqlInclusaoHistoricoVeiculo, dataInclusaoHistoricoVeiculo, () => { resolve() }, (erro) => { reject(erro) })
-                    })
-                  )      
-                });
-
-                // Executa todos os comandos SQL preparados
-                Promise.all(promisesTx).then(() => { 
-                  resolve() 
-                }, 
-                (erro) => { reject(erro) })
               }, 
               (erro) => { reject(erro) })
             }
-            else 
-              resolve()
+
+            // Insere o histórico de todos os veículos
+            movimento.Veiculos.forEach(veiculoAtual => {
+              promisesTx.push(
+                new Promise((resolve, reject) => {
+                  const sqlInclusaoHistoricoVeiculo = 'insert into veiculosHistorico (Placa, TipoVeiculo, IdFuncionario, Valor, Descontos, Acrescimos, Entrada, Saida, Pagamento) values (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                  const dataInclusaoHistoricoVeiculo = [veiculoAtual.Placa, veiculoAtual.TipoVeiculo, veiculoAtual.Funcionario ? veiculoAtual.Funcionario.Id : null, veiculoAtual.TotalServicos, veiculoAtual.TotalDescontos, veiculoAtual.TotalAcrescimos, new DatePipe('en-US').transform(veiculoAtual.Entrada, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(veiculoAtual.Saida, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss')];
+                  tx.executeSql(sqlInclusaoHistoricoVeiculo, dataInclusaoHistoricoVeiculo, () => { resolve() }, (erro) => { reject(erro) })
+                })
+              )      
+            });
+
+            // Executa todos os comandos SQL preparados
+            Promise.all(promisesTx).then(() => { 
+              resolve() 
+            }, 
+            (erro) => { reject(erro) })
           }, 
           (erro) => { reject (erro) })
         })

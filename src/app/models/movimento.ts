@@ -63,6 +63,7 @@ export class Movimento {
   }
 
   get TotalServicos() {
-    return this.Veiculos.reduce((acumulador, veiculoAtual) => acumulador + veiculoAtual.TotalServicos, 0)
+    // Garante o arredondamento com duas casas decimais
+    return Math.round(this.Veiculos.reduce((acumulador, veiculoAtual) => acumulador + veiculoAtual.TotalServicos, 0) * 100) / 100
   }
 }

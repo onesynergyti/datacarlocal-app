@@ -181,11 +181,13 @@
 
   <div *ngIf="pagina == 'estacionamento'">
     <ion-item>
-      <ion-label>Utilizar controle de estacionamento</ion-label>
+      <ion-icon (click)="utils.alerta('Controlar estacionamento', 'Ative essa opção se quiser controlar cobrança de estacionamento por tempo dos veículos. Configure os formatos de cobrança disponíveis.')" class="iconeAjudaToggle" name="information-circle-outline"></ion-icon>
+      <ion-label>Controlar estacionamento</ion-label>
       <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizarEstacionamento"></ion-toggle>
     </ion-item>
     <ion-item>
-      <ion-label>Incluir serviço automaticamente</ion-label>
+      <ion-icon (click)="utils.alerta('Inclusão automática', 'Ative essa opção se quiser que o sistema inclua automaticamente o serviço de cobrança de estacionamento ao registrar a entrada de um veículo. Caso essa opção seja desabilitada o sistema permitirá a inclusão manualmente para cada veículo.')" class="iconeAjudaToggle" name="information-circle-outline"></ion-icon>
+      <ion-label>Inclusão automática</ion-label>
       <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.IncluirServicoEstacionamento"></ion-toggle>
     </ion-item>
 
@@ -198,23 +200,25 @@
       <ion-row>
         <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
           <ion-item>
-            <ion-label position="floating">Minutos de carência para iniciar cobrança</ion-label>
+            <ion-icon class="iconeAjuda" name="information-circle-outline" (click)="utils.alerta('Minutos de carência', 'Indica os minutos onde a permanência não será cobrada. Após esse período o sistema fará a cobrança computando o tempo integral, inclusive os minutos de carência. Se quiser cobrar a partir da entrada do veículo informe 0 minutos de carência.')"></ion-icon>
+            <ion-label position="floating">Minutos de carência</ion-label>
             <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.MinutosCarencia"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLight ion-no-margin ion-no-padding">
+        <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
           <ion-item>
+            <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Preço fixo inicial', 'Ative essa opção para cobrar um valor fixo nos minutos iniciais de permanência. Exemplo: Cobrar R$ 10,00 nos primeiros 60 minutos.')"></ion-icon>
+            <ion-label class="fontCorPrimaria">Preço fixo inicial</ion-label>
             <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaPrimeirosMinutos"></ion-toggle>
-            <h4>Cobrar preço fixo nos minutos iniciais</h4>
-          </ion-item>        
+          </ion-item>
         </ion-col>
       </ion-row>
       <ion-row *ngIf="configuracoes.Estacionamento.UtilizaPrimeirosMinutos">
         <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
           <ion-item>
-            <ion-label position="floating">Minutos iniciais da cobrança</ion-label>
+            <ion-label position="floating">Minutos iniciais</ion-label>
             <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estacionamento.QuantidadePrimeirosMinutos"></ion-input>
           </ion-item>
         </ion-col>
@@ -260,8 +264,9 @@
       <ion-row>
         <ion-col size-xs="12" class="subTitulo fundoLight ion-no-margin ion-no-padding">
           <ion-item>
+            <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Cobrar 15 minutos', 'Ative essa opção para definir um valor cobrado a cada 15 minutos de permanência.')"></ion-icon>
+            <ion-label class="fontCorPrimaria">Cobrar 15 minutos</ion-label>
             <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaFracao15Minutos"></ion-toggle>
-            <h4>Cobrar fração de 15 minutos</h4>
           </ion-item>                
         </ion-col>
       </ion-row>
@@ -306,8 +311,9 @@
       <ion-row>
         <ion-col size-xs="12" class="subTitulo fundoLight ion-no-margin ion-no-padding">
           <ion-item>
+            <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Cobrar 30 minutos', 'Ative essa opção para definir um valor cobrado a cada 30 minutos de permanência.')"></ion-icon>
+            <ion-label class="fontCorPrimaria">Cobrar 30 minutos</ion-label>
             <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaFracao30Minutos"></ion-toggle>
-            <h4>Cobrar fração de 30 minutos</h4>
           </ion-item>                        
         </ion-col>
       </ion-row>
@@ -352,8 +358,9 @@
       <ion-row>
         <ion-col size-xs="12" class="subTitulo fundoLight ion-no-margin ion-no-padding">
           <ion-item>
+            <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Cobrar hora', 'Ative essa opção para definir um valor cobrado a cada hora de permanência.')"></ion-icon>
+            <ion-label class="fontCorPrimaria">Cobrar hora</ion-label>
             <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaHora"></ion-toggle>
-            <h4>Cobrar valor por hora adicional</h4>
           </ion-item>                                
         </ion-col>
       </ion-row>
@@ -398,8 +405,9 @@
       <ion-row>
         <ion-col size-xs="12" class="subTitulo fundoLight ion-no-margin ion-no-padding">
           <ion-item>
+            <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Cobrar diária', 'Ative essa opção para definir um valor cobrado a cada diária de permanência.')"></ion-icon>
+            <ion-label class="fontCorPrimaria">Cobrar diária</ion-label>
             <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaDiaria"></ion-toggle>
-            <h4>Cobrar valor por dia</h4>
           </ion-item>                                        
         </ion-col>
       </ion-row>

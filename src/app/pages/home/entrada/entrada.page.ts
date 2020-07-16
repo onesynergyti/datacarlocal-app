@@ -145,7 +145,7 @@ export class EntradaPage implements OnInit {
         const modal = await this.modalCtrl.create({
           component: ValidarAcessoPage,
           componentProps: {
-            'mensagem': 'Informe a senha de administrador para prorrogar o pagamento.'
+            'mensagem': 'Alterar um serviço do veículo.'
           }  
         });
     
@@ -178,7 +178,6 @@ export class EntradaPage implements OnInit {
       else if (operacao != 'excluir') {
         await this.patioProvider.exibirProcessamento('Registrando entrada...')
         this.providerMensalistas.validarMensalista(this.veiculo.Entrada, this.veiculo.Placa).then((mensalistaValido: Mensalista) => {
-          alert(JSON.stringify(mensalistaValido))
           this.veiculo.IdMensalista = mensalistaValido != null ? mensalistaValido.Id : 0
 
           this.patioProvider.salvar(this.veiculo)
@@ -209,27 +208,45 @@ export class EntradaPage implements OnInit {
   }
 
   async excluirServico(servico) {
-    const alert = await this.alertController.create({
-      header: 'Excluir serviço?',
-      message: `Tem certeza que deseja excluir o serviço <string>${servico.Nome}</strong>`,
-      buttons: [
-        {
-          text: 'Não',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-            console.log('Confirm Cancel: blah');
+    // Verifica permissão para excluir serviços
+    if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaEditarServicosVeiculo) {
+      const alert = await this.alertController.create({
+        header: 'Excluir serviço?',
+        message: `Tem certeza que deseja excluir o serviço <string>${servico.Nome}</strong>`,
+        buttons: [
+          {
+            text: 'Não',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: (blah) => {
+              console.log('Confirm Cancel: blah');
+            }
+          }, {
+            text: 'Sim',
+            handler: () => {
+              this.utilsLista.excluirDaLista(this.veiculo.Servicos, servico)
+            }
           }
-        }, {
-          text: 'Sim',
-          handler: () => {
-            this.utilsLista.excluirDaLista(this.veiculo.Servicos, servico)
-          }
+        ]
+      });
+  
+      await alert.present();
+    }
+    else {
+      const modal = await this.modalCtrl.create({
+        component: ValidarAcessoPage,
+        componentProps: {
+          'mensagem': `Exclusão do serviço ${servico.Nome} no veículo.`
         }
-      ]
-    });
-
-    await alert.present();
+      });
+  
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data == true)
+          this.utilsLista.excluirDaLista(this.veiculo.Servicos, servico)
+      })
+  
+      return await modal.present(); 
+    }
   }
 
   informarConclusaoWhatsapp() {

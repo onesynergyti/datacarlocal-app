@@ -112,7 +112,6 @@ export class HistoricoVeiculosService extends ServiceBaseService {
             for (var i = 0; i < data.rows.length; i++) {
               saldo.push(data.rows.item(i));
             }
-            alert(JSON.stringify(saldo[0]))
             resolve(saldo[0])
           } else {
             resolve({ Valor: 0 })

@@ -46,9 +46,6 @@ export class MensalistasPage implements OnInit {
   ionViewWillEnter() {
     this.finalizouCarregamento = false
     this.mensalistas = []
-  }
-
-  ionViewDidEnter() {
     this.atualizarMensalistas(true)
   }
 

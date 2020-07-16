@@ -191,6 +191,22 @@ ion-list {
     font-size: 20px;
 }
 
+.iconeAjuda {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    font-size: 20px;
+    color: var(--ion-color-primary)    
+}
+
+.iconeAjudaToggle {
+    position: absolute;
+    right: 60px;
+    top: 17px;
+    font-size: 20px;
+    color: var(--ion-color-primary)    
+}
+
 .iconeTitulo {
     position: absolute;
     left: 10px;

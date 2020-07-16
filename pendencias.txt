@@ -57,6 +57,8 @@ SEGUNDA VERSÃO - Permitir incluir uma logomarca no aplicativo
 SEGUNDA VERSÃO - Listagem paginada no histórico de veículos
 SEGUNDA VERSÃO - Permitir imprimir segunda via de recibo de saída nos movimentos
 SEGUNDA VERSÃO - Permitir imprimir segunda via de recibo de entrada na tela de cadastro
+SEGUNDA VERSÃO - Criar um gráfico com quantidade de serviços realizados por funcionário
+SEGUNDA VERSÃO - Criar botões para salvar as alterações da área de configurações
 OK - Definir os veículos de mensalistas na entrada
 OK - Criar um atalho para alterar senha de administrador nas configurações de segurança
 OK - Verificar eliminiação do valor do troco ao salvar um movimento
@@ -79,18 +81,24 @@ OK - Incluir opção de envio de mensagem de conclusão dos serviços nas mensag
 OK - No cadastro de mensalistas, informar qual serviço o cliente terá direito
 OK - O gráfico do extrato está gerando errado quando altero a data e depois volto ao ponto anterior. A primeira vez que gera funciona
 OK - Saldo não está aparecendo no histórico de veículos e nos movimentos quando está zerado
-- Atendimentos com valores zerados não estão aparecendo no histórico. Provavelmente tem uma condição para não salvar com valores zerados
-- Não permitir pagar posteriormente atendimentos com valores zerados, ocultar o botão na tela de saída
-- Criar indicador de carregamento na listagem de mensalistas
-- Verificar se o gráfico do histórico de vendas está gerando errado quando altera a data e depois volto ao ponto anterior.
-- Houve um erro quando fui tentar finalizar um atendimento pagando valor exato com débito
-- Não obrigar preços nos serviços
-- Exigir senha na edição de serviços do veículo também para exclusão na tela que lista
-- Não permitir fechar veículos com valor total negativo
-- Criar estrutura CSS para ajuda com símbolo de informação e uma função para ser chamada onde aparece uma mensagem informando detalhes sobre os campos
+OK - Atendimentos com valores zerados não estão aparecendo no histórico. Provavelmente tem uma condição para não salvar com valores zerados
+OK - Não permitir pagar posteriormente atendimentos com valores zerados, ocultar o botão na tela de saída
+OK - Criar indicador de carregamento na listagem de mensalistas
+OK - Verificar se o gráfico do histórico de vendas está gerando errado quando altera a data e depois volto ao ponto anterior.
+OK - Ao solicitar a finalização na tela inicial, caso tenham serviços pendêntes, exibe um aviso e pergunte se o usuário quer finalizar todos os serviços.
+OK - Houve um erro quando fui tentar finalizar um atendimento pagando valor exato com débito
+OK - Não permitir desconto maior que o valor do serviço
+OK - Retirar a mensagem de alerta quando for mensalista na entrada
+OK - Retirar a mensagem de alerta do histórico de vendas
+OK - Não permitir finalizar um atendimento com valor negativo
+OK - Não obrigar preços nos serviços
+TESTAR - Exigir senha na edição de serviços do veículo também para exclusão na tela que lista
+OK - Criar estrutura CSS para ajuda com símbolo de informação e uma função para ser chamada onde aparece uma mensagem informando detalhes sobre os campos
 - Indicar no layout de forma clara os lançamentos de débitos e créditos (vermelho, verde)
+- Incluir indicadores de informativos nos campos que forem necessários
 - Tratar o link do Whatsapp businnes na abertura do app
 - Criar consistência nos formulários, incluindo max length e campos obrigatórios
 - Criar a chaves das tabelas para garantir consistência
 - Verificar cada item da configuração e o impacto na utilização
 - Definir whatsapp para suporte
+- Não permitir cadastrar um carro com um placa existente

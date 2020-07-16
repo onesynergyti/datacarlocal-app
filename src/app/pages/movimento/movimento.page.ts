@@ -58,12 +58,6 @@ export class MovimentoPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.finalizouCarregamento = false
-    this.movimentos = []
-    this.dataMaxima = null
-  }
-
-  ionViewDidEnter() {
     this.atualizarMovimentos()
     this.criarGraficosReceitas()
     this.atualizarSaldoPeriodo()

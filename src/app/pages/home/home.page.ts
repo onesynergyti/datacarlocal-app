@@ -258,7 +258,7 @@ export class HomePage {
   async avaliarRetornoVeiculo(retorno, inclusao) {
     if (retorno.data != null) {             
       if (retorno.data.Operacao == 'finalizar') { 
-        this.registrarSaida(retorno.data.Veiculo)
+        this.validarSaida(retorno.data.Veiculo)
       }
       else if (retorno.data.Operacao == 'excluir') {
         this.excluir(retorno.data.Veiculo)
@@ -314,7 +314,7 @@ export class HomePage {
           if (veiculo.PossuiServicosPendentes) 
             this.cadastrarEntrada(veiculo)
           else
-            this.registrarSaida(veiculo)
+            this.validarSaida(veiculo)
         }
         else
           this.utils.mostrarToast('Não localizamos o código informado.', 'danger')
@@ -347,41 +347,68 @@ export class HomePage {
     return await modal.present(); 
   }
 
-  async registrarSaida(veiculo: Veiculo) {
-    if (veiculo.PossuiServicosPendentes) 
-      this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve finalizar todos os serviços ou excluir antes de realizar o pagamento.', 'danger', 3000)
-    else {
-      veiculo.Saida = new Date()
-      // Calcula os valores do serviço de estacionamento
-      let servicoEstacionamento = veiculo.PossuiServicoEstacionamento
-      if (servicoEstacionamento != null) {
-        servicoEstacionamento.PrecoMoto = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 1)
-        servicoEstacionamento.PrecoVeiculoPequeno = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 2)
-        servicoEstacionamento.PrecoVeiculoMedio = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 3)
-        servicoEstacionamento.PrecoVeiculoGrande = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 4)
-      }
-
-      // Se for veículo de mensalista zera os serviços contratados
-      if (veiculo.IdMensalista > 0) {
-        await this.providerMensalistas.exibirProcessamento('Calculando valores...')
-        this.providerMensalistas.lista(veiculo.IdMensalista).then(mensalistas => {
-          if (mensalistas.length > 0) {
-            // Zera os valores dos serviços contratados pelo mensalista no momento do pagamento
-            mensalistas[0].IdsServicos.forEach(idServico => {
-              const servicoLocalizado = veiculo.Servicos.find(servicoAtual => servicoAtual.Id == idServico)
-              if (servicoLocalizado != null) {
-                servicoLocalizado.PrecoMoto = 0
-                servicoLocalizado.PrecoVeiculoPequeno = 0
-                servicoLocalizado.PrecoVeiculoMedio = 0
-                servicoLocalizado.PrecoVeiculoGrande = 0
-              }
-            });
+  async validarSaida(veiculo: Veiculo) {
+    if (veiculo.TotalServicos < 0)
+      this.utils.mostrarToast('O valor total dos serviços está menor que zero. Verifique os descontos concedidos.', 'danger', 3000)
+    else if (veiculo.PossuiServicosPendentes) {
+      const alert = await this.alertController.create({
+        header: 'Serviços pendentes',
+        message: 'Existem serviços não realizados nesse veículo. Confirma a realização deles para registrar a saída?',
+        buttons: [
+          {
+            text: 'Não',
+            role: 'cancel',
+            cssClass: 'secondary',
+          }, {
+            text: 'Sim',
+            handler: () => {
+              veiculo.Servicos.forEach(servicoAtual => {
+                servicoAtual.Executado = true
+              })
+              this.registrarSaida(veiculo)
+            }
           }
-          this.procederRegistroSaida(veiculo)
-        })
-      }
-      else
-        this.procederRegistroSaida(veiculo)
+        ]  
+      });
+    
+      await alert.present();
     }
+    else {
+      this.registrarSaida(veiculo)
+    }
+  }
+
+  async registrarSaida(veiculo: Veiculo) {
+    veiculo.Saida = new Date()
+    // Calcula os valores do serviço de estacionamento
+    let servicoEstacionamento = veiculo.PossuiServicoEstacionamento
+    if (servicoEstacionamento != null) {
+      servicoEstacionamento.PrecoMoto = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 1)
+      servicoEstacionamento.PrecoVeiculoPequeno = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 2)
+      servicoEstacionamento.PrecoVeiculoMedio = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 3)
+      servicoEstacionamento.PrecoVeiculoGrande = this.calculadoraEstacionamentoService.calcularPrecos(veiculo.Entrada, veiculo.Saida, 4)
+    }
+
+    // Se for veículo de mensalista zera os serviços contratados
+    if (veiculo.IdMensalista > 0) {
+      await this.providerMensalistas.exibirProcessamento('Calculando valores...')
+      this.providerMensalistas.lista(veiculo.IdMensalista).then(mensalistas => {
+        if (mensalistas.length > 0) {
+          // Zera os valores dos serviços contratados pelo mensalista no momento do pagamento
+          mensalistas[0].IdsServicos.forEach(idServico => {
+            const servicoLocalizado = veiculo.Servicos.find(servicoAtual => servicoAtual.Id == idServico)
+            if (servicoLocalizado != null) {
+              servicoLocalizado.PrecoMoto = 0
+              servicoLocalizado.PrecoVeiculoPequeno = 0
+              servicoLocalizado.PrecoVeiculoMedio = 0
+              servicoLocalizado.PrecoVeiculoGrande = 0
+            }
+          });
+        }
+        this.procederRegistroSaida(veiculo)
+      })
+    }
+    else
+      this.procederRegistroSaida(veiculo)
   }
 }

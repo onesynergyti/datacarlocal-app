@@ -18,6 +18,7 @@ export class CadastroServicoPage implements OnInit {
   servicoVeiculo: ServicoVeiculo
   tipoVeiculo
   inclusao
+  avaliouFormulario = false
 
   constructor(
     private modalCtrl: ModalController,
@@ -89,23 +90,27 @@ export class CadastroServicoPage implements OnInit {
   }
 
   async concluir() {
-    // Verifica permissão para conceder desconto
-    if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaConcederDesconto || this.servicoVeiculo.Desconto == 0)
-      this.modalCtrl.dismiss({ Operacao: 'cadastro', ServicoVeiculo: this.servicoVeiculo})
-    else {
-      const modal = await this.modalController.create({
-        component: ValidarAcessoPage,
-        componentProps: {
-          'mensagem': 'Informe a senha de administrador para concessão de desconto.'
-        }  
-      });
-  
-      modal.onWillDismiss().then((retorno) => {
-        if (retorno.data == true)
-          this.fechar({ Operacao: 'cadastro', ServicoVeiculo: this.servicoVeiculo})
-      })
-  
-      return await modal.present(); 
+    this.avaliouFormulario = true
+
+    if (this.servicoVeiculo.precoServico(this.tipoVeiculo) >= 0 || !this.servicoVeiculo.Id) {
+      // Verifica permissão para conceder desconto
+      if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaConcederDesconto || this.servicoVeiculo.Desconto == 0)
+        this.modalCtrl.dismiss({ Operacao: 'cadastro', ServicoVeiculo: this.servicoVeiculo})
+      else {
+        const modal = await this.modalController.create({
+          component: ValidarAcessoPage,
+          componentProps: {
+            'mensagem': 'Informe a senha de administrador para concessão de desconto.'
+          }  
+        });
+    
+        modal.onWillDismiss().then((retorno) => {
+          if (retorno.data == true)
+            this.fechar({ Operacao: 'cadastro', ServicoVeiculo: this.servicoVeiculo})
+        })
+    
+        return await modal.present(); 
+      }
     }
   }
 

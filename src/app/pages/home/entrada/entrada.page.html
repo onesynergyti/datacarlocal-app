@@ -95,6 +95,7 @@
       </ion-col>
       <ion-col size-xs="12">
         <ion-item class="ion-no-margin ion-no-padding">
+          <ion-icon class="iconeAjuda" name="information-circle" (click)="utils.alerta('Localização do veículo', 'Informação opcional que indica o corredor ou posição do veículo pátio. Você pode ocultar esse campo nas configurações.')"></ion-icon>
           <ion-label position="floating">Identificação da localização</ion-label>
           <ion-input autocorrect="off" type="text" maxlength="50" [(ngModel)]="veiculo.Localizacao"></ion-input>
         </ion-item>
@@ -127,6 +128,7 @@
     </ion-row>
     <ion-row *ngIf="configuracoesService.configuracoes.Patio.CampoObservacao"> 
       <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeAjuda" name="information-circle" (click)="utils.alerta('Observações', 'Campo adicional para adicionar qualquer tipo de informação relevante sobre o veículo ou atendimento.')"></ion-icon>
         <ion-icon class="iconeSubTitulo" name="reader"></ion-icon>
         Observações (opcional)
       </ion-col>

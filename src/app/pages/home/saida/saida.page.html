@@ -142,7 +142,7 @@
           Finalizar
         </ion-button>
       </ion-col>
-      <ion-col size-xs="5" *ngIf="!somenteLeitura && movimento.Veiculos[0].Ativo == true">
+      <ion-col size-xs="5" *ngIf="!somenteLeitura && movimento.Veiculos[0].Ativo == true && movimento.TotalServicos > 0">
         <ion-button expand="block" color="danger" (click)="concluirDepois()">
           <ion-icon slot="start" name="document-attach"></ion-icon>
           Receber depois

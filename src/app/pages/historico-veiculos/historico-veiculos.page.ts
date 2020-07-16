@@ -52,21 +52,16 @@ export class HistoricoVeiculosPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.finalizouCarregamento = false
-    this.carregandoGraficos = true
-    this.carregandoHistorico = true
-    this.vendas = []
-    this.idMaximo = 0
-  }
-
-  ionViewDidEnter() {
-    // Carrega a lista de funcionários
+    // Carrega a lista de funcionários antes de carregar o histórico
     this.providerFuncionarios.lista(true).then((funcionarios: any) => {
       this.funcionarios = funcionarios
-      this.atualizarHistorico()
+      this.atualizarHistorico(true)
       this.criarGraficosReceitas()
       this.atualizarSaldoPeriodo() 
     })
+  }
+
+  ionViewDidEnter() {
   }
 
   atualizarHistorico(recarregar = false, event = null) {
