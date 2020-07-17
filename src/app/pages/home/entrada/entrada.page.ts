@@ -79,11 +79,33 @@ export class EntradaPage implements OnInit {
     return await modal.present(); 
   }
 
-  async alterarFuncionario() {
+  async procederAlteracaoFuncionario() {
     await this.funcionariosProvider.exibirProcessamento('Carregando funcionários...')
     this.funcionariosProvider.lista().then(funcionarios => {
       this.abrirModalFuncionarios(funcionarios)
     })
+  }
+
+  async alterarFuncionario() {
+    // Verifica permissão para editar o funcionário
+    if (this.inclusao || !this.configuracoesService.configuracoes.Seguranca.ExigirSenhaAlterarResponsavel) {
+      this.procederAlteracaoFuncionario()
+    }
+    else {
+      const modal = await this.modalCtrl.create({
+        component: ValidarAcessoPage,
+        componentProps: {
+          'mensagem': 'Alterar um serviço do veículo.'
+        }  
+      });
+  
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data == true)
+          this.procederAlteracaoFuncionario()
+      })
+  
+      return await modal.present(); 
+    }
   }
 
   cancelar() {

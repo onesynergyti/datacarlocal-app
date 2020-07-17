@@ -56,7 +56,7 @@
                   </h4>
                 </ion-col>
                 <ion-col size-xs="3" class="ion-text-right">
-                  <h4>{{ movimento.Valor | decimalPipe:"R$ " }}</h4>
+                  <h4 [ngClass]="{'fontCorSucesso': movimento.Valor > 0, 'fontCorPerigo': movimento.Valor < 0}">{{ movimento.Valor | decimalPipe:"R$ " }}</h4>
                 </ion-col>
               </ion-row>
               <ion-row>
@@ -133,7 +133,7 @@
         </ion-col>
         <ion-col class="ion-text-right">
           <ion-spinner *ngIf="saldoPeriodo == null"></ion-spinner>
-          <h2 *ngIf="saldoPeriodo != null" class="negrito">{{ saldoPeriodo | decimalPipe:"R$ " }}</h2>
+          <h2 *ngIf="saldoPeriodo != null" class="negrito" [ngClass]="{'fontCorSucesso': saldoPeriodo > 0, 'fontCorPerigo': saldoPeriodo < 0}">{{ saldoPeriodo | decimalPipe:"R$ " }}</h2>
         </ion-col>
       </ion-row>
     </ion-grid>

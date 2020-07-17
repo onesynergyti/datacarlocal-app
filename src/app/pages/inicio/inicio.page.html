@@ -49,11 +49,13 @@
     <ion-row>
       <ion-col class="ion-no-padding">
         <ion-item>
-          <ion-label>Utilizar estacionamento</ion-label>
+          <ion-icon (click)="utils.alerta('Controlar estacionamento', 'Ative essa opção se quiser controlar cobrança de estacionamento por tempo dos veículos. Configure os formatos de cobrança disponíveis.')" class="iconeAjudaToggle" name="information-circle-outline"></ion-icon>
+          <ion-label>Controlar estacionamento</ion-label>
           <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizarEstacionamento"></ion-toggle>
         </ion-item>
         <ion-item *ngIf="configuracoes.Estacionamento.UtilizarEstacionamento">
-          <ion-label>Incluir serviço automaticamente</ion-label>
+          <ion-icon (click)="utils.alerta('Inclusão automática', 'Ative essa opção se quiser que o sistema inclua automaticamente o serviço de cobrança de estacionamento ao registrar a entrada de um veículo. Caso essa opção seja desabilitada o sistema permitirá a inclusão manualmente para cada veículo.')" class="iconeAjudaToggle" name="information-circle-outline"></ion-icon>
+          <ion-label>Inclusão automática</ion-label>
           <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.IncluirServicoEstacionamento"></ion-toggle>
         </ion-item>
       </ion-col>

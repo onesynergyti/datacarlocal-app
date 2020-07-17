@@ -13,7 +13,7 @@
             Meu pátio
           </ion-item>
           <ion-header>Clientes</ion-header>
-          <ion-item (click)="navegar('mensalistas')" detail button>
+          <ion-item (click)="navegar('mensalistas', configuracoes.Seguranca.ExigirSenhaCadastroMensalistas)" detail button>
             <ion-icon name="people"></ion-icon>
             Mensalistas
           </ion-item>
@@ -22,11 +22,11 @@
             Pagamentos prorrogados
           </ion-item>
           <ion-header>Financeiro</ion-header>
-          <ion-item (click)="navegar('historico-veiculos')" detail button>
+          <ion-item (click)="navegar('historico-veiculos', configuracoes.Seguranca.ExigirSenhaRelatoriosGerenciais)" detail button>
             <ion-icon name="stats-chart"></ion-icon>
             Histórico de veículos
           </ion-item>
-          <ion-item (click)="navegar('movimento')" detail button>
+          <ion-item (click)="navegar('movimento', configuracoes.Seguranca.ExigirSenhaRelatoriosGerenciais)" detail button>
             <ion-icon name="trending-up"></ion-icon>
             Extrato
           </ion-item>
@@ -35,7 +35,7 @@
             <ion-icon name="lock-closed"></ion-icon>
             Alterar senha
           </ion-item>
-          <ion-item (click)="navegar('funcionarios')" detail button>
+          <ion-item (click)="navegar('funcionarios', configuracoes.Seguranca.ExigirSenhaCadastroFuncionarios)" detail button>
             <ion-icon name="person"></ion-icon>
             Meus funcionários
           </ion-item>
@@ -43,7 +43,7 @@
             <ion-icon name="construct"></ion-icon>
             Meus Serviços
           </ion-item>
-          <ion-item (click)="navegar('configuracoes')" detail button>
+          <ion-item (click)="navegar('configuracoes', true)" detail button>
             <ion-icon name="settings"></ion-icon>
             Opções gerais
           </ion-item>

@@ -8,6 +8,8 @@ import { Movimento } from 'src/app/models/movimento';
 import { ModalController, AlertController } from '@ionic/angular';
 import { CadastroMovimentoPage } from './cadastro-movimento/cadastro-movimento.page';
 import { SaidaPage } from '../home/saida/saida.page';
+import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
+import { ValidarAcessoPage } from '../validar-acesso/validar-acesso.page';
 
 @Component({
   selector: 'app-movimento',
@@ -45,7 +47,8 @@ export class MovimentoPage implements OnInit {
     private providerMovimentos: MovimentoService,
     private utils: Utils,
     private modalController: ModalController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private configuracoesService: ConfiguracoesService
   ) { 
     const dataAtual = new Date()
     this.dataFim = dataAtual
@@ -237,24 +240,42 @@ export class MovimentoPage implements OnInit {
   }
 
   async excluir(movimento) {
-    const alert = await this.alertController.create({
-      header: 'Excluir movimento',
-      message: `Deseja realmente excluir o movimento?`,
-      buttons: [
-        {
-          text: 'Não',
-          role: 'cancel',
-          cssClass: 'secondary',
-        }, {
-          text: 'Sim',
-          handler: () => {
-            this.confirmarExclusao(movimento)
+    // Verifica permissão para editar o funcionário
+    if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaAlterarResponsavel) {
+      const alert = await this.alertController.create({
+        header: 'Excluir movimento',
+        message: `Deseja realmente excluir o movimento?`,
+        buttons: [
+          {
+            text: 'Não',
+            role: 'cancel',
+            cssClass: 'secondary',
+          }, {
+            text: 'Sim',
+            handler: () => {
+              this.confirmarExclusao(movimento)
+            }
           }
-        }
-      ]  
-    });
+        ]  
+      });
+    
+      await alert.present();
+    }
+    else {
+      const modal = await this.modalController.create({
+        component: ValidarAcessoPage,
+        componentProps: {
+          'mensagem': 'Excluir o movimento.'
+        }  
+      });
   
-    await alert.present();
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data == true)
+        this.confirmarExclusao(movimento)
+      })
+  
+      return await modal.present(); 
+    }
   }
 
   exibirCabecalhoData(index) {

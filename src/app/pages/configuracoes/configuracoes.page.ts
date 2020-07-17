@@ -6,6 +6,7 @@ import { trigger, transition, query, style, stagger, animate } from '@angular/an
 import { NavController, ModalController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { SenhaAdministradorPage } from '../senha-administrador/senha-administrador.page';
+import { ValidarAcessoPage } from '../validar-acesso/validar-acesso.page';
 
 @Component({
   selector: 'app-configuracoes',

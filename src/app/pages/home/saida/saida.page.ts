@@ -83,7 +83,7 @@ export class SaidaPage {
       const modal = await this.modalCtrl.create({
         component: ValidarAcessoPage,
         componentProps: {
-          'mensagem': 'Informe a senha de administrador para prorrogar o pagamento.'
+          'mensagem': 'Prorrogar o pagamento.'
         }  
       });
   

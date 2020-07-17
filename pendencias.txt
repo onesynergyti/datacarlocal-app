@@ -92,13 +92,13 @@ OK - Retirar a mensagem de alerta quando for mensalista na entrada
 OK - Retirar a mensagem de alerta do histórico de vendas
 OK - Não permitir finalizar um atendimento com valor negativo
 OK - Não obrigar preços nos serviços
-TESTAR - Exigir senha na edição de serviços do veículo também para exclusão na tela que lista
+OK - Exigir senha na edição de serviços do veículo também para exclusão na tela que lista
 OK - Criar estrutura CSS para ajuda com símbolo de informação e uma função para ser chamada onde aparece uma mensagem informando detalhes sobre os campos
-- Indicar no layout de forma clara os lançamentos de débitos e créditos (vermelho, verde)
-- Incluir indicadores de informativos nos campos que forem necessários
-- Tratar o link do Whatsapp businnes na abertura do app
-- Criar consistência nos formulários, incluindo max length e campos obrigatórios
+OK - Incluir indicadores de informativos nos campos que forem necessários
+OK - Indicar no layout de forma clara os lançamentos de débitos e créditos (vermelho, verde)
+SEGUNDA VERSÃO - Tratar o link do Whatsapp businnes na abertura do app
+TESTAR - Criar consistência nos formulários, incluindo max length e campos obrigatórios
+TESTAR - Verificar cada item da configuração e o impacto na utilização
 - Criar a chaves das tabelas para garantir consistência
-- Verificar cada item da configuração e o impacto na utilização
 - Definir whatsapp para suporte
 - Não permitir cadastrar um carro com um placa existente

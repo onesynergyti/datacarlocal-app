@@ -66,7 +66,7 @@
   </div>
 
   <div *ngIf="pagina == 'patio'">
-    <ion-grid>
+    <ion-grid *ngIf="configuracoes != null">
       <ion-row>
         <ion-col size-xs="12" class="subTitulo fundoLight">
           <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
@@ -75,30 +75,48 @@
       </ion-row>
       <ion-row>
         <ion-col class="ion-no-padding">
-          <ion-list *ngIf="configuracoes != null">
+          <ion-list>
             <ion-item>
+              <ion-icon class="iconeAjuda" name="information-circle-outline" (click)="utils.alerta('Total de vagas', 'Informe a quantidade de vagas disponíveis no pátio. Caso não queira limitar a quantidade, informe 0. Informar a quantidade de vagas não vai limitar a entrada de veículos no seu estabelecimento automaticamente.')"></ion-icon>
               <ion-label position="floating">Total de vagas</ion-label>
               <ion-input autocorrect="off" type="number" [(ngModel)]="configuracoes.Patio.QuantidadeVagas"></ion-input>
             </ion-item>
             <ion-item>
+              <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Bloquear entrada em lotação', 'Ative essa opção para bloquear a entrada de novos veículos quando não houver vaga no pátio.')"></ion-icon>
               <ion-label>Bloquear entrada em lotação</ion-label>
               <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.LimitarLotacao"></ion-toggle>
             </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Campos opcionais
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-list>
             <ion-item>
-              <ion-label>Controlar responsável pelo veículo</ion-label>
+              <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Responsável pelo veículo', 'Ative essa opção para controlar o responsável pelo atendimento do veículo no pátio.')"></ion-icon>
+              <ion-label>Responsável pelo veículo</ion-label>
               <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoResponsavel"></ion-toggle>
             </ion-item>
             <ion-item>
-              <ion-label>Informar localização no pátio</ion-label>
+              <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Localização no pátio', 'Ative essa opção para informar a posição do veículo no pátio.')"></ion-icon>
+              <ion-label>Localização no pátio</ion-label>
               <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoLocalizacao"></ion-toggle>
             </ion-item>
             <ion-item>
-              <ion-label>Informar dados do cliente</ion-label>
+              <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Dados do cliente', 'Ative essa opção para informar as informações de nome e contato do cliente.')"></ion-icon>
+              <ion-label>Dados do cliente</ion-label>
               <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoCliente"></ion-toggle>
             </ion-item>
           </ion-list>
           <ion-item>
-            <ion-label>Informar observações do veículo</ion-label>
+            <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Observações do veículo', 'Ative essa opção para adicionar observações do veículo ou do cliente no atendimento.')"></ion-icon>
+            <ion-label>Observações do veículo</ion-label>
             <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoObservacao"></ion-toggle>
           </ion-item>
       </ion-col>
@@ -168,6 +186,10 @@
             <ion-item>
               <ion-label>Acessar relatórios gerenciais</ion-label>
               <ion-toggle color="primary" [(ngModel)]="configuracoes.Seguranca.ExigirSenhaRelatoriosGerenciais"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Cadastro de mensalistas</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Seguranca.ExigirSenhaCadastroMensalistas"></ion-toggle>
             </ion-item>
             <ion-item>
               <ion-label>Cadastro de funcionários</ion-label>
@@ -460,23 +482,25 @@
           Configurações do Whatsapp
         </ion-col>
       </ion-row>    
-      <ion-row>
+<!--      <ion-row>
         <ion-col class="ion-no-padding">
           <ion-item>
+            <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Utilizar Whatsapp Businnes', 'Ative essa opção se quiser abrir o Whatsapp businnes instalado no dispositivo para comunicação com seu cliente.')"></ion-icon>
             <ion-label>Utilizar Whatsapp Businnes</ion-label>
             <ion-toggle color="primary" [(ngModel)]="configuracoes.Mensagens.WhatsAppBusinnes"></ion-toggle>
           </ion-item>
         </ion-col>
-      </ion-row>
+      </ion-row> 
       <ion-row>
         <ion-col size-xs="12" class="subTitulo fundoLight">
           <ion-icon class="iconeSubTitulo" name="mail"></ion-icon>
           Mensagens
         </ion-col>
-      </ion-row>    
+      </ion-row>    -->
       <ion-row>
         <ion-col size-xs="12">
           <ion-item>
+            <ion-icon class="iconeAjuda" name="information-circle-outline" (click)="utils.alerta('Conclusão dos serviços', 'Essa é a mensagem personalizada que será exibida automaticamente para envio no Whatsapp na conclusão dos serviços do cliente.')"></ion-icon>
             <ion-label position="floating">Conclusão dos serviços</ion-label>
             <ion-textarea rows="2" auto-grow [(ngModel)]="configuracoes.Mensagens.ConclusaoServicos"></ion-textarea>
           </ion-item>
@@ -498,10 +522,12 @@
         <ion-col class="ion-no-padding">
           <ion-list *ngIf="configuracoes != null">
             <ion-item>
+              <ion-icon class="iconeAjuda" name="information-circle-outline" (click)="utils.alerta('Quantidade de colunas do recibo', 'Informe a quantidade de colunas da sua impressora bluetooth. Verifique no manual se necessário ou mantenha o padrão de 32.')"></ion-icon>
               <ion-label position="floating">Quantidade de colunas do recibo</ion-label>
               <ion-input autocorrect="off" type="number" [(ngModel)]="configuracoes.Recibo.CaractersImpressao"></ion-input>
             </ion-item>
             <ion-item>
+              <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Imprimir recibo na entrada', 'Imprime automaticamente o recibo na entrada de um veículo.')"></ion-icon>
               <ion-label>Imprimir recibo na entrada</ion-label>
               <ion-toggle color="primary" [(ngModel)]="configuracoes.Recibo.ImprimirReciboEntrada"></ion-toggle>
             </ion-item>
@@ -510,6 +536,7 @@
               <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Recibo.MensagemReciboEntrada"></ion-input>
             </ion-item>
             <ion-item>
+              <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Imprimir recibo na saída', 'Imprime automaticamente o recibo na saída de um veículo.')"></ion-icon>
               <ion-label>Imprimir recibo na saída</ion-label>
               <ion-toggle color="primary" [(ngModel)]="configuracoes.Recibo.ImprimirReciboSaida"></ion-toggle>
             </ion-item>
