@@ -7,6 +7,24 @@
     <ion-label position="floating">Senha atual</ion-label>
     <ion-input autocorrect="off" type="password" maxlength="20" [(ngModel)]="senhaAtual"></ion-input>
   </ion-item>
+  <ion-grid>
+    <ion-row *ngIf="!recuparandoSenha">
+      <ion-col>
+        <h4 class="ion-text-right fontCorPrimaria" (click)="recuperarSenha()">Esqueci a senha</h4>
+      </ion-col>  
+    </ion-row>
+    <ion-row *ngIf="recuparandoSenha">
+      <ion-col size-xs="12">
+        <ion-button color="success" expand="block" (click)="solicitarRecuperacaoWhatsapp()">
+          <ion-icon slot="start" name="logo-whatsapp"></ion-icon>
+          Solicitar recuperação
+        </ion-button>
+      </ion-col>
+      <ion-col class="subTitulo fundoAlerta" size-xs="12">
+        Se preferir envie um e-mail com o assunto "Recuperação de senha" para suporte@reuztecnologia.com informando o código {{ codigoRecuperacao }} e o e-mail de administrador {{ configuracoes.Seguranca.EmailAdministrador }}.
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <ion-item class="ion-no-margin ion-no-padding">
     <ion-label position="floating">Nova senha</ion-label>
     <ion-input autocorrect="off" type="password" maxlength="20" [(ngModel)]="senhaNova"></ion-input>
@@ -19,7 +37,7 @@
 
 <ion-footer>
   <ion-button expand="block" color="success" (click)="concluir()">
-    <ion-icon slot="start" name="checkmark-done"></ion-icon>
+    <ion-icon slot="start" name="checkmark"></ion-icon>
     Salvar Senha
   </ion-button>
 </ion-footer>

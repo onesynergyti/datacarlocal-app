@@ -1,5 +1,6 @@
 <ion-header>
-  <app-header titulo="Funcionários"></app-header>
+  <app-header titulo="Meus funcionários"></app-header>
+  <ion-searchbar autocorrect="off" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
 </ion-header>
 
 <ion-content *ngIf="carregandoFuncionarios">
@@ -13,8 +14,12 @@
     <ion-icon name="person-outline"></ion-icon>
     <h5>Utilize o botão abaixo para adicionar um funcionário</h5>
   </div>
-  <ion-list [@listAnimation]="funcionarios.length" lines="full">
-    <ion-item-sliding id="funcionario.Id" *ngFor="let funcionario of funcionarios">
+  <div class="divInformativo" *ngIf="funcionarios.length > 0 && listaFiltrada.length == 0">
+    <h2>Nenhum funcionário localizado</h2>
+    <ion-icon name="search-outline"></ion-icon>
+  </div>
+  <ion-list [@listAnimation]="listaFiltrada.length" lines="full">
+    <ion-item-sliding id="funcionario.Id" *ngFor="let funcionario of listaFiltrada">
       <ion-item (click)="cadastrarFuncionario(funcionario)">
         <ion-grid class="ion-no-margin ion-no-padding ">
           <ion-row class="espacadorCampo">

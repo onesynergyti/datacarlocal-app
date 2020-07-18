@@ -97,6 +97,15 @@ export class Utils {
       return value
   }
 
+  emailValido(email, permiteNulo = true) {
+    const regex = /\S+@\S+\.\S+/;
+    return (permiteNulo && email == null) || regex.test(email)
+  }
+
+  telefoneValido(telefone, permiteNulo = true) {
+    return (permiteNulo && telefone == null) || [0, 10, 11].includes(telefone.length)
+  }
+
   selecionarHora(hora = null) {
     return this.datePicker.show({      
       date: hora ? hora : new Date(),

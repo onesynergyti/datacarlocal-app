@@ -4,6 +4,7 @@ import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { Configuracoes } from 'src/app/models/configuracoes';
 import {Md5} from 'ts-md5/dist/md5'
 import { Utils } from 'src/app/utils/utils';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-inicio',
@@ -29,11 +30,17 @@ export class InicioPage implements OnInit {
     this.configuracoes = this.configuracoesService.configuracoes
   }
 
+  ionViewDidEnter() {
+    this.utils.alerta('BEM VINDO', 'Antes de iniciar o aplicativo vamos definir as configurações básicas.')
+  }
+
   concluir() {
     if (this.configuracoes.Estabelecimento.Nome.length <= 0)
       this.utils.mostrarToast('Informe o nome do estabelecimento.', 'danger')
-    else if (this.configuracoes.Seguranca.EmailAdministrador.length < 10)
-      this.utils.mostrarToast('Informe um e-mail de administrador.', 'danger')
+    else if (!this.utils.telefoneValido(this.configuracoes.Estabelecimento.Telefone))
+      this.utils.mostrarToast('Informe um telefone válido.', 'danger')
+    else if (!this.utils.emailValido(this.configuracoes.Seguranca.EmailAdministrador, false))
+      this.utils.mostrarToast('Informe um e-mail de administrador válido.', 'danger')
     else if (this.senhaNova.length < 4)
       this.utils.mostrarToast('Informe uma senha com no mínimo 4 dígitos.', 'danger')
     else if (this.senhaNova != this.senhaConfirmacao)
@@ -41,7 +48,7 @@ export class InicioPage implements OnInit {
     else {
       // Define as configurações iniciais como finalizadas
       this.configuracoes.ManualUso.ConfiguracaoInicial = true
-      this.configuracoes.Seguranca.SenhaAdministrador = Md5.hashStr(this.senhaNova)
+      this.configuracoes.Seguranca.SenhaAdministrador = Md5.hashStr(environment.chaveMD5 + this.senhaNova)
       this.configuracoesService.configuracoes = this.configuracoes
       this.navController.navigateRoot('home') 
     }

@@ -99,6 +99,21 @@ OK - Indicar no layout de forma clara os lançamentos de débitos e créditos (v
 SEGUNDA VERSÃO - Tratar o link do Whatsapp businnes na abertura do app
 TESTAR - Criar consistência nos formulários, incluindo max length e campos obrigatórios
 TESTAR - Verificar cada item da configuração e o impacto na utilização
+SEGUNDA VERSÃO - Após abrir em sequência vários itens do menu o botão Voltar (<) destas telas voltavam para o último item do menu que abri ao invés de ir para a tela principal (Pátio).
+OK - Não permitir cadastrar um carro com um placa existente
+OK - Pátio está sem o acento agudo.
+OK - Endereço está sem cedilha.
+OK - Preenchi a senha atual, deixei os campos de nova senha em branco e cliquei em "Salvar Senha". Ele alterou minha senha de forma incorreta ao invés de pedir que preenchesse os campos.
+OK - Menu->Estacionamento Está sem o subtítulo na tela (todas as outras telas de configuração possuem o subtítulo).
+OK - Menu->Configurações->Segurança Acho que o subtítulo na tela deve ser "Configurações de segurança" ao invés de "Dados do administrador" e o campo "E-mail" muda para "E-mail do administrador".
+OK - Menu->Meus funcionários No menu "Meus funcionários" e na tela "Funcionários".
+OK - Alterar "Postergar pagamento" para "Adiar pagamento"
+OK - Função para recuperar senha do administrador.
+ASSIM QUE POSSÍVEL - Criar um mini aplicativo com o código para recuperação de senha. Ele está contido na tela de alteração de senha do usuário no método concluir()
+OK - Função para validar e-mail e telefone informados.
+OK - Configurações Iniciais Máscara no campo de telefone 
+OK - Acrescentar um campo para filtrar os funcionários?
+OK - Configurações Iniciais Mensagem na abertura dizendo que para utilizar é necessário informar os dados do estabelecimento e aí então passar para a tela Configurações Iniciais
 - Criar a chaves das tabelas para garantir consistência
 - Definir whatsapp para suporte
-- Não permitir cadastrar um carro com um placa existente
+- Backup das informações
