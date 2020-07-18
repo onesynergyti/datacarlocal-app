@@ -11,4 +11,5 @@ export class ConfiguracaoSeguranca {
   ExigirSenhaCadastroMensalistas: boolean = true
   EmailAdministrador: string = ''
   SenhaAdministrador
+  CodigoRecuperacao
 }

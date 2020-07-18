@@ -139,5 +139,4 @@ export class ServicosPage implements OnInit {
     else
       return this.servicos.filter(itemAtual => this.utils.stringPura(itemAtual.Nome).includes(this.utils.stringPura(this.pesquisa)))
   }
-
 }

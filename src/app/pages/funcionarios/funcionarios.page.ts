@@ -28,6 +28,7 @@ import { Utils } from 'src/app/utils/utils';
 })
 export class FuncionariosPage implements OnInit {
 
+  pesquisa = ''
   funcionarios = []
   carregandoFuncionarios = false
 
@@ -113,5 +114,12 @@ export class FuncionariosPage implements OnInit {
     });
   
     await alert.present();
+  }
+
+  get listaFiltrada() {
+    if (this.pesquisa == '')
+      return this.funcionarios
+    else
+      return this.funcionarios.filter(itemAtual => this.utils.stringPura(itemAtual.Nome).includes(this.utils.stringPura(this.pesquisa)))
   }
 }

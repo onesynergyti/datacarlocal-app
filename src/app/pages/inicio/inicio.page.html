@@ -35,7 +35,7 @@
           </ion-item>
           <ion-item>
             <ion-label position="floating">Telefone</ion-label>
-            <ion-input autocorrect="off" type="text" [(ngModel)]="configuracoes.Estabelecimento.Telefone"></ion-input>
+            <ion-input autocorrect="off" type="tel" maxlength="15" [ngModel]="configuracoes.Estabelecimento.Telefone | telefonePipe" (ionInput)="configuracoes.Estabelecimento.Telefone = utils.somenteNumeros($event.target.value)"></ion-input>
           </ion-item>
         </ion-list>
       </ion-col>

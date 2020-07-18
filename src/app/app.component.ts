@@ -89,7 +89,9 @@ export class AppComponent {
   async abrirSenhaAdministrador() {
     const modal = await this.modalController.create({
       component: SenhaAdministradorPage,
-      componentProps: {}
+      componentProps: {
+        'recuparandoSenha': false
+      }
     });
 
     modal.onWillDismiss().then((retorno) => {

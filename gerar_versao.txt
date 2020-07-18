@@ -11,4 +11,4 @@ Senha: O_t_u_j6_1_7_
 "C:\Users\Claudio Camargos\AppData\Local\Android\Sdk\build-tools\29.0.2\zipalign" -v 4 "C:\Users\Claudio Camargos\Documents\Projetos\datacarlocal-app\platforms\android\app\build\outputs\bundle\release\app.aab" "C:\Users\Claudio Camargos\Documents\Projetos\datacarlocal-app\platforms\android\app\build\outputs\bundle\release\datacarlocal.aab"
 
 // O arquivo byndle é gerado em
-C:\Users\Claudio Camargos\Documents\Projetos\datacarlocal-app\platforms\android\app\build\outputs\bundle\release\app.aab
+C:\Users\Claudio Camargos\Documents\Projetos\datacarlocal-app\platforms\android\app\build\outputs\bundle\release\datacarlocal.aab

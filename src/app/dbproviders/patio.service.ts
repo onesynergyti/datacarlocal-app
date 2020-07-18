@@ -193,14 +193,16 @@ export class PatioService extends ServiceBaseService {
     })
   }
 
-  public lista(exibirAtivos = true, exibirInativos = false): Promise<any> {
+  public lista(exibirAtivos = true, exibirInativos = false, placa = ''): Promise<any> {
     return new Promise((resolve, reject) => {
       let complementoSQL = ""
       if (!exibirAtivos)
         complementoSQL += " and Ativo = 'false'"
       if (!exibirInativos)
-        complementoSQL += " and Ativo = 'true'"
-              
+        complementoSQL += " and Ativo = 'true'"      
+      if (placa != '')
+        complementoSQL += ` and placa like '%${placa}%'`
+
       const sql = "SELECT * from veiculos v where 1=1" + complementoSQL;
       this.database.DB.then(db => {
         db.executeSql(sql, [])

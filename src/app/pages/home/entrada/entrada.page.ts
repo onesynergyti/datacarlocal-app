@@ -191,7 +191,7 @@ export class EntradaPage implements OnInit {
       (!this.veiculo.Localizacao || this.veiculo.Localizacao.length <= 50) && 
       (!this.veiculo.EntregaAgendada || (this.veiculo.EntregaAgendada && this.veiculo.PossuiServicoAgendavel)) && // Agendamento exige um serviço que permita previsão
       (this.veiculo.Servicos != null && this.veiculo.Servicos.length > 0) &&
-      (!this.veiculo.Telefone || [0, 10, 11].includes(this.veiculo.Telefone.length))
+      (!this.veiculo.Telefone || this.utils.telefoneValido(this.veiculo.Telefone))
     if (valido) {
       // Para finalizar o atendimento tem que finalizar os serviços
       if (operacao == 'finalizar' && this.veiculo.PossuiServicosPendentes) 
@@ -199,19 +199,29 @@ export class EntradaPage implements OnInit {
       // Edição ou inclusão
       else if (operacao != 'excluir') {
         await this.patioProvider.exibirProcessamento('Registrando entrada...')
-        this.providerMensalistas.validarMensalista(this.veiculo.Entrada, this.veiculo.Placa).then((mensalistaValido: Mensalista) => {
-          this.veiculo.IdMensalista = mensalistaValido != null ? mensalistaValido.Id : 0
 
-          this.patioProvider.salvar(this.veiculo)
-          .then((veiculo) => {
-            this.modalCtrl.dismiss({ Operacao: operacao, Veiculo: veiculo })
-          })
-          .catch((erro) => {
-            alert('Não foi possível inserir o veículo. ' + JSON.stringify(erro))
-          })
-        })
-        .finally(() => {
-          this.patioProvider.ocultarProcessamento()
+        this.patioProvider.lista(true, false, this.veiculo.Placa).then(veiculos => {
+          // Não permite cadastro de veículo ativo com mesma placa          
+          if (veiculos.length == 0) {
+            this.providerMensalistas.validarMensalista(this.veiculo.Entrada, this.veiculo.Placa).then((mensalistaValido: Mensalista) => {
+              this.veiculo.IdMensalista = mensalistaValido != null ? mensalistaValido.Id : 0
+    
+              this.patioProvider.salvar(this.veiculo)
+              .then((veiculo) => {
+                this.modalCtrl.dismiss({ Operacao: operacao, Veiculo: veiculo })
+              })
+              .catch((erro) => {
+                alert('Não foi possível inserir o veículo. ' + JSON.stringify(erro))
+              })
+            })
+            .finally(() => {
+              this.patioProvider.ocultarProcessamento()
+            })        
+          }
+          else {
+            this.patioProvider.ocultarProcessamento()
+            this.utils.mostrarToast('Já existe um veículo no pátio com essa placa.', 'danger')            
+          }
         })
       }
       // Exclusão
