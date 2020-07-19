@@ -31,7 +31,14 @@ export class HistoricoVeiculosService extends ServiceBaseService {
             let vendas: any[] = [];
 
             for (var i = 0; i < data.rows.length; i++) {
-              vendas.push(data.rows.item(i));
+              let venda = data.rows.item(i)
+              
+              // Define as datas com o formato adequado com separador 
+              venda.Pagamento = venda.Pagamento.replace('-', '/')
+              venda.Entrada = venda.Entrada.replace('-', '/')
+              venda.Saida = venda.Saida.replace('-', '/')
+
+              vendas.push(venda);
             }
             resolve(vendas)
           } else {

@@ -53,7 +53,10 @@ export class MovimentoService extends ServiceBaseService {
             for (var i = 0; i < data.rows.length; i++) {
               var movimento = data.rows.item(i);
 
+              // Define as datas com o formato adequado com separador 
               movimento.Data = movimento.Data.replace('-', '/')
+              movimento.Inicio = movimento.Inicio != null ? movimento.Inicio.replace('-', '/') : null
+              movimento.Fim = movimento.Fim != null ? movimento.Fim.replace('-', '/') : null
 
               // Cria os veículos do movimento, se houver algum
               if (movimento.Veiculos != null) {
@@ -95,8 +98,8 @@ export class MovimentoService extends ServiceBaseService {
     }
     // Caso seja edição
     else {
-      sql = 'update movimentos set Descricao = ?, ValorDinheiro = ?, ValorDebito = ?, ValorCredito = ? where Id = ?'
-      data = [movimento.Descricao, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, movimento.Id]
+      sql = 'update movimentos set Data = ?, Descricao = ?, ValorDinheiro = ?, ValorDebito = ?, ValorCredito = ? where Id = ?'
+      data = [new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm'), movimento.Descricao, movimento.ValorDinheiro, movimento.ValorDebito, movimento.ValorCredito, movimento.Id]
     }
 
     return new Promise((resolve, reject) => {
