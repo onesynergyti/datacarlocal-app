@@ -1,5 +1,4 @@
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
-import { BluetoothLE } from '@ionic-native/bluetooth-le';
 import { Injectable } from '@angular/core';
 import { ServiceBaseService } from './service-base.service';
 import { LoadingController, Platform } from '@ionic/angular';
@@ -166,20 +165,13 @@ export class BluetoothService extends ServiceBaseService {
     public loadingController: LoadingController,
     private utils: Utils,
     private configuracoesService: ConfiguracoesService,
-    public bluetoothle: BluetoothLE, public plt: Platform
+    public plt: Platform
   ) { 
     super(loadingController)
 
-    // IOS
     if (this.plt.is('ios')) {
-      this.plt.ready().then((readySource) => {
-        this.bluetoothle.initialize().then(ble => {
-          alert('ble' + ble.status) // logs 'enabled'
-        });
-     
-      });
+      alert('IOS')
     }
-    // ANDROID
     else {
       // Tenta iniciar a conexão com a impressora se o bluetooth estiver ligado
       bluetoothSerial.isEnabled().then(() => {
@@ -265,7 +257,12 @@ export class BluetoothService extends ServiceBaseService {
   }
 
   listaDispositivosPareados() {
-    return this.bluetoothSerial.list()
+    if (this.plt.is('ios')) {
+      alert('listando IOS')
+    }
+    else {
+      return this.bluetoothSerial.list()
+    }
   }
 
   qrCode(valor) {
