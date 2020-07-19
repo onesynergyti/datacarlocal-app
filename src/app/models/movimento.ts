@@ -17,7 +17,6 @@ export class Movimento {
   constructor(movimento: Movimento = null) {
     if (movimento != null) {
       this.Id = movimento.Id 
-      alert(movimento.Data)
       this.Data = movimento.Data != null ? new Date(movimento.Data) : new Date()
       this.Descricao = movimento.Descricao
       this.TipoVeiculo = movimento.TipoVeiculo
