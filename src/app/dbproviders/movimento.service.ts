@@ -54,19 +54,15 @@ export class MovimentoService extends ServiceBaseService {
               var movimento = data.rows.item(i);
 
               // Define as datas com o formato adequado com separador 
-              movimento.Data = movimento.Data.replace('-', '/')
-              movimento.Inicio = movimento.Inicio != null ? movimento.Inicio.replace('-', '/') : null
-              movimento.Fim = movimento.Fim != null ? movimento.Fim.replace('-', '/') : null
+              movimento.Data = movimento.Data.replaceAll('-', '/')
+              movimento.Inicio = movimento.Inicio != null ? movimento.Inicio.replaceAll('-', '/') : null
+              movimento.Fim = movimento.Fim != null ? movimento.Fim.replaceAll('-', '/') : null
 
               // Cria os veículos do movimento, se houver algum
               if (movimento.Veiculos != null) {
                 const veiculos = JSON.parse(movimento.Veiculos)
                 movimento.Veiculos = []
                 veiculos.forEach(veiculo => {
-                  veiculo.Entrada = movimento.Entrada.replace('-', '/')
-                  veiculo.Saida = movimento.Saida != null ? movimento.Saida.replace('-', '/') : null
-                  veiculo.PrevisaoEntrega = movimento.PrevisaoEntrega != null ? movimento.PrevisaoEntrega.replace('-', '/') : null
-    
                   movimento.Veiculos.push(new Veiculo(veiculo))
                 });
               }
