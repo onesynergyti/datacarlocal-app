@@ -40,7 +40,6 @@
     "cordova-ios": "^6.1.0",
     "cordova-plugin-admob-free": "^0.27.0",
     "cordova-plugin-bluetooth-serial": "^0.4.7",
-    "cordova-plugin-bluetoothle": "^4.5.14",
     "cordova-plugin-datepicker": "^0.9.3",
     "cordova-plugin-device": "2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.0.5",
@@ -105,8 +104,7 @@
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
       "cordova-plugin-datepicker": {},
-      "cordova-plugin-ionic-webview": {},
-      "cordova-plugin-bluetoothle": {}
+      "cordova-plugin-ionic-webview": {}
     },
     "platforms": [
       "android",
