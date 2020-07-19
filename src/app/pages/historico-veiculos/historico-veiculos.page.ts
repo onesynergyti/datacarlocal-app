@@ -44,7 +44,7 @@ export class HistoricoVeiculosPage implements OnInit {
     const dataAtual = new Date()
     this.dataFim = dataAtual
     // A data de início é o primeiro dia do mês
-    this.dataInicio = new Date(dataAtual.getFullYear() + '-' + (dataAtual.getMonth() + 1) + '-01')
+    this.dataInicio = new Date(dataAtual.getFullYear() + '/' + (dataAtual.getMonth() + 1) + '/01')
     this.dataInicio.setMonth(this.dataInicio.getMonth() - 6)
   }
 
