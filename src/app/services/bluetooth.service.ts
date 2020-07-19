@@ -170,7 +170,6 @@ export class BluetoothService extends ServiceBaseService {
     super(loadingController)
 
     if (this.plt.is('ios')) {
-      alert('IOS')
     }
     else {
       // Tenta iniciar a conexão com a impressora se o bluetooth estiver ligado
