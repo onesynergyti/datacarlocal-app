@@ -47,15 +47,15 @@
         <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
     </platform>
     <platform name="ios">
-        <edit-config file="*-Info.plist" mode="merge" target="NSBluetoothPeripheralUsageDescription">
+        <config-file target="*-Info.plist" parent="NSBluetoothPeripheralUsageDescription">
             <string>Reuz quer acessar o Bluetooth para conexão com a impressora.</string>
-        </edit-config>
-        <edit-config file="*-Info.plist" mode="merge" target="NSCameraUsageDescription">
+        </config-file>
+        <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
             <string>Reuz quer acessar a câmera para leitura de QR-CODE.</string>
-        </edit-config>
-        <edit-config file="*-Info.plist" mode="merge" target="NSBluetoothAlwaysUsageDescription">
+        </config-file>
+        <config-file target="*-Info.plist" parent="NSBluetoothAlwaysUsageDescription">
             <string>Reuz quer acessar o Bluetooth garantir a conexão com a impressora.</string>
-        </edit-config>
+        </config-file>
         <config-file parent="GADApplicationIdentifier" target="*-Info.plist">
             <string>ca-app-pub-2818472978128447~1293086243</string>
         </config-file>
