@@ -102,7 +102,7 @@ TESTAR - Verificar cada item da configuração e o impacto na utilização
 SEGUNDA VERSÃO - Após abrir em sequência vários itens do menu o botão Voltar (<) destas telas voltavam para o último item do menu que abri ao invés de ir para a tela principal (Pátio).
 OK - Não permitir cadastrar um carro com um placa existente
 OK - Pátio está sem o acento agudo.
-OK - Endereço está sem cedilha.
+OK - Endereço está sem cediSlha.
 OK - Preenchi a senha atual, deixei os campos de nova senha em branco e cliquei em "Salvar Senha". Ele alterou minha senha de forma incorreta ao invés de pedir que preenchesse os campos.
 OK - Menu->Estacionamento Está sem o subtítulo na tela (todas as outras telas de configuração possuem o subtítulo).
 OK - Menu->Configurações->Segurança Acho que o subtítulo na tela deve ser "Configurações de segurança" ao invés de "Dados do administrador" e o campo "E-mail" muda para "E-mail do administrador".
@@ -117,3 +117,7 @@ OK - Configurações Iniciais Mensagem na abertura dizendo que para utilizar é 
 - Criar a chaves das tabelas para garantir consistência
 - Definir whatsapp para suporte
 - Backup das informações
+- Está dando erro ao solicitar finalização pela tela de entrada
+- Transformar datas em 'yyyy/MM/dd' nas criações, mantendo os pipes para o banco de dados em 'yyyy-MM-dd'
+- Icone do botão Ok e cancelar na validação de senha estão errados
+- Icone de "i" na tela de início nos toogles do IOS estão muito próximos
