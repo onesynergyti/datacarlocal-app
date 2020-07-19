@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.reuztecnologia.lavajato.lite" version="1.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.reuztecnologia.lavajato.lite" version="1.0.10" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Lava jato Reuz</name>
     <description>Sistema de controle para lava jatos</description>
     <author email="ti@reuztecnologia.com" href="http://www.reuztecnologia.com/">Reuz Tecnologia</author>
@@ -47,13 +47,18 @@
         <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
     </platform>
     <platform name="ios">
-        <config-file target="*-Info.plist" parent="NSBluetoothPeripheralUsageDescription">
+        <preference name="WKWebViewOnly" value="true" />
+        <feature name="CDVWKWebViewEngine">
+            <param name="ios-package" value="CDVWKWebViewEngine" />
+        </feature>
+        <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
+        <config-file parent="NSBluetoothPeripheralUsageDescription" target="*-Info.plist">
             <string>Reuz quer acessar o Bluetooth para conexão com a impressora.</string>
         </config-file>
-        <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
+        <config-file parent="NSCameraUsageDescription" target="*-Info.plist">
             <string>Reuz quer acessar a câmera para leitura de QR-CODE.</string>
         </config-file>
-        <config-file target="*-Info.plist" parent="NSBluetoothAlwaysUsageDescription">
+        <config-file parent="NSBluetoothAlwaysUsageDescription" target="*-Info.plist">
             <string>Reuz quer acessar o Bluetooth garantir a conexão com a impressora.</string>
         </config-file>
         <config-file parent="GADApplicationIdentifier" target="*-Info.plist">
@@ -114,12 +119,12 @@
     <plugin name="cordova-plugin-statusbar" spec="2.4.2" />
     <plugin name="cordova-plugin-device" spec="2.0.2" />
     <plugin name="cordova-plugin-splashscreen" spec="5.0.2" />
-    <plugin name="cordova-plugin-ionic-webview" spec="^4.0.0" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
     <plugin name="cordova-plugin-admob-free" spec="^0.27.0">
         <variable name="ADMOB_APP_ID" value="ca-app-pub-2818472978128447~1293086243" />
     </plugin>
     <plugin name="cordova-sqlite-storage" spec="^5.0.1" />
+    <plugin name="cordova-plugin-ionic-webview" spec="^5.0.0" />
     <engine name="android" spec="8.1.0" />
     <engine name="browser" spec="6.0.0" />
     <engine name="ios" spec="^6.1.0" />
