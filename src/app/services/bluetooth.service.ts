@@ -1,7 +1,8 @@
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial/ngx';
+import { BluetoothLE } from '@ionic-native/bluetooth-le';
 import { Injectable } from '@angular/core';
 import { ServiceBaseService } from './service-base.service';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, Platform } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Utils } from '../utils/utils';
 import { ConfiguracoesService } from './configuracoes.service';
@@ -164,31 +165,45 @@ export class BluetoothService extends ServiceBaseService {
     private bluetoothSerial: BluetoothSerial,
     public loadingController: LoadingController,
     private utils: Utils,
-    private configuracoesService: ConfiguracoesService
+    private configuracoesService: ConfiguracoesService,
+    public bluetoothle: BluetoothLE, public plt: Platform
   ) { 
     super(loadingController)
-    // Tenta iniciar a conexão com a impressora se o bluetooth estiver ligado
-    bluetoothSerial.isEnabled().then(() => {
-      // Verifica se existe uma conexão salva e tenta conectar
-      if (this.dispositivoSalvo != null) {
-        this.bluetoothSerial.connect(this.dispositivoSalvo.id)
-        .subscribe(() => {},
-        (erro) => {
-          // Verifica se a conexão salva existe na lista de dispositivos pareados
-          this.listaDispositivosPareados().then((lista) => {
-            // Se listou os dispositivos, verifica se o dispositivo salvo está pareado.
-            // Caso não esteja, cancela a conexão salva
-            if (lista.length) {
-              let dispositivoLocalizado = lista.find(itemAtual => itemAtual.id === this.dispositivoSalvo.id)
-              // Cancela a conexão salva se não existir
-              if (dispositivoLocalizado == null) 
-                localStorage.removeItem('impressoraConectada')
-            }
-          })
-          this.utils.mostrarToast('Não foi possível conectar a impressora configurada', 'warning')
-        })  
-      }
-    })
+
+    // IOS
+    if (this.plt.is('ios')) {
+      this.plt.ready().then((readySource) => {
+        this.bluetoothle.initialize().then(ble => {
+          alert('ble' + ble.status) // logs 'enabled'
+        });
+     
+      });
+    }
+    // ANDROID
+    else {
+      // Tenta iniciar a conexão com a impressora se o bluetooth estiver ligado
+      bluetoothSerial.isEnabled().then(() => {
+        // Verifica se existe uma conexão salva e tenta conectar
+        if (this.dispositivoSalvo != null) {
+          this.bluetoothSerial.connect(this.dispositivoSalvo.id)
+          .subscribe(() => {},
+          (erro) => {
+            // Verifica se a conexão salva existe na lista de dispositivos pareados
+            this.listaDispositivosPareados().then((lista) => {
+              // Se listou os dispositivos, verifica se o dispositivo salvo está pareado.
+              // Caso não esteja, cancela a conexão salva
+              if (lista.length) {
+                let dispositivoLocalizado = lista.find(itemAtual => itemAtual.id === this.dispositivoSalvo.id)
+                // Cancela a conexão salva se não existir
+                if (dispositivoLocalizado == null) 
+                  localStorage.removeItem('impressoraConectada')
+              }
+            })
+            this.utils.mostrarToast('Não foi possível conectar a impressora configurada', 'warning')
+          })  
+        }
+      })
+    }
   }
   
   get dispositivoSalvo(): any {

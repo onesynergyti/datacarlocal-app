@@ -22,6 +22,7 @@
     "@angular/router": "~9.1.6",
     "@ionic-native/admob-free": "^5.26.0",
     "@ionic-native/barcode-scanner": "^5.26.0",
+    "@ionic-native/bluetooth-le": "^4.20.0",
     "@ionic-native/bluetooth-serial": "^5.26.0",
     "@ionic-native/core": "^5.0.7",
     "@ionic-native/date-picker": "^5.26.0",
@@ -39,6 +40,7 @@
     "cordova-ios": "^6.1.0",
     "cordova-plugin-admob-free": "^0.27.0",
     "cordova-plugin-bluetooth-serial": "^0.4.7",
+    "cordova-plugin-bluetoothle": "^4.5.14",
     "cordova-plugin-datepicker": "^0.9.3",
     "cordova-plugin-device": "2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.0.5",
@@ -103,7 +105,8 @@
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
       "cordova-plugin-datepicker": {},
-      "cordova-plugin-ionic-webview": {}
+      "cordova-plugin-ionic-webview": {},
+      "cordova-plugin-bluetoothle": {}
     },
     "platforms": [
       "android",
