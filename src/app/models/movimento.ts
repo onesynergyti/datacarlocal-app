@@ -17,7 +17,8 @@ export class Movimento {
   constructor(movimento: Movimento = null) {
     if (movimento != null) {
       this.Id = movimento.Id 
-      this.Data = movimento.Data ? new Date(movimento.Data) : new Date()
+      alert(movimento.Data)
+      this.Data = movimento.Data != null ? new Date(movimento.Data) : new Date()
       this.Descricao = movimento.Descricao
       this.TipoVeiculo = movimento.TipoVeiculo
       this.ValorCredito = movimento.ValorCredito
@@ -30,8 +31,8 @@ export class Movimento {
         })
       }
       this.IdMensalista = movimento.IdMensalista
-      this.Inicio = movimento.Inicio ? new Date(movimento.Inicio) : null
-      this.Fim = movimento.Fim ? new Date(movimento.Fim) : null
+      this.Inicio = movimento.Inicio != null ? new Date(movimento.Inicio) : null
+      this.Fim = movimento.Fim != null ? new Date(movimento.Fim) : null
     }
   }
 
