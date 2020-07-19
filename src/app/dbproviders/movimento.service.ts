@@ -63,6 +63,10 @@ export class MovimentoService extends ServiceBaseService {
                 const veiculos = JSON.parse(movimento.Veiculos)
                 movimento.Veiculos = []
                 veiculos.forEach(veiculo => {
+                  veiculo.Entrada = movimento.Entrada.replace('-', '/')
+                  veiculo.Saida = movimento.Saida != null ? movimento.Saida.replace('-', '/') : null
+                  veiculo.PrevisaoEntrega = movimento.PrevisaoEntrega != null ? movimento.PrevisaoEntrega.replace('-', '/') : null
+    
                   movimento.Veiculos.push(new Veiculo(veiculo))
                 });
               }
