@@ -43,7 +43,7 @@ export class MovimentoService extends ServiceBaseService {
       const sql = "SELECT * from movimentos where Date(Data) between Date(?) and Date(?) and (Data <= ?) order by Data desc limit 100";
       const data = [new DatePipe('en-US').transform(inicio, 'yyyy-MM-dd'), 
         new DatePipe('en-US').transform(fim, 'yyyy-MM-dd'),
-        dataMaxima == null ? new Date('9999-01-01') : new DatePipe('en-US').transform(dataMaxima, 'yyyy-MM-dd HH:mm:ss')
+        dataMaxima == null ? new DatePipe('en-US').transform(new Date('9999/01/01') , 'yyyy-MM-dd'): new DatePipe('en-US').transform(dataMaxima, 'yyyy-MM-dd HH:mm:ss')
       ]
       this.database.DB.then(db => {
         db.executeSql(sql, data)
@@ -52,6 +52,8 @@ export class MovimentoService extends ServiceBaseService {
             let movimentos: any[] = [];
             for (var i = 0; i < data.rows.length; i++) {
               var movimento = data.rows.item(i);
+
+              movimento.Data = movimento.Data.replace('-', '/')
 
               // Cria os veículos do movimento, se houver algum
               if (movimento.Veiculos != null) {

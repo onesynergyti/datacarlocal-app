@@ -40,8 +40,9 @@ export class AppComponent {
           this.splashScreen.hide()
 
           // Exige as configurações iniciais do sistema
-          if (!this.configuracoesService.configuracoes.ManualUso.ConfiguracaoInicial)
+          if (!this.configuracoesService.configuracoes.ManualUso.ConfiguracaoInicial) {
             this.navController.navigateRoot('inicio')
+          }            
           else
             this.navController.navigateRoot('home')
         })
