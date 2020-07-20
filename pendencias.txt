@@ -114,8 +114,9 @@ OK - Função para validar e-mail e telefone informados.
 OK - Configurações Iniciais Máscara no campo de telefone 
 OK - Acrescentar um campo para filtrar os funcionários?
 OK - Configurações Iniciais Mensagem na abertura dizendo que para utilizar é necessário informar os dados do estabelecimento e aí então passar para a tela Configurações Iniciais]
+- Bluetooth para IOS na impressão
 - Tradução na seleção de data e hora do IOS
-- Data inicial de agendamento não funciona no IOS
+OK - Data inicial de agendamento não funciona no IOS
 - Criar a chaves das tabelas para garantir consistência
 - Definir whatsapp para suporte
 - Backup das informações
