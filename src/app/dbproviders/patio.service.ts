@@ -219,7 +219,6 @@ export class PatioService extends ServiceBaseService {
                 veiculo.Servicos.push(new ServicoVeiculo(servicoAtual))
               });
 
-              alert(JSON.stringify(veiculo))
               veiculo.Entrada = veiculo.Entrada.split('-').join('/')
               veiculo.Saida = veiculo.Saida != null ? veiculo.Saida.split('-').join('/') : null
               veiculo.PrevisaoEntrega = veiculo.PrevisaoEntrega != null ? veiculo.PrevisaoEntrega.split('-').join('/') : null
