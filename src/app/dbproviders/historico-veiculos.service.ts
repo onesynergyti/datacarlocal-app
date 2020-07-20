@@ -34,9 +34,9 @@ export class HistoricoVeiculosService extends ServiceBaseService {
               let venda = data.rows.item(i)
               
               // Define as datas com o formato adequado com separador 
-              venda.Pagamento = venda.Pagamento.replaceAll('-', '/')
-              venda.Entrada = venda.Entrada.replaceAll('-', '/')
-              venda.Saida = venda.Saida.replaceAll('-', '/')
+              venda.Pagamento = venda.Pagamento.split('-').join('/')
+              venda.Entrada = venda.Entrada.split('-').join('/')
+              venda.Saida = venda.Saida.split('-').join('/')
 
               vendas.push(venda);
             }

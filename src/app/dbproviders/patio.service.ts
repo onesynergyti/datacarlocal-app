@@ -219,9 +219,10 @@ export class PatioService extends ServiceBaseService {
                 veiculo.Servicos.push(new ServicoVeiculo(servicoAtual))
               });
 
-              veiculo.Entrada = veiculo.Entrada.toString().replaceAll('-', '/')
-              veiculo.Saida = veiculo.Saida != null ? veiculo.Saida.toString().replaceAll('-', '/') : null
-              veiculo.PrevisaoEntrega = veiculo.PrevisaoEntrega != null ? veiculo.PrevisaoEntrega.toString().replaceAll('-', '/') : null
+              alert(JSON.stringify(veiculo))
+              veiculo.Entrada = veiculo.Entrada.split('-').join('/')
+              veiculo.Saida = veiculo.Saida != null ? veiculo.Saida.split('-').join('/') : null
+              veiculo.PrevisaoEntrega = veiculo.PrevisaoEntrega != null ? veiculo.PrevisaoEntrega.split('-').join('/') : null
 
               // Converte o funcionário responsável
               veiculo.Funcionario = veiculo.Funcionario != null ? JSON.parse(veiculo.Funcionario) : null
