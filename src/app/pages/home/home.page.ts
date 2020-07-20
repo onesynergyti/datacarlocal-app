@@ -59,7 +59,7 @@ export class HomePage {
     private providerServicos: ServicosService
   ) { }
 
-  ionViewDidEnter() {
+  ionViewWillEnter() {
     this.atualizarPatio()
   }
 

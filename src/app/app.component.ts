@@ -21,7 +21,6 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private navController: NavController,
-    private databaseProvider: DatabaseService,
     private modalController: ModalController,
     private utils: Utils,
     private configuracoesService: ConfiguracoesService
@@ -35,26 +34,7 @@ export class AppComponent {
       this.statusBar.backgroundColorByHexString('#000000');
       this.statusBar.styleLightContent();
 
-      this.databaseProvider.DB.then((db) => {
-        this.databaseProvider.criarTabelas(db).then(() => {
-          this.splashScreen.hide()
-
-          // Exige as configurações iniciais do sistema
-          if (!this.configuracoesService.configuracoes.ManualUso.ConfiguracaoInicial) {
-            this.navController.navigateRoot('inicio')
-          }            
-          else
-            this.navController.navigateRoot('home')
-        })
-        .catch((erro) => {
-          alert('Não foi possível iniciar o aplicativo. Tente novamente. ' + JSON.stringify(erro))
-          navigator['app'].exitApp();
-        })
-      })
-      .catch((erro) => {
-        alert('Não foi possível iniciar o aplicativo. Tente novamente. ' + JSON.stringify(erro))
-        navigator['app'].exitApp();
-      })
+      this.splashScreen.hide()
     });
   }
 
