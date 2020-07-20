@@ -54,14 +54,6 @@ export class Utils {
     return textoFormatado
   }
 
-  selecionarData(data = null) {
-    return this.datePicker.show({
-      date: data ? data : new Date(),
-      mode: 'date',
-      androidTheme: this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT
-    })
-  }  
-
   formatarDocumento(value: string): string {      
     if (value != null && value.length >= 14)
       return value.substring(0, 2) + '.' + value.substring(2, 5) + '.' + value.substring(5, 8) + '/' + value.substring(8, 12) + '-' + value.substring(12)
@@ -106,11 +98,25 @@ export class Utils {
     return (permiteNulo && telefone == null) || [0, 10, 11].includes(telefone.length)
   }
 
+  selecionarData(data = null) {
+    return this.datePicker.show({
+      date: data ? data : new Date(),
+      mode: 'date',
+      androidTheme: this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
+      doneButtonLabel: 'Ok',
+      cancelButtonLabel : 'Cancelar',
+      locale: 'pt_br'
+    })
+  }  
+
   selecionarHora(hora = null) {
     return this.datePicker.show({      
       date: hora ? hora : new Date(),
       mode: 'time',
-      androidTheme: this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT
+      androidTheme: this.datePicker.ANDROID_THEMES.THEME_DEVICE_DEFAULT_LIGHT,
+      doneButtonLabel: 'Ok',
+      cancelButtonLabel : 'Cancelar',
+      locale: 'pt_br'
     })
   }  
 

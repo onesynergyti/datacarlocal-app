@@ -202,7 +202,7 @@ export class EntradaPage implements OnInit {
 
         this.patioProvider.lista(true, false, this.veiculo.Placa).then(veiculos => {
           // Não permite cadastro de veículo ativo com mesma placa          
-          if (veiculos.length == 0) {
+          if (!this.inclusao || veiculos.length == 0) {
             this.providerMensalistas.validarMensalista(this.veiculo.Entrada, this.veiculo.Placa).then((mensalistaValido: Mensalista) => {
               this.veiculo.IdMensalista = mensalistaValido != null ? mensalistaValido.Id : 0
     
