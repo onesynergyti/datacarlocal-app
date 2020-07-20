@@ -3,22 +3,25 @@
   <ion-searchbar autocorrect="off" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
 </ion-header>
 
-<ion-content>
-  <ion-spinner *ngIf="carregandoVeiculos" class="spinnerCentro"></ion-spinner>
-  <div *ngIf="!carregandoVeiculos && configuracoesService.configuracoes.Patio.QuantidadeVagas">
+<ion-content *ngIf="carregandoVeiculos">
+  <ion-spinner class="spinnerCentro"></ion-spinner>
+</ion-content>
+
+<ion-content *ngIf="!carregandoVeiculos">
+  <div *ngIf="configuracoesService.configuracoes.Patio.QuantidadeVagas">
     Vagas: {{ configuracoesService.configuracoes.Patio.QuantidadeVagas }}
     Ocupação: {{ veiculos.length }}
   </div>
-  <div class="divInformativo" *ngIf="!carregandoVeiculos && veiculos.length == 0">
+  <div class="divInformativo" *ngIf="veiculos.length == 0">
     <h2>Seu pátio está vazio</h2>
     <ion-icon name="car-sport-outline"></ion-icon>
     <h5>Utilize o botão de entrada para adicionar um veículo</h5>
   </div>
-  <div class="divInformativo" *ngIf="!carregandoVeiculos && veiculos.length > 0 && listaFiltrada.length == 0">
+  <div class="divInformativo" *ngIf="veiculos.length > 0 && listaFiltrada.length == 0">
     <h2>Nenhum veículo localizado</h2>
     <ion-icon name="search-outline"></ion-icon>
   </div>
-  <ion-list *ngIf="!carregandoVeiculos" [@listAnimation]="listaFiltrada.length" lines="none">
+  <ion-list [@listAnimation]="listaFiltrada.length" lines="none">
     <ion-item-sliding id="veiculo.Placa" *ngFor="let veiculo of listaFiltrada">
       <ion-item (click)="cadastrarEntrada(veiculo)">
         <div class="cartao">

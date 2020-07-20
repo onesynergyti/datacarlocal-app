@@ -27,10 +27,6 @@ import { ValidarAcessoPage } from '../validar-acesso/validar-acesso.page';
         query(':enter',
           [style({ opacity: 0 }), stagger('40ms', animate('800ms ease-out', style({ opacity: 1 })))],
           { optional: true }
-        ),
-        query(':leave',
-          [style({ opacity: 1 }), stagger('40ms', animate('800ms ease-out', style({ opacity: 0 })))],
-          { optional: true }
         )
       ])
     ])
@@ -60,7 +56,11 @@ export class HomePage {
   ) { }
 
   ionViewWillEnter() {
-    this.atualizarPatio()
+    this.veiculos = []
+    this.carregandoVeiculos = true
+    setTimeout(() => {
+      this.atualizarPatio()
+    }, 1000);
   }
 
   atualizarPatio() {
