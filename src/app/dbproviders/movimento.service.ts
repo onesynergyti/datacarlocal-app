@@ -54,9 +54,9 @@ export class MovimentoService extends ServiceBaseService {
               var movimento = data.rows.item(i);
 
               // Define as datas com o formato adequado com separador 
-              movimento.Data = movimento.Data.replaceAll('-', '/')
-              movimento.Inicio = movimento.Inicio != null ? movimento.Inicio.replaceAll('-', '/') : null
-              movimento.Fim = movimento.Fim != null ? movimento.Fim.replaceAll('-', '/') : null
+              movimento.Data = movimento.Data.toString().replaceAll('-', '/')
+              movimento.Inicio = movimento.Inicio != null ? movimento.Inicio.toString().replaceAll('-', '/') : null
+              movimento.Fim = movimento.Fim != null ? movimento.Fim.toString().replaceAll('-', '/') : null
 
               // Cria os veículos do movimento, se houver algum
               if (movimento.Veiculos != null) {
