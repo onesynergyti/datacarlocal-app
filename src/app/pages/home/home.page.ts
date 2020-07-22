@@ -6,7 +6,7 @@ import { EntradaPage } from './entrada/entrada.page';
 import { BluetoothService } from '../../services/bluetooth.service';
 import { Utils } from 'src/app/utils/utils';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-scanner/ngx';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { ServicoVeiculo } from 'src/app/models/servico-veiculo';
 import { SaidaPage } from './saida/saida.page';
@@ -306,7 +306,11 @@ export class HomePage {
   }
 
   async leituraQrCode() {
-    this.barcodeScanner.scan().then(barcodeData => {      
+    const options = {
+      prompt : "Se não possuir um código de barras retorne e consulte a placa.",
+
+    }
+    this.barcodeScanner.scan(options).then(barcodeData => {      
       if (barcodeData.text != '') {
         let veiculo = this.veiculos.find(itemAtual => this.utils.stringPura(itemAtual.Placa) == this.utils.stringPura(barcodeData.text))
         if (veiculo != null) {

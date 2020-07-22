@@ -100,6 +100,7 @@ SEGUNDA VERSÃO - Tratar o link do Whatsapp businnes na abertura do app
 TESTAR - Criar consistência nos formulários, incluindo max length e campos obrigatórios
 TESTAR - Verificar cada item da configuração e o impacto na utilização
 SEGUNDA VERSÃO - Após abrir em sequência vários itens do menu o botão Voltar (<) destas telas voltavam para o último item do menu que abri ao invés de ir para a tela principal (Pátio).
+ASSIM QUE POSSÍVEL - Criar um mini aplicativo com o código para recuperação de senha. Ele está contido na tela de alteração de senha do usuário no método concluir()
 OK - Não permitir cadastrar um carro com um placa existente
 OK - Pátio está sem o acento agudo.
 OK - Endereço está sem cediSlha.
@@ -109,18 +110,38 @@ OK - Menu->Configurações->Segurança Acho que o subtítulo na tela deve ser "C
 OK - Menu->Meus funcionários No menu "Meus funcionários" e na tela "Funcionários".
 OK - Alterar "Postergar pagamento" para "Adiar pagamento"
 OK - Função para recuperar senha do administrador.
-ASSIM QUE POSSÍVEL - Criar um mini aplicativo com o código para recuperação de senha. Ele está contido na tela de alteração de senha do usuário no método concluir()
 OK - Função para validar e-mail e telefone informados.
 OK - Configurações Iniciais Máscara no campo de telefone 
-OK - Acrescentar um campo para filtrar os funcionários?
+SEGUNDA VERSÃO - Acrescentar um campo para filtrar os funcionários?
+SEGUNDA VERSÃO -Melhoria: No card do veículo o serviço Estacionamento poderia vir mostrando já há quanto tempo o veículo está no estacionamento.
 OK - Configurações Iniciais Mensagem na abertura dizendo que para utilizar é necessário informar os dados do estabelecimento e aí então passar para a tela Configurações Iniciais]
-- Bluetooth para IOS na impressão
-- Tradução na seleção de data e hora do IOS
 OK - Data inicial de agendamento não funciona no IOS
+OK - Está dando erro ao solicitar finalização pela tela de entrada
+OK - Transformar datas em 'yyyy/MM/dd' nas criações, mantendo os pipes para o banco de dados em 'yyyy-MM-dd'
+OK - Icone do botão Ok e cancelar na validação de senha estão errados
+OK - Tradução na seleção de data e hora do IOS
+OK - Tem que pedir senha para acessar as opções gerais do sistema.
+OK - Os nomes dos itens "Pátio" e "Estacionamento" estão ruins. Pra mim Pátio é a mesma coisa que estacionamento. Acho que estacionamento tem que mudar para alguma coisa como Preços, Tabela ou Cobrança.
+OK - Texto de informação do campo "Identificação da localização": está faltando o "no" na expressão "...posição do veículo no pátio."
+OK -* Nos campos digitáveis tem como configurar para o teclado funcionar automaticamente em modo "frase"? Já colocando a primeira letra em maiúsculo e mudando para minúsculo após sua digitação.
+OK - Quando clico em Finalizar na tela do atendimento ele está informando que já existe um veículo com essa placa no pátio.
+OK - Quando solicitar a senha já dar foco no campo para vir com o teclado já aberto para o usuário.
+SEGUNDA VERSÃO - Ao finalizar, o tempo de permanência pode ter um botão para o detalhamento desta cobrança. Tipo um veículo que permaneça 50 minutos o relatório seria algo assim:
+   Fração de 30 minutos: R$ 10,00
+   Fração de 15 minutos: R$  7,00
+   Fração de 10 minutos: R$  4,00
+   Total (50 minutos):   R$ 21,00TESTAR - Leitura do código de barras: o hint na parte de baixo da câmera fala em EXEMPLO a ser lido. Talvez seja o caso de colocar algo "Se não possui o código de barras volte e procure pela placa".
+TESTAR - Os ícones de informação estão com o fundo preenchido.
+SEGUNDA VERSÃO -* Acho desnecessário o ícone no canto direito do campo "Responsável"  já que ao clicar no campo ele já abre a lista de funcionários.
+- Bluetooth para IOS na impressão
 - Criar a chaves das tabelas para garantir consistência
 - Definir whatsapp para suporte
 - Backup das informações
-- Está dando erro ao solicitar finalização pela tela de entrada
-- Transformar datas em 'yyyy/MM/dd' nas criações, mantendo os pipes para o banco de dados em 'yyyy-MM-dd'
-- Icone do botão Ok e cancelar na validação de senha estão errados
 - Icone de "i" na tela de início nos toogles do IOS estão muito próximos
+- Alterar ícone dos aplicativo e configurar cada tipo de config.xml para cada tipo
+- Alterar imagem da tela de splash
+- Permitir utilizar cartões ao invés de informar os dados do veículo. Basicamente o usuário poderá entrar com a placa ou com o código do cartão com a leitura pela câmera ou digitado
+- Ao abrir a tela para pesquisar funcionário podia ter nela um atalho para o cadastro. Do jeito atual se o responsável não tiver sido cadastrado ainda o usuário terá que cancelar a entrada, inclusive perdendo os dados já informados, ir no menu para cadastrar o responsável e voltar para registrar a entrada.
+- Ao clicar na botão excluir veículo na tela de cadastro ele pede a senha do administrador. Se aí eu clico em "Cancelar" ou no fechar ele volta para a tela principal. Acho que devia voltar para a tela anterior, que é Cadastro do Veículo.
+- Após a finalização a propaganda demora a aparecer. Poderia ser mais instântaneo?
+- Na hora de finalizar tem que mostrar o tempo de permanência.

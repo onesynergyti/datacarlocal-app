@@ -12,7 +12,7 @@
       <ion-col size-xs="12" class="separadorCampo">
         <ion-item>
           <ion-label position="floating">Nome do serviço</ion-label>
-          <ion-input autocorrect="off" type="text" [(ngModel)]="servico.Nome"></ion-input>
+          <ion-input autocapitalize="on" type="text" [(ngModel)]="servico.Nome"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -29,7 +29,7 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="number" [ngModel]="servico.PrecoMoto | decimalInputPipe" (ionInput)="servico.PrecoMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
+          <ion-input type="number" [ngModel]="servico.PrecoMoto | decimalInputPipe" (ionInput)="servico.PrecoMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3">
@@ -38,7 +38,7 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="number" [ngModel]="servico.PrecoVeiculoPequeno | decimalInputPipe" (ionInput)="servico.PrecoVeiculoPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
+          <ion-input type="number" [ngModel]="servico.PrecoVeiculoPequeno | decimalInputPipe" (ionInput)="servico.PrecoVeiculoPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3">
@@ -47,7 +47,7 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="number" [ngModel]="servico.PrecoVeiculoMedio | decimalInputPipe" (ionInput)="servico.PrecoVeiculoMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
+          <ion-input type="number" [ngModel]="servico.PrecoVeiculoMedio | decimalInputPipe" (ionInput)="servico.PrecoVeiculoMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col size-xs="3">
@@ -56,7 +56,7 @@
         </div>
         <ion-item>
           <ion-label position="floating">R$</ion-label>
-          <ion-input autocorrect="off" type="number" [ngModel]="servico.PrecoVeiculoGrande | decimalInputPipe" (ionInput)="servico.PrecoVeiculoGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
+          <ion-input type="number" [ngModel]="servico.PrecoVeiculoGrande | decimalInputPipe" (ionInput)="servico.PrecoVeiculoGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>

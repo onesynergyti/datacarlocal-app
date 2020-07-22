@@ -139,6 +139,12 @@ export class CalculadoraEstacionamentoService {
         minutos = (minutos % 60)
       }
 
+      // Se houverem duas frações de 30 sobrando, o sistema cobra uma fração de hora pois é mais barato
+      if (minutos > 30) {
+        precoFracionado += Number(this.valorHora(tipoVeiculo))
+        minutos = 0
+      }
+
       // Se não houver utilização de fração de 30 ou 15 minutos, adiciona uma hora inteira
       if (minutos > 0 && !precos.UtilizaFracao15Minutos && !precos.UtilizaFracao30Minutos) {
         precoFracionado += Number(this.valorHora(tipoVeiculo))
@@ -155,10 +161,16 @@ export class CalculadoraEstacionamentoService {
         minutos = (minutos % 30)
       }
 
+      // Se houverem duas frações de 15 sobrando, o sistema cobra uma fração de 30 pois é mais barato
+      if (minutos > 15) {
+        precoFracionado += Number(this.valorFracao30Minutos(tipoVeiculo))
+        minutos = 0
+      }
+
       // Se não houver utilização de fração 15 minutos, adiciona uma fração de 30 minutos
       if (minutos > 0 && !precos.UtilizaFracao15Minutos) {
         precoFracionado += Number(this.valorFracao30Minutos(tipoVeiculo))
-      }
+      }      
     }
 
     // Cobranca fração de 15 minutos adicionais

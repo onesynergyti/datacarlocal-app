@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalController, NavParams } from '@ionic/angular';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { Md5 } from 'ts-md5/dist/md5'
@@ -16,6 +16,7 @@ export class ValidarAcessoPage implements OnInit {
 
   mensagem = ''
   senha = ''
+  @ViewChild('inputSenha') inputSenha;
 
   constructor(
     private modalCtrl: ModalController,
@@ -24,6 +25,12 @@ export class ValidarAcessoPage implements OnInit {
     private utils: Utils
   ) { 
     this.mensagem = this.navParams.get('mensagem')
+  }
+
+  ionViewDidEnter() {
+    setTimeout(() => {
+      this.inputSenha.setFocus();
+    }, 100);
   }
 
   ngOnInit() {
