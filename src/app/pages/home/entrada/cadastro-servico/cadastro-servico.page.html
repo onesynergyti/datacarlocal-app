@@ -31,13 +31,13 @@
       <ion-col>
         <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">Acrescimo</ion-label>
-          <ion-input autocorrect="off" type="number" [ngModel]="servicoVeiculo.Acrescimo | decimalInputPipe" (ionInput)="servicoVeiculo.Acrescimo=utils.trataCampoNumero($event.target.value)"></ion-input>
+          <ion-input type="number" [ngModel]="servicoVeiculo.Acrescimo | decimalInputPipe" (ionInput)="servicoVeiculo.Acrescimo=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col>
         <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">Desconto</ion-label>
-          <ion-input autocorrect="off" type="number" [ngModel]="servicoVeiculo.Desconto | decimalInputPipe" (ionInput)="servicoVeiculo.Desconto=utils.trataCampoNumero($event.target.value)"></ion-input>
+          <ion-input type="number" [ngModel]="servicoVeiculo.Desconto | decimalInputPipe" (ionInput)="servicoVeiculo.Desconto=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>

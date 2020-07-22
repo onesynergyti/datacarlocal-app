@@ -5,7 +5,7 @@
 <ion-content>
   <ion-item class="ion-no-margin ion-no-padding" *ngIf="configuracoes.Seguranca.SenhaAdministrador != null">
     <ion-label position="floating">Senha atual</ion-label>
-    <ion-input autocorrect="off" type="password" maxlength="20" [(ngModel)]="senhaAtual"></ion-input>
+    <ion-input type="password" maxlength="20" [(ngModel)]="senhaAtual"></ion-input>
   </ion-item>
   <ion-grid>
     <ion-row *ngIf="!recuparandoSenha">
@@ -27,11 +27,11 @@
   </ion-grid>
   <ion-item class="ion-no-margin ion-no-padding">
     <ion-label position="floating">Nova senha</ion-label>
-    <ion-input autocorrect="off" type="password" maxlength="20" [(ngModel)]="senhaNova"></ion-input>
+    <ion-input type="password" maxlength="20" [(ngModel)]="senhaNova"></ion-input>
   </ion-item>
   <ion-item class="ion-no-margin ion-no-padding">
     <ion-label position="floating">Confirme a senha</ion-label>
-    <ion-input autocorrect="off" type="password" maxlength="20" [(ngModel)]="senhaConfirmacao"></ion-input>
+    <ion-input type="password" maxlength="20" [(ngModel)]="senhaConfirmacao"></ion-input>
   </ion-item>
 </ion-content>
 

@@ -1,6 +1,6 @@
 <app-header-modal titulo={{titulo}} ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
 
-<ion-searchbar autocorrect="off" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
+<ion-searchbar autocapitalize="on" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
 
 <ion-content>
   <ion-grid [@listAnimation]="listaFiltrada.length">
