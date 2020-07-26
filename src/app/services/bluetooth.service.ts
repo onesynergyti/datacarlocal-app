@@ -511,6 +511,7 @@ export class BluetoothService extends ServiceBaseService {
       this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
       this.bluetoothSerial.write(this.CMD.EOL);  
       this.bluetoothSerial.write(new DatePipe('en-US').transform(veiculoAtual.Entrada, 'dd/MM/yy HH:mm') + ' - ' + new DatePipe('en-US').transform(veiculoAtual.Saida, 'dd/MM/yy HH:mm'));
+      this.bluetoothSerial.write(veiculoAtual.tempoPermanencia);
       this.bluetoothSerial.write(this.CMD.EOL);  
       this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
       this.bluetoothSerial.write(this.CMD.EOL);  

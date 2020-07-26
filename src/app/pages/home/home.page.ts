@@ -6,7 +6,7 @@ import { EntradaPage } from './entrada/entrada.page';
 import { BluetoothService } from '../../services/bluetooth.service';
 import { Utils } from 'src/app/utils/utils';
 import { trigger, transition, query, style, stagger, animate } from '@angular/animations';
-import { BarcodeScanner, BarcodeScannerOptions } from '@ionic-native/barcode-scanner/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { ServicoVeiculo } from 'src/app/models/servico-veiculo';
 import { SaidaPage } from './saida/saida.page';
@@ -159,6 +159,11 @@ export class HomePage {
       (this.configuracoesService.configuracoes.Estacionamento.QuantidadePrimeirosMinutos == null || this.configuracoesService.configuracoes.Estacionamento.QuantidadePrimeirosMinutos <= 0)) {
         reject({ Titulo: 'Configurar estacionamento', Mensagem: 'Você optou por cobrar um valor fixo nos minutos iniciais, mas não definiu a quantidade de minutos. Deseja acessar as configurações agora?', Rota: 'configuracoes?pagina=estacionamento' })
       }
+      // O cliente deve utilizar o campo do veículo ou do cartão pelo menos para identificação do usuário
+      if (!this.configuracoesService.configuracoes.Patio.CampoCartao && 
+      !this.configuracoesService.configuracoes.Patio.CampoVeiculo) {
+        reject({ Titulo: 'Configurar patio', Mensagem: 'Suas configurações de identificação do veículo são inválidas. Habilite o campo do veículo ou do cartão de identificação no pátio. Deseja acessar a tela de configurações agora?', Rota: 'configuracoes?pagina=patio' })
+      }
       else {
         // Se não utiliza estacionamento, então tem que ter algum serviço cadastrado
         this.providerServicos.lista().then(servicos => {
@@ -261,7 +266,7 @@ export class HomePage {
         this.validarSaida(retorno.data.Veiculo)
       }
       else if (retorno.data.Operacao == 'excluir') {
-        this.excluir(retorno.data.Veiculo)
+        this.confirmarExclusao(retorno.data.Veiculo)
       }
       // Operações de saída do veículo
       else if (retorno.data.Operacao == 'postergar' || retorno.data.Operacao == 'pagamento') {
@@ -276,10 +281,7 @@ export class HomePage {
           this.bluetooth.imprimirRecibo(retorno.data.Movimento, retorno.data.Operacao)
         }
 
-        // Exibe uma propagando na saída do veículo
-        setTimeout(() => {
-          this.propagandaService.showInterstitialAds()
-        }, 2000);
+        this.propagandaService.showInterstitialAds()
       }
       // Alteração ou inclusão de veículo
       else {        

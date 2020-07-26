@@ -5,4 +5,6 @@ export class ConfiguracaoPatio {
   CampoResponsavel = true
   CampoCliente = true
   CampoObservacao = true
+  CampoVeiculo = true
+  CampoCartao = false
 }

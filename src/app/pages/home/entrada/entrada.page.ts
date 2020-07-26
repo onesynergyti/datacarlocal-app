@@ -13,6 +13,7 @@ import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { ValidarAcessoPage } from '../../validar-acesso/validar-acesso.page';
 import { MensalistasService } from 'src/app/dbproviders/mensalistas.service';
 import { Mensalista } from 'src/app/models/mensalista';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 @Component({
   selector: 'app-entrada',
@@ -50,7 +51,8 @@ export class EntradaPage implements OnInit {
     private alertController: AlertController,
     private funcionariosProvider: FuncionariosService,
     public configuracoesService: ConfiguracoesService,
-    private providerMensalistas: MensalistasService
+    private providerMensalistas: MensalistasService,
+    private barcodeScanner: BarcodeScanner
   ) { 
     this.veiculo = navParams.get('veiculo')
     this.inclusao = navParams.get('inclusao')
@@ -59,11 +61,11 @@ export class EntradaPage implements OnInit {
   ngOnInit() {
   }
 
-  async abrirModalFuncionarios(funcionarios) {
+  async abrirModalFuncionarios() {
     const modal = await this.modalCtrl.create({
       component: SelectPopupModalPage,
       componentProps: {
-        'lista': funcionarios,
+        'classe': 'funcionario',
         'keyField': 'Nome',
         'titulo': 'Funcionários',
         'icone': 'person'
@@ -79,17 +81,10 @@ export class EntradaPage implements OnInit {
     return await modal.present(); 
   }
 
-  async procederAlteracaoFuncionario() {
-    await this.funcionariosProvider.exibirProcessamento('Carregando funcionários...')
-    this.funcionariosProvider.lista().then(funcionarios => {
-      this.abrirModalFuncionarios(funcionarios)
-    })
-  }
-
   async alterarFuncionario() {
     // Verifica permissão para editar o funcionário
     if (this.inclusao || !this.configuracoesService.configuracoes.Seguranca.ExigirSenhaAlterarResponsavel) {
-      this.procederAlteracaoFuncionario()
+      this.abrirModalFuncionarios()
     }
     else {
       const modal = await this.modalCtrl.create({
@@ -101,7 +96,7 @@ export class EntradaPage implements OnInit {
   
       modal.onWillDismiss().then((retorno) => {
         if (retorno.data == true)
-          this.procederAlteracaoFuncionario()
+          this.abrirModalFuncionarios()
       })
   
       return await modal.present(); 
@@ -181,10 +176,44 @@ export class EntradaPage implements OnInit {
     }
   }
 
+  async confirmarSaida(operacao) {
+    await this.patioProvider.exibirProcessamento('Registrando entrada...')
+
+    this.patioProvider.lista(true, false, this.veiculo.Placa).then(veiculos => {
+      // Não permite cadastro de veículo ativo com mesma placa          
+      if (!this.inclusao || veiculos.length == 0) {
+        this.providerMensalistas.validarMensalista(this.veiculo.Entrada, this.veiculo.Placa).then((mensalistaValido: Mensalista) => {
+          this.veiculo.IdMensalista = mensalistaValido != null ? mensalistaValido.Id : 0
+
+          this.patioProvider.salvar(this.veiculo)
+          .then((veiculo) => {
+            this.modalCtrl.dismiss({ Operacao: operacao, Veiculo: veiculo })
+          })
+          .catch((erro) => {
+            alert('Não foi possível inserir o veículo. ' + JSON.stringify(erro))
+          })
+        })
+        .finally(() => {
+          this.patioProvider.ocultarProcessamento()
+        })        
+      }
+      else {
+        this.patioProvider.ocultarProcessamento()
+        this.utils.mostrarToast('Já existe um veículo no pátio com essa placa.', 'danger')            
+      }
+    })
+  }
+
+  confirmarOperacao(operacao) {
+    setTimeout(() => {
+      this.modalCtrl.dismiss({ Operacao: operacao, Veiculo: this.veiculo })
+    }, 1);
+  }
+
   async concluir(operacao = 'entrada') {
     this.avaliouFormulario = true
 
-    const valido = (this.veiculo.Placa && this.veiculo.Placa.length == 7) &&
+    const valido = ((this.veiculo.Placa && this.veiculo.Placa.length == 7) || (this.veiculo.CodigoCartao.length > 0)) &&
       this.veiculo.TipoVeiculo && 
       (!this.veiculo.Modelo || this.veiculo.Modelo.length <= 30) && 
       (!this.veiculo.Nome || this.veiculo.Nome.length <= 100) && 
@@ -194,39 +223,71 @@ export class EntradaPage implements OnInit {
       (!this.veiculo.Telefone || this.utils.telefoneValido(this.veiculo.Telefone))
     if (valido) {
       // Para finalizar o atendimento tem que finalizar os serviços
-      if (operacao == 'finalizar' && this.veiculo.PossuiServicosPendentes) 
-        this.utils.mostrarToast('Existem serviços pendentes de execução. Você deve excluir ou finalizar antes de realizar o pagamento.', 'danger', 3000)      
+      if (operacao == 'finalizar' && this.veiculo.PossuiServicosPendentes)  {
+        const alert = await this.alertController.create({
+          header: 'Serviços pendentes',
+          message: 'Existem serviços não realizados nesse veículo. Confirma a realização deles para registrar a saída?',
+          buttons: [
+            {
+              text: 'Não',
+              role: 'cancel',
+              cssClass: 'secondary',
+            }, {
+              text: 'Sim',
+              handler: () => {
+                this.veiculo.Servicos.forEach(servicoAtual => {
+                  servicoAtual.Executado = true
+                })
+                this.confirmarSaida(operacao)
+              }
+            }
+          ]  
+        });
+      
+        await alert.present();  
+      }
       // Edição ou inclusão
       else if (operacao != 'excluir') {
-        await this.patioProvider.exibirProcessamento('Registrando entrada...')
-
-        this.patioProvider.lista(true, false, this.veiculo.Placa).then(veiculos => {
-          // Não permite cadastro de veículo ativo com mesma placa          
-          if (!this.inclusao || veiculos.length == 0) {
-            this.providerMensalistas.validarMensalista(this.veiculo.Entrada, this.veiculo.Placa).then((mensalistaValido: Mensalista) => {
-              this.veiculo.IdMensalista = mensalistaValido != null ? mensalistaValido.Id : 0
-    
-              this.patioProvider.salvar(this.veiculo)
-              .then((veiculo) => {
-                this.modalCtrl.dismiss({ Operacao: operacao, Veiculo: veiculo })
-              })
-              .catch((erro) => {
-                alert('Não foi possível inserir o veículo. ' + JSON.stringify(erro))
-              })
-            })
-            .finally(() => {
-              this.patioProvider.ocultarProcessamento()
-            })        
-          }
-          else {
-            this.patioProvider.ocultarProcessamento()
-            this.utils.mostrarToast('Já existe um veículo no pátio com essa placa.', 'danger')            
-          }
-        })
+        this.confirmarSaida(operacao)
       }
       // Exclusão
-      else 
-        this.modalCtrl.dismiss({ Operacao: operacao, Veiculo: this.veiculo })
+      else {
+        if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaExcluirVeiculoPatio) {
+          const alert = await this.alertController.create({
+            header: 'Excluir veículo ' + this.veiculo.Placa,
+            message: 'Deseja realmente excluir o veículo?',
+            buttons: [
+              {
+                text: 'Não',
+                role: 'cancel',
+                cssClass: 'secondary',
+              }, {
+                text: 'Sim',
+                handler: () => {
+                  this.confirmarOperacao(operacao)
+                }
+              }
+            ]  
+          });
+        
+          await alert.present();
+        }
+        else {
+          const modal = await this.modalCtrl.create({
+            component: ValidarAcessoPage,
+            componentProps: {
+              'mensagem': 'Informe a senha de administrador para excluir o veículo.'
+            }  
+          });
+      
+          modal.onDidDismiss().then((retorno) => {
+            if (retorno.data == true)
+              this.confirmarOperacao(operacao)
+          })
+      
+          return await modal.present(); 
+        }
+      }
     }
   }
 
@@ -285,6 +346,23 @@ export class EntradaPage implements OnInit {
     let mensagem = this.configuracoesService.configuracoes.Mensagens.ConclusaoServicos
     mensagem = mensagem.replace('<PLACA>', this.utils.formatarPlaca(this.veiculo.Placa))
     this.utils.abrirWhatsapp(this.veiculo.Telefone, mensagem)
+  }
+
+  async leituraCartao() {
+    if (!this.inclusao) {
+      const options = {
+        prompt : "Aponte a câmera para o cartão de identificação.",
+  
+      }
+      this.barcodeScanner.scan(options).then(barcodeData => {
+        if (barcodeData.text != '') {
+          this.veiculo.CodigoCartao = barcodeData.text
+        }
+      })
+    }
+    else {
+      this.utils.mostrarToast('O código do cartão não pode ser alterado.', 'danger')
+    }
   }
 
   selecionarDataPrevisao() {

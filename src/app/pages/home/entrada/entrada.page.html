@@ -25,6 +25,21 @@
         <h2>{{ veiculo.Entrada | date:"dd/MM/yyyy - HH:mm" }}</h2>
       </ion-col>
     </ion-row>
+    <ion-row *ngIf="configuracoesService.configuracoes.Patio.CampoCartao">
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="card"></ion-icon>
+        Código do cartão de identificação
+      </ion-col>
+      <ion-col size-xs="10">
+        <ion-item class="ion-no-margin ion-no-padding">
+          <ion-label position="floating">Código do cartão</ion-label>
+          <ion-input type="text" [disabled]="!inclusao" [(ngModel)]="veiculo.CodigoCartao"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size-xs="2" (click)="leituraCartao()">
+        <ion-icon class="iconeLinha" name="camera"></ion-icon>
+      </ion-col>
+    </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
@@ -32,7 +47,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
+      <ion-col size-xs="12" class="ion-no-margin ion-no-padding" *ngIf="configuracoesService.configuracoes.Patio.CampoVeiculo">
         <ion-grid>
           <ion-row>
             <ion-col>
@@ -123,7 +138,7 @@
         </ion-item>
       </ion-col>
       <ion-col size-xs="2" (click)="utils.abrirWhatsapp(veiculo.Telefone)">
-        <ion-icon id="iconeWhatsapp" [ngClass]="{'fontCorLight': veiculo.Telefone == null || veiculo.Telefone.length < 10, 'fontCorSucesso': veiculo.Telefone != null && veiculo.Telefone.length >= 10}" name="logo-whatsapp"></ion-icon>
+        <ion-icon class="iconeLinha" [ngClass]="{'fontCorLight': veiculo.Telefone == null || veiculo.Telefone.length < 10, 'fontCorSucesso': veiculo.Telefone != null && veiculo.Telefone.length >= 10}" name="logo-whatsapp"></ion-icon>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="configuracoesService.configuracoes.Patio.CampoObservacao"> 
@@ -238,9 +253,9 @@
 <ion-footer>
   <ion-grid>
     <ion-row>
-      <ion-col size-xs="12" *ngIf="avaliouFormulario && (!veiculo.Placa || veiculo.Placa.length != 7)" class="subTitulo fundoPerigo">
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && ((!veiculo.Placa || veiculo.Placa.length != 7) && (veiculo.CodigoCartao.length == 0))" class="subTitulo fundoPerigo">
         <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
-        Informe uma placa válida
+        {{ configuracoesService.configuracoes.Patio.CampoCartao ? configuracoesService.configuracoes.Patio.CampoVeiculo ? 'Placa ou cartão inválidos' : 'Cartão de identificação inválido' : 'Placa inválida' }}
       </ion-col>
       <ion-col size-xs="12" *ngIf="avaliouFormulario && veiculo.Modelo && veiculo.Modelo.length > 30" class="subTitulo fundoPerigo">
         <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>

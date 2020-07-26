@@ -49,6 +49,7 @@
       <ion-col size-xs="12" class="ion-no-margin ion-no-padding" *ngFor="let veiculo of movimento.Veiculos">
         <div id="divCabecalho" class="fundoSecundario ion-text-center">
           <h3>Entrada: {{ veiculo.Entrada | date:"dd/MM/yyyy - HH:mm" }}</h3>
+          <h4>Permanência: {{ this.veiculo.tempoPermanencia }}</h4>
         </div>
         <ion-list lines="full">
           <ion-item *ngFor="let servico of veiculo.Servicos">

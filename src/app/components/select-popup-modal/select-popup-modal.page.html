@@ -2,7 +2,11 @@
 
 <ion-searchbar autocapitalize="on" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
 
-<ion-content>
+<ion-content *ngIf="carregandoLista">
+  <ion-spinner class="spinnerCentro"></ion-spinner>
+</ion-content>
+
+<ion-content *ngIf="!carregandoLista">
   <ion-grid [@listAnimation]="listaFiltrada.length">
     <ion-row>
       <ion-col size-xs="12" *ngFor="let item of listaFiltrada" class="separadorCampo textoItemListaPadrao textoLimitado" (click)="concluir(item)">
@@ -12,3 +16,16 @@
     </ion-row>
   </ion-grid>
 </ion-content>
+
+<ion-footer *ngIf="classe != null">
+  <ion-grid class="ion-no-padding ion-no-margin">
+    <ion-row>
+      <ion-col>
+        <ion-button color="success" expand="block" (click)="adicionar()">
+          <ion-icon slot="start" name="add-circle"></ion-icon>
+          Adicionar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

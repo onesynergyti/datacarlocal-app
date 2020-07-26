@@ -17,7 +17,8 @@ export class Veiculo {
   Funcionario: Funcionario
   Localizacao: string = ''
   Ativo: boolean = true
-  IdMensalista : number = 0
+  IdMensalista: number = 0
+  CodigoCartao: string = ''
 
   constructor(veiculo: Veiculo = null) {
     if (veiculo != null) {
@@ -42,6 +43,7 @@ export class Veiculo {
       this.Localizacao = veiculo.Localizacao
       this.Ativo = veiculo.Ativo
       this.IdMensalista = veiculo.IdMensalista
+      this.CodigoCartao = veiculo.CodigoCartao
     }
   }
 
@@ -63,6 +65,27 @@ export class Veiculo {
 
   precoServico(servico: ServicoVeiculo): number{
     return servico.precoServico(this.TipoVeiculo)
+  }
+
+  plural(valor) {
+    return valor != 1 ? 's' : ''
+  }
+
+  get tempoPermanencia() {
+    const diferenca = Math.floor(this.Saida.getTime() / 60000) - Math.floor(this.Entrada.getTime() / 60000)
+    
+    // Calcula os dias
+    const dias = Math.floor(diferenca / 1440) // Dias
+    let sobra = diferenca % 1440
+
+    // Calcula os horas
+    const horas = Math.floor(sobra / 60) // horas
+    sobra = diferenca % 60
+
+    // Calcula os minutos
+    const minutos = Math.round(sobra) // minutos
+
+    return dias > 0 ? `${dias} dia${this.plural(dias)} ${horas} hora${this.plural(horas)} e ${minutos} minuto${this.plural(minutos)}` : `${horas} hora${this.plural(horas)} e ${minutos} minuto${this.plural(minutos)}`
   }
 
   get TotalServicos() {

@@ -57,8 +57,8 @@ export class PatioService extends ServiceBaseService {
 
     // Se for inclusão
     if (!veiculo.Id) {
-      sql = 'insert into veiculos (Placa, Modelo, TipoVeiculo, Entrada, Saida, Telefone, Nome, Observacoes, Servicos, EntregaAgendada, PrevisaoEntrega, Funcionario, Localizacao, Ativo, IdMensalista) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-      data = [veiculo.Placa.toUpperCase().replace(/[^a-zA-Z0-9]/g,''), veiculo.Modelo, veiculo.TipoVeiculo, new DatePipe('en-US').transform(veiculo.Entrada, 'yyyy-MM-dd HH:mm:ss'), veiculo.Saida != null ? new DatePipe('en-US').transform(veiculo.Saida, 'yyyy-MM-dd HH:mm:ss') : null, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, new DatePipe('en-US').transform(veiculo.PrevisaoEntrega, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(veiculo.Funcionario), veiculo.Localizacao, veiculo.Ativo, veiculo.IdMensalista];
+      sql = 'insert into veiculos (Placa, CodigoCartao, Modelo, TipoVeiculo, Entrada, Saida, Telefone, Nome, Observacoes, Servicos, EntregaAgendada, PrevisaoEntrega, Funcionario, Localizacao, Ativo, IdMensalista) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+      data = [veiculo.Placa.toUpperCase().replace(/[^a-zA-Z0-9]/g,''), veiculo.CodigoCartao, veiculo.Modelo, veiculo.TipoVeiculo, new DatePipe('en-US').transform(veiculo.Entrada, 'yyyy-MM-dd HH:mm:ss'), veiculo.Saida != null ? new DatePipe('en-US').transform(veiculo.Saida, 'yyyy-MM-dd HH:mm:ss') : null, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, new DatePipe('en-US').transform(veiculo.PrevisaoEntrega, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(veiculo.Funcionario), veiculo.Localizacao, veiculo.Ativo, veiculo.IdMensalista];
     }
     else {
       sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Saida = ?, Telefone = ?, Nome = ?, Observacoes = ?, Servicos = ?, EntregaAgendada = ?, PrevisaoEntrega = ?, Funcionario = ?, Localizacao = ?, Ativo = ?, IdMensalista = ? where Id = ?';
@@ -168,8 +168,8 @@ export class PatioService extends ServiceBaseService {
             movimento.Veiculos.forEach(veiculoAtual => {
               promisesTx.push(
                 new Promise((resolve, reject) => {
-                  const sqlInclusaoHistoricoVeiculo = 'insert into veiculosHistorico (Placa, TipoVeiculo, IdFuncionario, Valor, Descontos, Acrescimos, Entrada, Saida, Pagamento) values (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-                  const dataInclusaoHistoricoVeiculo = [veiculoAtual.Placa, veiculoAtual.TipoVeiculo, veiculoAtual.Funcionario ? veiculoAtual.Funcionario.Id : null, veiculoAtual.TotalServicos, veiculoAtual.TotalDescontos, veiculoAtual.TotalAcrescimos, new DatePipe('en-US').transform(veiculoAtual.Entrada, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(veiculoAtual.Saida, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss')];
+                  const sqlInclusaoHistoricoVeiculo = 'insert into veiculosHistorico (Placa, CodigoCartao, TipoVeiculo, IdFuncionario, Valor, Descontos, Acrescimos, Entrada, Saida, Pagamento) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                  const dataInclusaoHistoricoVeiculo = [veiculoAtual.Placa, veiculoAtual.CodigoCartao, veiculoAtual.TipoVeiculo, veiculoAtual.Funcionario ? veiculoAtual.Funcionario.Id : null, veiculoAtual.TotalServicos, veiculoAtual.TotalDescontos, veiculoAtual.TotalAcrescimos, new DatePipe('en-US').transform(veiculoAtual.Entrada, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(veiculoAtual.Saida, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss')];
                   tx.executeSql(sqlInclusaoHistoricoVeiculo, dataInclusaoHistoricoVeiculo, () => { resolve() }, (erro) => { reject(erro) })
                 })
               )      

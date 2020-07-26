@@ -40,11 +40,11 @@ export class CadastroServicoPage implements OnInit {
   ngOnInit() {
   }
 
-  async abrirModalServico(servicos) {
+  async selecionarServico() {
     const modal = await this.modalCtrl.create({
       component: SelectPopupModalPage,
       componentProps: {
-        'lista': servicos,
+        'classe': 'servico',
         'keyField': 'Nome',
         'titulo': 'Serviços',
         'icone': 'construct'
@@ -117,12 +117,4 @@ export class CadastroServicoPage implements OnInit {
   excluir() {
     this.modalCtrl.dismiss({ Operacao: 'excluir', ServicoVeiculo: this.servicoVeiculo})
   }
-
-  async selecionarServico() {
-    await this.servicosProvider.exibirProcessamento('Listando serviços...')
-    this.servicosProvider.lista().then((servicos => {
-      this.abrirModalServico(servicos)
-    }))    
-  }
-
 }

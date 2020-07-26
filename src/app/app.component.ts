@@ -7,7 +7,7 @@ import { SenhaAdministradorPage } from './pages/senha-administrador/senha-admini
 import { Utils } from './utils/utils';
 import { ConfiguracoesService } from './services/configuracoes.service';
 import { ValidarAcessoPage } from './pages/validar-acesso/validar-acesso.page';
-import { Configuracoes } from './models/configuracoes';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -59,7 +59,7 @@ export class AppComponent {
   }
 
   abrirWhatsAppSuporte() {
-    this.utils.abrirWhatsapp('31999082737')
+    this.utils.abrirWhatsapp(environment.whatsappSuporte)
   }
 
   get configuracoes() {

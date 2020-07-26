@@ -1,5 +1,5 @@
 <ion-header>
-  <app-header titulo="Configurações gerais" ocultarRetorno="true" iconeBotaoAdicional="chevron-back" (onClickBotaoAdicional)="fecharItem()"></app-header>
+  <app-header titulo="Configurações" ocultarRetorno="true" iconeBotaoAdicional="chevron-back" (onClickBotaoAdicional)="fecharItem()"></app-header>
 </ion-header>
 
 <ion-content *ngIf="configuracoes != null">
@@ -98,6 +98,16 @@
       <ion-row>
         <ion-col>
           <ion-list>
+            <ion-item>
+              <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Dados do veículo', 'Ative essa opção para controlar incluir informações de placa e modelo do veículo.')"></ion-icon>
+              <ion-label>Dados do veículo</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoVeiculo"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Cartão de identificação', 'Ative essa opção para controlar a identificação por cartões codificados.')"></ion-icon>
+              <ion-label>Cartão de identificação</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoCartao"></ion-toggle>
+            </ion-item>
             <ion-item>
               <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Responsável pelo veículo', 'Ative essa opção para controlar o responsável pelo atendimento do veículo no pátio.')"></ion-icon>
               <ion-label>Responsável pelo veículo</ion-label>
@@ -238,7 +248,7 @@
           <ion-item>
             <ion-icon class="iconeAjuda" name="information-circle-outline" (click)="utils.alerta('Minutos de carência', 'Indica os minutos onde a permanência não será cobrada. Após esse período o sistema fará a cobrança computando o tempo integral, inclusive os minutos de carência. Se quiser cobrar a partir da entrada do veículo informe 0 minutos de carência.')"></ion-icon>
             <ion-label position="floating">Minutos de carência</ion-label>
-            <ion-input autocapitalize="on" type="text" [(ngModel)]="configuracoes.Estacionamento.MinutosCarencia"></ion-input>
+            <ion-input autocapitalize="on" type="number" [(ngModel)]="configuracoes.Estacionamento.MinutosCarencia"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -255,7 +265,7 @@
         <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
           <ion-item>
             <ion-label position="floating">Minutos iniciais</ion-label>
-            <ion-input autocapitalize="on" type="text" [(ngModel)]="configuracoes.Estacionamento.QuantidadePrimeirosMinutos"></ion-input>
+            <ion-input autocapitalize="on" type="number" [(ngModel)]="configuracoes.Estacionamento.QuantidadePrimeirosMinutos"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>

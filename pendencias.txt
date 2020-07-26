@@ -126,6 +126,8 @@ OK - Texto de informação do campo "Identificação da localização": está fa
 OK -* Nos campos digitáveis tem como configurar para o teclado funcionar automaticamente em modo "frase"? Já colocando a primeira letra em maiúsculo e mudando para minúsculo após sua digitação.
 OK - Quando clico em Finalizar na tela do atendimento ele está informando que já existe um veículo com essa placa no pátio.
 OK - Quando solicitar a senha já dar foco no campo para vir com o teclado já aberto para o usuário.
+OK - Permitir utilizar cartões ao invés de informar os dados do veículo. Basicamente o usuário poderá entrar com a placa ou com o código do cartão com a leitura pela câmera ou digitado
+SEGUNDA VERSÃO - Icone de "i" na tela de início nos toogles do IOS estão muito próximos
 SEGUNDA VERSÃO - Ao finalizar, o tempo de permanência pode ter um botão para o detalhamento desta cobrança. Tipo um veículo que permaneça 50 minutos o relatório seria algo assim:
    Fração de 30 minutos: R$ 10,00
    Fração de 15 minutos: R$  7,00
@@ -133,15 +135,18 @@ SEGUNDA VERSÃO - Ao finalizar, o tempo de permanência pode ter um botão para 
    Total (50 minutos):   R$ 21,00TESTAR - Leitura do código de barras: o hint na parte de baixo da câmera fala em EXEMPLO a ser lido. Talvez seja o caso de colocar algo "Se não possui o código de barras volte e procure pela placa".
 TESTAR - Os ícones de informação estão com o fundo preenchido.
 SEGUNDA VERSÃO -* Acho desnecessário o ícone no canto direito do campo "Responsável"  já que ao clicar no campo ele já abre a lista de funcionários.
+OK - Ao clicar na botão excluir veículo na tela de cadastro ele pede a senha do administrador. Se aí eu clico em "Cancelar" ou no fechar ele volta para a tela principal. Acho que devia voltar para a tela anterior, que é Cadastro do Veículo.
+OK - Ao clicar em finalizar na tela de entrada, exibir a opção de marcar todos os serviços como realizado, igual na tela de listagem
+OK - Ao abrir a tela para pesquisar funcionário podia ter nela um atalho para o cadastro. Do jeito atual se o responsável não tiver sido cadastrado ainda o usuário terá que cancelar a entrada, inclusive perdendo os dados já informados, ir no menu para cadastrar o responsável e voltar para registrar a entrada.
+OK - Na hora de finalizar tem que mostrar o tempo de permanência.
+TESTAR - Após a finalização a propaganda demora a aparecer. Poderia ser mais instântaneo?
+OK - Criar a chaves das tabelas para garantir consistência
+OK - Definir whatsapp para suporte
+OK - Input numérico na configuração de valor fixo nos minutos e carência na tabela de estacionamento
 - Bluetooth para IOS na impressão
-- Criar a chaves das tabelas para garantir consistência
-- Definir whatsapp para suporte
 - Backup das informações
-- Icone de "i" na tela de início nos toogles do IOS estão muito próximos
 - Alterar ícone dos aplicativo e configurar cada tipo de config.xml para cada tipo
 - Alterar imagem da tela de splash
-- Permitir utilizar cartões ao invés de informar os dados do veículo. Basicamente o usuário poderá entrar com a placa ou com o código do cartão com a leitura pela câmera ou digitado
-- Ao abrir a tela para pesquisar funcionário podia ter nela um atalho para o cadastro. Do jeito atual se o responsável não tiver sido cadastrado ainda o usuário terá que cancelar a entrada, inclusive perdendo os dados já informados, ir no menu para cadastrar o responsável e voltar para registrar a entrada.
-- Ao clicar na botão excluir veículo na tela de cadastro ele pede a senha do administrador. Se aí eu clico em "Cancelar" ou no fechar ele volta para a tela principal. Acho que devia voltar para a tela anterior, que é Cadastro do Veículo.
-- Após a finalização a propaganda demora a aparecer. Poderia ser mais instântaneo?
-- Na hora de finalizar tem que mostrar o tempo de permanência.
+- Incluir no vídeo a possibilidade de backup nas nuvens e uso de cartão para controle
+TESTAR - Incluir validação de senha na inclusão da tela de pesquisa de funcionários e serviços
+- Imprimir observações do veículo no recibo de entrada
