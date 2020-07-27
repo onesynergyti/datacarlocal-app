@@ -85,7 +85,12 @@ export class Veiculo {
     // Calcula os minutos
     const minutos = Math.round(sobra) // minutos
 
-    return dias > 0 ? `${dias} dia${this.plural(dias)} ${horas} hora${this.plural(horas)} e ${minutos} minuto${this.plural(minutos)}` : `${horas} hora${this.plural(horas)} e ${minutos} minuto${this.plural(minutos)}`
+    if (dias > 0)
+      return `${dias} dia${this.plural(dias)} ${horas} hora${this.plural(horas)} e ${minutos} minuto${this.plural(minutos)}`
+    else if (horas > 0)
+      return `${horas} hora${this.plural(horas)} e ${minutos} minuto${this.plural(minutos)}`
+    else
+      return `${minutos} minuto${this.plural(minutos)}`
   }
 
   get TotalServicos() {
