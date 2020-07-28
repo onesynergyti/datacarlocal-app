@@ -1,6 +1,8 @@
+import { environment } from 'src/environments/environment'
+
 export class ConfiguracaoEstacionamento {
-  UtilizarEstacionamento: boolean = true
-  IncluirServicoEstacionamento: boolean = true
+  UtilizarEstacionamento: boolean = environment.codigoSistema == 4
+  IncluirServicoEstacionamento: boolean = environment.codigoSistema == 4
   MinutosCarencia: number = 0
   UtilizaFracao15Minutos: boolean
   UtilizaFracao30Minutos: boolean

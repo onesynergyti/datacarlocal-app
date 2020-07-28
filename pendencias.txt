@@ -150,3 +150,4 @@ OK - Input numérico na configuração de valor fixo nos minutos e carência na 
 - Incluir no vídeo a possibilidade de backup nas nuvens e uso de cartão para controle
 TESTAR - Incluir validação de senha na inclusão da tela de pesquisa de funcionários e serviços
 - Imprimir observações do veículo no recibo de entrada
+- Gráfico de tipos de receita não está atualizando automaticamente
