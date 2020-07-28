@@ -314,7 +314,7 @@ export class HomePage {
     }
     this.barcodeScanner.scan(options).then(barcodeData => {      
       if (barcodeData.text != '') {
-        let veiculo = this.veiculos.find(itemAtual => this.utils.stringPura(itemAtual.Placa) == this.utils.stringPura(barcodeData.text))
+        let veiculo = this.veiculos.find(itemAtual => (this.utils.stringPura(itemAtual.Placa) == this.utils.stringPura(barcodeData.text)) || (this.utils.stringPura(itemAtual.CodigoCartao) == this.utils.stringPura(barcodeData.text)))
         if (veiculo != null) {
           // Se houver serviços pendentes abre o cadastro do veículo para poder alterar
           if (veiculo.PossuiServicosPendentes) 
