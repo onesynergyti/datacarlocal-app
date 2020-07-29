@@ -53,7 +53,12 @@ export class HomePage {
     private navController: NavController,
     private alertController: AlertController,
     private providerServicos: ServicosService
-  ) { }
+  ) { 
+    // Propagando ao entrar no sistema
+    setTimeout(() => {
+      this.propagandaService.showInterstitialAds()
+    }, 2000);
+  }
 
   ionViewWillEnter() {
     this.veiculos = []
@@ -296,12 +301,14 @@ export class HomePage {
           // Se for inclusão imprime o recibo
           this.veiculos.push(veiculo)
 
-          this.utils.mostrarToast(inclusao ? 'Veículo adicionado com sucesso' : 'Alteração realizada com sucesso', 'success')        
-
+          this.utils.mostrarToast(inclusao ? 'Veículo adicionado com sucesso' : 'Alteração realizada com sucesso', 'success')   
+          
           if (this.bluetooth.dispositivoSalvo != null && this.configuracoesService.configuracoes.Recibo.ImprimirReciboEntrada) { 
             await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
             this.bluetooth.imprimirRecibo(retorno.data.Veiculo)
           }
+
+          this.propagandaService.showInterstitialAds()
         }
       }
     }
