@@ -23,7 +23,7 @@ export class AppComponent {
     private navController: NavController,
     private databaseProvider: DatabaseService,
     private modalController: ModalController,
-    private utils: Utils,
+    public utils: Utils,
     private configuracoesService: ConfiguracoesService
   ) {
     this.initializeApp();

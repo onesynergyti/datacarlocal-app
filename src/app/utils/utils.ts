@@ -19,6 +19,10 @@ export class Utils {
     window.location.href=`https://api.whatsapp.com/send?phone=55${celular}&text=${mensagem.replace(' ', '%20')}`;
   }
 
+  abrirPlayListReuz() {  
+    window.location.href='https://www.youtube.com/playlist?list=PLSBIkb0_POjdrvunUn_58mDJE8aFhNgJT';
+  }
+
   async alerta(titulo, mensagem) {
       const alert = await this.alertCtrl.create({
       message: mensagem,

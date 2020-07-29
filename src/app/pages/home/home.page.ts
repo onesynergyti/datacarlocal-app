@@ -44,7 +44,7 @@ export class HomePage {
     private providerPatio: PatioService,
     private modalController: ModalController,
     public bluetooth: BluetoothService,
-    private utils: Utils,
+    public utils: Utils,
     private barcodeScanner: BarcodeScanner,
     public configuracoesService: ConfiguracoesService,
     public propagandaService: PropagandasService,
