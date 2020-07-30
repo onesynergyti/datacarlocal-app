@@ -8,6 +8,7 @@ import { Utils } from './utils/utils';
 import { ConfiguracoesService } from './services/configuracoes.service';
 import { ValidarAcessoPage } from './pages/validar-acesso/validar-acesso.page';
 import { environment } from 'src/environments/environment';
+import { Push, PushOptions, PushObject } from '@ionic-native/push/ngx'
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,9 @@ export class AppComponent {
     private databaseProvider: DatabaseService,
     private modalController: ModalController,
     public utils: Utils,
-    private configuracoesService: ConfiguracoesService
+    private configuracoesService: ConfiguracoesService,
+    private push: Push,
+    private clipboard: Clipboard
   ) {
     this.initializeApp();
   }
@@ -34,10 +37,22 @@ export class AppComponent {
       // Define a status bar
       this.statusBar.backgroundColorByHexString('#000000');
       this.statusBar.styleLightContent();
-
+      
       this.databaseProvider.DB.then((db) => {
         this.databaseProvider.criarTabelas(db).then(() => {
           this.splashScreen.hide()
+
+          const options: PushOptions = {
+            android: {
+              senderID: '1014885814895'
+            }
+          }
+       
+          const pushObject: PushObject = this.push.init(options)
+       
+          pushObject.on('registration').subscribe(res => {})
+       
+          // pushObject.on('notification').subscribe(res => alert(`${res.message}`))
 
           // Exige as configurações iniciais do sistema
           if (!this.configuracoesService.configuracoes.ManualUso.ConfiguracaoInicial) {

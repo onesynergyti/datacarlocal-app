@@ -53,12 +53,7 @@ export class HomePage {
     private navController: NavController,
     private alertController: AlertController,
     private providerServicos: ServicosService
-  ) { 
-    // Propagando ao entrar no sistema
-    setTimeout(() => {
-      this.propagandaService.showInterstitialAds()
-    }, 2000);
-  }
+  ) { }
 
   ionViewWillEnter() {
     this.veiculos = []
@@ -66,6 +61,10 @@ export class HomePage {
     setTimeout(() => {
       this.atualizarPatio()
     }, 1000);
+  }
+
+  ionViewDidEnter() {
+    this.propagandaService.showBannerAd()
   }
 
   atualizarPatio() {
@@ -215,6 +214,7 @@ export class HomePage {
     });
 
     modal.onWillDismiss().then((retorno) => {
+      this.propagandaService.showBannerAd()
       this.avaliarRetornoVeiculo(retorno, inclusao)
     })
 
@@ -354,6 +354,7 @@ export class HomePage {
     });
 
     modal.onWillDismiss().then((retorno) => {
+      this.propagandaService.showBannerAd()
       this.avaliarRetornoVeiculo(retorno, false)
     })
 

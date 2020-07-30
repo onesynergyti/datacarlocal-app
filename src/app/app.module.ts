@@ -20,6 +20,7 @@ import { DatePicker } from '@ionic-native/date-picker/ngx';
 import { SaidaPage } from './pages/home/saida/saida.page';
 import { SenhaAdministradorPage } from './pages/senha-administrador/senha-administrador.page';
 import { ValidarAcessoPage } from './pages/validar-acesso/validar-acesso.page';
+import { Push } from '@ionic-native/push/ngx'
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { ValidarAcessoPage } from './pages/validar-acesso/validar-acesso.page';
     BluetoothSerial,
     BarcodeScanner,
     DatePicker,
+    Push,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
