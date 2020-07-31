@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "1014885814895",
-    "firebase_url": "https://reuz-40812.firebaseio.com",
-    "project_id": "reuz-40812",
-    "storage_bucket": "reuz-40812.appspot.com"
+    "project_number": "948539553573",
+    "firebase_url": "https://one-data-car.firebaseio.com",
+    "project_id": "one-data-car",
+    "storage_bucket": "one-data-car.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1014885814895:android:05624681146fbd9a15339a",
+        "mobilesdk_app_id": "1:948539553573:android:1b19022ab0f04c73f68ccc",
         "android_client_info": {
-          "package_name": "Reuz.App"
+          "package_name": "com.reuztecnologia.estacionamento.lite"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1014885814895-jbdlqcd793v6ebba95cnauf2s07s0uqm.apps.googleusercontent.com",
+          "client_id": "948539553573-d0ub76aeakjopcknnbc3a2rsliqafrtl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.reuztecnologia.estacionamento.lite",
+            "certificate_hash": "a220666257f5e2a33cb1b6fc4cd4e89234bc42c6"
+          }
+        },
+        {
+          "client_id": "948539553573-5fut0sr2i505bugk9u3vu1ocfogpa0vr.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBIuQEx_dbgYdbQifLwcGfyMi66qRYL6Iw"
+          "current_key": "AIzaSyB0a9cjs61jre0VPyXdkNIaX2VBGgr3RSY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1014885814895-jbdlqcd793v6ebba95cnauf2s07s0uqm.apps.googleusercontent.com",
+              "client_id": "948539553573-5fut0sr2i505bugk9u3vu1ocfogpa0vr.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -37,14 +45,14 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1014885814895:android:721524396fb1f45715339a",
+        "mobilesdk_app_id": "1:948539553573:android:f184c5f7125cbdc0f68ccc",
         "android_client_info": {
           "package_name": "com.reuztecnologia.lavajato.lite"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1014885814895-mb4amplvhvhdbe11bre4ig047a3nnm6u.apps.googleusercontent.com",
+          "client_id": "948539553573-f0e9umpqkodllvmi7dham8qi2ocopius.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.reuztecnologia.lavajato.lite",
@@ -52,20 +60,20 @@
           }
         },
         {
-          "client_id": "1014885814895-jbdlqcd793v6ebba95cnauf2s07s0uqm.apps.googleusercontent.com",
+          "client_id": "948539553573-5fut0sr2i505bugk9u3vu1ocfogpa0vr.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBIuQEx_dbgYdbQifLwcGfyMi66qRYL6Iw"
+          "current_key": "AIzaSyB0a9cjs61jre0VPyXdkNIaX2VBGgr3RSY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1014885814895-jbdlqcd793v6ebba95cnauf2s07s0uqm.apps.googleusercontent.com",
+              "client_id": "948539553573-5fut0sr2i505bugk9u3vu1ocfogpa0vr.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

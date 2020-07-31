@@ -26,8 +26,7 @@ export class AppComponent {
     private modalController: ModalController,
     public utils: Utils,
     private configuracoesService: ConfiguracoesService,
-    private push: Push,
-    private clipboard: Clipboard
+    private push: Push
   ) {
     this.initializeApp();
   }
@@ -44,13 +43,13 @@ export class AppComponent {
 
           const options: PushOptions = {
             android: {
-              senderID: '1014885814895'
+              senderID: '948539553573'
             }
           }
        
           const pushObject: PushObject = this.push.init(options)
        
-          pushObject.on('registration').subscribe(res => {})
+          pushObject.on('registration').subscribe(res => { /*alert(res.registrationId)*/ })
        
           // pushObject.on('notification').subscribe(res => alert(`${res.message}`))
 
