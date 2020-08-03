@@ -9,7 +9,7 @@ import { ComponentsModule } from '../../components/components.module';
 import { EntradaPage } from './entrada/entrada.page';
 import { PipeModule } from 'src/app/pipes/pipe.module';
 import { CadastroServicoPage } from './entrada/cadastro-servico/cadastro-servico.page';
-
+import { PinchZoomModule } from 'ngx-pinch-zoom';
 
 @NgModule({
   imports: [
@@ -18,7 +18,8 @@ import { CadastroServicoPage } from './entrada/cadastro-servico/cadastro-servico
     IonicModule,
     HomePageRoutingModule,
     ComponentsModule,
-    PipeModule.forRoot() 
+    PipeModule.forRoot(),
+    PinchZoomModule 
   ],
   entryComponents: [EntradaPage, CadastroServicoPage],
   declarations: [HomePage, EntradaPage, CadastroServicoPage]

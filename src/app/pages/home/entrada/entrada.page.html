@@ -1,9 +1,13 @@
 <ion-header>
   <app-header-modal titulo="Cadastro de veículo" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
-  <ion-segment scrollable [(ngModel)]="pagina">
+  <ion-segment [(ngModel)]="pagina">
     <ion-segment-button value="veiculo">
       <ion-icon name="car-sport" class="espacadorCampo"></ion-icon>
       Veiculo
+    </ion-segment-button>
+    <ion-segment-button value="avarias" *ngIf="configuracoesService.configuracoes.Patio.CampoAvarias">
+      <ion-icon name="warning" class="espacadorCampo"></ion-icon>
+      Avarias
     </ion-segment-button>
     <ion-segment-button value="servicos">
       <ion-icon name="construct" class="espacadorCampo"></ion-icon>
@@ -12,8 +16,8 @@
   </ion-segment>
 </ion-header>
 
-<ion-content>
-  <ion-grid *ngIf="veiculo != null && pagina == 'veiculo'">
+<ion-content *ngIf="veiculo != null">
+  <ion-grid [ngClass]="{'invisivel': pagina != 'veiculo'}">
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="calendar"></ion-icon>
@@ -155,7 +159,41 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-grid *ngIf="veiculo != null && pagina == 'servicos'">
+
+  <ion-grid [ngClass]="{'invisivel': pagina != 'avarias'}">
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="warning"></ion-icon>
+        Avarias do veículo
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <pinch-zoom backgroundColor="white" id="zoom">
+          <app-avaria [idSelecionado]="idAvariaSelecionada" [avarias]="veiculo.Avarias" (onCriarAvaria)="alterarAvaria($event)" (onSelecionarAvaria)="selecionarAvaria($event)" imagemVistoria="../../../assets/img/avarias/SUV.png"></app-avaria>
+        </pinch-zoom>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
+        <div class="divInformativo" *ngIf="!veiculo.Avarias.length">
+          <h2>Nenhuma avaria indicada</h2>
+          <ion-icon name="checkbox-outline"></ion-icon>
+          <h5>Para adicionar uma avaria aponte o local no desenho do veículo</h5>
+        </div>
+        <ion-list [@listAnimation]="veiculo.Avarias.length" lines="full" *ngIf="veiculo.Avarias.length">
+          <ion-item *ngFor="let avaria of veiculo.Avarias" (click)="selecionarAvaria(avaria)">
+            <h3 [ngClass]="{'negrito': idAvariaSelecionada == avaria.Id}">{{ avaria.Nome }}</h3>
+            <ion-note slot="end" (click)="excluirAvaria(avaria)">
+              <ion-icon name="trash" class="iconeAcao"></ion-icon>
+            </ion-note>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid [ngClass]="{'invisivel': pagina != 'servicos'}">
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>

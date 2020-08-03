@@ -22,6 +22,10 @@ export class PropagandasService {
     this.admobFree.interstitial.prepare().then(() => { })
   }  
 
+  hideBanner() {
+    this.admobFree.banner.hide()
+  }
+
   showBannerAd() {
     let bannerConfig: AdMobFreeBannerConfig = {
         isTesting: false,
@@ -29,14 +33,6 @@ export class PropagandasService {
         id: "ca-app-pub-2818472978128447/8556213188"
     };
     this.admobFree.banner.config(bannerConfig);
-
-    this.admobFree.banner.prepare()
-    .then(() => { })
-    // Em caso de erro tenta novamente em 10 minutos
-    .catch(() => {
-      setTimeout(() => {
-        this.showBannerAd()
-      }, 600000);
-    })
+    this.admobFree.banner.prepare().then(() => { })
   }  
 }

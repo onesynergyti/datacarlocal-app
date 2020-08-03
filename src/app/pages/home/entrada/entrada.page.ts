@@ -14,6 +14,7 @@ import { ValidarAcessoPage } from '../../validar-acesso/validar-acesso.page';
 import { MensalistasService } from 'src/app/dbproviders/mensalistas.service';
 import { Mensalista } from 'src/app/models/mensalista';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { Avaria } from 'src/app/models/avaria';
 
 @Component({
   selector: 'app-entrada',
@@ -41,6 +42,7 @@ export class EntradaPage implements OnInit {
   inclusao = false
   veiculo: Veiculo
   avaliouFormulario = false
+  idAvariaSelecionada = 0
   
   constructor(
     private modalCtrl: ModalController,
@@ -52,7 +54,7 @@ export class EntradaPage implements OnInit {
     private funcionariosProvider: FuncionariosService,
     public configuracoesService: ConfiguracoesService,
     private providerMensalistas: MensalistasService,
-    private barcodeScanner: BarcodeScanner
+    private barcodeScanner: BarcodeScanner,
   ) { 
     this.veiculo = navParams.get('veiculo')
     this.inclusao = navParams.get('inclusao')
@@ -79,6 +81,58 @@ export class EntradaPage implements OnInit {
     })
 
     return await modal.present(); 
+  }
+
+  async alterarAvaria(avaria) {
+    const alert = await this.alertController.create({
+      header: 'Inclusão de avaria',
+      inputs: [
+        {
+          name: 'descricao',
+          placeholder: 'Descrição da avaria',
+          type: 'text',
+          value: avaria.Nome
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Ok',
+          handler: data => {
+            if (data.descricao != null && data.descricao.length) {
+              avaria.Cor = 'red'    
+
+              let avariaEdicao = new Avaria(avaria)
+              avariaEdicao.Nome = data.descricao
+
+              // Se possui Id quer dizer que é edição 
+              if (avariaEdicao.Id != null && avariaEdicao.Id > 0) {
+                let avariaLocalizada = this.veiculo.Avarias.find(item => item.Id == avariaEdicao.Id)
+                // Se já existir uma avaria com o mesmo Id, substitui ou exclui
+                if (avariaLocalizada != null) {
+                  let index = this.veiculo.Avarias.indexOf(avariaLocalizada)
+                  this.veiculo.Avarias.splice(index, 1, avariaEdicao)
+                }
+              }
+              else {
+                this.veiculo.Avarias.push(avariaEdicao)
+                let idAux = 1
+                this.veiculo.Avarias.map(itemAtual => {
+                  itemAtual.Id = idAux++
+                })
+              }
+            } 
+            else {
+              this.utils.mostrarToast('A descrição da avaria é obrigatória', 'danger')
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();  
   }
 
   async alterarFuncionario() {
@@ -296,6 +350,14 @@ export class EntradaPage implements OnInit {
       this.veiculo.PrevisaoEntrega = new Date()
   }
 
+  get imagemVistoria() {
+    return '/assets/img/avarias/SUV.png'
+  }
+
+  selecionarAvaria(avaria: Avaria) {
+    this.idAvariaSelecionada = avaria.Id
+  }
+
   selecionarTipoVeiculo(tipoVeiculo) {
     this.veiculo.TipoVeiculo = tipoVeiculo
   }
@@ -305,7 +367,7 @@ export class EntradaPage implements OnInit {
     if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaEditarServicosVeiculo) {
       const alert = await this.alertController.create({
         header: 'Excluir serviço?',
-        message: `Tem certeza que deseja excluir o serviço <string>${servico.Nome}</strong>`,
+        message: `Tem certeza que deseja excluir o serviço <strong>${servico.Nome}</strong>`,
         buttons: [
           {
             text: 'Não',
@@ -340,6 +402,27 @@ export class EntradaPage implements OnInit {
   
       return await modal.present(); 
     }
+  }
+
+  async excluirAvaria(avaria) {
+    const alert = await this.alertController.create({
+      header: 'Excluir avaria?',
+      message: `Tem certeza que deseja excluir a avaria <strong>${avaria.Nome}</strong>`,
+      buttons: [
+        {
+          text: 'Não',
+          role: 'cancel',
+          cssClass: 'secondary'
+        }, {
+          text: 'Sim',
+          handler: () => {
+            this.utilsLista.excluirDaLista(this.veiculo.Avarias, avaria)
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   informarConclusaoWhatsapp() {

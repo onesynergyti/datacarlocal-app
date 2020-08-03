@@ -42,6 +42,10 @@ export class ConfiguracoesService {
     if (valor.Mensagens == null)
       valor.Mensagens = new ConfiguracaoMensagens()
 
+    // Tratamento para campos novos sem valor nos clientes antigos
+    if (valor.Patio.CampoAvarias == null)
+      valor.Patio.CampoAvarias = true
+
     return valor
 }
 

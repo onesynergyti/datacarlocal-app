@@ -184,6 +184,8 @@ export class HomePage {
   }
 
   async procederCadastroEntrada(veiculo) {
+    this.propagandaService.hideBanner()
+
     let inclusao = false
     let veiculoEdicao: Veiculo
 
@@ -341,6 +343,8 @@ export class HomePage {
   }
    
   async procederRegistroSaida(veiculo: Veiculo) {
+    this.propagandaService.hideBanner()
+
     let movimento = new Movimento()
     movimento.Veiculos.push(veiculo)
     movimento.Data = new Date()

@@ -1,0 +1,30 @@
+#divAvarias {
+    width: 100%;
+    position: relative;
+}
+
+#imgAvarias {
+    position: relative;
+    width: 100%;
+}
+
+#divMarcador {
+    border-radius: 50%;
+    -webkit-box-shadow: 2px 2px 4px 0px var(--ion-color-medium);
+    -moz-box-shadow: 2px 2px 4px 0px var(--ion-color-medium);
+    box-shadow: 2px 2px 4px 0px var(--ion-color-medium);
+    transition: 0.6s;
+    z-index: 999;
+}
+
+.semDestaque {
+    border: 0px solid darkblue;
+    transition: 0.6s;
+}
+
+.destacado {
+    border: 3px solid darkblue;
+    transition: 0.6s;
+}
+
+

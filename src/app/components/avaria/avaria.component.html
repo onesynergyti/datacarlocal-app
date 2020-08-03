@@ -1,0 +1,6 @@
+<div>
+  <div id="divAvarias">
+    <img id="imgAvarias" (click)="criarAvaria($event)" #imgAvaria [src]="imagemVistoria">
+    <div id="divMarcador" *ngFor="let avaria of avarias" class="marcador" (click)="selecionarAvaria(avaria)" [ngClass]="{'destacado': avaria.Id == idSelecionado, 'semDestaque': avaria.Id != idSelecionado}" [ngStyle]=estiloMarcador(avaria)></div>
+  </div>
+</div>

@@ -1,5 +1,6 @@
 import { ServicoVeiculo } from './servico-veiculo'
 import { Funcionario } from './funcionario'
+import { Avaria } from './avaria'
 
 export class Veiculo {
   Id: number = 0
@@ -19,6 +20,7 @@ export class Veiculo {
   Ativo: boolean = true
   IdMensalista: number = 0
   CodigoCartao: string = ''
+  Avarias: Avaria[] = []
 
   constructor(veiculo: Veiculo = null) {
     if (veiculo != null) {
@@ -44,6 +46,12 @@ export class Veiculo {
       this.Ativo = veiculo.Ativo
       this.IdMensalista = veiculo.IdMensalista
       this.CodigoCartao = veiculo.CodigoCartao
+      this.Avarias = []
+      if (veiculo.Avarias != null) {
+        veiculo.Avarias.forEach(avariaAtual => {
+          this.Avarias.push(new Avaria(avariaAtual))
+        })
+      }
     }
   }
 
