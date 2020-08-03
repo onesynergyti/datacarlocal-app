@@ -9,6 +9,7 @@ import { ConfiguracoesService } from './services/configuracoes.service';
 import { ValidarAcessoPage } from './pages/validar-acesso/validar-acesso.page';
 import { environment } from 'src/environments/environment';
 import { Push, PushOptions, PushObject } from '@ionic-native/push/ngx'
+import { Clipboard } from '@ionic-native/clipboard/ngx';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +27,8 @@ export class AppComponent {
     private modalController: ModalController,
     public utils: Utils,
     private configuracoesService: ConfiguracoesService,
-    private push: Push
+    private push: Push,
+    private clipboard: Clipboard
   ) {
     this.initializeApp();
   }
@@ -49,7 +51,10 @@ export class AppComponent {
        
           const pushObject: PushObject = this.push.init(options)
        
-          pushObject.on('registration').subscribe(res => { /*alert(res.registrationId)*/ })
+          pushObject.on('registration').subscribe(res => { 
+            //alert(res.registrationId) 
+            //this.clipboard.copy(res.registrationId);
+          })
        
           // pushObject.on('notification').subscribe(res => alert(`${res.message}`))
 

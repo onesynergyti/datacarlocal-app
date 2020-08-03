@@ -33,7 +33,7 @@
         <resource-file src="resources/android/xml/network_security_config.xml" target="app/src/main/res/xml/network_security_config.xml" />
         <allow-intent href="market:*" />
 
-        <!-- LAVA JATO 
+        <!-- LAVA JATO -->
         <icon density="ldpi" src="resources/android/icon/lavajato/drawable-ldpi-icon.png" />
         <icon density="mdpi" src="resources/android/icon/lavajato/drawable-mdpi-icon.png" />
         <icon density="hdpi" src="resources/android/icon/lavajato/drawable-hdpi-icon.png" />
@@ -52,7 +52,7 @@
         <splash density="port-xhdpi" src="resources/android/splash/lavajato/drawable-port-xhdpi-screen.png" />
         <splash density="port-xxhdpi" src="resources/android/splash/lavajato/drawable-port-xxhdpi-screen.png" />
         <splash density="port-xxxhdpi" src="resources/android/splash/lavajato/drawable-port-xxxhdpi-screen.png" />
-        -->
+        
 
         <!-- ESTACIONAMENTO -->
         <icon density="ldpi" src="resources/android/icon/estacionamento/drawable-ldpi-icon.png" />

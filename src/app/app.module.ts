@@ -21,6 +21,7 @@ import { SaidaPage } from './pages/home/saida/saida.page';
 import { SenhaAdministradorPage } from './pages/senha-administrador/senha-administrador.page';
 import { ValidarAcessoPage } from './pages/validar-acesso/validar-acesso.page';
 import { Push } from '@ionic-native/push/ngx'
+import { Clipboard } from '@ionic-native/clipboard/ngx';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { Push } from '@ionic-native/push/ngx'
     BarcodeScanner,
     DatePicker,
     Push,
+    Clipboard,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
