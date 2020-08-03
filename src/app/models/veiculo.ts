@@ -1,6 +1,7 @@
 import { ServicoVeiculo } from './servico-veiculo'
 import { Funcionario } from './funcionario'
 import { Avaria } from './avaria'
+import { ProdutoVeiculo } from './produto-veiculo'
 
 export class Veiculo {
   Id: number = 0
@@ -13,6 +14,7 @@ export class Veiculo {
   Telefone: string = ''
   Nome: string = ''
   Servicos: ServicoVeiculo[] = []
+  Produtos: ProdutoVeiculo[] = []
   EntregaAgendada: boolean = false
   PrevisaoEntrega: Date
   Funcionario: Funcionario
@@ -38,6 +40,12 @@ export class Veiculo {
       if (veiculo.Servicos != null) {
         veiculo.Servicos.forEach(servicoVeiculoAtual => {
           this.Servicos.push(new ServicoVeiculo(servicoVeiculoAtual))
+        })
+      }
+      this.Produtos = []
+      if (veiculo.Produtos != null) {
+        veiculo.Produtos.forEach(produtoVeiculoAtual => {
+          this.Produtos.push(new ProdutoVeiculo(produtoVeiculoAtual))
         })
       }
       this.EntregaAgendada = veiculo.EntregaAgendada

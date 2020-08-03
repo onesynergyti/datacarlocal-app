@@ -1,0 +1,47 @@
+<app-header-modal titulo="Cadastro de produto" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
+        Identificação
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="separadorCampo">
+        <ion-item>
+          <ion-label position="floating">Nome do produto</ion-label>
+          <ion-input autocapitalize="on" type="text" [(ngModel)]="produto.Nome"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && (produto.Nome == null || produto.Nome.length == 0)" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Informe o nome do produto
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  
+  <ion-grid class="ion-no-padding ion-no-margin">
+    <ion-row>
+      <ion-col>
+        <ion-button color="success" expand="block" (click)="concluir()">
+          <ion-icon slot="start" name="checkmark-circle"></ion-icon>
+          Salvar
+        </ion-button>
+      </ion-col>
+      <ion-col size-xs="2" *ngIf="!inclusao" (click)="concluir('excluir')">
+        <ion-button expand="block" color="danger">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>
