@@ -5,6 +5,7 @@ import { UtilsLista } from '../utils/utils-lista';
 import { DatabaseService } from './database.service';
 import { DatePipe } from '@angular/common';
 import { FuncionariosService } from './funcionarios.service';
+import { Avaria } from '../models/avaria';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,17 @@ export class HistoricoVeiculosService extends ServiceBaseService {
             for (var i = 0; i < data.rows.length; i++) {
               let venda = data.rows.item(i)
               
+              // Converte as avarias do veículos para o objeto adequado
+              if (venda.Avarias == null)
+              venda.Avarias = []
+              else {
+                let avariasVeiculo = JSON.parse(venda.Avarias)
+                venda.Avarias = []
+                avariasVeiculo.forEach(avariaAtual => {
+                  venda.Avarias.push(new Avaria(avariaAtual))
+                });
+              }
+
               // Define as datas com o formato adequado com separador 
               venda.Pagamento = venda.Pagamento.split('-').join('/')
               venda.Entrada = venda.Entrada.split('-').join('/')

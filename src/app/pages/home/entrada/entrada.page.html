@@ -164,19 +164,38 @@
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="warning"></ion-icon>
-        Avarias do veículo
+        Selecione o modelo do veículo
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
+        <ion-segment scrollable [(ngModel)]="veiculo.ImagemAvaria">
+          <ion-segment-button *ngFor="let imagem of imagensAvariaTipoVeiculo" [value]="caminhoImagem(imagem.NomeImagem)">
+            {{imagem.Nome}}
+          </ion-segment-button>
+        </ion-segment>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <pinch-zoom backgroundColor="white" id="zoom">
-          <app-avaria [idSelecionado]="idAvariaSelecionada" [avarias]="veiculo.Avarias" (onCriarAvaria)="alterarAvaria($event)" (onSelecionarAvaria)="selecionarAvaria($event)" imagemVistoria="../../../assets/img/avarias/SUV.png"></app-avaria>
+        <div class="divInformativo" *ngIf="veiculo.TipoVeiculo != null && veiculo.TipoVeiculo > 0 && (veiculo.ImagemAvaria == null || veiculo.ImagemAvaria == '')">
+          <h2>Selecione o tipo de imagem</h2>
+          <ion-icon name="car-sport-outline"></ion-icon>
+          <h5>É necessário informar o tipo da imagem para apontar as avarias</h5>
+        </div>
+        <div class="divInformativo" *ngIf="(veiculo.TipoVeiculo == null || veiculo.TipoVeiculo == 0) && (veiculo.ImagemAvaria == null || veiculo.ImagemAvaria == '')">
+          <h2>Informe o tipo do veículo</h2>
+          <ion-icon name="car-sport-outline"></ion-icon>
+          <h5>É necessário informar o tipo do veículo na página do veículo</h5>
+        </div>
+        <pinch-zoom [ngClass]="{'invisivel': veiculo.ImagemAvaria == null || veiculo.ImagemAvaria == ''}" backgroundColor="white" id="zoom">
+          <app-avaria [idSelecionado]="idAvariaSelecionada" [avarias]="veiculo.Avarias" (onCriarAvaria)="alterarAvaria($event)" (onSelecionarAvaria)="selecionarAvaria($event)" [imagemVistoria]="veiculo.ImagemAvaria"></app-avaria>
         </pinch-zoom>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
-        <div class="divInformativo" *ngIf="!veiculo.Avarias.length">
+        <div class="divInformativo" *ngIf="!veiculo.Avarias.length && veiculo.ImagemAvaria != null && veiculo.ImagemAvaria != ''">
           <h2>Nenhuma avaria indicada</h2>
           <ion-icon name="checkbox-outline"></ion-icon>
           <h5>Para adicionar uma avaria aponte o local no desenho do veículo</h5>

@@ -43,6 +43,17 @@ export class EntradaPage implements OnInit {
   veiculo: Veiculo
   avaliouFormulario = false
   idAvariaSelecionada = 0
+  imagensAvaria = [
+    { TipoVeiculo: 1, Nome: 'Comum', NomeImagem: 'moto_padrao_v1.png' },
+    { TipoVeiculo: 2, Nome: 'Hatch', NomeImagem: 'hatch_v1.png' },
+    { TipoVeiculo: 2, Nome: 'Conversível', NomeImagem: 'conversivel_v1.png' },
+    { TipoVeiculo: 2, Nome: 'Pickup', NomeImagem: 'pickup_pequena_v1.png' },
+    { TipoVeiculo: 3, Nome: 'Sedã', NomeImagem: 'seda_v1.png' },
+    { TipoVeiculo: 3, Nome: 'Conversível', NomeImagem: 'conversivel_v1.png' },
+    { TipoVeiculo: 4, Nome: 'SUV', NomeImagem: 'suv_v1.png' },
+    { TipoVeiculo: 4, Nome: 'Pickup', NomeImagem: 'pickup_grande_v1.png' },
+    { TipoVeiculo: 4, Nome: 'Van', NomeImagem: 'van_v1.png' }
+  ]
   
   constructor(
     private modalCtrl: ModalController,
@@ -61,6 +72,14 @@ export class EntradaPage implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  get imagensAvariaTipoVeiculo() {
+    return this.imagensAvaria.filter(imagemAtual => imagemAtual.TipoVeiculo == this.veiculo.TipoVeiculo)
+  }
+
+  caminhoImagem(imagem) {
+    return '../../../assets/img/avarias/' + imagem
   }
 
   async abrirModalFuncionarios() {
@@ -358,8 +377,33 @@ export class EntradaPage implements OnInit {
     this.idAvariaSelecionada = avaria.Id
   }
 
-  selecionarTipoVeiculo(tipoVeiculo) {
-    this.veiculo.TipoVeiculo = tipoVeiculo
+  async selecionarTipoVeiculo(tipoVeiculo) {
+    if (this.veiculo.Avarias.length > 0) {
+      const alert = await this.alertController.create({
+        header: 'As avarias apontadas serão perdidas?',
+        message: `Tem certeza que deseja alterar o tipo de veículo?`,
+        buttons: [
+          {
+            text: 'Não',
+            role: 'cancel',
+            cssClass: 'secondary'
+          }, {
+            text: 'Sim',
+            handler: () => {
+              this.veiculo.TipoVeiculo = tipoVeiculo
+              this.veiculo.Avarias = []
+              this.veiculo.ImagemAvaria = ''
+            }
+          }
+        ]
+      });
+  
+      await alert.present();
+    }
+    else {
+      this.veiculo.TipoVeiculo = tipoVeiculo
+      this.veiculo.ImagemAvaria = ''
+    }
   }
 
   async excluirServico(servico) {
@@ -372,10 +416,7 @@ export class EntradaPage implements OnInit {
           {
             text: 'Não',
             role: 'cancel',
-            cssClass: 'secondary',
-            handler: (blah) => {
-              console.log('Confirm Cancel: blah');
-            }
+            cssClass: 'secondary'
           }, {
             text: 'Sim',
             handler: () => {

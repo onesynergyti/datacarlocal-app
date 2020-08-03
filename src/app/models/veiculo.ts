@@ -21,6 +21,7 @@ export class Veiculo {
   IdMensalista: number = 0
   CodigoCartao: string = ''
   Avarias: Avaria[] = []
+  ImagemAvaria: string = ''
 
   constructor(veiculo: Veiculo = null) {
     if (veiculo != null) {
@@ -52,6 +53,7 @@ export class Veiculo {
           this.Avarias.push(new Avaria(avariaAtual))
         })
       }
+      this.ImagemAvaria = veiculo.ImagemAvaria
     }
   }
 

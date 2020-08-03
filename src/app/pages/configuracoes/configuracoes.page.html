@@ -99,6 +99,11 @@
         <ion-col>
           <ion-list>
             <ion-item>
+              <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Controle de avarias', 'Ative essa opção para controlar as possíveis avarias do veículo.')"></ion-icon>
+              <ion-label>Controle de avarias</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoAvarias"></ion-toggle>
+            </ion-item>
+            <ion-item>
               <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Dados do veículo', 'Ative essa opção para controlar incluir informações de placa e modelo do veículo.')"></ion-icon>
               <ion-label>Dados do veículo</ion-label>
               <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoVeiculo"></ion-toggle>

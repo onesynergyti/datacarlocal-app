@@ -425,6 +425,26 @@ export class BluetoothService extends ServiceBaseService {
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.CMD.EOL);
     this.bluetoothSerial.write(this.qrCode(veiculo.Placa));
+
+    if (veiculo.Avarias.length > 0) {
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
+      this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
+      this.bluetoothSerial.write(this.CMD.EOL);
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_ON);
+      this.bluetoothSerial.write('AVARIAS DO VEÍCULO');
+      this.bluetoothSerial.write(this.CMD.EOL);
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
+      this.bluetoothSerial.write(this.utils.completarCaracter('', configuracao.Recibo.CaractersImpressao, '-'));
+      this.bluetoothSerial.write(this.CMD.EOL);
+      this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_ALIGN_LT);
+      let numero = 1
+      veiculo.Avarias.forEach(avaria => {
+        this.bluetoothSerial.write(numero + ' - ' + avaria.Nome);
+        numero++
+        this.bluetoothSerial.write(this.CMD.EOL);  
+      });
+    }
     if (veiculo.Observacoes && veiculo.Observacoes.length > 0) {
       this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_NORMAL);
       this.bluetoothSerial.write(this.CMD.TEXT_FORMAT.TXT_BOLD_OFF);
