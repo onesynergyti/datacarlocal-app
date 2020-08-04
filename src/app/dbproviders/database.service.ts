@@ -51,6 +51,7 @@ export class DatabaseService extends ServiceBaseService {
         tx.executeSql('CREATE TABLE IF NOT EXISTS veiculosCadastro (Placa TEXT primary key NOT NULL, Modelo TEXT, TipoVeiculo integer NOT NULL, Telefone TEXT, Nome TEXT)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS movimentos (Id integer primary key AUTOINCREMENT NOT NULL, Data DATE, Descricao TEXT, ValorDinheiro REAL, ValorDebito REAL, ValorCredito REAL, Veiculos TEXT, IdMensalista integer, Inicio Date, Fim Date)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS movimentosServicos (IdMovimento integer NOT NULL, IdServico integer NOT NULL, Nome TEXT NOT NULL, Valor REAL NOT NULL, Desconto REAL, Acrescimo REAL, PRIMARY KEY (IdMovimento, IdServico), FOREIGN KEY (IdMovimento) REFERENCES movimentos (Id))', [])
+        tx.executeSql('CREATE TABLE IF NOT EXISTS movimentosProdutos (IdMovimento integer NOT NULL, IdProduto integer NOT NULL, Nome TEXT NOT NULL, Valor REAL NOT NULL, Desconto REAL, Acrescimo REAL, PRIMARY KEY (IdMovimento, IdProduto), FOREIGN KEY (IdMovimento) REFERENCES movimentos (Id))', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS mensalistas (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT, Documento TEXT, Telefone TEXT, Email TEXT, Ativo integer, Veiculos TEXT, IdsServicos TEXT)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS funcionarios (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT, Documento TEXT, Telefone TEXT, Email TEXT, Ativo integer)', [])
       })

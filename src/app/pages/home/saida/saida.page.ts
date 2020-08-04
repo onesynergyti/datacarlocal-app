@@ -34,7 +34,7 @@ export class SaidaPage {
 
   async concluir(operacao = 'pagamento') {
     if (operacao == 'pagamento') {
-      if (this.totalPago < this.movimento.TotalServicos)
+      if (this.totalPago < this.movimento.Total)
         this.utils.mostrarToast('O valor pago não foi suficiente.', 'danger')
       else if (this.troco > this.movimento.ValorDinheiro) {
         this.utils.mostrarToast('O valor pago em dinheiro não permite troco.', 'danger')
@@ -42,7 +42,7 @@ export class SaidaPage {
       else {
         await this.patio.exibirProcessamento('Registrando saida...')
 
-        this.patio.registrarSaida(this.movimento, this.movimento.TotalServicos)
+        this.patio.registrarSaida(this.movimento, this.movimento.Total)
         .then(() => {
           this.modalCtrl.dismiss({ Operacao: operacao, Movimento: this.movimento })
         })
@@ -120,7 +120,7 @@ export class SaidaPage {
 
   get troco() {    
     // Arredondamento para garantir o valor correto do troco com duas casas decimais
-    const troco = this.totalPago - this.movimento.TotalServicos
+    const troco = this.totalPago - this.movimento.Total
     return troco > 0 ? troco : 0
   }
 }

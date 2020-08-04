@@ -3,6 +3,7 @@ import { Produto } from 'src/app/models/produto';
 import { ModalController, NavParams } from '@ionic/angular';
 import { ProdutosService } from 'src/app/dbproviders/produtos.service';
 import { Utils } from 'src/app/utils/utils';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 @Component({
   selector: 'app-cadastro-produto',
@@ -19,7 +20,8 @@ export class CadastroProdutoPage implements OnInit {
     private modalController: ModalController,
     private providerProduto: ProdutosService,
     public navParams: NavParams,
-    public utils: Utils
+    public utils: Utils,
+    private barcodeScanner: BarcodeScanner
   ) { 
     this.produto = navParams.get('produto')
     this.inclusao = navParams.get('inclusao')
@@ -50,5 +52,17 @@ export class CadastroProdutoPage implements OnInit {
         })
       }      
     }
+  }
+
+  async leituraCodigo() {
+    const options = {
+      prompt : "Se não possuir um código de barras informe manualmente.",
+
+    }
+    this.barcodeScanner.scan(options).then(barcodeData => {      
+      if (barcodeData.text != '') {
+        this.produto.Codigo = barcodeData.text
+      }
+    })
   }
 }

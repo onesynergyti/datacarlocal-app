@@ -1,24 +1,27 @@
 <ion-header>
-  <app-header-modal titulo="Cadastro de serviço" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+  <app-header-modal titulo="Cadastro de produto" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
 </ion-header>
 
 <ion-content>
-  <ion-grid *ngIf="servicoVeiculo != null">
+  <ion-grid *ngIf="produtoVeiculo != null">
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLight">
-        <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
-        Dados do serviço
+        <ion-icon class="iconeSubTitulo" name="barcode"></ion-icon>
+        Dados do produto
       </ion-col>
     </ion-row>
-    <ion-row (click)="selecionarServico()">
-      <ion-col size-xs="12" class="separadorCampo">
+    <ion-row>
+      <ion-col size-xs="12" class="separadorCampo" (click)="selecionarProduto()">
         <h4 class="negrito espacamentoCampo">Nome</h4>
-        <h3>{{ servicoVeiculo.Nome }}</h3>
+        <h3>{{ produtoVeiculo.Nome }}</h3>
       </ion-col>
-      <ion-col size-xs="12">
+      <ion-col size-xs="6">
         <h4 class="negrito espacamentoCampo">Preço</h4>
-        <h3 *ngIf="servicoVeiculo.Id">{{ servicoVeiculo.precoServico(tipoVeiculo, true) | decimalPipe:"R$ " }}</h3>
-        <h3 *ngIf="!servicoVeiculo.Id">Calculado na saída</h3>
+        <h3>{{ produtoVeiculo.Preco | decimalPipe:"R$ " }}</h3>
+      </ion-col>
+      <ion-col size-xs="6">
+        <h4 class="negrito espacamentoCampo">Quantidade</h4>
+        <ion-input type="number" [ngModel]="produtoVeiculo.Quantidade | decimalInputPipe" (ionInput)="produtoVeiculo.Quantidade=utils.trataCampoNumero($event.target.value)"></ion-input>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -31,13 +34,13 @@
       <ion-col>
         <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">Acrescimo</ion-label>
-          <ion-input type="number" [ngModel]="servicoVeiculo.Acrescimo | decimalInputPipe" (ionInput)="servicoVeiculo.Acrescimo=utils.trataCampoNumero($event.target.value)"></ion-input>
+          <ion-input type="number" [ngModel]="produtoVeiculo.Acrescimo | decimalInputPipe" (ionInput)="produtoVeiculo.Acrescimo=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
       <ion-col>
         <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">Desconto</ion-label>
-          <ion-input type="number" [ngModel]="servicoVeiculo.Desconto | decimalInputPipe" (ionInput)="servicoVeiculo.Desconto=utils.trataCampoNumero($event.target.value)"></ion-input>
+          <ion-input type="number" [ngModel]="produtoVeiculo.Desconto | decimalInputPipe" (ionInput)="produtoVeiculo.Desconto=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -47,7 +50,7 @@
 <ion-footer>
   <ion-grid>
     <ion-row>
-      <ion-col size-xs="12" *ngIf="avaliouFormulario && servicoVeiculo.precoServico(this.tipoVeiculo) < 0 && this.servicoVeiculo.Id" class="subTitulo fundoPerigo">
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && produtoVeiculo.precoFinal < 0" class="subTitulo fundoPerigo">
         <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
         Desconto inválido
       </ion-col>

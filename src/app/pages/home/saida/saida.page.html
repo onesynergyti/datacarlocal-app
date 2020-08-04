@@ -71,8 +71,29 @@
             </ion-grid>
           </ion-item>
         </ion-list>
+        <ion-list lines="full">
+          <ion-item *ngFor="let produto of veiculo.Produtos">
+            <ion-grid class="ion-no-margin ion-no-padding">
+              <ion-row>
+                <ion-col size-xs="9">
+                  <h3>{{ produto.Nome }}</h3>
+                  <ion-grid>
+                    <ion-row class="ion-no-padding ion-no-margin">
+                      <ion-col *ngIf="produto.Acrescimo > 0"><h5 class="fontCorPerigo">Acrescimo: {{ produto.Acrescimo | decimalPipe:"R$ " }}</h5></ion-col>
+                      <ion-col *ngIf="produto.Desconto > 0"><h5 class="fontCorSucesso">Desconto: {{ produto.Desconto | decimalPipe:"R$ " }}</h5></ion-col>
+                    </ion-row>
+                  </ion-grid>                                
+                </ion-col>
+                <ion-col class="ion-text-right">
+                  <h3>{{ produto.precoFinal | decimalPipe:"R$ " }}</h3>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-list>
       </ion-col>
     </ion-row>
+    
     <ion-row>
       <ion-col class="fundoPrimario">
         <ion-grid>
@@ -81,7 +102,7 @@
               <h2 class="negrito ion-text-left">Total</h2>
             </ion-col>
             <ion-col class="ion-text-right">
-              <h2 class="negrito">{{ movimento.TotalServicos | decimalPipe:"R$ " }}</h2>
+              <h2 class="negrito">{{ movimento.Total | decimalPipe:"R$ " }}</h2>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -145,7 +166,7 @@
           Finalizar
         </ion-button>
       </ion-col>
-      <ion-col size-xs="5" *ngIf="!somenteLeitura && movimento.Veiculos[0].Ativo == true && movimento.TotalServicos > 0">
+      <ion-col size-xs="5" *ngIf="!somenteLeitura && movimento.Veiculos[0].Ativo == true && movimento.Total > 0">
         <ion-button expand="block" color="danger" (click)="concluirDepois()">
           <ion-icon slot="start" name="document-attach"></ion-icon>
           Receber depois

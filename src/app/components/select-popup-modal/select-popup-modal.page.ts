@@ -11,6 +11,9 @@ import { CadastroServicoPage } from 'src/app/pages/configuracoes/servicos/cadast
 import { Servico } from 'src/app/models/servico';
 import { ValidarAcessoPage } from 'src/app/pages/validar-acesso/validar-acesso.page';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
+import { ProdutosService } from 'src/app/dbproviders/produtos.service';
+import { Produto } from 'src/app/models/produto';
+import { CadastroProdutoPage } from 'src/app/pages/configuracoes/produtos/cadastro-produto/cadastro-produto.page';
 
 @Component({
   selector: 'app-select-popup-modal',
@@ -47,6 +50,7 @@ export class SelectPopupModalPage {
     private utils: Utils,
     private providerFuncionarios: FuncionariosService,
     private providerServicos: ServicosService,
+    private providerProdutos: ProdutosService,
     private utilsLista: UtilsLista,
     public configuracoesService: ConfiguracoesService
   ) { 
@@ -66,6 +70,10 @@ export class SelectPopupModalPage {
           this.atualizarServicos()
           break
         }
+        case 'produto': {
+          this.atualizarProdutos()
+          break
+        }
       }
     }      
 
@@ -83,6 +91,10 @@ export class SelectPopupModalPage {
       }
       case 'servico': {
         this.adicionarServico()
+        break
+      }
+      case 'produto': {
+        this.adicionarProduto()
         break
       }
     }
@@ -170,6 +182,49 @@ export class SelectPopupModalPage {
     }
   }
 
+
+  async procederAdicionarProduto() {
+    let produtoEdicao = new Produto()
+
+    const modal = await this.modalCtrl.create({
+      component: CadastroProdutoPage,
+      componentProps: {
+        'produto': produtoEdicao,
+        'inclusao': true
+      }
+    });
+
+    modal.onWillDismiss().then((retorno) => {
+      if (retorno.data != null) {
+        this.utilsLista.atualizarLista(this.lista, retorno.data.Servico)
+      }
+    })
+
+    return await modal.present(); 
+  }
+
+  async adicionarProduto() {
+    if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaCadastroProdutos) {
+      this.procederAdicionarProduto()
+    }
+    else {
+      const modal = await this.modalCtrl.create({
+        component: ValidarAcessoPage,
+        componentProps: {
+          'mensagem': 'Informe a senha de administrador para inserir um produto.'
+        }  
+      });
+
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data == true)
+          this.procederAdicionarProduto()
+      })
+
+      return await modal.present(); 
+    }
+  }
+
+
   atualizarFuncionarios() {
     this.carregandoLista = true
     this.providerFuncionarios.lista().then(funcionarios => {
@@ -184,6 +239,16 @@ export class SelectPopupModalPage {
     this.carregandoLista = true
     this.providerServicos.lista().then(servicos => {
       this.lista = servicos
+    })
+    .finally(() => {
+      this.carregandoLista = false
+    })
+  }
+
+  atualizarProdutos() {
+    this.carregandoLista = true
+    this.providerProdutos.lista().then(produtos => {
+      this.lista = produtos
     })
     .finally(() => {
       this.carregandoLista = false

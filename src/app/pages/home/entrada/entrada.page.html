@@ -9,9 +9,9 @@
       <ion-icon name="warning" class="espacadorCampo"></ion-icon>
       Avarias
     </ion-segment-button>
-    <ion-segment-button value="servicos">
-      <ion-icon name="construct" class="espacadorCampo"></ion-icon>
-      Serviços
+    <ion-segment-button value="vendas">
+      <ion-icon name="cart" class="espacadorCampo"></ion-icon>
+      Vendas
     </ion-segment-button>
   </ion-segment>
 </ion-header>
@@ -212,69 +212,7 @@
     </ion-row>
   </ion-grid>
 
-  <ion-grid [ngClass]="{'invisivel': pagina != 'servicos'}">
-    <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLight">
-        <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
-        Serviços contratados
-      </ion-col>
-      <ion-col size-xs="12" *ngIf="avaliouFormulario && (veiculo.Servicos == null || veiculo.Servicos.length == 0)" class="subTitulo fundoPerigo">
-        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
-        Adicione um serviço
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="veiculo.Servicos != null && veiculo.Servicos.length > 0">
-      <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
-        <ion-list [@listAnimation]="veiculo.Servicos.length" lines="full">
-          <ion-item-sliding id="servico.Id" *ngFor="let servico of veiculo.Servicos">
-            <ion-item>
-              <div class="divServico" (click)="cadastrarServico(servico)">
-                <h3 class="textoLimitado espacadorCampo">{{ servico.Nome }}</h3>
-                <h5 *ngIf="veiculo.TipoVeiculo && servico.Id">{{ veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h5>                
-                <h5 *ngIf="!veiculo.TipoVeiculo && servico.Id">Selecione o tipo de veículo</h5>
-                <h5 *ngIf="!servico.Id">Preço calculado na saída</h5>
-                <ion-grid>
-                  <ion-row class="ion-no-padding ion-no-margin">
-                    <ion-col *ngIf="servico.Acrescimo > 0"><h5 class="fontCorPerigo">Acrescimo: {{ servico.Acrescimo | decimalPipe:"R$ " }}</h5></ion-col>
-                    <ion-col *ngIf="servico.Desconto > 0"><h5 class="fontCorSucesso">Desconto: {{ servico.Desconto | decimalPipe:"R$ " }}</h5></ion-col>
-                  </ion-row>
-                </ion-grid>                                
-              </div>
-              <ion-note slot="end" *ngIf="servico.Id">
-                <ion-toggle color="primary" [(ngModel)]="servico.Executado"></ion-toggle>
-              </ion-note>
-            </ion-item>
-        
-            <ion-item-options side="end">
-              <ion-item-option color="danger" (click)="excluirServico(servico)">
-                <ion-icon slot="icon-only" name="trash"></ion-icon>
-              </ion-item-option>
-            </ion-item-options>
-          </ion-item-sliding>
-        </ion-list>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="veiculo.Servicos == null || veiculo.Servicos.length == 0">
-      <ion-col size-xs="12">
-        <h5>Nenhum serviço adicionado</h5>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
-        <ion-button expand="block" (click)="cadastrarServico()">
-          <ion-icon slot="start" name="add-circle"></ion-icon>
-          Adicionar Serviço
-        </ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
-        <ion-button expand="block" [disabled]="veiculo.Telefone == null || veiculo.Telefone.length < 10" color="success" (click)="informarConclusaoWhatsapp()">
-          <ion-icon slot="start" name="logo-whatsapp"></ion-icon>
-          Informar conclusão
-        </ion-button>
-      </ion-col>
-    </ion-row>
+  <ion-grid [ngClass]="{'invisivel': pagina != 'vendas'}">
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="timer"></ion-icon>
@@ -305,6 +243,116 @@
         </ion-item>
       </ion-col>
     </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
+        Serviços contratados
+      </ion-col>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && (veiculo.Servicos == null || veiculo.Servicos.length == 0)" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Adicione um serviço
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <div class="divInformativo" *ngIf="veiculo.Servicos == null || veiculo.Servicos.length == 0">
+        <h2>Nenhum serviço</h2>
+        <ion-icon name="construct-outline"></ion-icon>
+        <h5>para adicionar um serviço utilize o botão Adicionar serviço</h5>
+      </div>
+      <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
+        <ion-list [@listAnimation]="veiculo.Servicos.length" lines="full">
+          <ion-item-sliding id="servico.Id" *ngFor="let servico of veiculo.Servicos">
+            <ion-item>
+              <div class="divLinhaCompleta" (click)="cadastrarServico(servico)">
+                <h3 class="textoLimitado espacadorCampo">{{ servico.Nome }}</h3>
+                <h5 *ngIf="veiculo.TipoVeiculo && servico.Id">{{ veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h5>                
+                <h5 *ngIf="!veiculo.TipoVeiculo && servico.Id">Selecione o tipo de veículo</h5>
+                <h5 *ngIf="!servico.Id">Preço calculado na saída</h5>
+                <ion-grid>
+                  <ion-row class="ion-no-padding ion-no-margin">
+                    <ion-col *ngIf="servico.Acrescimo > 0"><h5 class="fontCorPerigo">Acrescimo: {{ servico.Acrescimo | decimalPipe:"R$ " }}</h5></ion-col>
+                    <ion-col *ngIf="servico.Desconto > 0"><h5 class="fontCorSucesso">Desconto: {{ servico.Desconto | decimalPipe:"R$ " }}</h5></ion-col>
+                  </ion-row>
+                </ion-grid>                                
+              </div>
+              <ion-note slot="end" *ngIf="servico.Id">
+                <ion-toggle color="primary" [(ngModel)]="servico.Executado"></ion-toggle>
+              </ion-note>
+            </ion-item>
+        
+            <ion-item-options side="end">
+              <ion-item-option color="danger" (click)="excluirServico(servico)">
+                <ion-icon slot="icon-only" name="trash"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
+        <ion-button expand="block" color="success" (click)="informarConclusaoWhatsapp()">
+          <ion-icon slot="start" name="logo-whatsapp"></ion-icon>
+          Informar conclusão
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
+        <ion-button expand="block" (click)="cadastrarServico()">
+          <ion-icon slot="start" name="add-circle"></ion-icon>
+          Adicionar Serviço
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="barcode"></ion-icon>
+        Produtos adquiridos
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <div class="divInformativo" *ngIf="veiculo.Produtos == null || veiculo.Produtos.length == 0">
+        <h2>Nenhum produto</h2>
+        <ion-icon name="barcode-outline"></ion-icon>
+        <h5>para adicionar um produto utilize o botão Adicionar produto</h5>
+      </div>
+      <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
+        <ion-list [@listAnimation]="veiculo.Produtos.length" lines="full">
+          <ion-item-sliding id="produto.Id" *ngFor="let produto of veiculo.Produtos">
+            <ion-item>
+              <div class="divLinhaCompleta" (click)="cadastrarProduto(produto)">
+                <h3 class="textoLimitado espacadorCampo">{{ produto.Nome }}</h3>
+                <h5>{{ produto.precoFinal | decimalPipe:"R$ " }}</h5>
+                <ion-grid>
+                  <ion-row class="ion-no-padding ion-no-margin">
+                    <ion-col *ngIf="produto.Acrescimo > 0"><h5 class="fontCorPerigo">Acrescimo: {{ produto.Acrescimo | decimalPipe:"R$ " }}</h5></ion-col>
+                    <ion-col *ngIf="produto.Desconto > 0"><h5 class="fontCorSucesso">Desconto: {{ produto.Desconto | decimalPipe:"R$ " }}</h5></ion-col>
+                  </ion-row>
+                </ion-grid>                                
+              </div>
+            </ion-item>
+        
+            <ion-item-options side="end">
+              <ion-item-option color="danger" (click)="excluirProduto(produto)">
+                <ion-icon slot="icon-only" name="trash"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
+        <ion-button expand="block" (click)="cadastrarProduto()">
+          <ion-icon slot="start" name="add-circle"></ion-icon>
+          Adicionar Produto
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    
+
   </ion-grid>
 </ion-content>
 <ion-footer>

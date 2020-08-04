@@ -5,14 +5,50 @@
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
+        Código de barras
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="10">
+        <ion-item>
+          <ion-label position="floating">Código de barras</ion-label>
+          <ion-input type="text" [(ngModel)]="produto.Codigo"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size-xs="2" (click)="leituraCodigo()">
+        <ion-icon class="iconeLinha" name="camera"></ion-icon>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
         Identificação
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-xs="12" class="separadorCampo">
+      <ion-col size-xs="12">
         <ion-item>
           <ion-label position="floating">Nome do produto</ion-label>
           <ion-input autocapitalize="on" type="text" [(ngModel)]="produto.Nome"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size-xs="12">
+        <ion-item>
+          <ion-label position="floating">Preço</ion-label>
+          <ion-input type="number" [ngModel]="produto.Preco | decimalInputPipe" (ionInput)="produto.Preco=utils.trataCampoNumero($event.target.value)"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size-xs="12">
+        <ion-item>
+          <ion-label position="floating">Estoque atual</ion-label>
+          <ion-input type="number" [(ngModel)]="produto.EstoqueAtual"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size-xs="12">
+        <ion-item>
+          <ion-icon class="iconeAjuda" name="information-circle-outline" (click)="utils.alerta('Estoque mínimo', 'Informe o valor de estoque onde deseja ser informado que novos produtos devem ser adquiridos. Informe zero se não desejar ser informado sobre o estoque desse produto.')"></ion-icon>
+          <ion-label position="floating">Estoque mínimo</ion-label>
+          <ion-input type="number" [(ngModel)]="produto.EstoqueMinimo"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
