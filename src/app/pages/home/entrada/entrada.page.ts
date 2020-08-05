@@ -457,8 +457,43 @@ export class EntradaPage implements OnInit {
     }
   }
 
-  async excluirProduto() {
-
+  async excluirProduto(produto) {
+    // Verifica permissão para excluir serviços
+    if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaEditarServicosVeiculo) {
+      const alert = await this.alertController.create({
+        header: 'Excluir serviço?',
+        message: `Tem certeza que deseja excluir o produto <strong>${produto.Nome}</strong>`,
+        buttons: [
+          {
+            text: 'Não',
+            role: 'cancel',
+            cssClass: 'secondary'
+          }, {
+            text: 'Sim',
+            handler: () => {
+              this.utilsLista.excluirDaLista(this.veiculo.Produtos, produto)
+            }
+          }
+        ]
+      });
+  
+      await alert.present();
+    }
+    else {
+      const modal = await this.modalCtrl.create({
+        component: ValidarAcessoPage,
+        componentProps: {
+          'mensagem': `Exclusão do produto ${produto.Nome} no veículo.`
+        }
+      });
+  
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data == true)
+          this.utilsLista.excluirDaLista(this.veiculo.Produtos, produto)
+      })
+  
+      return await modal.present(); 
+    }
   }
 
   async excluirServico(servico) {
