@@ -14,6 +14,7 @@ import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { ProdutosService } from 'src/app/dbproviders/produtos.service';
 import { Produto } from 'src/app/models/produto';
 import { CadastroProdutoPage } from 'src/app/pages/configuracoes/produtos/cadastro-produto/cadastro-produto.page';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 @Component({
   selector: 'app-select-popup-modal',
@@ -43,6 +44,7 @@ export class SelectPopupModalPage {
   icone
   classe
   carregandoLista = false
+  permiteLeituraCodigo = false
 
   constructor( 
     public modalCtrl: ModalController,
@@ -52,10 +54,12 @@ export class SelectPopupModalPage {
     private providerServicos: ServicosService,
     private providerProdutos: ProdutosService,
     private utilsLista: UtilsLista,
-    public configuracoesService: ConfiguracoesService
+    public configuracoesService: ConfiguracoesService,
+    private barcodeScanner: BarcodeScanner
   ) { 
     this.classe = navParams.get('classe')
     this.icone = navParams.get('icone')
+    this.permiteLeituraCodigo = navParams.get('permiteLeituraCodigo')
     
     // Se não houver classe, trabalha com a listagem do parâmetro
     if (this.classe == null)
@@ -247,13 +251,25 @@ export class SelectPopupModalPage {
 
   atualizarProdutos() {
     this.carregandoLista = true
-    this.providerProdutos.lista().then(produtos => {
+    this.providerProdutos.lista(true).then(produtos => {
       this.lista = produtos
     })
     .finally(() => {
       this.carregandoLista = false
     })
   }
+
+  async leituraCodigo() {
+    const options = {
+      prompt : "Se não possuir um código de barras informe manualmente.",
+
+    }
+    this.barcodeScanner.scan(options).then(barcodeData => {      
+      if (barcodeData.text != '') {
+        this.pesquisa = barcodeData.text
+      }
+    })
+  }  
 
   async concluir(item) {
     this.modalCtrl.dismiss(item);
@@ -264,8 +280,12 @@ export class SelectPopupModalPage {
   }
 
   get listaFiltrada() {
-    if (this.pesquisa != null)
-      return this.lista.filter(itemAtual => this.utils.stringPura(itemAtual[this.keyField].toUpperCase()).includes(this.utils.stringPura(this.pesquisa.toUpperCase())))
+    if (this.pesquisa != null) {
+      if (this.classe == 'produto') 
+        return this.lista.filter(itemAtual => this.utils.stringPura(itemAtual.Nome.toUpperCase() + itemAtual.Codigo).includes(this.utils.stringPura(this.pesquisa.toUpperCase())))
+      else
+        return this.lista.filter(itemAtual => this.utils.stringPura(itemAtual[this.keyField].toUpperCase()).includes(this.utils.stringPura(this.pesquisa.toUpperCase())))
+    }
     else
       return this.lista
   }

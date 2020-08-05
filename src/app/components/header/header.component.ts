@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { NavController } from '@ionic/angular';
+import { GlobalService } from 'src/app/services/global.service';
+import { ProdutosService } from 'src/app/dbproviders/produtos.service';
 
 
 @Component({
@@ -14,10 +16,24 @@ export class HeaderComponent implements OnInit {
   @Input() ocultarMenu: boolean = false
   @Input() iconeBotaoAdicional: string
   @Output() onClickBotaoAdicional: EventEmitter<any> = new EventEmitter<any>();
+  produtosAlerta = 0
 
   constructor(
-    private navController: NavController
-  ) { }
+    private navController: NavController,
+    private globalService: GlobalService,
+    private providerProdutos: ProdutosService
+  ) { 
+    this.globalService.onRealizarVenda.subscribe(() => {
+      this.providerProdutos.produtosAlerta().then(quantidade => { 
+        this.produtosAlerta = quantidade
+      })
+    })
+    this.globalService.onAlterarProduto.subscribe(() => {
+      this.providerProdutos.produtosAlerta().then(quantidade => { 
+        this.produtosAlerta = quantidade
+      })
+    })
+  }
 
   ngOnInit() {}
 

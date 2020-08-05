@@ -33,6 +33,7 @@ export class ProdutosPage implements OnInit {
   pesquisa = ''
   produtos = []
   configuracoes
+  filtrarAlertaEstoque = false
 
   constructor(
     private utils: Utils,
@@ -130,9 +131,11 @@ export class ProdutosPage implements OnInit {
   }
 
   get listaFiltrada() {
-    if (this.pesquisa == '')
-      return this.produtos
-    else
-      return this.produtos.filter(itemAtual => this.utils.stringPura(itemAtual.Nome + itemAtual.Codigo).includes(this.utils.stringPura(this.pesquisa)))
+    return this.produtos.filter(itemAtual => { 
+      let retorno = this.utils.stringPura(itemAtual.Nome + itemAtual.Codigo).includes(this.utils.stringPura(this.pesquisa)) 
+      if (this.filtrarAlertaEstoque)
+        retorno = retorno && itemAtual.EstoqueAtual <= itemAtual.EstoqueMinimo
+      return retorno
+    })
   }
 }

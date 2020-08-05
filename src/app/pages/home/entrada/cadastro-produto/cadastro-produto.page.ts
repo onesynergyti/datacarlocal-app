@@ -43,7 +43,8 @@ export class CadastroProdutoPage implements OnInit {
         'classe': 'produto',
         'keyField': 'Nome',
         'titulo': 'Produtos',
-        'icone': 'barcode'
+        'icone': 'barcode',
+        'permiteLeituraCodigo': true
       }
     })
 

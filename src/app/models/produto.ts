@@ -1,10 +1,10 @@
 export class Produto {
-  Id: number
-  Nome: string
-  Preco: number
-  EstoqueAtual: number
-  EstoqueMinimo: number
-  Codigo: string
+  Id: number = 0
+  Nome: string = ''
+  Preco: number = 0
+  EstoqueAtual: number = 0
+  EstoqueMinimo: number = 0
+  Codigo: string = ''
 
   constructor(produto: Produto = null) {
     if (produto != null) {

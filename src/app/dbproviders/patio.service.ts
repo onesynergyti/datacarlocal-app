@@ -13,6 +13,8 @@ import { ServicoVeiculo } from '../models/servico-veiculo';
 import { Funcionario } from '../models/funcionario';
 import { Avaria } from '../models/avaria';
 import { ProdutoVeiculo } from '../models/produto-veiculo';
+import { GlobalService } from '../services/global.service';
+import { ProdutosService } from './produtos.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +24,8 @@ export class PatioService extends ServiceBaseService {
   constructor(
     public loadingController: LoadingController,
     private utils: Utils,
-    private database: DatabaseService
+    private database: DatabaseService,
+    private globalService: GlobalService
   ) { 
     super(loadingController)
   }
@@ -167,7 +170,7 @@ export class PatioService extends ServiceBaseService {
                 movimento.produtosConsolidados.forEach(produtoAtual => {
                   promisesTx.push(
                     new Promise((resolve, reject) => {
-                      const sqlInclusaoProduto = 'insert into produtosServicos (IdMovimento, IdProduto, Nome, Valor, Desconto, Acrescimo) values (?, ?, ?, ?, ?, ?)';
+                      const sqlInclusaoProduto = 'insert into movimentosProdutos (IdMovimento, IdProduto, Nome, Valor, Desconto, Acrescimo) values (?, ?, ?, ?, ?, ?)';
                       const dataInclusaoProduto = [result.insertId, produtoAtual.Id, produtoAtual.Nome, produtoAtual.precoFinal, produtoAtual.Desconto, produtoAtual.Acrescimo];
                       tx.executeSql(sqlInclusaoProduto, dataInclusaoProduto, () => { resolve() }, (erro) => { reject(erro) })
                     })
@@ -177,7 +180,17 @@ export class PatioService extends ServiceBaseService {
               (erro) => { reject(erro) })
             }
 
-            Reduzir a quantidade no estoque com o consolidado de produtos
+            // Reduz a quantidade no estoque com o consolidado de produtos
+            movimento.produtosConsolidados.forEach(produtoAtual => {
+              alert('vai reduzir o estoque')
+              promisesTx.push(
+                new Promise((resolve, reject) => {
+                  const sqlEdicaoEstoque = 'update produtos set EstoqueAtual = EstoqueAtual - ? where Id = ?';
+                  const dataEdicaoEstoque = [produtoAtual.Quantidade, produtoAtual.Id];
+                  tx.executeSql(sqlEdicaoEstoque, dataEdicaoEstoque, () => { resolve() }, (erro) => { reject(erro) })
+                })
+              )      
+            });                
 
             // Insere o histórico de todos os veículos
             movimento.Veiculos.forEach(veiculoAtual => {
@@ -192,6 +205,7 @@ export class PatioService extends ServiceBaseService {
 
             // Executa todos os comandos SQL preparados
             Promise.all(promisesTx).then(() => { 
+              this.globalService.onRealizarVenda.next(movimento)              
               resolve() 
             }, 
             (erro) => { reject(erro) })

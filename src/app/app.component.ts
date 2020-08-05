@@ -10,6 +10,7 @@ import { ValidarAcessoPage } from './pages/validar-acesso/validar-acesso.page';
 import { environment } from 'src/environments/environment';
 import { Push, PushOptions, PushObject } from '@ionic-native/push/ngx'
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { GlobalService } from './services/global.service';
 
 @Component({
   selector: 'app-root',

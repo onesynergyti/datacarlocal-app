@@ -344,7 +344,6 @@ export class EntradaPage implements OnInit {
       (!this.veiculo.Nome || this.veiculo.Nome.length <= 100) && 
       (!this.veiculo.Localizacao || this.veiculo.Localizacao.length <= 50) && 
       (!this.veiculo.EntregaAgendada || (this.veiculo.EntregaAgendada && this.veiculo.PossuiServicoAgendavel)) && // Agendamento exige um serviço que permita previsão
-      (this.veiculo.Servicos != null && this.veiculo.Servicos.length > 0) &&
       (!this.veiculo.Telefone || this.utils.telefoneValido(this.veiculo.Telefone))
     if (valido) {
       // Para finalizar o atendimento tem que finalizar os serviços

@@ -248,10 +248,6 @@
         <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
         Serviços contratados
       </ion-col>
-      <ion-col size-xs="12" *ngIf="avaliouFormulario && (veiculo.Servicos == null || veiculo.Servicos.length == 0)" class="subTitulo fundoPerigo">
-        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
-        Adicione um serviço
-      </ion-col>
     </ion-row>
     <ion-row>
       <div class="divInformativo" *ngIf="veiculo.Servicos == null || veiculo.Servicos.length == 0">
@@ -385,10 +381,6 @@
       <ion-col size-xs="12" *ngIf="avaliouFormulario && veiculo.EntregaAgendada && !veiculo.PossuiServicoAgendavel" class="subTitulo fundoPerigo">
         <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
         Adicione um serviço para agendamento
-      </ion-col>
-      <ion-col size-xs="12" *ngIf="avaliouFormulario && (veiculo.Servicos == null || veiculo.Servicos.length == 0)" class="subTitulo fundoPerigo">
-        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
-        Adicione um serviço
       </ion-col>
     </ion-row>
   </ion-grid>
