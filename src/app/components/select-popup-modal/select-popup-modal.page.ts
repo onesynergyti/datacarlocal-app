@@ -200,7 +200,7 @@ export class SelectPopupModalPage {
 
     modal.onWillDismiss().then((retorno) => {
       if (retorno.data != null) {
-        this.utilsLista.atualizarLista(this.lista, retorno.data.Servico)
+        this.utilsLista.atualizarLista(this.lista, retorno.data.Produto)
       }
     })
 

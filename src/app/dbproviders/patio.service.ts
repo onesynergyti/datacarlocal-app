@@ -182,7 +182,6 @@ export class PatioService extends ServiceBaseService {
 
             // Reduz a quantidade no estoque com o consolidado de produtos
             movimento.produtosConsolidados.forEach(produtoAtual => {
-              alert('vai reduzir o estoque')
               promisesTx.push(
                 new Promise((resolve, reject) => {
                   const sqlEdicaoEstoque = 'update produtos set EstoqueAtual = EstoqueAtual - ? where Id = ?';
