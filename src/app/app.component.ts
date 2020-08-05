@@ -37,16 +37,6 @@ export class AppComponent {
     private providerProdutos: ProdutosService
   ) {
     this.initializeApp();
-    this.globalService.onRealizarVenda.subscribe(() => {
-      this.providerProdutos.produtosAlerta().then(quantidade => { 
-        this.produtosAlerta = quantidade
-      })
-    })
-    this.globalService.onAlterarProduto.subscribe(() => {
-      this.providerProdutos.produtosAlerta().then(quantidade => { 
-        this.produtosAlerta = quantidade
-      })
-    })
   }
 
   initializeApp() {
@@ -59,6 +49,17 @@ export class AppComponent {
         this.databaseProvider.criarTabelas(db).then(() => {
           this.splashScreen.hide()
 
+          this.globalService.onRealizarVenda.subscribe(() => {
+            this.providerProdutos.produtosAlerta().then(quantidade => { 
+              this.produtosAlerta = quantidade
+            })
+          })
+          this.globalService.onAlterarProduto.subscribe(() => {
+            this.providerProdutos.produtosAlerta().then(quantidade => { 
+              this.produtosAlerta = quantidade
+            })
+          })
+      
           const options: PushOptions = {
             android: {
               senderID: '948539553573'
