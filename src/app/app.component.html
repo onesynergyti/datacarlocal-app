@@ -46,6 +46,7 @@
           <ion-item (click)="navegar('produtos', configuracoes.Seguranca.ExigirSenhaCadastroProdutos)" detail button>
             <ion-icon name="barcode"></ion-icon>
             Meus Produtos
+            &nbsp;<ion-badge *ngIf="produtosAlerta > 0" color="warning">{{produtosAlerta}}</ion-badge>
           </ion-item>
           <ion-item (click)="navegar('configuracoes', true)" detail button>
             <ion-icon name="settings"></ion-icon>

@@ -11,6 +11,7 @@ import { environment } from 'src/environments/environment';
 import { Push, PushOptions, PushObject } from '@ionic-native/push/ngx'
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { GlobalService } from './services/global.service';
+import { ProdutosService } from './dbproviders/produtos.service';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,8 @@ import { GlobalService } from './services/global.service';
   styleUrls: ['app.component.scss']
 })
 export class AppComponent {
+
+  produtosAlerta = 0
 
   constructor(
     private platform: Platform,
@@ -29,9 +32,21 @@ export class AppComponent {
     public utils: Utils,
     private configuracoesService: ConfiguracoesService,
     private push: Push,
-    private clipboard: Clipboard
+    private clipboard: Clipboard,
+    private globalService: GlobalService,
+    private providerProdutos: ProdutosService
   ) {
     this.initializeApp();
+    this.globalService.onRealizarVenda.subscribe(() => {
+      this.providerProdutos.produtosAlerta().then(quantidade => { 
+        this.produtosAlerta = quantidade
+      })
+    })
+    this.globalService.onAlterarProduto.subscribe(() => {
+      this.providerProdutos.produtosAlerta().then(quantidade => { 
+        this.produtosAlerta = quantidade
+      })
+    })
   }
 
   initializeApp() {
