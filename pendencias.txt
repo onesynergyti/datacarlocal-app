@@ -143,6 +143,8 @@ TESTAR - Após a finalização a propaganda demora a aparecer. Poderia ser mais 
 OK - Criar a chaves das tabelas para garantir consistência
 OK - Definir whatsapp para suporte
 OK - Input numérico na configuração de valor fixo nos minutos e carência na tabela de estacionamento
+OK - Carregar o anúncio antes para não ter delay na exibição
+OK - Subir uma versão mínima para android
 - Bluetooth para IOS na impressão
 - Backup das informações
 - Alterar ícone dos aplicativo e configurar cada tipo de config.xml para cada tipo
@@ -151,4 +153,3 @@ OK - Input numérico na configuração de valor fixo nos minutos e carência na 
 TESTAR - Incluir validação de senha na inclusão da tela de pesquisa de funcionários e serviços
 - Imprimir observações do veículo no recibo de entrada
 - Gráfico de tipos de receita não está atualizando automaticamente. Alguns casos não funcionam, identificar quando
-- Subir uma versão mínima para android

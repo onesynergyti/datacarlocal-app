@@ -185,6 +185,8 @@ export class HomePage {
 
   async procederCadastroEntrada(veiculo) {
     this.propagandaService.hideBanner()
+    this.propagandaService.prepareInterstitialAds()
+    this.propagandaService.prepareBannerAd()
 
     let inclusao = false
     let veiculoEdicao: Veiculo
@@ -302,8 +304,6 @@ export class HomePage {
         else {
           // Se for inclusão imprime o recibo
           this.veiculos.push(veiculo)
-
-          this.utils.mostrarToast(inclusao ? 'Veículo adicionado com sucesso' : 'Alteração realizada com sucesso', 'success')   
           
           if (this.bluetooth.dispositivoSalvo != null && this.configuracoesService.configuracoes.Recibo.ImprimirReciboEntrada) { 
             await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')
@@ -312,6 +312,7 @@ export class HomePage {
 
           this.propagandaService.showInterstitialAds()
         }
+        this.utils.mostrarToast(inclusao ? 'Veículo adicionado com sucesso' : 'Alteração realizada com sucesso', 'success')   
       }
     }
   }
@@ -344,6 +345,8 @@ export class HomePage {
    
   async procederRegistroSaida(veiculo: Veiculo) {
     this.propagandaService.hideBanner()
+    this.propagandaService.prepareInterstitialAds()
+    this.propagandaService.prepareBannerAd()
 
     let movimento = new Movimento()
     movimento.Veiculos.push(veiculo)

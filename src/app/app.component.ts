@@ -12,6 +12,7 @@ import { Push, PushOptions, PushObject } from '@ionic-native/push/ngx'
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { GlobalService } from './services/global.service';
 import { ProdutosService } from './dbproviders/produtos.service';
+import { PropagandasService } from './services/propagandas.service';
 
 @Component({
   selector: 'app-root',
@@ -34,13 +35,16 @@ export class AppComponent {
     private push: Push,
     private clipboard: Clipboard,
     private globalService: GlobalService,
-    private providerProdutos: ProdutosService
+    private providerProdutos: ProdutosService,
+    private propagandaService: PropagandasService
   ) {
     this.initializeApp();
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
+      this.propagandaService.prepareBannerAd()
+
       // Define a status bar
       this.statusBar.backgroundColorByHexString('#000000');
       this.statusBar.styleLightContent();
@@ -102,7 +106,14 @@ export class AppComponent {
     return this.configuracoesService.configuracoes
   }
 
-  async navegar(url, validar = false) {  
+  async navegar(url, validar = false) { 
+    if (this.platform.is('ios')) {
+      if (url == 'impressora') {
+        alert('Essa funcionalidade estará disponível para IOS em breve.')
+        return
+      }
+    }
+    
     if (!validar) {
       this.navController.navigateForward(url) 
     }
