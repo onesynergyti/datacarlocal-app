@@ -1,3 +1,18 @@
+---------------------------
+VERIFICAÇÕES PARA A GERAÇÃO
+---------------------------
+
+--CONFIG.XML
+1. Versão do aplicativo
+2. Id do aplicativo: com.reuztecnologia.xxxxxxx
+3. Nome do aplicativo
+4. Descrição do aplicativo
+5. Ícones e splashs do aplicativo
+
+--ENVERONMENTS
+1. Código do aplicativo
+
+
 //Acesse a pasta do aplicativo
 
 // Gera versão release

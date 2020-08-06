@@ -8,7 +8,8 @@
     </ion-button>
   </ion-buttons>
   <ion-buttons slot="end">
-    <ion-menu-button *ngIf=!ocultarMenu></ion-menu-button>
+    <ion-menu-button *ngIf=!ocultarMenu></ion-menu-button>    
+    <ion-badge *ngIf="produtosAlerta > 0" color="warning">{{produtosAlerta}}</ion-badge>
   </ion-buttons>
   <ion-title class="ion-text-center">{{ titulo }}</ion-title>
 </ion-toolbar>

@@ -12,6 +12,9 @@ import { Servico } from '../models/servico';
 import { ServicoVeiculo } from '../models/servico-veiculo';
 import { Funcionario } from '../models/funcionario';
 import { Avaria } from '../models/avaria';
+import { ProdutoVeiculo } from '../models/produto-veiculo';
+import { GlobalService } from '../services/global.service';
+import { ProdutosService } from './produtos.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +24,8 @@ export class PatioService extends ServiceBaseService {
   constructor(
     public loadingController: LoadingController,
     private utils: Utils,
-    private database: DatabaseService
+    private database: DatabaseService,
+    private globalService: GlobalService
   ) { 
     super(loadingController)
   }
@@ -58,12 +62,12 @@ export class PatioService extends ServiceBaseService {
 
     // Se for inclusão
     if (!veiculo.Id) {
-      sql = 'insert into veiculos (Placa, CodigoCartao, Modelo, TipoVeiculo, Entrada, Saida, Telefone, Nome, Observacoes, Servicos, EntregaAgendada, PrevisaoEntrega, Funcionario, Localizacao, Ativo, IdMensalista, Avarias, ImagemAvaria) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-      data = [veiculo.Placa.toUpperCase().replace(/[^a-zA-Z0-9]/g,''), veiculo.CodigoCartao, veiculo.Modelo, veiculo.TipoVeiculo, new DatePipe('en-US').transform(veiculo.Entrada, 'yyyy-MM-dd HH:mm:ss'), veiculo.Saida != null ? new DatePipe('en-US').transform(veiculo.Saida, 'yyyy-MM-dd HH:mm:ss') : null, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, new DatePipe('en-US').transform(veiculo.PrevisaoEntrega, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(veiculo.Funcionario), veiculo.Localizacao, veiculo.Ativo, veiculo.IdMensalista, JSON.stringify(veiculo.Avarias), veiculo.ImagemAvaria];
+      sql = 'insert into veiculos (Placa, CodigoCartao, Modelo, TipoVeiculo, Entrada, Saida, Telefone, Nome, Observacoes, Servicos, EntregaAgendada, PrevisaoEntrega, Funcionario, Localizacao, Ativo, IdMensalista, Avarias, ImagemAvaria, Produtos) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+      data = [veiculo.Placa.toUpperCase().replace(/[^a-zA-Z0-9]/g,''), veiculo.CodigoCartao, veiculo.Modelo, veiculo.TipoVeiculo, new DatePipe('en-US').transform(veiculo.Entrada, 'yyyy-MM-dd HH:mm:ss'), veiculo.Saida != null ? new DatePipe('en-US').transform(veiculo.Saida, 'yyyy-MM-dd HH:mm:ss') : null, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, new DatePipe('en-US').transform(veiculo.PrevisaoEntrega, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(veiculo.Funcionario), veiculo.Localizacao, veiculo.Ativo, veiculo.IdMensalista, JSON.stringify(veiculo.Avarias), veiculo.ImagemAvaria, JSON.stringify(veiculo.Produtos)];
     }
     else {
-      sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Saida = ?, Telefone = ?, Nome = ?, Observacoes = ?, Servicos = ?, EntregaAgendada = ?, PrevisaoEntrega = ?, Funcionario = ?, Localizacao = ?, Ativo = ?, IdMensalista = ?, Avarias = ?, ImagemAvaria = ?  where Id = ?';
-      data = [veiculo.Modelo, veiculo.TipoVeiculo, new DatePipe('en-US').transform(veiculo.Entrada, 'yyyy-MM-dd HH:mm:ss'), veiculo.Saida != null ? new DatePipe('en-US').transform(veiculo.Saida, 'yyyy-MM-dd HH:mm:ss') : null, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, new DatePipe('en-US').transform(veiculo.PrevisaoEntrega, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(veiculo.Funcionario), veiculo.Localizacao, veiculo.Ativo, veiculo.IdMensalista, JSON.stringify(veiculo.Avarias), veiculo.ImagemAvaria, veiculo.Id];
+      sql = 'update veiculos set Modelo = ?, TipoVeiculo = ?, Entrada = ?, Saida = ?, Telefone = ?, Nome = ?, Observacoes = ?, Servicos = ?, EntregaAgendada = ?, PrevisaoEntrega = ?, Funcionario = ?, Localizacao = ?, Ativo = ?, IdMensalista = ?, Avarias = ?, ImagemAvaria = ?, Produtos = ?  where Id = ?';
+      data = [veiculo.Modelo, veiculo.TipoVeiculo, new DatePipe('en-US').transform(veiculo.Entrada, 'yyyy-MM-dd HH:mm:ss'), veiculo.Saida != null ? new DatePipe('en-US').transform(veiculo.Saida, 'yyyy-MM-dd HH:mm:ss') : null, veiculo.Telefone, veiculo.Nome, veiculo.Observacoes, JSON.stringify(veiculo.Servicos), veiculo.EntregaAgendada, new DatePipe('en-US').transform(veiculo.PrevisaoEntrega, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(veiculo.Funcionario), veiculo.Localizacao, veiculo.Ativo, veiculo.IdMensalista, JSON.stringify(veiculo.Avarias), veiculo.ImagemAvaria, JSON.stringify(veiculo.Produtos), veiculo.Id];
     }
 
     return new Promise((resolve, reject) => {
@@ -161,16 +165,38 @@ export class PatioService extends ServiceBaseService {
                     })
                   )      
                 });
+
+                // Inclui detalhamento do movimento consolidado dos produtos
+                movimento.produtosConsolidados.forEach(produtoAtual => {
+                  promisesTx.push(
+                    new Promise((resolve, reject) => {
+                      const sqlInclusaoProduto = 'insert into movimentosProdutos (IdMovimento, IdProduto, Nome, Valor, Desconto, Acrescimo) values (?, ?, ?, ?, ?, ?)';
+                      const dataInclusaoProduto = [result.insertId, produtoAtual.Id, produtoAtual.Nome, produtoAtual.precoFinal, produtoAtual.Desconto, produtoAtual.Acrescimo];
+                      tx.executeSql(sqlInclusaoProduto, dataInclusaoProduto, () => { resolve() }, (erro) => { reject(erro) })
+                    })
+                  )      
+                });                
               }, 
               (erro) => { reject(erro) })
             }
+
+            // Reduz a quantidade no estoque com o consolidado de produtos
+            movimento.produtosConsolidados.forEach(produtoAtual => {
+              promisesTx.push(
+                new Promise((resolve, reject) => {
+                  const sqlEdicaoEstoque = 'update produtos set EstoqueAtual = EstoqueAtual - ? where Id = ?';
+                  const dataEdicaoEstoque = [produtoAtual.Quantidade, produtoAtual.Id];
+                  tx.executeSql(sqlEdicaoEstoque, dataEdicaoEstoque, () => { resolve() }, (erro) => { reject(erro) })
+                })
+              )      
+            });                
 
             // Insere o histórico de todos os veículos
             movimento.Veiculos.forEach(veiculoAtual => {
               promisesTx.push(
                 new Promise((resolve, reject) => {
                   const sqlInclusaoHistoricoVeiculo = 'insert into veiculosHistorico (Placa, CodigoCartao, TipoVeiculo, IdFuncionario, Valor, Descontos, Acrescimos, Entrada, Saida, Pagamento, Avarias, ImagemAvaria) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-                  const dataInclusaoHistoricoVeiculo = [veiculoAtual.Placa, veiculoAtual.CodigoCartao, veiculoAtual.TipoVeiculo, veiculoAtual.Funcionario ? veiculoAtual.Funcionario.Id : null, veiculoAtual.TotalServicos, veiculoAtual.TotalDescontos, veiculoAtual.TotalAcrescimos, new DatePipe('en-US').transform(veiculoAtual.Entrada, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(veiculoAtual.Saida, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(veiculoAtual.Avarias), veiculoAtual.ImagemAvaria];
+                  const dataInclusaoHistoricoVeiculo = [veiculoAtual.Placa, veiculoAtual.CodigoCartao, veiculoAtual.TipoVeiculo, veiculoAtual.Funcionario ? veiculoAtual.Funcionario.Id : null, veiculoAtual.Total, veiculoAtual.TotalDescontos, veiculoAtual.TotalAcrescimos, new DatePipe('en-US').transform(veiculoAtual.Entrada, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(veiculoAtual.Saida, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(movimento.Data, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(veiculoAtual.Avarias), veiculoAtual.ImagemAvaria];
                   tx.executeSql(sqlInclusaoHistoricoVeiculo, dataInclusaoHistoricoVeiculo, () => { resolve() }, (erro) => { reject(erro) })
                 })
               )      
@@ -178,6 +204,7 @@ export class PatioService extends ServiceBaseService {
 
             // Executa todos os comandos SQL preparados
             Promise.all(promisesTx).then(() => { 
+              this.globalService.onRealizarVenda.next(movimento)              
               resolve() 
             }, 
             (erro) => { reject(erro) })
@@ -214,11 +241,26 @@ export class PatioService extends ServiceBaseService {
               let veiculo = data.rows.item(i);
 
               // Converte os serviços do veículos para o objeto adequado
-              let servicosVeiculo = JSON.parse(veiculo.Servicos)
-              veiculo.Servicos = []
-              servicosVeiculo.forEach(servicoAtual => {
-                veiculo.Servicos.push(new ServicoVeiculo(servicoAtual))
-              });
+              if (veiculo.Servicos == null)
+                veiculo.Servicos = []
+              else {
+                let servicosVeiculo = JSON.parse(veiculo.Servicos)
+                veiculo.Servicos = []
+                servicosVeiculo.forEach(servicoAtual => {
+                  veiculo.Servicos.push(new ServicoVeiculo(servicoAtual))
+                });
+              }
+
+              // Converte os produtos do veículos para o objeto adequado
+              if (veiculo.Produtos == null)
+                veiculo.Produtos = []
+              else {
+                let produtosVeiculo = JSON.parse(veiculo.Produtos)
+                veiculo.Produtos = []
+                produtosVeiculo.forEach(produtoAtual => {
+                  veiculo.Produtos.push(new ProdutoVeiculo(produtoAtual))
+                });
+              }
 
               // Converte as avarias do veículos para o objeto adequado
               if (veiculo.Avarias == null)

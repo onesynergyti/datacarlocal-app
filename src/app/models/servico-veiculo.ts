@@ -23,13 +23,14 @@ export class ServicoVeiculo {
     }
   }
 
-  precoServico(tipoVeiculo) {
+  precoServico(tipoVeiculo, desconsiderarAjustes = false) {
+    let preco
     switch(tipoVeiculo) {
-      case 1: return this.PrecoMoto + this.Acrescimo - this.Desconto
-      case 2: return this.PrecoVeiculoPequeno + this.Acrescimo - this.Desconto
-      case 3: return this.PrecoVeiculoMedio + this.Acrescimo - this.Desconto
-      case 4: return this.PrecoVeiculoGrande + this.Acrescimo - this.Desconto
-      default: return 0
+      case 1: preco = this.PrecoMoto
+      case 2: preco = this.PrecoVeiculoPequeno
+      case 3: preco = this.PrecoVeiculoMedio
+      case 4: preco = this.PrecoVeiculoGrande
     }
+    return desconsiderarAjustes ? preco : preco + this.Acrescimo - this.Desconto
   }
 }

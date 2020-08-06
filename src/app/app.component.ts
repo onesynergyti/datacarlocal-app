@@ -9,6 +9,9 @@ import { ConfiguracoesService } from './services/configuracoes.service';
 import { ValidarAcessoPage } from './pages/validar-acesso/validar-acesso.page';
 import { environment } from 'src/environments/environment';
 import { Push, PushOptions, PushObject } from '@ionic-native/push/ngx'
+import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { GlobalService } from './services/global.service';
+import { ProdutosService } from './dbproviders/produtos.service';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +19,8 @@ import { Push, PushOptions, PushObject } from '@ionic-native/push/ngx'
   styleUrls: ['app.component.scss']
 })
 export class AppComponent {
+
+  produtosAlerta = 0
 
   constructor(
     private platform: Platform,
@@ -26,7 +31,10 @@ export class AppComponent {
     private modalController: ModalController,
     public utils: Utils,
     private configuracoesService: ConfiguracoesService,
-    private push: Push
+    private push: Push,
+    private clipboard: Clipboard,
+    private globalService: GlobalService,
+    private providerProdutos: ProdutosService
   ) {
     this.initializeApp();
   }
@@ -41,6 +49,17 @@ export class AppComponent {
         this.databaseProvider.criarTabelas(db).then(() => {
           this.splashScreen.hide()
 
+          this.globalService.onRealizarVenda.subscribe(() => {
+            this.providerProdutos.produtosAlerta().then(quantidade => { 
+              this.produtosAlerta = quantidade
+            })
+          })
+          this.globalService.onAlterarProduto.subscribe(() => {
+            this.providerProdutos.produtosAlerta().then(quantidade => { 
+              this.produtosAlerta = quantidade
+            })
+          })
+      
           const options: PushOptions = {
             android: {
               senderID: '948539553573'
@@ -49,7 +68,10 @@ export class AppComponent {
        
           const pushObject: PushObject = this.push.init(options)
        
-          pushObject.on('registration').subscribe(res => { /*alert(res.registrationId)*/ })
+          pushObject.on('registration').subscribe(res => { 
+            //alert(res.registrationId) 
+            //this.clipboard.copy(res.registrationId);
+          })
        
           // pushObject.on('notification').subscribe(res => alert(`${res.message}`))
 

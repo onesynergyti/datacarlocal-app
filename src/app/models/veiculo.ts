@@ -1,6 +1,7 @@
 import { ServicoVeiculo } from './servico-veiculo'
 import { Funcionario } from './funcionario'
 import { Avaria } from './avaria'
+import { ProdutoVeiculo } from './produto-veiculo'
 
 export class Veiculo {
   Id: number = 0
@@ -13,6 +14,7 @@ export class Veiculo {
   Telefone: string = ''
   Nome: string = ''
   Servicos: ServicoVeiculo[] = []
+  Produtos: ProdutoVeiculo[] = []
   EntregaAgendada: boolean = false
   PrevisaoEntrega: Date
   Funcionario: Funcionario
@@ -38,6 +40,12 @@ export class Veiculo {
       if (veiculo.Servicos != null) {
         veiculo.Servicos.forEach(servicoVeiculoAtual => {
           this.Servicos.push(new ServicoVeiculo(servicoVeiculoAtual))
+        })
+      }
+      this.Produtos = []
+      if (veiculo.Produtos != null) {
+        veiculo.Produtos.forEach(produtoVeiculoAtual => {
+          this.Produtos.push(new ProdutoVeiculo(produtoVeiculoAtual))
         })
       }
       this.EntregaAgendada = veiculo.EntregaAgendada
@@ -73,8 +81,8 @@ export class Veiculo {
     return this.Servicos.find(itemAtual => !itemAtual.Executado && itemAtual.Id) != null 
   }
 
-  precoServico(servico: ServicoVeiculo): number{
-    return servico.precoServico(this.TipoVeiculo)
+  precoServico(servico: ServicoVeiculo, desconsiderarAjustes = false): number{
+    return servico.precoServico(this.TipoVeiculo, desconsiderarAjustes)
   }
 
   plural(valor) {
@@ -103,15 +111,28 @@ export class Veiculo {
       return `${minutos} minuto${this.plural(minutos)}`
   }
 
+  get Total() {
+    return this.Servicos.reduce((acumulador: number, itemAtual) => acumulador + this.precoServico(itemAtual), 0) + 
+      this.Produtos.reduce((acumulador: number, itemAtual) => acumulador + itemAtual.precoFinal, 0)
+  }
+
   get TotalServicos() {
     return this.Servicos.reduce((acumulador: number, itemAtual) => acumulador + this.precoServico(itemAtual), 0)
   }
 
+  get TotalProdutos() {
+    return this.Produtos.reduce((acumulador: number, itemAtual) => acumulador + itemAtual.precoFinal, 0)
+  }
+
   get TotalDescontos() {
-    return this.Servicos.reduce((acumulador: number, itemAtual) => acumulador + itemAtual.Desconto, 0)
+    return this.Servicos.reduce((acumulador: number, itemAtual) => acumulador + itemAtual.Desconto, 0) + 
+      this.Produtos.reduce((acumulador: number, itemAtual) => acumulador + itemAtual.Desconto, 0)
   }
 
   get TotalAcrescimos() {
-    return this.Servicos.reduce((acumulador: number, itemAtual) => acumulador + itemAtual.Acrescimo, 0)
+    return this.Servicos.reduce((acumulador: number, itemAtual) => acumulador + itemAtual.Acrescimo, 0) +
+    this.Produtos.reduce((acumulador: number, itemAtual) => acumulador + itemAtual.Acrescimo, 0)
   }
+
+
 }

@@ -102,7 +102,7 @@ export class ServicosPage implements OnInit {
   }
 
   async confirmarExclusao(servico) {
-    await this.providerServicos.exibirProcessamento('Excluindo veículo...')
+    await this.providerServicos.exibirProcessamento('Excluindo serviço...')
     this.providerServicos.excluir(servico.Id)
     .then(() => {
       this.servicos.splice(this.servicos.indexOf(servico), 1)

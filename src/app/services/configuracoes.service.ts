@@ -46,6 +46,9 @@ export class ConfiguracoesService {
     if (valor.Patio.CampoAvarias == null)
       valor.Patio.CampoAvarias = true
 
+    if (valor.Seguranca.ExigirSenhaCadastroProdutos == null)
+      valor.Seguranca.ExigirSenhaCadastroProdutos = true
+
     return valor
 }
 

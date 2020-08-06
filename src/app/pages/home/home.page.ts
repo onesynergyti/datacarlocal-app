@@ -366,7 +366,7 @@ export class HomePage {
   }
 
   async validarSaida(veiculo: Veiculo) {
-    if (veiculo.TotalServicos < 0)
+    if (veiculo.Total < 0)
       this.utils.mostrarToast('O valor total dos serviços está menor que zero. Verifique os descontos concedidos.', 'danger', 3000)
     else if (veiculo.PossuiServicosPendentes) {
       const alert = await this.alertController.create({

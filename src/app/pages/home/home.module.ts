@@ -10,6 +10,7 @@ import { EntradaPage } from './entrada/entrada.page';
 import { PipeModule } from 'src/app/pipes/pipe.module';
 import { CadastroServicoPage } from './entrada/cadastro-servico/cadastro-servico.page';
 import { PinchZoomModule } from 'ngx-pinch-zoom';
+import { CadastroProdutoPage } from './entrada/cadastro-produto/cadastro-produto.page';
 
 @NgModule({
   imports: [
@@ -21,7 +22,7 @@ import { PinchZoomModule } from 'ngx-pinch-zoom';
     PipeModule.forRoot(),
     PinchZoomModule 
   ],
-  entryComponents: [EntradaPage, CadastroServicoPage],
-  declarations: [HomePage, EntradaPage, CadastroServicoPage]
+  entryComponents: [EntradaPage, CadastroServicoPage, CadastroProdutoPage],
+  declarations: [HomePage, EntradaPage, CadastroServicoPage, CadastroProdutoPage]
 })
 export class HomePageModule {}

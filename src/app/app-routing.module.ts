@@ -50,6 +50,11 @@ const routes: Routes = [
     path: 'validar-acesso',
     loadChildren: () => import('./pages/validar-acesso/validar-acesso.module').then( m => m.ValidarAcessoPageModule)
   },
+  {
+    path: 'produtos',
+    loadChildren: () => import('./pages/configuracoes/produtos/produtos.module').then( m => m.ProdutosPageModule)
+  },
+
 ];
 
 @NgModule({

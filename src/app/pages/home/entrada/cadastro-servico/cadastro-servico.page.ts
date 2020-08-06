@@ -25,8 +25,7 @@ export class CadastroServicoPage implements OnInit {
     private servicosProvider: ServicosService,
     public navParams: NavParams,
     public configuracoesService: ConfiguracoesService,
-    public utils: Utils,
-    private modalController: ModalController,
+    public utils: Utils
     
   ) { 
     this.inclusao = navParams.get('inclusao')
@@ -85,7 +84,7 @@ export class CadastroServicoPage implements OnInit {
     await this.servicosProvider.exibirProcessamento('Atualizando serviço...')
     setTimeout(() => {
       this.servicosProvider.ocultarProcessamento()
-      this.modalController.dismiss(retorno)
+      this.modalCtrl.dismiss(retorno)
     }, 200);
   }
 
@@ -97,7 +96,7 @@ export class CadastroServicoPage implements OnInit {
       if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaConcederDesconto || this.servicoVeiculo.Desconto == 0)
         this.modalCtrl.dismiss({ Operacao: 'cadastro', ServicoVeiculo: this.servicoVeiculo})
       else {
-        const modal = await this.modalController.create({
+        const modal = await this.modalCtrl.create({
           component: ValidarAcessoPage,
           componentProps: {
             'mensagem': 'Informe a senha de administrador para concessão de desconto.'

@@ -36,18 +36,22 @@ export class DatabaseService extends ServiceBaseService {
       db.transaction(tx => {
         let promisesTx = []
         tx.executeSql('CREATE TABLE IF NOT EXISTS scripts (Id integer primary key)', [])
+        tx.executeSql('CREATE TABLE IF NOT EXISTS produtos (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT NOT NULL, Preco REAL, EstoqueAtual REAL, EstoqueMinimo REAL, Codigo TEXT)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS servicos (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT NOT NULL, PrecoMoto REAL, PrecoVeiculoPequeno REAL, PrecoVeiculoMedio REAL, PrecoVeiculoGrande REAL)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS veiculos (Id integer primary key AUTOINCREMENT NOT NULL, Placa TEXT, CodigoCartao TEXT, Modelo TEXT, TipoVeiculo integer NOT NULL, Entrada DATE NOT NULL, Saida DATE, Telefone TEXT, Nome TEXT, Observacoes TEXT, Servicos TEXT, EntregaAgendada integer, PrevisaoEntrega Date, Funcionario TEXT, Localizacao TEXT, Ativo integer, IdMensalista integer)', [], () => {
           this.executarScriptDB('ALTER TABLE veiculos ADD COLUMN Avarias TEXT', tx, 1)
           this.executarScriptDB('ALTER TABLE veiculos ADD COLUMN ImagemAvaria TEXT', tx, 3)
+          this.executarScriptDB('ALTER TABLE veiculos ADD COLUMN Produtos TEXT', tx, 5)
         })
         tx.executeSql('CREATE TABLE IF NOT EXISTS veiculosHistorico (Id integer primary key AUTOINCREMENT NOT NULL, Placa TEXT, CodigoCartao TEXT, TipoVeiculo integer, IdFuncionario integer, Valor REAL, Descontos REAL, Acrescimos REAL, Entrada Date, Saida Date, Pagamento Date)', [], () => { 
           this.executarScriptDB('ALTER TABLE veiculosHistorico ADD COLUMN Avarias TEXT', tx, 2)
           this.executarScriptDB('ALTER TABLE veiculosHistorico ADD COLUMN ImagemAvaria TEXT', tx, 4)
+          this.executarScriptDB('ALTER TABLE veiculosHistorico ADD COLUMN Produtos TEXT', tx, 6)
         })
         tx.executeSql('CREATE TABLE IF NOT EXISTS veiculosCadastro (Placa TEXT primary key NOT NULL, Modelo TEXT, TipoVeiculo integer NOT NULL, Telefone TEXT, Nome TEXT)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS movimentos (Id integer primary key AUTOINCREMENT NOT NULL, Data DATE, Descricao TEXT, ValorDinheiro REAL, ValorDebito REAL, ValorCredito REAL, Veiculos TEXT, IdMensalista integer, Inicio Date, Fim Date)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS movimentosServicos (IdMovimento integer NOT NULL, IdServico integer NOT NULL, Nome TEXT NOT NULL, Valor REAL NOT NULL, Desconto REAL, Acrescimo REAL, PRIMARY KEY (IdMovimento, IdServico), FOREIGN KEY (IdMovimento) REFERENCES movimentos (Id))', [])
+        tx.executeSql('CREATE TABLE IF NOT EXISTS movimentosProdutos (IdMovimento integer NOT NULL, IdProduto integer NOT NULL, Nome TEXT NOT NULL, Valor REAL NOT NULL, Desconto REAL, Acrescimo REAL, PRIMARY KEY (IdMovimento, IdProduto), FOREIGN KEY (IdMovimento) REFERENCES movimentos (Id))', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS mensalistas (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT, Documento TEXT, Telefone TEXT, Email TEXT, Ativo integer, Veiculos TEXT, IdsServicos TEXT)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS funcionarios (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT, Documento TEXT, Telefone TEXT, Email TEXT, Ativo integer)', [])
       })

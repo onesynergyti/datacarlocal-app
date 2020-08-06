@@ -1,5 +1,6 @@
 import { Veiculo } from './veiculo'
 import { ServicoVeiculo } from './servico-veiculo'
+import { ProdutoVeiculo } from './produto-veiculo'
 
 export class Movimento {
   Id: number = 0
@@ -40,7 +41,7 @@ export class Movimento {
   }
 
   get servicosConsolidados(): ServicoVeiculo[] {
-    let servicos = []
+    let servicos: ServicoVeiculo[] = []
 
     this.Veiculos.forEach(veiculoAtual => {
       veiculoAtual.Servicos.forEach(servicoAtual => {
@@ -62,8 +63,39 @@ export class Movimento {
     return servicos
   }
 
+  get produtosConsolidados(): ProdutoVeiculo[] {
+    let produtos: ProdutoVeiculo[] = []
+
+    this.Veiculos.forEach(veiculoAtual => {
+      veiculoAtual.Produtos.forEach(produtoAtual => {
+        let produtoLocalizado = produtos.find(produtoAtualConsolidado => produtoAtualConsolidado.Id == produtoAtual.Id)
+        // Se não existir o produto cria
+        if (produtoLocalizado == null) {
+          produtos.push(new ProdutoVeiculo(produtoAtual))
+        }
+        // Se existir atualiza o valor
+        else {
+          produtoLocalizado.Preco = produtoLocalizado.Preco + produtoAtual.Preco + produtoAtual.Acrescimo - produtoAtual.Desconto
+          produtoLocalizado.Quantidade = produtoLocalizado.Quantidade + produtoAtual.Quantidade
+        }
+      })
+    });
+
+    return produtos
+  }
+
+  get Total() {
+    // Garante o arredondamento com duas casas decimais
+    return Math.round(this.Veiculos.reduce((acumulador, veiculoAtual) => acumulador + veiculoAtual.Total, 0) * 100) / 100
+  }
+
   get TotalServicos() {
     // Garante o arredondamento com duas casas decimais
-    return Math.round(this.Veiculos.reduce((acumulador, veiculoAtual) => acumulador + veiculoAtual.TotalServicos, 0) * 100) / 100
+    return Math.round(this.Veiculos.reduce((acumulador, veiculoAtual) => acumulador + veiculoAtual.Total, 0) * 100) / 100
+  }
+
+  get TotalProdutos() {
+    // Garante o arredondamento com duas casas decimais
+    return Math.round(this.Veiculos.reduce((acumulador, veiculoAtual) => acumulador + veiculoAtual.Total, 0) * 100) / 100
   }
 }

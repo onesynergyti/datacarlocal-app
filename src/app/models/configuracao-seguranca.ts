@@ -9,6 +9,7 @@ export class ConfiguracaoSeguranca {
   ExigirSenhaCadastroFuncionarios: boolean = true
   ExigirSenhaCadastroServicos: boolean = true
   ExigirSenhaCadastroMensalistas: boolean = true
+  ExigirSenhaCadastroProdutos: boolean = true
   EmailAdministrador: string = ''
   SenhaAdministrador
   CodigoRecuperacao

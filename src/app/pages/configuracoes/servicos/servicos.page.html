@@ -21,7 +21,7 @@
     <ion-row>
       <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
         <ion-list [@listAnimation]="listaFiltrada.length" lines="full">
-          <ion-item-sliding id="servico.Placa" *ngFor="let servico of listaFiltrada">
+          <ion-item-sliding id="servico.Id" *ngFor="let servico of listaFiltrada">
             <ion-item (click)="cadastrarServico(servico)">
               <ion-grid class="ion-no-padding ion-no-margin">
                 <ion-row>

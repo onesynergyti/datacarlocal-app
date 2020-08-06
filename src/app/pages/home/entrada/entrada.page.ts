@@ -15,6 +15,7 @@ import { MensalistasService } from 'src/app/dbproviders/mensalistas.service';
 import { Mensalista } from 'src/app/models/mensalista';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Avaria } from 'src/app/models/avaria';
+import { CadastroProdutoPage } from './cadastro-produto/cadastro-produto.page';
 
 @Component({
   selector: 'app-entrada',
@@ -222,6 +223,57 @@ export class EntradaPage implements OnInit {
     return await modal.present(); 
   }
 
+  async procederCadastroProduto(produto) {
+    const inclusao = produto == null
+    const modal = await this.modalCtrl.create({
+      component: CadastroProdutoPage,
+      componentProps: {
+        'produtoVeiculo': produto,
+        'inclusao': inclusao
+      }
+    })
+
+    modal.onWillDismiss().then((retorno) => {
+      if (retorno.data != null) {
+        const produto = retorno.data.ProdutoVeiculo
+        if (retorno.data.Operacao = 'cadastro') {
+          // Não permite incluir produto repetido
+          if (inclusao && (this.veiculo.Produtos.find(produtoAtual => produtoAtual.Id == produto.Id )))
+            this.utils.mostrarToast('O produto informado já existe.', 'danger')
+          else
+            this.utilsLista.atualizarLista(this.veiculo.Produtos, produto)
+        }
+        else
+          this.utilsLista.excluirDaLista(this.veiculo.Produtos, produto)
+      }
+    })
+
+    return await modal.present(); 
+  }
+
+  async cadastrarProduto(produto = null) {
+    // Verifica permissão para editar serviços
+    if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaEditarServicosVeiculo || this.inclusao) {
+      this.procederCadastroProduto(produto)
+    }
+    else {
+      const modal = await this.modalCtrl.create({
+        component: ValidarAcessoPage,
+        componentProps: {
+          'mensagem': 'Alterar um produto do veículo.'
+        }  
+      });
+  
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data == true)
+          this.procederCadastroProduto(produto)
+      })
+  
+      return await modal.present(); 
+    }
+  }
+
+
   async cadastrarServico(servico = null) {
     if (!this.veiculo.TipoVeiculo) {
       this.utils.mostrarToast('Informe o tipo do veículo antes de adicionar um serviço', 'danger')    
@@ -292,7 +344,6 @@ export class EntradaPage implements OnInit {
       (!this.veiculo.Nome || this.veiculo.Nome.length <= 100) && 
       (!this.veiculo.Localizacao || this.veiculo.Localizacao.length <= 50) && 
       (!this.veiculo.EntregaAgendada || (this.veiculo.EntregaAgendada && this.veiculo.PossuiServicoAgendavel)) && // Agendamento exige um serviço que permita previsão
-      (this.veiculo.Servicos != null && this.veiculo.Servicos.length > 0) &&
       (!this.veiculo.Telefone || this.utils.telefoneValido(this.veiculo.Telefone))
     if (valido) {
       // Para finalizar o atendimento tem que finalizar os serviços
@@ -406,6 +457,45 @@ export class EntradaPage implements OnInit {
     }
   }
 
+  async excluirProduto(produto) {
+    // Verifica permissão para excluir serviços
+    if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaEditarServicosVeiculo) {
+      const alert = await this.alertController.create({
+        header: 'Excluir serviço?',
+        message: `Tem certeza que deseja excluir o produto <strong>${produto.Nome}</strong>`,
+        buttons: [
+          {
+            text: 'Não',
+            role: 'cancel',
+            cssClass: 'secondary'
+          }, {
+            text: 'Sim',
+            handler: () => {
+              this.utilsLista.excluirDaLista(this.veiculo.Produtos, produto)
+            }
+          }
+        ]
+      });
+  
+      await alert.present();
+    }
+    else {
+      const modal = await this.modalCtrl.create({
+        component: ValidarAcessoPage,
+        componentProps: {
+          'mensagem': `Exclusão do produto ${produto.Nome} no veículo.`
+        }
+      });
+  
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data == true)
+          this.utilsLista.excluirDaLista(this.veiculo.Produtos, produto)
+      })
+  
+      return await modal.present(); 
+    }
+  }
+
   async excluirServico(servico) {
     // Verifica permissão para excluir serviços
     if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaEditarServicosVeiculo) {
@@ -467,9 +557,14 @@ export class EntradaPage implements OnInit {
   }
 
   informarConclusaoWhatsapp() {
-    let mensagem = this.configuracoesService.configuracoes.Mensagens.ConclusaoServicos
-    mensagem = mensagem.replace('<PLACA>', this.utils.formatarPlaca(this.veiculo.Placa))
-    this.utils.abrirWhatsapp(this.veiculo.Telefone, mensagem)
+    if (this.veiculo.Telefone == null || this.veiculo.Telefone.length < 10) {
+      this.utils.mostrarToast('Informe um telefone válido para o cliente.', 'danger')
+    }
+    else {
+      let mensagem = this.configuracoesService.configuracoes.Mensagens.ConclusaoServicos
+      mensagem = mensagem.replace('<PLACA>', this.utils.formatarPlaca(this.veiculo.Placa))
+      this.utils.abrirWhatsapp(this.veiculo.Telefone, mensagem)
+    }
   }
 
   async leituraCartao() {

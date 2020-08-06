@@ -17,7 +17,7 @@
       </ion-col>
       <ion-col size-xs="12">
         <h4 class="negrito espacamentoCampo">Preço</h4>
-        <h3 *ngIf="servicoVeiculo.Id">{{ servicoVeiculo.precoServico(tipoVeiculo) | decimalPipe:"R$ " }}</h3>
+        <h3 *ngIf="servicoVeiculo.Id">{{ servicoVeiculo.precoServico(tipoVeiculo, true) | decimalPipe:"R$ " }}</h3>
         <h3 *ngIf="!servicoVeiculo.Id">Calculado na saída</h3>
       </ion-col>
     </ion-row>

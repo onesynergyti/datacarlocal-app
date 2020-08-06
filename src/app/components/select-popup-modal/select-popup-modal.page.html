@@ -1,6 +1,16 @@
-<app-header-modal titulo={{titulo}} ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
-
-<ion-searchbar autocapitalize="on" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
+<ion-header>
+  <app-header-modal titulo={{titulo}} ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+  <ion-grid class="ion-no-margin ion-no-padding">
+    <ion-row>
+      <ion-col>
+        <ion-searchbar autocapitalize="on" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
+      </ion-col>
+      <ion-col *ngIf="permiteLeituraCodigo" size-xs="2" (click)="leituraCodigo()">
+        <ion-icon class="iconeLinha" name="camera"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-header>
 
 <ion-content *ngIf="carregandoLista">
   <ion-spinner class="spinnerCentro"></ion-spinner>

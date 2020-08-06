@@ -1,0 +1,78 @@
+<ion-header>
+  <app-header titulo="Produtos"></app-header>
+  <ion-searchbar autocapitalize="on" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
+
+  <ion-item>
+    <ion-label>Filtrar alertas de estoque</ion-label>
+    <ion-toggle color="primary" [(ngModel)]="filtrarAlertaEstoque"></ion-toggle>
+  </ion-item>
+</ion-header>
+
+<ion-content *ngIf="carregandoProdutos">
+  <ion-spinner class="spinnerCentro"></ion-spinner>
+</ion-content>
+
+<ion-content *ngIf="!carregandoProdutos">
+  <div class="divInformativo" *ngIf="produtos.length == 0">
+    <h2>Nenhum produto cadastrado</h2>
+    <ion-icon name="barcode-outline"></ion-icon>
+    <h5>Utilize o botão abaixo para adicionar um produto</h5>
+  </div>
+  <div class="divInformativo" *ngIf="produtos.length > 0 && listaFiltrada.length == 0">
+    <h2>Nenhum produto localizado</h2>
+    <ion-icon name="search-outline"></ion-icon>
+  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
+        <ion-list [@listAnimation]="listaFiltrada.length" lines="full">
+          <ion-item-sliding id="produto.Id" *ngFor="let produto of listaFiltrada">
+            <ion-item (click)="cadastrarProduto(produto)">
+              <ion-grid class="ion-no-padding ion-no-margin">
+                <ion-row>
+                  <ion-col>
+                    <h3 class="textoLimitado fontCorPrimaria negrito espacadorCampo">{{ produto.Nome }}</h3>
+                  </ion-col>
+                  <ion-col *ngIf="produto.EstoqueAtual > 0 && produto.EstoqueAtual < produto.EstoqueMinimo" size-xs="6" class="subTitulo espacadorCampo">
+                    <ion-icon class="fontCorAlerta" name="warning"></ion-icon>
+                    <h4 class="fontCorAlerta">Estoque baixo</h4>
+                  </ion-col>      
+                  <ion-col *ngIf="produto.EstoqueAtual <= 0" size-xs="6" class="subTitulo espacadorCampo">
+                    <ion-icon class="fontCorPerigo" name="warning"></ion-icon>
+                    <h4 class="fontCorPerigo">Esgotado</h4>
+                  </ion-col>      
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <h5 class="negrito">Estoque atual</h5>
+                    <h3>{{ produto.EstoqueAtual }}</h3>
+                  </ion-col>
+                  <ion-col>
+                    <h5 class="negrito">Estoque mínimo</h5>
+                    <h3>{{ produto.EstoqueMinimo }}</h3>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+              <ion-note slot="end">
+                <h3 class="fontCorPrimaria negrito">{{ produto.Preco | decimalPipe:"R$ " }}</h3>
+              </ion-note>
+            </ion-item>
+        
+            <ion-item-options side="end">
+              <ion-item-option color="danger" (click)="excluir(produto)">
+                <ion-icon slot="icon-only" name="trash"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-button color="success" expand="block" (click)="cadastrarProduto()">
+    <ion-icon slot="start" name="add-circle"></ion-icon>
+    Adicionar
+  </ion-button>
+</ion-footer>

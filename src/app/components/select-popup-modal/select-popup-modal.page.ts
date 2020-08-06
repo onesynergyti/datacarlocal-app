@@ -11,6 +11,10 @@ import { CadastroServicoPage } from 'src/app/pages/configuracoes/servicos/cadast
 import { Servico } from 'src/app/models/servico';
 import { ValidarAcessoPage } from 'src/app/pages/validar-acesso/validar-acesso.page';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
+import { ProdutosService } from 'src/app/dbproviders/produtos.service';
+import { Produto } from 'src/app/models/produto';
+import { CadastroProdutoPage } from 'src/app/pages/configuracoes/produtos/cadastro-produto/cadastro-produto.page';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 @Component({
   selector: 'app-select-popup-modal',
@@ -40,6 +44,7 @@ export class SelectPopupModalPage {
   icone
   classe
   carregandoLista = false
+  permiteLeituraCodigo = false
 
   constructor( 
     public modalCtrl: ModalController,
@@ -47,11 +52,14 @@ export class SelectPopupModalPage {
     private utils: Utils,
     private providerFuncionarios: FuncionariosService,
     private providerServicos: ServicosService,
+    private providerProdutos: ProdutosService,
     private utilsLista: UtilsLista,
-    public configuracoesService: ConfiguracoesService
+    public configuracoesService: ConfiguracoesService,
+    private barcodeScanner: BarcodeScanner
   ) { 
     this.classe = navParams.get('classe')
     this.icone = navParams.get('icone')
+    this.permiteLeituraCodigo = navParams.get('permiteLeituraCodigo')
     
     // Se não houver classe, trabalha com a listagem do parâmetro
     if (this.classe == null)
@@ -64,6 +72,10 @@ export class SelectPopupModalPage {
         }
         case 'servico': {
           this.atualizarServicos()
+          break
+        }
+        case 'produto': {
+          this.atualizarProdutos()
           break
         }
       }
@@ -83,6 +95,10 @@ export class SelectPopupModalPage {
       }
       case 'servico': {
         this.adicionarServico()
+        break
+      }
+      case 'produto': {
+        this.adicionarProduto()
         break
       }
     }
@@ -170,6 +186,49 @@ export class SelectPopupModalPage {
     }
   }
 
+
+  async procederAdicionarProduto() {
+    let produtoEdicao = new Produto()
+
+    const modal = await this.modalCtrl.create({
+      component: CadastroProdutoPage,
+      componentProps: {
+        'produto': produtoEdicao,
+        'inclusao': true
+      }
+    });
+
+    modal.onWillDismiss().then((retorno) => {
+      if (retorno.data != null) {
+        this.utilsLista.atualizarLista(this.lista, retorno.data.Produto)
+      }
+    })
+
+    return await modal.present(); 
+  }
+
+  async adicionarProduto() {
+    if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaCadastroProdutos) {
+      this.procederAdicionarProduto()
+    }
+    else {
+      const modal = await this.modalCtrl.create({
+        component: ValidarAcessoPage,
+        componentProps: {
+          'mensagem': 'Informe a senha de administrador para inserir um produto.'
+        }  
+      });
+
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data == true)
+          this.procederAdicionarProduto()
+      })
+
+      return await modal.present(); 
+    }
+  }
+
+
   atualizarFuncionarios() {
     this.carregandoLista = true
     this.providerFuncionarios.lista().then(funcionarios => {
@@ -190,6 +249,28 @@ export class SelectPopupModalPage {
     })
   }
 
+  atualizarProdutos() {
+    this.carregandoLista = true
+    this.providerProdutos.lista(true).then(produtos => {
+      this.lista = produtos
+    })
+    .finally(() => {
+      this.carregandoLista = false
+    })
+  }
+
+  async leituraCodigo() {
+    const options = {
+      prompt : "Se não possuir um código de barras informe manualmente.",
+
+    }
+    this.barcodeScanner.scan(options).then(barcodeData => {      
+      if (barcodeData.text != '') {
+        this.pesquisa = barcodeData.text
+      }
+    })
+  }  
+
   async concluir(item) {
     this.modalCtrl.dismiss(item);
   }
@@ -199,8 +280,12 @@ export class SelectPopupModalPage {
   }
 
   get listaFiltrada() {
-    if (this.pesquisa != null)
-      return this.lista.filter(itemAtual => this.utils.stringPura(itemAtual[this.keyField].toUpperCase()).includes(this.utils.stringPura(this.pesquisa.toUpperCase())))
+    if (this.pesquisa != null) {
+      if (this.classe == 'produto') 
+        return this.lista.filter(itemAtual => this.utils.stringPura(itemAtual.Nome.toUpperCase() + itemAtual.Codigo).includes(this.utils.stringPura(this.pesquisa.toUpperCase())))
+      else
+        return this.lista.filter(itemAtual => this.utils.stringPura(itemAtual[this.keyField].toUpperCase()).includes(this.utils.stringPura(this.pesquisa.toUpperCase())))
+    }
     else
       return this.lista
   }
