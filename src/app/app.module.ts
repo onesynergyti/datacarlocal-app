@@ -22,6 +22,8 @@ import { SenhaAdministradorPage } from './pages/senha-administrador/senha-admini
 import { ValidarAcessoPage } from './pages/validar-acesso/validar-acesso.page';
 import { Push } from '@ionic-native/push/ngx'
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { InAppPurchase2 } from '@ionic-native/in-app-purchase-2/ngx'
+import { AssinaturaPage } from './components/assinatura/assinatura.page';
 
 @NgModule({
   declarations: [
@@ -29,13 +31,15 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
     SelectPopupModalPage,
     SaidaPage,
     SenhaAdministradorPage,
-    ValidarAcessoPage
+    ValidarAcessoPage,
+    AssinaturaPage
   ],
   entryComponents: [
     SelectPopupModalPage,
     SaidaPage,
     SenhaAdministradorPage,
-    ValidarAcessoPage
+    ValidarAcessoPage,
+    AssinaturaPage
   ],
   imports: [
     BrowserModule,
@@ -56,6 +60,7 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
     BarcodeScanner,
     DatePicker,
     Push,
+    InAppPurchase2,
     Clipboard,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],

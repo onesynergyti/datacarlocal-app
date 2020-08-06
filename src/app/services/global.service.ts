@@ -10,6 +10,7 @@ export class GlobalService {
 
   public onRealizarVenda = new BehaviorSubject<Movimento>(null)
   public onAlterarProduto = new BehaviorSubject<Produto>(null)
+  public onAssinarPremium = new BehaviorSubject<any>(null)
 
   constructor() { }
 }

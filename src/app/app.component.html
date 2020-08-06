@@ -8,6 +8,12 @@
     <ion-content class="ion-no-margin ion-no-padding">
       <ion-list class="ion-no-margin ion-no-padding">
         <ion-menu-toggle color="secondary">
+          <ion-header>Planos</ion-header>
+          <ion-item (click)="abrirPlanos()" detail button>
+            <ion-icon name="ribbon"></ion-icon>
+            Seja um usuário premium
+          </ion-item>
+          <ion-header>Atendimentos</ion-header>
           <ion-item (click)="navegar('home')" detail button>
             <ion-icon name="car-sport"></ion-icon>
             Meu pátio

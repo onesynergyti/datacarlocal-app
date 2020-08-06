@@ -12,6 +12,8 @@ VERIFICAÇÕES PARA A GERAÇÃO
 --ENVERONMENTS
 1. Código do aplicativo
 
+-- PACKAGE.JSON
+1. Assinatura para compras no APP
 
 //Acesse a pasta do aplicativo
 

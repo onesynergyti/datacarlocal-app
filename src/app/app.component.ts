@@ -13,6 +13,7 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { GlobalService } from './services/global.service';
 import { ProdutosService } from './dbproviders/produtos.service';
 import { PropagandasService } from './services/propagandas.service';
+import { AssinaturaPage } from './components/assinatura/assinatura.page';
 
 @Component({
   selector: 'app-root',
@@ -104,6 +105,14 @@ export class AppComponent {
 
   get configuracoes() {
     return this.configuracoesService.configuracoes
+  }
+
+  async abrirPlanos() {
+    const modal = await this.modalController.create({
+      component: AssinaturaPage
+    });
+
+    return await modal.present(); 
   }
 
   async navegar(url, validar = false) { 
