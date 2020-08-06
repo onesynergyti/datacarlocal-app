@@ -21,6 +21,7 @@
 <ion-content *ngIf="usuarioPremium">
   <div id="divCabecalho">
     <h2>Você é um usuário premium</h2>
+    <h4>Sua assinatura vence em: {{ comprasService.vencimentoPremium | date:"dd/MM/yyyy - HH:mm" }}</h4>    
   </div>
 </ion-content>
 

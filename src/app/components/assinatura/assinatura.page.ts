@@ -3,6 +3,7 @@ import { ComprasService } from 'src/app/services/compras.service';
 import { ModalController } from '@ionic/angular';
 import { GlobalService } from 'src/app/services/global.service';
 import { Subscription } from 'rxjs';
+import { Utils } from 'src/app/utils/utils';
 
 @Component({
   selector: 'app-assinatura',
@@ -17,12 +18,18 @@ export class AssinaturaPage implements OnInit, OnDestroy {
   constructor(
     public modalCtrl: ModalController,
     public comprasService: ComprasService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private utils: Utils
   ) { 
-    this.doAssinarPremium = this.globalService.onAssinarPremium.subscribe(produto => {
-      setTimeout(() => {
-        this.usuarioPremium = this.comprasService.vencimentoPremium >= new Date()
-      }, 1);
+    this.usuarioPremium = this.comprasService.vencimentoPremium.getTime() >= new Date().getTime()
+
+    // Mantem a avaliação de assinatura constante enquanto a janela de assinatura está aberta
+    setInterval(() => {
+      this.usuarioPremium = this.comprasService.vencimentoPremium.getTime() >= new Date().getTime()
+    }, 2500)
+
+    this.doAssinarPremium = this.globalService.onAssinarPremium.subscribe(() => {
+      this.usuarioPremium = this.comprasService.vencimentoPremium.getTime() >= new Date().getTime()
     })
   }
 
@@ -43,7 +50,15 @@ export class AssinaturaPage implements OnInit, OnDestroy {
   }
 
   comprarProduto(idProduto) {
-    this.comprasService.comprar(idProduto)
+    if (this.usuarioPremium) {
+      this.utils.mostrarToast('Você já é um usuário premium!', 'danger')
+    }
+    else if (this.comprasService.transacaoAberta) {
+      this.utils.mostrarToast('Existe uma cobrança em avaliação, aguarde enquanto o banco avalia a compra.', 'danger')
+    }
+    else {
+      this.comprasService.comprar(idProduto)
+    }
   }
 
 }

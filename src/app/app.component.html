@@ -9,9 +9,13 @@
       <ion-list class="ion-no-margin ion-no-padding">
         <ion-menu-toggle color="secondary">
           <ion-header>Planos</ion-header>
-          <ion-item (click)="abrirPlanos()" detail button>
+          <ion-item *ngIf="!comprasService.usuarioPremium" (click)="abrirPlanos()" detail button>
             <ion-icon name="ribbon"></ion-icon>
             Seja um usuário premium
+          </ion-item>
+          <ion-item *ngIf="comprasService.usuarioPremium" (click)="abrirPlanos()" detail button>
+            <ion-icon name="ribbon"></ion-icon>
+            Você é um usuário premium
           </ion-item>
           <ion-header>Atendimentos</ion-header>
           <ion-item (click)="navegar('home')" detail button>

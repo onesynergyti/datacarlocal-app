@@ -14,6 +14,7 @@ import { GlobalService } from './services/global.service';
 import { ProdutosService } from './dbproviders/produtos.service';
 import { PropagandasService } from './services/propagandas.service';
 import { AssinaturaPage } from './components/assinatura/assinatura.page';
+import { ComprasService } from './services/compras.service';
 
 @Component({
   selector: 'app-root',
@@ -37,7 +38,8 @@ export class AppComponent {
     private clipboard: Clipboard,
     private globalService: GlobalService,
     private providerProdutos: ProdutosService,
-    private propagandaService: PropagandasService
+    private propagandaService: PropagandasService,
+    public comprasService: ComprasService
   ) {
     this.initializeApp();
   }
