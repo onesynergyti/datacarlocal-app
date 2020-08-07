@@ -49,7 +49,7 @@ export class ComprasService {
 
     this.iap2.when('pacote_anual').approved((produto: IAPProduct) => {
       const dataProduto = new Date(JSON.parse(produto.transaction.receipt).purchaseTime)
-      const data = new Date(dataProduto.setMonth(dataProduto.getMonth() + 1))
+      const data = new Date(dataProduto.setMonth(dataProduto.getMonth() + 12))
       this.vencimentoPremium = data
       produto.finish();
       this.globalService.onAssinarPremium.next(produto)      
@@ -88,6 +88,6 @@ export class ComprasService {
   }
 
   get usuarioPremium() {    
-    return this.vencimentoPremium == null || new Date().getTime() <= this.vencimentoPremium.getTime()
+    return this.vencimentoPremium != null && new Date().getTime() <= this.vencimentoPremium.getTime()
   }
 }
