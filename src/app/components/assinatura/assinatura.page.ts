@@ -26,6 +26,10 @@ export class AssinaturaPage implements OnInit, OnDestroy {
     // Mantem a avaliação de assinatura constante enquanto a janela de assinatura está aberta
     setInterval(() => {
       this.usuarioPremium = this.comprasService.usuarioPremium
+      if (this.comprasService.planoAnual.priceMicros == 0) {
+        this.utils.mostrarToast('Não foi possível obter os planos. Verifique sua internet e tente novamente.', 'danger')
+        this.modalCtrl.dismiss()
+      }      
     }, 2500)
 
     this.doAssinarPremium = this.globalService.onAssinarPremium.subscribe(() => {
