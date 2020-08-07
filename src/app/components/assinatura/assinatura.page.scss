@@ -1,0 +1,21 @@
+@import "../../../assets/style/stylesApp.scss";
+@import "../../../assets/style/styleForms.scss";
+
+.divInformativo {
+  ion-icon {
+    font-size: 35px;
+  }
+}
+
+.divItens {
+  padding: 10px;
+  ion-icon {
+    font-size: 21px;
+    margin-right: 5px;
+  }
+  p {
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+}
+

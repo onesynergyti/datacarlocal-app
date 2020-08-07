@@ -53,6 +53,10 @@ export class ComprasService {
       this.globalService.onAssinarPremium.next(produto)      
     });
 
+    this.atualizarProdutos()
+  }
+
+  atualizarProdutos() {
     this.iap2.refresh();
   }
 
@@ -62,9 +66,9 @@ export class ComprasService {
 
   comprar(idProduto) {
     this.iap2.order(idProduto).then((p) => {
-      alert('Purchase Succesful' + JSON.stringify(p));
-    }).catch((e) => {
-      alert('Error Ordering From Store' + e);
+      
+    }).catch(() => {
+      alert('Houve um erro ao tentar adquirir esse plano. Verifique sua internet e tente novamente');
     });
   }
 

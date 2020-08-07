@@ -21,15 +21,15 @@ export class AssinaturaPage implements OnInit, OnDestroy {
     private globalService: GlobalService,
     private utils: Utils
   ) { 
-    this.usuarioPremium = this.comprasService.vencimentoPremium.getTime() >= new Date().getTime()
+    this.comprasService.atualizarProdutos()
 
     // Mantem a avaliação de assinatura constante enquanto a janela de assinatura está aberta
     setInterval(() => {
-      this.usuarioPremium = this.comprasService.vencimentoPremium.getTime() >= new Date().getTime()
+      this.usuarioPremium = this.comprasService.usuarioPremium
     }, 2500)
 
     this.doAssinarPremium = this.globalService.onAssinarPremium.subscribe(() => {
-      this.usuarioPremium = this.comprasService.vencimentoPremium.getTime() >= new Date().getTime()
+      this.usuarioPremium = this.comprasService.usuarioPremium
     })
   }
 
@@ -54,11 +54,15 @@ export class AssinaturaPage implements OnInit, OnDestroy {
       this.utils.mostrarToast('Você já é um usuário premium!', 'danger')
     }
     else if (this.comprasService.transacaoAberta) {
-      this.utils.mostrarToast('Existe uma cobrança em avaliação, aguarde enquanto o banco avalia a compra.', 'danger')
+      this.utils.mostrarToast('Existe uma cobrança em avaliação, aguarde enquanto a operadora avalia a liberação.', 'danger')
     }
     else {
       this.comprasService.comprar(idProduto)
     }
+  }
+
+  get economia() {
+    return Math.floor(100 - this.comprasService.planoAnual.priceMicros / 12 / this.comprasService.planoMensal.priceMicros * 100)
   }
 
 }

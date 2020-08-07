@@ -21,7 +21,6 @@ export class PropagandasService {
     // Observa assinatura do usuário
     this.globalService.onAssinarPremium.subscribe(() => {
       this.premium = this.comprasService.usuarioPremium
-      alert('verificou premium na propagadan ' + this.premium)
       if (this.premium) {
         this.hideBanner()
       }      
