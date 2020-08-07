@@ -63,10 +63,6 @@ export class HomePage {
     }, 1000);
   }
 
-  ionViewDidEnter() {
-    this.propagandaService.showBannerAd()
-  }
-
   atualizarPatio() {
     this.veiculos = []
     this.carregandoVeiculos = true
