@@ -7,6 +7,7 @@
     <h2 class="negrito ion-text-uppercase">Seja um usuário premium</h2>
     <ion-icon class="fontCorSucesso" name="ribbon-outline"></ion-icon>
     <h3 class="negrito">Receba benefícios exclusivos</h3>
+    <h4 *ngIf="comprasService.vencimentoPremium != null" class="fontCorPrimaria">Sua assinatura venceu em: {{ comprasService.vencimentoPremium | date:"dd/MM/yyyy" }}</h4>
   </div>
 
   <div class="divItens">

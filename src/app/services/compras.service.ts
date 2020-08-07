@@ -40,14 +40,16 @@ export class ComprasService {
 
     // Define a ação de aprovação de cada produto
     this.iap2.when('pacote_mensal').approved((produto: IAPProduct) => {
-      const data = new Date(new Date(JSON.parse(produto.transaction.receipt).purchaseTime).setMonth(new Date().getMonth() + 1))
+      const dataProduto = new Date(JSON.parse(produto.transaction.receipt).purchaseTime)
+      const data = new Date(dataProduto.setMonth(dataProduto.getMonth() + 1))
       this.vencimentoPremium = data
       produto.finish();
       this.globalService.onAssinarPremium.next(produto)
     });
 
     this.iap2.when('pacote_anual').approved((produto: IAPProduct) => {
-      const data = new Date(new Date(JSON.parse(produto.transaction.receipt).purchaseTime).setMonth(new Date().getMonth() + 12))
+      const dataProduto = new Date(JSON.parse(produto.transaction.receipt).purchaseTime)
+      const data = new Date(dataProduto.setMonth(dataProduto.getMonth() + 1))
       this.vencimentoPremium = data
       produto.finish();
       this.globalService.onAssinarPremium.next(produto)      
@@ -78,14 +80,14 @@ export class ComprasService {
   }
 
   get vencimentoPremium() {
-    return localStorage.getItem('vencimentoAssinatura') != null ? new Date(localStorage.getItem('vencimentoAssinatura')) : new Date('1000/01/01')
+    return localStorage.getItem('vencimentoAssinatura') != null ? new Date(localStorage.getItem('vencimentoAssinatura')) : null
   }
 
   set vencimentoPremium(data: Date) {
     localStorage.setItem('vencimentoAssinatura', new DatePipe('en-US').transform(data, 'yyyy/MM/dd'))
   }
 
-  get usuarioPremium() {
-    return new Date().getTime() <= this.vencimentoPremium.getTime()
+  get usuarioPremium() {    
+    return this.vencimentoPremium == null || new Date().getTime() <= this.vencimentoPremium.getTime()
   }
 }
