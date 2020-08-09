@@ -16,6 +16,7 @@ import { CalculadoraEstacionamentoService } from 'src/app/services/calculadora-e
 import { MensalistasService } from 'src/app/dbproviders/mensalistas.service';
 import { ServicosService } from 'src/app/dbproviders/servicos.service';
 import { ValidarAcessoPage } from '../validar-acesso/validar-acesso.page';
+import { PortalService } from 'src/app/dbproviders/portal.service';
 
 @Component({
   selector: 'app-home',
@@ -52,7 +53,8 @@ export class HomePage {
     private providerMensalistas: MensalistasService,
     private navController: NavController,
     private alertController: AlertController,
-    private providerServicos: ServicosService
+    private providerServicos: ServicosService,
+    private providerPortal: PortalService
   ) { }
 
   ionViewWillEnter() {
@@ -61,6 +63,10 @@ export class HomePage {
     setTimeout(() => {
       this.atualizarPatio()
     }, 1000);
+  }
+
+  sincronizarVendas() {
+    this.providerPortal.enviarRemessa().then(() => alert('Enviou')).catch((erro) => alert(erro))
   }
 
   atualizarPatio() {

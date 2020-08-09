@@ -53,9 +53,14 @@ const routes: Routes = [
   {
     path: 'produtos',
     loadChildren: () => import('./pages/configuracoes/produtos/produtos.module').then( m => m.ProdutosPageModule)
-  },  {
+  },
+  {
     path: 'backup-online',
     loadChildren: () => import('./pages/backup-online/backup-online.module').then( m => m.BackupOnlinePageModule)
+  },
+  {
+    path: 'portal',
+    loadChildren: () => import('./pages/configuracoes/portal/portal.module').then( m => m.PortalPageModule)
   }
 
 ];

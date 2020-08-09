@@ -58,6 +58,10 @@
             Meus Produtos &nbsp;
             <ion-badge *ngIf="produtosAlerta > 0" color="warning">{{produtosAlerta}}</ion-badge>
           </ion-item>
+          <ion-item (click)="navegar('portal', true)" detail button>
+            <ion-icon name="globe"></ion-icon>
+            Portal Reuz &nbsp;
+          </ion-item>
           <ion-item (click)="navegar('configuracoes', true)" detail button>
             <ion-icon name="settings"></ion-icon>
             Opções gerais

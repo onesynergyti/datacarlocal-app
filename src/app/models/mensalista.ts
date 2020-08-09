@@ -1,14 +1,14 @@
 import { VeiculoCadastro } from './veiculo-cadastro'
 
 export class Mensalista {
-  Id: number = 0
-  Nome: string = ''
-  Documento: string
-  Telefone: string
-  Email: string
-  Ativo: boolean = true
-  Veiculos: VeiculoCadastro[] = []
-  IdsServicos = []
+    Id: number = 0
+    Nome: string = ''
+    Documento: string
+    Telefone: string
+    Email: string
+    Ativo: boolean = true
+    Veiculos: VeiculoCadastro[] = []
+    IdsServicos = []
 
   constructor(mensalista: Mensalista = null) {
     if (mensalista != null) {

@@ -11,6 +11,8 @@ export class GlobalService {
   public onRealizarVenda = new BehaviorSubject<Movimento>(null)
   public onAlterarProduto = new BehaviorSubject<Produto>(null)
   public onAssinarPremium = new BehaviorSubject<any>(null)
+  public onErroSincronizacao = new BehaviorSubject<any>(null)
+  public onFinalizarSincronizacao = new BehaviorSubject<any>(null)
 
   constructor() { }
 }

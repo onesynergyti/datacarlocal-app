@@ -38,9 +38,13 @@ export class MovimentoService extends ServiceBaseService {
     })
   }
 
-  public lista(inicio: Date, fim: Date, dataMaxima: Date = null): Promise<any> {
+  public lista(inicio: Date, fim: Date, dataMaxima: Date = null, filtrarNaoSincronizadosPortal = false): Promise<any> {
     return new Promise((resolve, reject) => {
-      const sql = "SELECT * from movimentos where Date(Data) between Date(?) and Date(?) and (Data <= ?) order by Data desc limit 100";
+      let sql = ''
+      if (filtrarNaoSincronizadosPortal)
+        sql = "SELECT * from movimentos where Date(Data) between Date(?) and Date(?) and (Data <= ?) and DataEnvioPortal is null order by Data desc limit 200";
+      else
+         sql = "SELECT * from movimentos where Date(Data) between Date(?) and Date(?) and (Data <= ?) order by Data desc limit 100";
       const data = [new DatePipe('en-US').transform(inicio, 'yyyy-MM-dd'), 
         new DatePipe('en-US').transform(fim, 'yyyy-MM-dd'),
         dataMaxima == null ? new DatePipe('en-US').transform(new Date('9999/01/01') , 'yyyy-MM-dd'): new DatePipe('en-US').transform(dataMaxima, 'yyyy-MM-dd HH:mm:ss')

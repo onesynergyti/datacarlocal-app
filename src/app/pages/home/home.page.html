@@ -1,5 +1,5 @@
 <ion-header>
-  <app-header titulo="Pátio" ocultarRetorno="true"></app-header>
+  <app-header titulo="Pátio" iconeBotaoAdicional="refresh-outline" (onClickBotaoAdicional)="sincronizarVendas()" ocultarRetorno="true"></app-header>
   <ion-searchbar autocapitalize="on" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
 </ion-header>
 

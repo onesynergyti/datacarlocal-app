@@ -24,6 +24,8 @@ import { Push } from '@ionic-native/push/ngx'
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppPurchase2 } from '@ionic-native/in-app-purchase-2/ngx'
 import { AssinaturaPage } from './components/assinatura/assinatura.page';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -48,6 +50,7 @@ import { AssinaturaPage } from './components/assinatura/assinatura.page';
     ComponentsModule,
     FormsModule,
     BrowserAnimationsModule,
+    HttpClientModule, 
     PipeModule.forRoot()
   ],
   providers: [

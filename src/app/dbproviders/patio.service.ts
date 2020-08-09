@@ -15,6 +15,7 @@ import { Avaria } from '../models/avaria';
 import { ProdutoVeiculo } from '../models/produto-veiculo';
 import { GlobalService } from '../services/global.service';
 import { ProdutosService } from './produtos.service';
+import { PortalService } from './portal.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,8 @@ export class PatioService extends ServiceBaseService {
     public loadingController: LoadingController,
     private utils: Utils,
     private database: DatabaseService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private providerPortal: PortalService
   ) { 
     super(loadingController)
   }
@@ -205,6 +207,7 @@ export class PatioService extends ServiceBaseService {
             // Executa todos os comandos SQL preparados
             Promise.all(promisesTx).then(() => { 
               this.globalService.onRealizarVenda.next(movimento)              
+              this.providerPortal.enviarRemessa()
               resolve() 
             }, 
             (erro) => { reject(erro) })
