@@ -33,7 +33,7 @@ export class PropagandasService {
   }
 
   prepareInterstitialAds(){
-    if (!this.premium) {
+    if (!this.interstitialAdsOk && !this.premium) {
       let interstitialConfig: AdMobFreeInterstitialConfig = {
         isTesting: false,
         autoShow: false,
@@ -47,16 +47,19 @@ export class PropagandasService {
   }  
 
   showInterstitialAds(){
-    if (this.interstitialAdsOk && !this.premium)
+    if (this.interstitialAdsOk && !this.premium) {
+      this.interstitialAdsOk = false      
       this.admobFree.interstitial.show()
+    }
   }  
 
   hideBanner() {
+    this.admobFree.banner.remove()
     this.admobFree.banner.hide()
   }
 
   prepareBannerAd() {
-    if (!this.premium) {
+    if (!this.bannerAdsOk && !this.premium) {
       let bannerConfig: AdMobFreeBannerConfig = {
         isTesting: false,
         autoShow: false,
@@ -70,7 +73,9 @@ export class PropagandasService {
   }  
 
   showBannerAd() {
-    if (this.bannerAdsOk && !this.premium)
+    if (this.bannerAdsOk && !this.premium) {
+      this.bannerAdsOk = false
       this.admobFree.banner.show()
+    }
   }  
 }

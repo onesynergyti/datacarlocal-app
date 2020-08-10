@@ -1,5 +1,5 @@
 <ion-app>
-  <ion-menu side="start" menuId="first" contentId="principal">
+  <ion-menu side="end" menuId="first" contentId="principal">
     <ion-header>
       <ion-toolbar color="primary">
         <ion-title class="ion-text-center">Menu Principal</ion-title>              
@@ -56,7 +56,7 @@
           <ion-item (click)="navegar('produtos', configuracoes.Seguranca.ExigirSenhaCadastroProdutos)" detail button>
             <ion-icon name="barcode"></ion-icon>
             Meus Produtos &nbsp;
-            <ion-badge *ngIf="produtosAlerta > 0" color="warning">{{produtosAlerta}}</ion-badge>
+            <ion-badge *ngIf="avisosService.quantidadeMenuAlerta > 0" color="warning">{{avisosService.quantidadeMenuAlerta}}</ion-badge>
           </ion-item>
           <ion-item (click)="navegar('portal', true)" detail button>
             <ion-icon name="globe"></ion-icon>

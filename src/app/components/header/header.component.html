@@ -1,5 +1,9 @@
 <ion-toolbar color="primary">
   <ion-buttons slot="start">
+    <ion-button *ngIf="!ocultarAvisos" (click)="abrirAvisos()">
+      <ion-icon *ngIf="avisosService.avisos.length == 0" slot="icon-only" name="mail-outline"></ion-icon>
+      <ion-icon *ngIf="avisosService.avisos.length > 0" slot="icon-only" name="mail-unread-outline"></ion-icon>
+    </ion-button>
     <ion-button *ngIf=!ocultarRetorno (click)="retornar()">
       <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
     </ion-button>
@@ -9,7 +13,6 @@
   </ion-buttons>
   <ion-buttons slot="end">
     <ion-menu-button *ngIf=!ocultarMenu></ion-menu-button>    
-    <ion-badge *ngIf="produtosAlerta > 0" color="warning">{{produtosAlerta}}</ion-badge>
   </ion-buttons>
   <ion-title class="ion-text-center">{{ titulo }}</ion-title>
 </ion-toolbar>

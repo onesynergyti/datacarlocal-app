@@ -1,0 +1,25 @@
+<ion-header>
+  <app-header-modal titulo="Avisos" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+</ion-header>
+
+<ion-content>
+  <div class="divInformativo" *ngIf="avisosService.avisos.length == 0">
+    <h2>Tudo certo por aqui!</h2>
+    <ion-icon class="fontCorSucesso" name="checkbox-outline"></ion-icon>
+    <h4>Não se preocupe, avisaremos se houver algo importante.</h4>
+  </div>
+  <ion-list [@listAnimation]="avisosService.avisos.length" lines="full">
+    <ion-item-sliding id="aviso.Id" *ngFor="let aviso of avisosService.avisos">
+      <ion-item>
+        <div>
+          <h3 class="negrito espacadorCampo fontCorPrimaria">{{ aviso.Titulo }}</h3>
+          <h4>{{ aviso.Descricao }}</h4>
+        </div>
+        
+        <ion-note slot="end">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-note>
+      </ion-item>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>

@@ -5,6 +5,7 @@ import { ConfiguracaoPatio } from './configuracao-patio'
 import { ConfiguracaoSeguranca } from './configuracao-seguranca'
 import { ConfiguracaoManualUso } from './configuracao-manual-uso'
 import { ConfiguracaoMensagens } from './configuracao-mensagens'
+import { ConfiguracaoPortal } from './configuracao-portal'
 
 export class Configuracoes {
   Recibo: ConfiguracaoRecibo = new ConfiguracaoRecibo()
@@ -14,4 +15,5 @@ export class Configuracoes {
   Seguranca: ConfiguracaoSeguranca = new ConfiguracaoSeguranca()
   ManualUso: ConfiguracaoManualUso = new ConfiguracaoManualUso()
   Mensagens: ConfiguracaoMensagens = new ConfiguracaoMensagens()
+  Portal: ConfiguracaoPortal = new ConfiguracaoPortal()
 }

@@ -15,6 +15,7 @@ import { ProdutosService } from './dbproviders/produtos.service';
 import { PropagandasService } from './services/propagandas.service';
 import { AssinaturaPage } from './components/assinatura/assinatura.page';
 import { ComprasService } from './services/compras.service';
+import { AvisosService } from './services/avisos.service';
 
 @Component({
   selector: 'app-root',
@@ -22,8 +23,6 @@ import { ComprasService } from './services/compras.service';
   styleUrls: ['app.component.scss']
 })
 export class AppComponent {
-
-  produtosAlerta = 0
 
   constructor(
     private platform: Platform,
@@ -36,10 +35,9 @@ export class AppComponent {
     private configuracoesService: ConfiguracoesService,
     private push: Push,
     private clipboard: Clipboard,
-    private globalService: GlobalService,
-    private providerProdutos: ProdutosService,
     private propagandaService: PropagandasService,
-    public comprasService: ComprasService
+    public comprasService: ComprasService,
+    public avisosService: AvisosService
   ) {
     this.initializeApp();
   }
@@ -55,18 +53,7 @@ export class AppComponent {
       this.databaseProvider.DB.then((db) => {
         this.databaseProvider.criarTabelas(db).then(() => {
           this.splashScreen.hide()
-
-          this.globalService.onRealizarVenda.subscribe(() => {
-            this.providerProdutos.produtosAlerta().then(quantidade => { 
-              this.produtosAlerta = quantidade
-            })
-          })
-          this.globalService.onAlterarProduto.subscribe(() => {
-            this.providerProdutos.produtosAlerta().then(quantidade => { 
-              this.produtosAlerta = quantidade
-            })
-          })
-      
+     
           const options: PushOptions = {
             android: {
               senderID: '948539553573'

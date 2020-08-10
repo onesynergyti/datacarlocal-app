@@ -25,6 +25,7 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppPurchase2 } from '@ionic-native/in-app-purchase-2/ngx'
 import { AssinaturaPage } from './components/assinatura/assinatura.page';
 import { HttpClientModule } from '@angular/common/http';
+import { AvisosPage } from './components/avisos/avisos.page';
 
 
 @NgModule({
@@ -34,14 +35,16 @@ import { HttpClientModule } from '@angular/common/http';
     SaidaPage,
     SenhaAdministradorPage,
     ValidarAcessoPage,
-    AssinaturaPage
+    AssinaturaPage,
+    AvisosPage
   ],
   entryComponents: [
     SelectPopupModalPage,
     SaidaPage,
     SenhaAdministradorPage,
     ValidarAcessoPage,
-    AssinaturaPage
+    AssinaturaPage,
+    AvisosPage
   ],
   imports: [
     BrowserModule,

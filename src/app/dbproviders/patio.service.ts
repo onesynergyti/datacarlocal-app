@@ -206,8 +206,7 @@ export class PatioService extends ServiceBaseService {
 
             // Executa todos os comandos SQL preparados
             Promise.all(promisesTx).then(() => { 
-              this.globalService.onRealizarVenda.next(movimento)              
-              this.providerPortal.enviarRemessa()
+              this.globalService.onRealizarVenda.next(movimento) 
               resolve() 
             }, 
             (erro) => { reject(erro) })

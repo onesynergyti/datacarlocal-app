@@ -65,10 +65,6 @@ export class HomePage {
     }, 1000);
   }
 
-  sincronizarVendas() {
-    this.providerPortal.enviarRemessa().then(() => alert('Enviou')).catch((erro) => alert(erro))
-  }
-
   atualizarPatio() {
     this.veiculos = []
     this.carregandoVeiculos = true
@@ -286,6 +282,11 @@ export class HomePage {
         const veiculoLocalizado = this.veiculos.find(itemAtual => itemAtual.Placa === veiculo.Placa)
         this.veiculos.splice(this.veiculos.indexOf(veiculoLocalizado), 1)
         this.utils.mostrarToast(retorno.data.Operacao == 'postergar' ? 'Pagamento acumulado com sucesso' : 'Pagamento realizado com sucesso', 'success')
+
+        // Envia a remessa de movimentos para o servidor após 5 segundos
+        setTimeout(() => {
+          this.providerPortal.enviarRemessa()
+        }, 5000);
 
         if (this.bluetooth.dispositivoSalvo != null && this.configuracoesService.configuracoes.Recibo.ImprimirReciboSaida) { 
           await this.bluetooth.exibirProcessamento('Comunicando com a impressora...')

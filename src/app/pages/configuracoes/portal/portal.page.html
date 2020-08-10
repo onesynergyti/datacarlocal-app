@@ -1,11 +1,59 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>portal</ion-title>
-  </ion-toolbar>
+  <app-header titulo="Portal Reuz" ocultarAvisos="true"></app-header>
 </ion-header>
 
 <ion-content>
-  Id do dispositivo: {{ IdDispositivo }}
-  <ion-button (click)="copiar()">Copiar</ion-button>
-  <ion-button (click)="enviar()">Enviar</ion-button>
+  <ion-grid *ngIf="configuracoes != null">
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="cog"></ion-icon>
+        Opções do Portal Reuz
+      </ion-col>
+      <ion-col *ngIf="configuracoes.Portal.SincronizarInformacoes && !comprasService.usuarioPremium" size-xs="12" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="warning"></ion-icon>
+        Assine um plano premium
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Sincronizar informações', 'Habilite essa opção para sincronizar as informações de vendas com o Portal Reuz')"></ion-icon>
+          <ion-label>Sincronizar informações</ion-label>
+          <ion-toggle color="primary" [(ngModel)]="configuracoes.Portal.SincronizarInformacoes"></ion-toggle>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="phone-portrait"></ion-icon>
+        Identificação do dispositivo
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12">        
+        <h3>{{ IdDispositivo }}</h3>
+        <IonProgressBar *ngIf="verificandoIdDispositivo" type="indeterminate"></IonProgressBar>
+      </ion-col>
+      <ion-col *ngIf="erro == false" size-xs="12">
+        <ion-button color="success" expand="block" (click)="copiar()">
+          <ion-icon slot="start" name="copy"></ion-icon>
+          Copiar código
+        </ion-button>
+      </ion-col>
+      <ion-col *ngIf="erro == true" size-xs="12">
+        <ion-button expand="block" (click)="definirDispositivo()">
+          <ion-icon slot="start" name="refresh"></ion-icon>
+          Tentar novamente
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div class="divInformativo">
+    <h2>Portal Reuz</h2>
+    <ion-icon name="globe-outline"></ion-icon>
+    <h5>Utilize o código acima para configurar seu dispositivo no Portal Reuz</h5>
+    <h5>Acesse a loja e conheça o aplicativo</h5>
+  </div>
+
 </ion-content>

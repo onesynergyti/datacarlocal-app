@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { PortalPageRoutingModule } from './portal-routing.module';
 
 import { PortalPage } from './portal.page';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    PortalPageRoutingModule
+    PortalPageRoutingModule,
+    ComponentsModule
   ],
   declarations: [PortalPage]
 })

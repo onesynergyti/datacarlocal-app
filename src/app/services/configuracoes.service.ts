@@ -7,13 +7,17 @@ import { ConfiguracaoPatio } from '../models/configuracao-patio';
 import { ConfiguracaoSeguranca } from '../models/configuracao-seguranca';
 import { ConfiguracaoManualUso } from '../models/configuracao-manual-uso';
 import { ConfiguracaoMensagens } from '../models/configuracao-mensagens';
+import { ConfiguracaoPortal } from '../models/configuracao-portal';
+import { GlobalService } from './global.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfiguracoesService {  
 
-  constructor() { }
+  constructor(
+    private globalService: GlobalService
+  ) { }
 
   get configuracoes(): Configuracoes {
     let valor: Configuracoes = JSON.parse(localStorage.getItem('configuracoes'))
@@ -42,7 +46,10 @@ export class ConfiguracoesService {
     if (valor.Mensagens == null)
       valor.Mensagens = new ConfiguracaoMensagens()
 
-    // Tratamento para campos novos sem valor nos clientes antigos
+      if (valor.Portal == null)
+      valor.Portal = new ConfiguracaoPortal()
+
+      // Tratamento para campos novos sem valor nos clientes antigos
     if (valor.Patio.CampoAvarias == null)
       valor.Patio.CampoAvarias = true
 
@@ -54,5 +61,6 @@ export class ConfiguracoesService {
 
   set configuracoes(configuracoes: Configuracoes) {
     localStorage.setItem('configuracoes', JSON.stringify(configuracoes))
+    this.globalService.onSalvarConfiguracoes.next(configuracoes)
   }
 }
