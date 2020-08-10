@@ -13,7 +13,7 @@ import { GlobalService } from '../services/global.service';
 import { ConfiguracoesService } from '../services/configuracoes.service';
 import { ComprasService } from '../services/compras.service';
 import { Md5 } from 'ts-md5';
-import { rejects } from 'assert';
+import { AvisosService } from '../services/avisos.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,9 +29,16 @@ export class PortalService extends ServiceBaseService {
     private clipboard: Clipboard,
     private globalService: GlobalService,
     private configuracoesService: ConfiguracoesService,
-    private comprasService: ComprasService
+    private comprasService: ComprasService,
+    private avisosService: AvisosService
   ) { 
     super(loadingController)
+
+    // Tenta enviar as vendas a cada 30 minutos, se houver erro de envio registrado
+    setInterval(() => { 
+      if (this.avisosService.possuiErroEnvio)
+        this.enviarRemessa() 
+    }, 1800000);
   }
 
   public obterInformacoesPortal(): Promise<any> {
@@ -44,7 +51,7 @@ export class PortalService extends ServiceBaseService {
           if (data.rows.length > 0) {
             let informacoes = data.rows.item(0)
             if (informacoes.IdDispositivo == null) {
-              this.gerarIdDispositivo().then(idDispositivo => {
+              this.gerarIdDispositivo(informacoes).then(idDispositivo => {
                 resolve({Chave: informacoes.Chave, IdDispositivo: idDispositivo})
               })
               .catch((erro) => {
@@ -56,11 +63,11 @@ export class PortalService extends ServiceBaseService {
           // Se não possui, gera uma chave e um Id para o dispositivo
           } else {
             // Sorteia uma chave de envio para o app
-            var chave = new DatePipe('en-US').transform(new Date(), 'yyyyMMddhhmmss') + environment.chaveMD5 + Math.floor(Math.random() * 65536)
+            var chave = Md5.hashStr(new DatePipe('en-US').transform(new Date(), 'yyyyMMddhhmmss') + environment.chaveMD5 + Math.floor(Math.random() * 65536)).toString()
             const sqlGerarChave = 'insert into portal (Chave) values (?)'
             const dataGerarChave = [chave];
             db.executeSql(sqlGerarChave, dataGerarChave).then(() => {
-              this.gerarIdDispositivo().then(idDispositivo => {
+              this.gerarIdDispositivo({Chave: chave}).then(idDispositivo => {
                 resolve({Chave: chave, IdDispositivo: idDispositivo})
               })
               .catch((erro) => {
@@ -162,44 +169,39 @@ export class PortalService extends ServiceBaseService {
     })
   }
 
-  gerarIdDispositivo() {
+  gerarIdDispositivo(informacoesPortal) {
     return new Promise((resolve, reject) => {
-      this.obterInformacoesPortal().then((informacoes) => {
-        const httpOptions = {
-          headers: new HttpHeaders({
-            'Content-Type':  'application/json',
-            Authorization: 'my-auth-token',
-            ChaveApp: informacoes.Chave,
-            Assinatura: Md5.hashStr(environment.chaveMD5 + informacoes.Chave).toString()
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          Authorization: 'my-auth-token',
+          ChaveApp: informacoesPortal.Chave,
+          Assinatura: Md5.hashStr(environment.chaveMD5 + informacoesPortal.Chave).toString()
+        })
+      };  
+      this.http.get(environment.apiUrl + '/ConexaoApp/idDispositivo', httpOptions)
+      .pipe(
+        retry(1),
+        finalize(() => {
+          this.ocultarProcessamento()
+        })
+      ).subscribe((retorno: any) => {
+        this.database.DB.then(db => {
+          const sqlGerarChave = 'update portal set IdDispositivo = ?'
+          const dataGerarChave = [retorno.IdDispositivo];
+          db.executeSql(sqlGerarChave, dataGerarChave)
+          .then(() => {
+            resolve(retorno.IdDispositivo)
           })
-        };  
-        this.http.get(environment.apiUrl + '/ConexaoApp/idDispositivo')
-        .pipe(
-          retry(1),
-          finalize(() => {
-            this.ocultarProcessamento()
-          })
-        ).subscribe((retorno: any) => {
-          this.database.DB.then(db => {
-            const sqlGerarChave = 'update portal set IdDispositivo = ?'
-            const dataGerarChave = [retorno.IdDispositivo];
-            db.executeSql(sqlGerarChave, dataGerarChave)
-            .then(() => {
-              resolve(retorno.IdDispositivo)
-            })
-            .catch((erro) => {
-              reject(erro)
-            })
-          })
-          .catch(erro => {
+          .catch((erro) => {
             reject(erro)
           })
-        },
-        (erro) => {
+        })
+        .catch(erro => {
           reject(erro)
         })
-      })
-      .catch((erro) => {
+      },
+      (erro) => {
         reject(erro)
       })
     })

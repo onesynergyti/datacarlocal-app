@@ -149,9 +149,13 @@ export class AvisosService {
   }
 
   excluirTipoAviso(tipo) {
-    const index = this._avisos.findIndex(itemAtual => itemAtual.Tipo == tipo)        
+    const index = this._avisos.findIndex(itemAtual => itemAtual.Tipo == tipo)
     if (index >= 0) 
       this._avisos.splice(index, 1)
     localStorage.setItem('avisos', JSON.stringify(this._avisos))
+  }
+
+  get possuiErroEnvio() {
+    return this._avisos.findIndex(itemAtual => itemAtual.Tipo == this._tipoAvisoErroSincronizacao)
   }
 }

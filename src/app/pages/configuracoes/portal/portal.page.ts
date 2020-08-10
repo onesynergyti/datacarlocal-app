@@ -46,10 +46,10 @@ export class PortalPage implements OnInit {
     // Obtem o Id do dispositivo, cria se necessário
     this.erro = null
     this.verificandoIdDispositivo = true
-    this.IdDispositivo = 'Obtendo valor...'
+    this.IdDispositivo = 'Obtendo valor'
     this.providerPortal.obterInformacoesPortal().then(portal => {
       if (portal.IdDispositivo == null) {
-        this.providerPortal.gerarIdDispositivo().then(idDispositivo => {
+        this.providerPortal.gerarIdDispositivo(portal).then(idDispositivo => {
           this.IdDispositivo = idDispositivo
           this.erro = false
         })
@@ -64,6 +64,7 @@ export class PortalPage implements OnInit {
       else {
         this.erro = false
         this.IdDispositivo = portal.IdDispositivo
+        this.verificandoIdDispositivo = false
       }
     })
     .catch((erro) => {
