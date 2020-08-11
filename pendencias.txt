@@ -145,6 +145,8 @@ OK - Definir whatsapp para suporte
 OK - Input numérico na configuração de valor fixo nos minutos e carência na tabela de estacionamento
 OK - Carregar o anúncio antes para não ter delay na exibição
 OK - Subir uma versão mínima para android
+- Realizar chamada de envio de remessa ao inserir um movimento e pagar atendimentos adiados
+- Não permitir excluir um movimento
 - Bluetooth para IOS na impressão
 - Backup das informações
 - Alterar ícone dos aplicativo e configurar cada tipo de config.xml para cada tipo

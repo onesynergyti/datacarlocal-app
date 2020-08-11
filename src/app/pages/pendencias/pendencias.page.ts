@@ -9,6 +9,7 @@ import { SaidaPage } from '../home/saida/saida.page';
 import { Movimento } from 'src/app/models/movimento';
 import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 import { ValidarAcessoPage } from '../validar-acesso/validar-acesso.page';
+import { PortalService } from 'src/app/dbproviders/portal.service';
 
 @Component({
   selector: 'app-pendencias',
@@ -42,7 +43,8 @@ export class PendenciasPage implements OnInit {
     public propagandaService: PropagandasService,
     public bluetooth: BluetoothService,
     public configuracoesService: ConfiguracoesService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private portalService: PortalService
   ) { }
 
   ngOnInit() {
@@ -149,6 +151,11 @@ export class PendenciasPage implements OnInit {
           this.bluetooth.imprimirRecibo(retorno.data.Movimento, 'pagamento')
         }
   
+        // Envia as vendas para o portal
+        setTimeout(() => {
+          this.portalService.enviarRemessa()
+        }, 5000);
+
         // Exibe uma propagando na saída do veículo
         setTimeout(() => {
           this.propagandaService.showInterstitialAds()

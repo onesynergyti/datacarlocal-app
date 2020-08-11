@@ -3,6 +3,7 @@ import { Movimento } from 'src/app/models/movimento';
 import { ModalController, NavParams } from '@ionic/angular';
 import { MovimentoService } from 'src/app/dbproviders/movimento.service';
 import { Utils } from 'src/app/utils/utils';
+import { PortalService } from 'src/app/dbproviders/portal.service';
 
 @Component({
   selector: 'app-cadastro-movimento',
@@ -20,7 +21,8 @@ export class CadastroMovimentoPage implements OnInit {
     private modalCtrl: ModalController,
     public navParams: NavParams,
     private movimentoProvider: MovimentoService,
-    public utils: Utils
+    public utils: Utils,
+    private portalService: PortalService
   ) {
     this.movimento = navParams.get('movimento')
     this.debito = navParams.get('debito')
@@ -48,6 +50,9 @@ export class CadastroMovimentoPage implements OnInit {
         this.movimento.ValorDinheiro = Math.abs(this.movimento.ValorDinheiro) * (this.debito ? -1 : 1)
     
         this.movimentoProvider.salvar(this.movimento).then(movimento => {
+          setTimeout(() => {
+            this.portalService.enviarRemessa()
+          }, 5000);
           this.modalCtrl.dismiss({ Operacao: operacao, Movimento: movimento })
         })
         .catch(erro => {
