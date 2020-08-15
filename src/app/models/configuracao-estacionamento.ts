@@ -10,24 +10,24 @@ export class ConfiguracaoEstacionamento {
   QuantidadePrimeirosMinutos: number = 0
   UtilizaHora: boolean
   UtilizaDiaria: boolean
-  Fracao15MinutosMoto: number
-  Fracao30MinutosMoto: number
-  PrimeirosMinutosMoto: number
-  HoraMoto: number
-  DiariaMoto: number
-  Fracao15MinutosCarroPequeno: number
-  Fracao30MinutosCarroPequeno: number
-  PrimeirosMinutosCarroPequeno: number
-  HoraCarroPequeno: number
-  DiariaCarroPequeno: number
-  Fracao15MinutosCarroMedio: number
-  Fracao30MinutosCarroMedio: number
-  PrimeirosMinutosCarroMedio: number
-  HoraCarroMedio: number
-  DiariaCarroMedio: number
-  Fracao15MinutosCarroGrande: number
-  Fracao30MinutosCarroGrande: number
-  PrimeirosMinutosCarroGrande: number
-  HoraCarroGrande: number
-  DiariaCarroGrande: number
+  Fracao15MinutosMoto: number = 0
+  Fracao30MinutosMoto: number = 0
+  PrimeirosMinutosMoto: number = 0
+  HoraMoto: number = 0
+  DiariaMoto: number = 0
+  Fracao15MinutosCarroPequeno: number = 0
+  Fracao30MinutosCarroPequeno: number = 0
+  PrimeirosMinutosCarroPequeno: number = 0
+  HoraCarroPequeno: number = 0
+  DiariaCarroPequeno: number = 0
+  Fracao15MinutosCarroMedio: number = 0
+  Fracao30MinutosCarroMedio: number = 0
+  PrimeirosMinutosCarroMedio: number = 0
+  HoraCarroMedio: number = 0
+  DiariaCarroMedio: number = 0
+  Fracao15MinutosCarroGrande: number = 0
+  Fracao30MinutosCarroGrande: number = 0
+  PrimeirosMinutosCarroGrande: number = 0
+  HoraCarroGrande: number = 0
+  DiariaCarroGrande: number = 0
 }

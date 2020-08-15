@@ -26,8 +26,10 @@ export class SenhaAdministradorPage implements OnInit {
     private utils: Utils,
     private navParams: NavParams,
   ) { 
-    this.recuparandoSenha = this.navParams.get('recuparandoSenha')
     this.configuracoes = this.configuracoesService.configuracoes
+
+    if (this.navParams.get('recuparandoSenha') == true)
+      this.recuperarSenha()
   }
 
   ngOnInit() {

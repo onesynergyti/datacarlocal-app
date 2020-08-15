@@ -15,8 +15,7 @@ export class AvisosService {
   private _produtosAlerta
   private _tipoAvisoErroSincronizacao = 1;
   private _tipoAvisoProdutoBaixoEstoque = 2;
-  private _tipoAvisoSincronizacaoIndisponivel = 3;
-  private _tipoAvisoEntregaAtraso = 4;
+  private _tipoAvisoEntregaAtraso = 3;
   
   constructor(
     private globalService: GlobalService,
@@ -57,6 +56,8 @@ export class AvisosService {
 
     this.globalService.onErroSincronizacao.subscribe((erro) => {
       if (erro != null) {
+        // Exclui o tipo de aviso para atualizar o erro
+        this.excluirTipoAviso(this._tipoAvisoErroSincronizacao)
         let aviso = new Aviso()
         aviso.Titulo = 'Falha na sincronização'
         aviso.Descricao = erro
@@ -68,7 +69,6 @@ export class AvisosService {
     this.globalService.onFinalizarSincronizacao.subscribe((sucesso) => {
       if (sucesso != null) {
         this.excluirTipoAviso(this._tipoAvisoErroSincronizacao)
-        this.excluirTipoAviso(this._tipoAvisoSincronizacaoIndisponivel)
       }
     })
 

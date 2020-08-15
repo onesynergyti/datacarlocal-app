@@ -34,11 +34,56 @@ export class PortalService extends ServiceBaseService {
   ) { 
     super(loadingController)
 
+    // Se for um app híbrido, checa se o cadastro dele está ok no portal
+    if (!this.comprasService.usuarioPremium && this.configuracoesService.configuracoes.Portal.SincronizarInformacoes == 'hibrido') {
+      this.avaliaValidadeCadastroDispositivo().then((informacoes: any) => {
+        if (informacoes.Premium) {
+          this.comprasService.vencimentoPremium = new Date(informacoes.ProximoDia)
+          this.globalService.onAssinarPremium.next(null)
+        }
+        else
+          this.comprasService.vencimentoPremium = null
+      })
+      .catch(erro => {
+        alert(JSON.stringify(erro))
+      })
+    }
+
     // Tenta enviar as vendas a cada 30 minutos, se houver erro de envio registrado
     setInterval(() => { 
       if (this.avisosService.possuiErroEnvio)
         this.enviarRemessa() 
     }, 1800000);
+  }
+
+  public avaliaValidadeCadastroDispositivo() {
+    return new Promise((resolve, reject) => {
+      this.obterInformacoesPortal().then((informacoes) => {
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Content-Type':  'application/json',
+            ChaveApp: informacoes.Chave,
+            IdDispositivo: informacoes.IdDispositivo,
+            Assinatura: Md5.hashStr(environment.chaveMD5 + informacoes.Chave + informacoes.IdDispositivo).toString()
+          })
+        };  
+        this.http.get(environment.apiUrl + '/ConexaoApp/situacaoCadastro', httpOptions)
+        .pipe(
+          retry(1),
+          finalize(() => {
+            this.ocultarProcessamento()
+          })
+        ).subscribe(retorno => {
+          resolve(retorno)
+        },
+        (erro) => {
+          reject(erro)
+        })
+      })
+      .catch((erro) => {
+        reject(erro)
+      })
+    })
   }
 
   public obterInformacoesPortal(): Promise<any> {
@@ -95,14 +140,13 @@ export class PortalService extends ServiceBaseService {
   enviarRemessa(forcarEnvio = false) {
     return new Promise((resolve, reject) => {
       // Se não for configurado como híbrido, considera o envio como bem sucedido. Para forçar o envio o tem que acessar pela tela de configuração do portal
-      if (!forcarEnvio && this.configuracoesService.configuracoes.Portal.SincronizarInformacoes != 1) {
+      if (!forcarEnvio && this.configuracoesService.configuracoes.Portal.SincronizarInformacoes != 'hibrido') {
         this.globalService.onFinalizarSincronizacao.next(true)
       }
       else {
         // Obtem a lista dos movimentos a enviar
         this.providerMovimento.lista(new Date('1000/01/01'), new Date('9999/01/01'), null, true)
         .then(movimentos => {
-          this.clipboard.copy(JSON.stringify(movimentos))
           // Se não tem movimentos pendentes não faz o envio
           if (movimentos.length == 0) {
             this.globalService.onFinalizarSincronizacao.next(true)
@@ -113,7 +157,6 @@ export class PortalService extends ServiceBaseService {
               const httpOptions = {
                 headers: new HttpHeaders({
                   'Content-Type':  'application/json',
-                  Authorization: 'my-auth-token',
                   ChaveApp: informacoes.Chave,
                   IdDispositivo: informacoes.IdDispositivo,
                   Assinatura: Md5.hashStr(environment.chaveMD5 + informacoes.Chave + informacoes.IdDispositivo).toString()
@@ -134,25 +177,35 @@ export class PortalService extends ServiceBaseService {
                     const data = [new DatePipe('en-US').transform(new Date(), 'yyyy-MM-dd')];
                     db.executeSql(sql, data).then(() => {
                       this.globalService.onFinalizarSincronizacao.next(true)
+                      // Se o usuário não for premium, valida novamente pois um envio foi realizado
+                      if (!this.comprasService.usuarioPremium) {
+                        this.avaliaValidadeCadastroDispositivo().then((informacoes: any) => {
+                          if (informacoes.Premium) {
+                            this.comprasService.vencimentoPremium = new Date(informacoes.ProximoDia)
+                            this.globalService.onAssinarPremium.next(null)
+                          }
+                        })
+                      }
                       resolve()
                     })
                     .catch((erro) => {
                       this.globalService.onErroSincronizacao.next(JSON.stringify(erro))
-                      reject(JSON.stringify(erro))
+                      reject(erro)
                     })
                   })
                 }
                 else {
-                  this.globalService.onErroSincronizacao.next('Erro no servidor')
-                  reject('Erro no servidor')
+                  this.globalService.onErroSincronizacao.next(retorno.Mensagem)
+                  reject(retorno)
                 }
               },
               (erro) => { 
-                this.globalService.onErroSincronizacao.next(erro)
+                this.globalService.onErroSincronizacao.next(erro.error.Mensagem)
                 reject(erro) 
               })
             })
             .catch((erro) => {
+              this.globalService.onErroSincronizacao.next(JSON.stringify(erro))
               reject(erro)
             })
           }

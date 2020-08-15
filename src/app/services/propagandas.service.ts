@@ -8,9 +8,8 @@ import { ComprasService } from './compras.service';
 })
 export class PropagandasService {
 
-  interstitialAdsOk = false
-  bannerAdsOk = false
   premium = false
+  bannerOk = false
 
   constructor(
     private admobFree: AdMobFree,
@@ -33,33 +32,37 @@ export class PropagandasService {
   }
 
   prepareInterstitialAds(){
-    if (!this.interstitialAdsOk && !this.premium) {
-      let interstitialConfig: AdMobFreeInterstitialConfig = {
-        isTesting: false,
-        autoShow: false,
-        id: "ca-app-pub-2818472978128447/7475351211"
-      };
-      this.admobFree.interstitial.config(interstitialConfig);
-      this.admobFree.interstitial.prepare()
-      .then(() => { this.interstitialAdsOk = true })
-      .catch(() => { this.interstitialAdsOk = false })
+    if (!this.premium) {
+      this.admobFree.interstitial.isReady().then(ready => {
+        // Prepara se não estiver pronto
+        if (!ready) {
+          let interstitialConfig: AdMobFreeInterstitialConfig = {
+            isTesting: false,
+            autoShow: false,
+            id: "ca-app-pub-2818472978128447/7475351211"
+          };
+          this.admobFree.interstitial.config(interstitialConfig);
+          this.admobFree.interstitial.prepare()
+        }
+      })        
     }
   }  
 
   showInterstitialAds(){
-    if (this.interstitialAdsOk && !this.premium) {
-      this.interstitialAdsOk = false      
-      this.admobFree.interstitial.show()
+    if (!this.premium) {
+      this.admobFree.interstitial.isReady().then(ready => {
+        this.admobFree.interstitial.show()
+      })
     }
   }  
 
   hideBanner() {
-    this.admobFree.banner.remove()
     this.admobFree.banner.hide()
   }
 
   prepareBannerAd() {
-    if (!this.bannerAdsOk && !this.premium) {
+    if (!this.premium && !this.bannerOk) {
+      this.bannerOk = true
       let bannerConfig: AdMobFreeBannerConfig = {
         isTesting: false,
         autoShow: false,
@@ -67,15 +70,10 @@ export class PropagandasService {
       };
       this.admobFree.banner.config(bannerConfig);
       this.admobFree.banner.prepare()
-      .then(() => { this.bannerAdsOk = true })
-      .catch(() => { this.bannerAdsOk = false })
     }
   }  
 
   showBannerAd() {
-    if (this.bannerAdsOk && !this.premium) {
-      this.bannerAdsOk = false
-      this.admobFree.banner.show()
-    }
+    this.admobFree.banner.show()
   }  
 }

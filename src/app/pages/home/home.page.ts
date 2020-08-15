@@ -62,7 +62,7 @@ export class HomePage {
     this.carregandoVeiculos = true
     setTimeout(() => {
       this.atualizarPatio()
-    }, 1000);
+    }, 1000);    
   }
 
   atualizarPatio() {

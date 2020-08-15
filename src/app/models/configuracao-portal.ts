@@ -1,3 +1,3 @@
 export class ConfiguracaoPortal {
-  SincronizarInformacoes: number = 0
+  SincronizarInformacoes: string = 'offline'
 }

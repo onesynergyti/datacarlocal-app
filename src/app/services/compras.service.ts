@@ -84,7 +84,10 @@ export class ComprasService {
   }
 
   set vencimentoPremium(data: Date) {
-    localStorage.setItem('vencimentoAssinatura', new DatePipe('en-US').transform(data, 'yyyy/MM/dd'))
+    if (data == null)
+      localStorage.removeItem('vencimentoAssinatura')
+    else
+      localStorage.setItem('vencimentoAssinatura', new DatePipe('en-US').transform(data, 'yyyy/MM/dd'))
   }
 
   get usuarioPremium() {    

@@ -46,7 +46,7 @@ export class ConfiguracoesService {
     if (valor.Mensagens == null)
       valor.Mensagens = new ConfiguracaoMensagens()
 
-      if (valor.Portal == null)
+    if (valor.Portal == null)
       valor.Portal = new ConfiguracaoPortal()
 
       // Tratamento para campos novos sem valor nos clientes antigos
