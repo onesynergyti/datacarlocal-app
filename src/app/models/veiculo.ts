@@ -133,6 +133,4 @@ export class Veiculo {
     return this.Servicos.reduce((acumulador: number, itemAtual) => acumulador + itemAtual.Acrescimo, 0) +
     this.Produtos.reduce((acumulador: number, itemAtual) => acumulador + itemAtual.Acrescimo, 0)
   }
-
-
 }

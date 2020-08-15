@@ -59,7 +59,7 @@ export class AvisosService {
       if (erro != null) {
         let aviso = new Aviso()
         aviso.Titulo = 'Falha na sincronização'
-        aviso.Descricao = 'Houve um erro no envio de informações para o servidor. Verifique sua internet e sua configuração no Portal Reuz.'
+        aviso.Descricao = erro
         aviso.Tipo = this._tipoAvisoErroSincronizacao
         this.inserirAviso(aviso)
       }
@@ -69,42 +69,6 @@ export class AvisosService {
       if (sucesso != null) {
         this.excluirTipoAviso(this._tipoAvisoErroSincronizacao)
         this.excluirTipoAviso(this._tipoAvisoSincronizacaoIndisponivel)
-      }
-    })
-
-    this.globalService.onSincronizacaoIndisponivel.subscribe(() => {
-      if (this.configuracoesService.configuracoes.Portal.SincronizarInformacoes && !this.comprasService.usuarioPremium) {
-        let aviso = new Aviso()
-        aviso.Titulo = 'Sincronização indisponível'
-        aviso.Descricao = 'Assine o plano premium para sincronizar as informações.'
-        aviso.Tipo = this._tipoAvisoSincronizacaoIndisponivel
-        this.inserirAviso(aviso)
-      }
-      else {
-        this.excluirTipoAviso(this._tipoAvisoSincronizacaoIndisponivel)
-      }
-    })
-
-    this.globalService.onSalvarConfiguracoes.subscribe((configuracoes: Configuracoes) => {
-      if (configuracoes != null) {
-        if (configuracoes.Portal.SincronizarInformacoes && !this.comprasService.usuarioPremium) {
-          let aviso = new Aviso()
-          aviso.Titulo = 'Sincronização indisponível'
-          aviso.Descricao = 'Assine o plano premium para sincronizar as informações.'
-          aviso.Tipo = this._tipoAvisoSincronizacaoIndisponivel
-          this.inserirAviso(aviso)
-        }
-        else {
-          this.excluirTipoAviso(this._tipoAvisoSincronizacaoIndisponivel)
-        }
-      }
-    })
-
-    this.globalService.onAssinarPremium.subscribe((produto) => {
-      if (produto != null) {
-        // Se assinou um plano, permite a sincronização
-        if (this.comprasService.usuarioPremium)
-          this.excluirTipoAviso(this._tipoAvisoSincronizacaoIndisponivel)
       }
     })
 

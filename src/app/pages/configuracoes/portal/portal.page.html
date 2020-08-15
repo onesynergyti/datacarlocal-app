@@ -6,25 +6,6 @@
   <ion-grid *ngIf="configuracoes != null">
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLight">
-        <ion-icon class="iconeSubTitulo" name="cog"></ion-icon>
-        Opções do Portal Reuz
-      </ion-col>
-      <ion-col *ngIf="configuracoes.Portal.SincronizarInformacoes && !comprasService.usuarioPremium" size-xs="12" class="subTitulo fundoPerigo">
-        <ion-icon class="iconeSubTitulo" name="warning"></ion-icon>
-        Assine um plano premium
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-item>
-          <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Sincronizar informações', 'Habilite essa opção para sincronizar as informações de vendas com o Portal Reuz')"></ion-icon>
-          <ion-label>Sincronizar informações</ion-label>
-          <ion-toggle color="primary" [(ngModel)]="configuracoes.Portal.SincronizarInformacoes"></ion-toggle>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="phone-portrait"></ion-icon>
         Identificação do dispositivo
       </ion-col>
@@ -47,13 +28,59 @@
         </ion-button>
       </ion-col>
     </ion-row>
+    <ion-row>
+      <ion-col>
+        <div class="divInformativo">
+          <h2>Portal Reuz</h2>
+          <ion-icon name="globe-outline"></ion-icon>
+          <h5>Utilize o código acima para configurar seu dispositivo</h5>
+          <a href="https://www.portalreuz.com"><h5>Conheça os planos em www.portalreuz.com</h5></a>
+        </div>      
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="cog"></ion-icon>
+        Opções do Portal Reuz
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <ion-radio-group [(ngModel)]="configuracoes.Portal.SincronizarInformacoes">
+            <ion-item>
+              <div>
+                <ion-radio slot="start" value=0></ion-radio>
+                <h4 class="negrito">Local</h4>
+                <h5>
+                  Salvar as informações nesse dispositivo sem enviar para o Portal Reuz.
+                </h5>
+              </div>
+            </ion-item>
+        
+            <ion-item>
+              <div>
+                <ion-radio slot="start" value=1></ion-radio>
+                <h4 class="negrito">Híbrido</h4>
+                <h5>
+                  Salvar as informações nesse dispositivo e enviar para o Portal Reuz sempre que houver conexão.
+                </h5>
+              </div>
+            </ion-item>
+        
+            <!--<ion-item>
+              <div>
+                <ion-radio slot="start" value=2></ion-radio>
+                <h4 class="negrito">Online</h4>
+                <h5>
+                  Salvar as informações nesse dispositivo e enviar para o Portal Reuz sempre que houver conexão.
+                </h5>
+              </div>
+            </ion-item>-->
+          </ion-radio-group>
+        </ion-list>
+      </ion-col>
+    </ion-row>
   </ion-grid>
-
-  <div class="divInformativo">
-    <h2>Portal Reuz</h2>
-    <ion-icon name="globe-outline"></ion-icon>
-    <h5>Utilize o código acima para configurar seu dispositivo no Portal Reuz</h5>
-    <h5>Acesse a loja e conheça o aplicativo</h5>
-  </div>
 
 </ion-content>

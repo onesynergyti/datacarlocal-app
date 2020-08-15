@@ -14,7 +14,6 @@ export class GlobalService {
   public onErroSincronizacao = new BehaviorSubject<any>(null)
   public onFinalizarSincronizacao = new BehaviorSubject<any>(null)
   public onSalvarConfiguracoes = new BehaviorSubject<any>(null)
-  public onSincronizacaoIndisponivel = new BehaviorSubject<any>(null)  
 
   constructor() { }
 }

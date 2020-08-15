@@ -1,3 +1,3 @@
 export class ConfiguracaoPortal {
-  SincronizarInformacoes = false
+  SincronizarInformacoes: number = 0
 }

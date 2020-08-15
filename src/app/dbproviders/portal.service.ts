@@ -92,15 +92,11 @@ export class PortalService extends ServiceBaseService {
     })
   }
 
-  enviarRemessa() {
+  enviarRemessa(forcarEnvio = false) {
     return new Promise((resolve, reject) => {
-      // Se não for configurado para sincronizar, considera com sucesso
-      if (!this.configuracoesService.configuracoes.Portal.SincronizarInformacoes) {
+      // Se não for configurado como híbrido, considera o envio como bem sucedido. Para forçar o envio o tem que acessar pela tela de configuração do portal
+      if (!forcarEnvio && this.configuracoesService.configuracoes.Portal.SincronizarInformacoes != 1) {
         this.globalService.onFinalizarSincronizacao.next(true)
-      }
-      // Somente plano premium pode sincronizar informações
-      else if (this.configuracoesService.configuracoes.Portal.SincronizarInformacoes && !this.comprasService.usuarioPremium) {
-        this.globalService.onSincronizacaoIndisponivel.next(null)
       }
       else {
         // Obtem a lista dos movimentos a enviar
