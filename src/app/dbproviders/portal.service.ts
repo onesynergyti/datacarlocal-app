@@ -34,18 +34,18 @@ export class PortalService extends ServiceBaseService {
   ) { 
     super(loadingController)
 
-    // Se for um app híbrido, checa se o cadastro dele está ok no portal
-    if (!this.comprasService.usuarioPremium && this.configuracoesService.configuracoes.Portal.SincronizarInformacoes == 'hibrido') {
+    // Avalia o cadastro do dispositivo e faz um registro de comunicação
+    if (this.configuracoesService.configuracoes.Portal.SincronizarInformacoes != 'offline') {
       this.avaliaValidadeCadastroDispositivo().then((informacoes: any) => {
         if (informacoes.Premium) {
           this.comprasService.vencimentoPremium = new Date(informacoes.ProximoDia)
-          this.globalService.onAssinarPremium.next(null)
+          this.globalService.onAssinarPremium.next({})
         }
         else
           this.comprasService.vencimentoPremium = null
       })
-      .catch(erro => {
-        alert(JSON.stringify(erro))
+      .catch((erro) => {
+        this.globalService.onErroSincronizacao.next(erro)
       })
     }
 
@@ -64,6 +64,7 @@ export class PortalService extends ServiceBaseService {
             'Content-Type':  'application/json',
             ChaveApp: informacoes.Chave,
             IdDispositivo: informacoes.IdDispositivo,
+            CodigoSistema: environment.codigoSistema.toString(),
             Assinatura: Md5.hashStr(environment.chaveMD5 + informacoes.Chave + informacoes.IdDispositivo).toString()
           })
         };  
@@ -77,7 +78,7 @@ export class PortalService extends ServiceBaseService {
           resolve(retorno)
         },
         (erro) => {
-          reject(erro)
+          reject(erro.error.Mensagem != null ? erro.error.Mensagem : erro.message != null ? erro.message : JSON.stringify(erro))
         })
       })
       .catch((erro) => {
@@ -159,6 +160,7 @@ export class PortalService extends ServiceBaseService {
                   'Content-Type':  'application/json',
                   ChaveApp: informacoes.Chave,
                   IdDispositivo: informacoes.IdDispositivo,
+                  CodigoSistema: environment.codigoSistema.toString(),
                   Assinatura: Md5.hashStr(environment.chaveMD5 + informacoes.Chave + informacoes.IdDispositivo).toString()
                 })
               };  
@@ -200,8 +202,8 @@ export class PortalService extends ServiceBaseService {
                 }
               },
               (erro) => { 
-                this.globalService.onErroSincronizacao.next(erro.error.Mensagem)
-                reject(erro) 
+                this.globalService.onErroSincronizacao.next(erro.error.Mensagem != null ? erro.error.Mensagem : erro.message != null ? erro.message : JSON.stringify(erro))
+                reject(erro.error.Mensagem != null ? erro.error.Mensagem : erro.message != null ? erro.message : JSON.stringify(erro)) 
               })
             })
             .catch((erro) => {

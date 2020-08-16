@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.reuztecnologia.estacionamento.lite" version="1.4.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.reuztecnologia.estacionamento.lite" version="1.4.5" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Estacionamento Reuz</name>
     <description>Sistema de controle para estacionamentos</description>
     <author email="ti@reuztecnologia.com" href="http://www.reuztecnologia.com/">Reuz Tecnologia</author>
@@ -126,7 +126,6 @@
     </plugin>
     <plugin name="cordova-sqlite-storage" spec="^5.0.1" />
     <plugin name="cordova-plugin-ionic-webview" spec="^5.0.0" />
-    <engine name="android" spec="8.1.0" />
     <engine name="browser" spec="6.0.0" />
     <engine name="ios" spec="latest" />
 </widget>

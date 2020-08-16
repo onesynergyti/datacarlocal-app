@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AlertController, ToastController } from '@ionic/angular';
 import { DatePicker } from '@ionic-native/date-picker/ngx';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +14,11 @@ export class Utils {
     public toastController: ToastController,
     private datePicker: DatePicker
   ) { }
+
+  alertLog(mensagem) {
+    if (environment.AlertDebug)
+      alert(mensagem)
+  }
 
   abrirWhatsapp(celular, mensagem = '') {
     celular = celular.normalize('NFD').replace(/[\u0300-\u036f]/g, "")

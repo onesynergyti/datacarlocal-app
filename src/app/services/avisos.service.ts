@@ -5,6 +5,7 @@ import { ProdutosService } from '../dbproviders/produtos.service';
 import { ConfiguracoesService } from './configuracoes.service';
 import { Configuracoes } from '../models/configuracoes';
 import { ComprasService } from './compras.service';
+import { Utils } from '../utils/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,8 @@ export class AvisosService {
     private globalService: GlobalService,
     private providerProdutos: ProdutosService,
     private configuracoesService: ConfiguracoesService,
-    private comprasService: ComprasService
+    private comprasService: ComprasService,
+    private utils: Utils
   ) {     
     this.globalService.onRealizarVenda.subscribe(() => {
       this.providerProdutos.produtosAlerta().then(quantidade => { 
@@ -56,6 +58,7 @@ export class AvisosService {
 
     this.globalService.onErroSincronizacao.subscribe((erro) => {
       if (erro != null) {
+        this.utils.alertLog('erro no evento da sincronização ' + erro + JSON.stringify(erro))
         // Exclui o tipo de aviso para atualizar o erro
         this.excluirTipoAviso(this._tipoAvisoErroSincronizacao)
         let aviso = new Aviso()

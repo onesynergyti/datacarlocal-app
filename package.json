@@ -38,12 +38,12 @@
     "chart.js": "^2.9.3",
     "cordova": "^10.0.0",
     "cordova-admob-sdk": "^0.24.1",
-    "cordova-android": "8.1.0",
     "cordova-browser": "6.0.0",
     "cordova-check-plugins": "^4.0.5",
     "cordova-clipboard": "^1.3.0",
     "cordova-ios": "^6.1.0",
     "cordova-plugin-admob-free": "^0.27.0",
+    "cordova-plugin-android-support-v4": "^21.0.1",
     "cordova-plugin-bluetooth-serial": "^0.4.7",
     "cordova-plugin-datepicker": "^0.9.3",
     "cordova-plugin-device": "2.0.2",
@@ -79,6 +79,8 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
     "codelyzer": "^5.1.2",
+    "cordova-android": "^9.0.0",
+    "cordova-plugin-androidx": "^2.0.0",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
     "cordova-plugin-splashscreen": "^5.0.2",
@@ -122,12 +124,14 @@
       "cordova-clipboard": {},
       "cordova-plugin-purchase": {
         "BILLING_KEY": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAprWmCwwpKTe7Oxy3mZKbTsk0CcUbHL3e8dhQQnVtwrai7lJfabIQwiVpLF/3lxmkD3943uzHDh5kGA4Y2ziAibd64x62XzrirnbUo2Z6Sm8QqE3gYtVAwf+Dgo50f6zL1org7Wlm4xwAqTD2pAsEPCoWKQMq+eF95cIUd0IseiAWLcGhNXKbxUKovktVJDNUc5x/oH4cwgcSXcmP2Vy5gOAOOG7XLV559kQ/HeqP3QUqiLWkGfXRv724ydqn684HmOcF07C8WYNEP35fCAW4CsR+yXVRdcpb/845itQT0XdHoB2RoRBZLix3TY1Cm3M/iiLvgaz42TRIU4NZWWhLsQIDAQAB"
-      }
+      },
+      "cordova-plugin-androidx": {},
+      "cordova-plugin-androidx-adapter": {}
     },
     "platforms": [
-      "android",
       "browser",
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }

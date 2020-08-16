@@ -8,7 +8,6 @@ import { ComprasService } from './compras.service';
 })
 export class PropagandasService {
 
-  premium = false
   bannerOk = false
 
   constructor(
@@ -16,23 +15,10 @@ export class PropagandasService {
     private globalService: GlobalService,
     private comprasService: ComprasService
 
-  ) { 
-    // Observa assinatura do usuário
-    this.globalService.onAssinarPremium.subscribe(() => {
-      this.premium = this.comprasService.usuarioPremium
-      if (this.premium) {
-        this.hideBanner()
-      }      
-    })
-
-    // Avalia a cada hora se o cliente é premium
-    setInterval(() => {
-      this.premium = this.comprasService.usuarioPremium
-    }, 3600000)
-  }
+  ) { }
 
   prepareInterstitialAds(){
-    if (!this.premium) {
+    if (!this.comprasService.usuarioPremium) {
       this.admobFree.interstitial.isReady().then(ready => {
         // Prepara se não estiver pronto
         if (!ready) {
@@ -48,8 +34,8 @@ export class PropagandasService {
     }
   }  
 
-  showInterstitialAds(){
-    if (!this.premium) {
+    showInterstitialAds(){
+    if (!this.comprasService.usuarioPremium) {
       this.admobFree.interstitial.isReady().then(ready => {
         this.admobFree.interstitial.show()
       })
@@ -61,7 +47,7 @@ export class PropagandasService {
   }
 
   prepareBannerAd() {
-    if (!this.premium && !this.bannerOk) {
+    if (!this.comprasService.usuarioPremium && !this.bannerOk) {
       this.bannerOk = true
       let bannerConfig: AdMobFreeBannerConfig = {
         isTesting: false,
