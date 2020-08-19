@@ -114,8 +114,4 @@ export class TabelaEstacionamentoPage implements OnInit {
   
     await alert.present();
   }
-
-  precosEspeciais(tipoVeiculo: number) {
-    return this.configuracoes.Estacionamento.PrecosEspeciais.filter(itemAtual => itemAtual.TipoVeiculo == tipoVeiculo).sort((a, b) => a.Minutos - b.Minutos)
-  }
 }

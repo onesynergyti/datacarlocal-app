@@ -21,61 +21,9 @@ export class ConfiguracoesService {
   ) { }
 
   get configuracoes(): Configuracoes {
-    let valor: Configuracoes = JSON.parse(localStorage.getItem('configuracoes'))
+    return new Configuracoes(JSON.parse(localStorage.getItem('configuracoes')))
+  }
 
-    if (valor == null)
-      valor = new Configuracoes()
-
-    valor.Estacionamento = new ConfiguracaoEstacionamento(valor.Estacionamento)
-
-    if (valor.Recibo == null)
-      valor.Recibo = new ConfiguracaoRecibo()
-
-    if (valor.Estabelecimento == null)
-      valor.Estabelecimento = new Estabelecimento()
-
-    if (valor.Patio == null)
-      valor.Patio = new ConfiguracaoPatio()
-
-    if (valor.Seguranca == null)
-      valor.Seguranca = new ConfiguracaoSeguranca()
-
-    if (valor.ManualUso == null)
-      valor.ManualUso = new ConfiguracaoManualUso()
-
-    if (valor.Mensagens == null)
-      valor.Mensagens = new ConfiguracaoMensagens()
-
-    if (valor.Portal == null)
-      valor.Portal = new ConfiguracaoPortal()
-
-      // Tratamento para campos novos sem valor nos clientes antigos
-    if (valor.Patio.CampoAvarias == null)
-      valor.Patio.CampoAvarias = true
-
-    if (valor.Seguranca.ExigirSenhaCadastroProdutos == null)
-      valor.Seguranca.ExigirSenhaCadastroProdutos = true
-
-    if (valor.Patio.CampoVeiculoPequeno == null)
-      valor.Patio.CampoVeiculoPequeno = environment.codigoSistema in [1, 4]
-
-    if (valor.Patio.CampoVeiculoMedio == null)
-      valor.Patio.CampoVeiculoMedio = environment.codigoSistema in [1, 4]
-
-    if (valor.Patio.CampoVeiculoGrande == null)
-      valor.Patio.CampoVeiculoGrande = environment.codigoSistema in [1, 4]
-
-    if (valor.Patio.CampoMoto == null)
-      valor.Patio.CampoMoto = environment.codigoSistema in [1, 4]
-
-    if (valor.Patio.CampoMotoPequena == null)
-      valor.Patio.CampoMotoPequena = environment.codigoSistema in [1, 4]
-
-    if (valor.Patio.CampoMotoGrande == null)
-      valor.Patio.CampoMotoGrande = environment.codigoSistema in [1, 4]
-
-    return valor
-}
 
   set configuracoes(configuracoes: Configuracoes) {
     localStorage.setItem('configuracoes', JSON.stringify(configuracoes))

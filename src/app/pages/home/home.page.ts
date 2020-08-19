@@ -145,22 +145,6 @@ export class HomePage {
 
   async verificarConfiguracoesPendentes() {
     return new Promise((resolve, reject) => {
-      // O estacionamento ou os serviços devem estar ativos
-      // Se houver utilização de estacionamento, tem que ter a tabela configurada
-      if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento && 
-      !this.configuracoesService.configuracoes.Estacionamento.UtilizaDiaria &&
-      !this.configuracoesService.configuracoes.Estacionamento.UtilizaFracao15Minutos &&
-      !this.configuracoesService.configuracoes.Estacionamento.UtilizaFracao30Minutos &&
-      !this.configuracoesService.configuracoes.Estacionamento.UtilizaHora &&
-      !this.configuracoesService.configuracoes.Estacionamento.UtilizaPrimeirosMinutos) {
-        reject({ Titulo: 'Configurar estacionamento', Mensagem: 'É necessário configurar a tabela de estacionamento ou desabilitar essa função antes de prosseguir. Deseja acessar as configurações agora?', Rota: 'configuracoes?pagina=estacionamento' })
-      }
-      // Se configurar que utiliza minutos iniciais, deve informar a quantidade de minutos
-      if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento && 
-      this.configuracoesService.configuracoes.Estacionamento.UtilizaPrimeirosMinutos &&
-      (this.configuracoesService.configuracoes.Estacionamento.QuantidadePrimeirosMinutos == null || this.configuracoesService.configuracoes.Estacionamento.QuantidadePrimeirosMinutos <= 0)) {
-        reject({ Titulo: 'Configurar estacionamento', Mensagem: 'Você optou por cobrar um valor fixo nos minutos iniciais, mas não definiu a quantidade de minutos. Deseja acessar as configurações agora?', Rota: 'configuracoes?pagina=estacionamento' })
-      }
       // O cliente deve utilizar o campo do veículo ou do cartão pelo menos para identificação do usuário
       if (!this.configuracoesService.configuracoes.Patio.CampoCartao && 
       !this.configuracoesService.configuracoes.Patio.CampoVeiculo) {

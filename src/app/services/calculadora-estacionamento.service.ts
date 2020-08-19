@@ -133,7 +133,7 @@ export class CalculadoraEstacionamentoService {
       return 0
     
     // Verifica a quantidade de dias para cobrança por diária
-    if (precos.UtilizaDiaria) {
+    if (this.valorDiaria(tipoVeiculo)) {
       const dias = Math.floor((minutos / 1440))
       // Se não completou uma diaria, não cobra a diaria
       if (dias > 0) {
@@ -143,7 +143,7 @@ export class CalculadoraEstacionamentoService {
       }
       
       // Se não houver utilização de fração de hora, 30 ou 15 minutos, adiciona uma diária inteira
-      if (minutos > 0 && !precos.UtilizaFracao15Minutos && !precos.UtilizaFracao30Minutos && !precos.UtilizaHora) {
+      if (minutos > 0 && !this.valorFracao15Minutos(tipoVeiculo) && !this.valorFracao30Minutos(tipoVeiculo) && !this.valorHora(tipoVeiculo)) {
         precoFracionado += Number(this.valorDiaria(tipoVeiculo))
       }
     }
@@ -162,8 +162,6 @@ export class CalculadoraEstacionamentoService {
         if (minutos > precosEspeciais[i].Minutos)
           precoAvaliado = precosEspeciais[i + 1]        
       }
-
-      alert('preco avaliado final ' + JSON.stringify(precoAvaliado))
 
       precoFracionado += Number(precoAvaliado.Valor)
       minutos = minutos - precoAvaliado.Minutos          
@@ -185,7 +183,7 @@ export class CalculadoraEstacionamentoService {
     }
 
     // Cobranca de horas adicionais 
-    if (precos.UtilizaHora) {
+    if (this.valorHora(tipoVeiculo)) {
       const horas =  Math.floor(minutos / 60)
       // Se não completou uma hora, não cobra a hora
       if (horas > 0) {
@@ -201,13 +199,13 @@ export class CalculadoraEstacionamentoService {
       }
 
       // Se não houver utilização de fração de 30 ou 15 minutos, adiciona uma hora inteira
-      if (minutos > 0 && !precos.UtilizaFracao15Minutos && !precos.UtilizaFracao30Minutos) {
+      if (minutos > 0 && !this.valorFracao15Minutos(tipoVeiculo) && !this.valorFracao30Minutos(tipoVeiculo)) {
         precoFracionado += Number(this.valorHora(tipoVeiculo))
       }
     }
 
     // Cobranca fração de 30 minutos adicionais
-    if (precos.UtilizaFracao30Minutos) {
+    if (this.valorFracao30Minutos(tipoVeiculo)) {
       const fracao30Minutos =  Math.floor((minutos / 30))
       // Se não completou 30 minutos, não cobra a fração
       if (fracao30Minutos > 0) {
@@ -223,13 +221,13 @@ export class CalculadoraEstacionamentoService {
       }
 
       // Se não houver utilização de fração 15 minutos, adiciona uma fração de 30 minutos
-      if (minutos > 0 && !precos.UtilizaFracao15Minutos) {
+      if (minutos > 0 && !this.valorFracao15Minutos(tipoVeiculo)) {
         precoFracionado += Number(this.valorFracao30Minutos(tipoVeiculo))
       }      
     }
 
     // Cobranca fração de 15 minutos adicionais
-    if (precos.UtilizaFracao15Minutos) {
+    if (this.valorFracao15Minutos(tipoVeiculo)) {
       const fracao15Minutos = Math.floor((minutos / 15))
       // Se não completou 15 minutos, não cobra a fração
       if (fracao15Minutos > 0) {
@@ -246,7 +244,7 @@ export class CalculadoraEstacionamentoService {
     }
 
     // O valor cobrado por fração não pode ultrapassar o valor da diária
-    if (precos.UtilizaDiaria && precoFracionado > this.valorDiaria(tipoVeiculo)) 
+    if (this.valorDiaria(tipoVeiculo) && precoFracionado > this.valorDiaria(tipoVeiculo)) 
       precoFracionado = this.valorDiaria(tipoVeiculo)
 
     return Number(precoDiarias + precoFracionado)

@@ -5,12 +5,8 @@ export class ConfiguracaoEstacionamento {
   UtilizarEstacionamento: boolean = environment.codigoSistema == 4
   IncluirServicoEstacionamento: boolean = environment.codigoSistema == 4
   MinutosCarencia: number = 0
-  UtilizaFracao15Minutos: boolean
-  UtilizaFracao30Minutos: boolean
   UtilizaPrimeirosMinutos: boolean
   QuantidadePrimeirosMinutos: number = 0
-  UtilizaHora: boolean
-  UtilizaDiaria: boolean
   Fracao15MinutosMotoPequena: number = 0
   Fracao30MinutosMotoPequena: number = 0
   PrimeirosMinutosMotoPequena: number = 0
@@ -53,12 +49,8 @@ export class ConfiguracaoEstacionamento {
       this.UtilizarEstacionamento = configuracaoEstacionamento.UtilizarEstacionamento != null ? configuracaoEstacionamento.UtilizarEstacionamento : environment.codigoSistema == 4
       this.IncluirServicoEstacionamento = configuracaoEstacionamento.IncluirServicoEstacionamento != null ? configuracaoEstacionamento.IncluirServicoEstacionamento : environment.codigoSistema == 4
       this.MinutosCarencia = configuracaoEstacionamento.MinutosCarencia != null ? configuracaoEstacionamento.MinutosCarencia : 0
-      this.UtilizaFracao15Minutos = configuracaoEstacionamento.UtilizaFracao15Minutos != null ? configuracaoEstacionamento.UtilizaFracao15Minutos : false
-      this.UtilizaFracao30Minutos = configuracaoEstacionamento.UtilizaFracao30Minutos != null ? configuracaoEstacionamento.UtilizaFracao30Minutos : false
       this.UtilizaPrimeirosMinutos = configuracaoEstacionamento.UtilizaPrimeirosMinutos != null ? configuracaoEstacionamento.UtilizaPrimeirosMinutos : false
       this.QuantidadePrimeirosMinutos = configuracaoEstacionamento.QuantidadePrimeirosMinutos != null ? configuracaoEstacionamento.QuantidadePrimeirosMinutos : 0
-      this.UtilizaHora = configuracaoEstacionamento.UtilizaHora != null ? configuracaoEstacionamento.UtilizaHora : false
-      this.UtilizaDiaria = configuracaoEstacionamento.UtilizaDiaria != null ? configuracaoEstacionamento.UtilizaDiaria : false
       this.Fracao15MinutosMotoPequena = configuracaoEstacionamento.Fracao15MinutosMotoPequena != null ? configuracaoEstacionamento.Fracao15MinutosMotoPequena : 0
       this.Fracao30MinutosMotoPequena = configuracaoEstacionamento.Fracao30MinutosMotoPequena != null ? configuracaoEstacionamento.Fracao30MinutosMotoPequena : 0
       this.PrimeirosMinutosMotoPequena = configuracaoEstacionamento.PrimeirosMinutosMotoPequena != null ? configuracaoEstacionamento.PrimeirosMinutosMotoPequena : 0
@@ -96,5 +88,9 @@ export class ConfiguracaoEstacionamento {
       this.DiariaTipoGenerico = configuracaoEstacionamento.DiariaTipoGenerico != null ? configuracaoEstacionamento.DiariaTipoGenerico : 0
       this.PrecosEspeciais = configuracaoEstacionamento.PrecosEspeciais != null ? configuracaoEstacionamento.PrecosEspeciais.slice() : []
     }    
+  }
+
+  precosEspeciais(tipoVeiculo: number) {
+    return this.PrecosEspeciais.filter(itemAtual => itemAtual.TipoVeiculo == tipoVeiculo).sort((a, b) => a.Minutos - b.Minutos)
   }
 }

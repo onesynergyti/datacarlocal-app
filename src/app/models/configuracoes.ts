@@ -16,4 +16,17 @@ export class Configuracoes {
   ManualUso: ConfiguracaoManualUso = new ConfiguracaoManualUso()
   Mensagens: ConfiguracaoMensagens = new ConfiguracaoMensagens()
   Portal: ConfiguracaoPortal = new ConfiguracaoPortal()
+
+  constructor(configuracoes: Configuracoes) {
+    if (configuracoes != null) {
+      this.Recibo = new ConfiguracaoRecibo(configuracoes.Recibo)
+      this.Estabelecimento = new Estabelecimento(configuracoes.Estabelecimento)
+      this.Estacionamento = new ConfiguracaoEstacionamento(configuracoes.Estacionamento)
+      this.Patio = new ConfiguracaoPatio(configuracoes.Patio)
+      this.Seguranca = new ConfiguracaoSeguranca(configuracoes.Seguranca)
+      this.ManualUso = new ConfiguracaoManualUso(configuracoes.ManualUso)
+      this.Mensagens = new ConfiguracaoMensagens(configuracoes.Mensagens)
+      this.Portal = new ConfiguracaoPortal(configuracoes.Portal)
+    }
+  }
 }

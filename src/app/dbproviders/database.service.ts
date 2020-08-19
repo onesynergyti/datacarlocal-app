@@ -30,8 +30,7 @@ export class DatabaseService extends ServiceBaseService {
     })
   }
 
-  public criarTabelas(db: SQLiteObject) {
-    
+  public criarTabelas(db: SQLiteObject) {    
     return new Promise((resolve, reject) => {
       db.transaction(tx => {
         let promisesTx = []

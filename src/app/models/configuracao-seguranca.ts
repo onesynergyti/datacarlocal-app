@@ -2,7 +2,6 @@ export class ConfiguracaoSeguranca {
   ExigirSenhaExcluirVeiculoPatio: boolean = true
   ExigirSenhaEditarServicosVeiculo: boolean = true
   ExigirSenhaPagarDepois: boolean = true
-  ExigirSenhaEstornarMovimento: boolean = true
   ExigirSenhaAlterarResponsavel: boolean = true
   ExigirSenhaConcederDesconto: boolean = true
   ExigirSenhaRelatoriosGerenciais: boolean = true
@@ -13,4 +12,22 @@ export class ConfiguracaoSeguranca {
   EmailAdministrador: string = ''
   SenhaAdministrador
   CodigoRecuperacao
+
+  constructor(configuracaoSeguranca: ConfiguracaoSeguranca = null) {
+    if (configuracaoSeguranca != null) {
+      this.ExigirSenhaExcluirVeiculoPatio = configuracaoSeguranca.ExigirSenhaExcluirVeiculoPatio
+      this.ExigirSenhaEditarServicosVeiculo = configuracaoSeguranca.ExigirSenhaEditarServicosVeiculo
+      this.ExigirSenhaPagarDepois = configuracaoSeguranca.ExigirSenhaPagarDepois
+      this.ExigirSenhaAlterarResponsavel = configuracaoSeguranca.ExigirSenhaAlterarResponsavel
+      this.ExigirSenhaConcederDesconto = configuracaoSeguranca.ExigirSenhaConcederDesconto
+      this.ExigirSenhaRelatoriosGerenciais = configuracaoSeguranca.ExigirSenhaRelatoriosGerenciais
+      this.ExigirSenhaCadastroFuncionarios = configuracaoSeguranca.ExigirSenhaCadastroFuncionarios
+      this.ExigirSenhaCadastroServicos = configuracaoSeguranca.ExigirSenhaCadastroServicos
+      this.ExigirSenhaCadastroMensalistas = configuracaoSeguranca.ExigirSenhaCadastroMensalistas
+      this.ExigirSenhaCadastroProdutos = configuracaoSeguranca.ExigirSenhaCadastroProdutos
+      this.EmailAdministrador = configuracaoSeguranca.EmailAdministrador
+      this.SenhaAdministrador = configuracaoSeguranca.SenhaAdministrador
+      this.CodigoRecuperacao = configuracaoSeguranca.CodigoRecuperacao
+    }
+  }
 }
