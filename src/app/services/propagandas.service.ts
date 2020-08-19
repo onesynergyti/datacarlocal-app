@@ -60,6 +60,7 @@ export class PropagandasService {
   }  
 
   showBannerAd() {
-    this.admobFree.banner.show()
+    if (!this.comprasService.usuarioPremium)
+      this.admobFree.banner.show()
   }  
 }

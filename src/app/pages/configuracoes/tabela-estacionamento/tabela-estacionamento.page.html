@@ -1,0 +1,657 @@
+<ion-header>
+  <app-header titulo="Preço Estacionamento" ocultarAvisos="true"></app-header>
+  <ion-segment scrollable [(ngModel)]="pagina" *ngIf="configuracoes != null">
+    <ion-segment-button value="geral">
+      Opções
+    </ion-segment-button>
+    <ion-segment-button value="motoPequena" *ngIf="configuracoes.Patio.CampoMotoPequena && configuracoes.Patio.SepararPrecosServico">
+      <img src="../../../../assets/img/veiculos/5.png" />
+    </ion-segment-button>
+    <ion-segment-button value="motoMedia" *ngIf="configuracoes.Patio.CampoMoto && configuracoes.Patio.SepararPrecosServico">
+      <img src="../../../../assets/img/veiculos/1.png" />
+    </ion-segment-button>
+    <ion-segment-button value="motoGrande" *ngIf="configuracoes.Patio.CampoMotoGrande && configuracoes.Patio.SepararPrecosServico">
+      <img src="../../../../assets/img/veiculos/6.png" />
+    </ion-segment-button>
+    <ion-segment-button value="veiculoPequeno" *ngIf="configuracoes.Patio.CampoVeiculoPequeno && configuracoes.Patio.SepararPrecosServico">
+      <img src="../../../../assets/img/veiculos/2.png" />
+    </ion-segment-button>
+    <ion-segment-button value="veiculoMedio" *ngIf="configuracoes.Patio.CampoVeiculoMedio && configuracoes.Patio.SepararPrecosServico">
+      <img src="../../../../assets/img/veiculos/3.png" />
+    </ion-segment-button>
+    <ion-segment-button value="veiculoGrande" *ngIf="configuracoes.Patio.CampoVeiculoGrande && configuracoes.Patio.SepararPrecosServico">
+      <img src="../../../../assets/img/veiculos/4.png" />
+    </ion-segment-button>
+    <ion-segment-button value="tipoGenerico" *ngIf="!configuracoes.Patio.SepararPrecosServico">
+      Preços
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="pagina == 'geral'">
+    <ion-grid *ngIf="configuracoes != null">
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Configurações gerais
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-no-padding ion-no-margin">
+          <ion-list>
+            <ion-item>
+              <ion-icon (click)="utils.alerta('Controlar estacionamento', 'Ative essa opção se quiser controlar cobrança de estacionamento por tempo dos veículos. Configure os formatos de cobrança disponíveis.')" class="iconeAjudaToggle" name="information-circle-outline"></ion-icon>
+              <ion-label>Controlar estacionamento</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizarEstacionamento"></ion-toggle>
+            </ion-item>
+            <ion-item *ngIf="configuracoes.Estacionamento.UtilizarEstacionamento">
+              <ion-icon (click)="utils.alerta('Inclusão automática', 'Ative essa opção se quiser que o sistema inclua automaticamente o serviço de cobrança de estacionamento ao registrar a entrada de um veículo. Caso essa opção seja desabilitada o sistema permitirá a inclusão manualmente para cada veículo.')" class="iconeAjudaToggle" name="information-circle-outline"></ion-icon>
+              <ion-label>Inclusão automática</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.IncluirServicoEstacionamento"></ion-toggle>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="configuracoes.Estacionamento.UtilizarEstacionamento">
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="pricetag"></ion-icon>
+          Cobrança inicial
+        </ion-col>
+        <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
+          <ion-list>
+            <ion-item>
+              <ion-icon (click)="utils.alerta('Carência', 'Informe a quantidade de minutos máxima em que não haverá cobrança de permanência.')" class="iconeAjuda" name="information-circle-outline"></ion-icon>
+              <ion-label position="floating">Minutos carência</ion-label>
+              <ion-input type="number" [(ngModel)]="configuracoes.Estacionamento.MinutosCarencia"></ion-input>
+            </ion-item>        
+            <ion-item>
+              <ion-icon (click)="utils.alerta('Minutos iniciais', 'Ative se quiser cobrar um valor fixo nos primeiros minutos de permanência do veículo.')" class="iconeAjudaToggle" name="information-circle-outline"></ion-icon>
+              <ion-label>Cobrança fixa inicial</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaPrimeirosMinutos"></ion-toggle>
+            </ion-item>
+            <ion-item *ngIf="configuracoes.Estacionamento.UtilizaPrimeirosMinutos">
+              <ion-icon (click)="utils.alerta('Minutos iniciais', 'Informe a quantidade de minutos iniciais que serão cobrados.')" class="iconeAjuda" name="information-circle-outline"></ion-icon>
+              <ion-label position="floating">Minutos iniciais</ion-label>
+              <ion-input type="number" [(ngModel)]="configuracoes.Estacionamento.QuantidadePrimeirosMinutos"></ion-input>
+            </ion-item>        
+          </ion-list>
+        </ion-col>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="pricetag"></ion-icon>
+          Tabela de cobrança
+        </ion-col>
+        <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
+          <ion-list>
+            <ion-item>
+              <ion-icon (click)="utils.alerta('Cobrança por 15 minutos', 'Ative para definir preços por fração de 15 minutos.')" class="iconeAjudaToggle" name="information-circle-outline"></ion-icon>
+              <ion-label>Cobrança por 15 minutos</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaFracao15Minutos"></ion-toggle>
+            </ion-item>        
+            <ion-item>
+              <ion-icon (click)="utils.alerta('Cobrança por 30 minutos', 'Ative para definir preços por fração de 30 minutos.')" class="iconeAjudaToggle" name="information-circle-outline"></ion-icon>
+              <ion-label>Cobrança por 30 minutos</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaFracao30Minutos"></ion-toggle>
+            </ion-item>        
+            <ion-item>
+              <ion-icon (click)="utils.alerta('Cobrança por hora', 'Ative para definir preços por hora.')" class="iconeAjudaToggle" name="information-circle-outline"></ion-icon>
+              <ion-label>Cobrança por hora</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaHora"></ion-toggle>
+            </ion-item>        
+            <ion-item>
+              <ion-icon (click)="utils.alerta('Cobrança diária', 'Ative para definir preços por diária.')" class="iconeAjudaToggle" name="information-circle-outline"></ion-icon>
+              <ion-label>Cobrança diária</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaDiaria"></ion-toggle>
+            </ion-item>        
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <div *ngIf="pagina == 'tipoGenerico'">
+    <ion-grid *ngIf="configuracoes != null">
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Preços
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaPrimeirosMinutos">
+          <ion-item>
+            <ion-label position="floating">Minutos iniciais</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.PrimeirosMinutosTipoGenerico | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.PrimeirosMinutosTipoGenerico=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaFracao15Minutos">
+          <ion-item>
+            <ion-label position="floating">15 minutos</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao15MinutosTipoGenerico | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao15MinutosTipoGenerico=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaFracao30Minutos">
+          <ion-item>
+            <ion-label position="floating">30 minutos</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao30MinutosTipoGenerico | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao30MinutosTipoGenerico=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaHora">
+          <ion-item>
+            <ion-label position="floating">Hora</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.HoraTipoGenerico | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.HoraTipoGenerico=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaDiaria">
+          <ion-item>
+            <ion-label position="floating">Diária</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.DiariaTipoGenerico | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.DiariaTipoGenerico=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Preços especiais
+        </ion-col>
+        <ion-col size-xs="12" (click)="utils.alerta('Minutos iniciais deconsiderados', 'Você habilitou a cobrança de minutos iniciais nas opções gerais. Os preços especiais serão considerados prioridade, por isso a opção geral será desconsiderada.')" class="subTitulo fundoAlerta" *ngIf="precosEspeciais(0).length && configuracoes.Estacionamento.UtilizaPrimeirosMinutos && configuracoes.Estacionamento.QuantidadePrimeirosMinutos">
+          <ion-icon class="iconeSubTitulo" name="warning"></ion-icon>
+          Os minutos iniciais serão desconsiderados                  
+        </ion-col>        
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12">
+          <div class="divInformativo" *ngIf="!precosEspeciais(0).length">
+            <h2>Nenhum preço especial definido</h2>
+            <ion-icon name="pricetags-outline"></ion-icon>
+            <h5>Se desejar adicione preços diferenciados</h5>
+          </div>
+          <ion-list [@listAnimation]="precosEspeciais(0).length" lines="none">
+            <ion-item-sliding *ngFor="let precoEspecial of precosEspeciais(0)">
+              <ion-item (click)="cadastrarPrecoEspecial(0, precoEspecial)">
+                <h3>Cobrar {{ precoEspecial.Valor | decimalPipe:"R$ " }} nos primeiros {{ precoEspecial.Minutos }} minutos</h3>
+              </ion-item>
+
+              <ion-item-options side="end">
+                <ion-item-option color="danger" (click)="excluirPrecoEspecial(precoEspecial)">
+                  <ion-icon slot="icon-only" name="trash"></ion-icon>
+                </ion-item-option>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ion-list>
+          <ion-button expand="block" color="success" (click)="cadastrarPrecoEspecial(0)">
+            <ion-icon slot="start" name="add-circle"></ion-icon>
+            Adicionar
+          </ion-button>
+        </ion-col>
+      </ion-row>  
+    </ion-grid>
+  </div>  
+  <div *ngIf="pagina == 'motoPequena'">
+    <ion-grid *ngIf="configuracoes != null">
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Preços de moto pequena
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaPrimeirosMinutos">
+          <ion-item>
+            <ion-label position="floating">Minutos iniciais</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.PrimeirosMinutosMotoPequena | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.PrimeirosMinutosMotoPequena=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaFracao15Minutos">
+          <ion-item>
+            <ion-label position="floating">15 minutos</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao15MinutosMotoPequena | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao15MinutosMotoPequena=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaFracao30Minutos">
+          <ion-item>
+            <ion-label position="floating">30 minutos</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao30MinutosMotoPequena | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao30MinutosMotoPequena=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaHora">
+          <ion-item>
+            <ion-label position="floating">Hora</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.HoraMotoPequena | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.HoraMotoPequena=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaDiaria">
+          <ion-item>
+            <ion-label position="floating">Diária</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.DiariaMotoPequena | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.DiariaMotoPequena=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Preços especiais
+        </ion-col>
+        <ion-col size-xs="12" (click)="utils.alerta('Minutos iniciais deconsiderados', 'Você habilitou a cobrança de minutos iniciais nas opções gerais. Os preços especiais serão considerados prioridade, por isso a opção geral será desconsiderada.')" class="subTitulo fundoAlerta" *ngIf="precosEspeciais(5).length && configuracoes.Estacionamento.UtilizaPrimeirosMinutos && configuracoes.Estacionamento.QuantidadePrimeirosMinutos">
+          <ion-icon class="iconeSubTitulo" name="warning"></ion-icon>
+          Os minutos iniciais serão desconsiderados                  
+        </ion-col>        
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12">
+          <div class="divInformativo" *ngIf="!precosEspeciais(5).length">
+            <h2>Nenhum preço especial definido</h2>
+            <ion-icon name="pricetags-outline"></ion-icon>
+            <h5>Se desejar adicione preços diferenciados</h5>
+          </div>
+          <ion-list [@listAnimation]="precosEspeciais(5).length" lines="none">
+            <ion-item-sliding *ngFor="let precoEspecial of precosEspeciais(5)">
+              <ion-item (click)="cadastrarPrecoEspecial(5, precoEspecial)">
+                <h3>Cobrar {{ precoEspecial.Valor | decimalPipe:"R$ " }} nos primeiros {{ precoEspecial.Minutos }} minutos</h3>
+              </ion-item>
+
+              <ion-item-options side="end">
+                <ion-item-option color="danger" (click)="excluirPrecoEspecial(precoEspecial)">
+                  <ion-icon slot="icon-only" name="trash"></ion-icon>
+                </ion-item-option>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ion-list>
+          <ion-button expand="block" color="success" (click)="cadastrarPrecoEspecial(5)">
+            <ion-icon slot="start" name="add-circle"></ion-icon>
+            Adicionar
+          </ion-button>
+        </ion-col>
+      </ion-row>  
+    </ion-grid>
+  </div>
+  <div *ngIf="pagina == 'motoMedia'">
+    <ion-grid *ngIf="configuracoes != null">
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Preços de moto comum
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaPrimeirosMinutos">
+          <ion-item>
+            <ion-label position="floating">Minutos iniciais</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.PrimeirosMinutosMoto | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.PrimeirosMinutosMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaFracao15Minutos">
+          <ion-item>
+            <ion-label position="floating">15 minutos</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao15MinutosMoto | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao15MinutosMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaFracao30Minutos">
+          <ion-item>
+            <ion-label position="floating">30 minutos</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao30MinutosMoto | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao30MinutosMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaHora">
+          <ion-item>
+            <ion-label position="floating">Hora</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.HoraMoto | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.HoraMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaDiaria">
+          <ion-item>
+            <ion-label position="floating">Diária</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.DiariaMoto | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.DiariaMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Preços especiais
+        </ion-col>
+        <ion-col size-xs="12" (click)="utils.alerta('Minutos iniciais deconsiderados', 'Você habilitou a cobrança de minutos iniciais nas opções gerais. Os preços especiais serão considerados prioridade, por isso a opção geral será desconsiderada.')" class="subTitulo fundoAlerta" *ngIf="precosEspeciais(1).length && configuracoes.Estacionamento.UtilizaPrimeirosMinutos && configuracoes.Estacionamento.QuantidadePrimeirosMinutos">
+          <ion-icon class="iconeSubTitulo" name="warning"></ion-icon>
+          Os minutos iniciais serão desconsiderados                  
+        </ion-col>        
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12">
+          <div class="divInformativo" *ngIf="!precosEspeciais(1).length">
+            <h2>Nenhum preço especial definido</h2>
+            <ion-icon name="pricetags-outline"></ion-icon>
+            <h5>Se desejar adicione preços diferenciados</h5>
+          </div>
+          <ion-list [@listAnimation]="precosEspeciais(1).length" lines="none">
+            <ion-item-sliding *ngFor="let precoEspecial of precosEspeciais(1)">
+              <ion-item (click)="cadastrarPrecoEspecial(1, precoEspecial)">
+                <h3>Cobrar {{ precoEspecial.Valor | decimalPipe:"R$ " }} nos primeiros {{ precoEspecial.Minutos }} minutos</h3>
+              </ion-item>
+
+              <ion-item-options side="end">
+                <ion-item-option color="danger" (click)="excluirPrecoEspecial(precoEspecial)">
+                  <ion-icon slot="icon-only" name="trash"></ion-icon>
+                </ion-item-option>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ion-list>
+          <ion-button expand="block" color="success" (click)="cadastrarPrecoEspecial(1)">
+            <ion-icon slot="start" name="add-circle"></ion-icon>
+            Adicionar
+          </ion-button>
+        </ion-col>
+      </ion-row>  
+    </ion-grid>
+  </div>
+  <div *ngIf="pagina == 'motoGrande'">
+    <ion-grid *ngIf="configuracoes != null">
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Preços de moto grande
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaPrimeirosMinutos">
+          <ion-item>
+            <ion-label position="floating">Minutos iniciais</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.PrimeirosMinutosMotoGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.PrimeirosMinutosMotoGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaFracao15Minutos">
+          <ion-item>
+            <ion-label position="floating">15 minutos</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao15MinutosMotoGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao15MinutosMotoGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaFracao30Minutos">
+          <ion-item>
+            <ion-label position="floating">30 minutos</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao30MinutosMotoGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao30MinutosMotoGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaHora">
+          <ion-item>
+            <ion-label position="floating">Hora</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.HoraMotoGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.HoraMotoGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaDiaria">
+          <ion-item>
+            <ion-label position="floating">Diária</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.DiariaMotoGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.DiariaMotoGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Preços especiais
+        </ion-col>
+        <ion-col size-xs="12" (click)="utils.alerta('Minutos iniciais deconsiderados', 'Você habilitou a cobrança de minutos iniciais nas opções gerais. Os preços especiais serão considerados prioridade, por isso a opção geral será desconsiderada.')" class="subTitulo fundoAlerta" *ngIf="precosEspeciais(6).length && configuracoes.Estacionamento.UtilizaPrimeirosMinutos && configuracoes.Estacionamento.QuantidadePrimeirosMinutos">
+          <ion-icon class="iconeSubTitulo" name="warning"></ion-icon>
+          Os minutos iniciais serão desconsiderados                  
+        </ion-col>        
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12">
+          <div class="divInformativo" *ngIf="!precosEspeciais(6).length">
+            <h2>Nenhum preço especial definido</h2>
+            <ion-icon name="pricetags-outline"></ion-icon>
+            <h5>Se desejar adicione preços diferenciados</h5>
+          </div>
+          <ion-list [@listAnimation]="precosEspeciais(6).length" lines="none">
+            <ion-item-sliding *ngFor="let precoEspecial of precosEspeciais(6)">
+              <ion-item (click)="cadastrarPrecoEspecial(6, precoEspecial)">
+                <h3>Cobrar {{ precoEspecial.Valor | decimalPipe:"R$ " }} nos primeiros {{ precoEspecial.Minutos }} minutos</h3>
+              </ion-item>
+
+              <ion-item-options side="end">
+                <ion-item-option color="danger" (click)="excluirPrecoEspecial(precoEspecial)">
+                  <ion-icon slot="icon-only" name="trash"></ion-icon>
+                </ion-item-option>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ion-list>
+          <ion-button expand="block" color="success" (click)="cadastrarPrecoEspecial(6)">
+            <ion-icon slot="start" name="add-circle"></ion-icon>
+            Adicionar
+          </ion-button>
+        </ion-col>
+      </ion-row>  
+    </ion-grid>
+  </div>
+  <div *ngIf="pagina == 'veiculoPequeno'">
+    <ion-grid *ngIf="configuracoes != null">
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Preços de carro pequeno
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaPrimeirosMinutos">
+          <ion-item>
+            <ion-label position="floating">Minutos iniciais</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.PrimeirosMinutosCarroPequeno | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.PrimeirosMinutosCarroPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaFracao15Minutos">
+          <ion-item>
+            <ion-label position="floating">15 minutos</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao15MinutosCarroPequeno | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao15MinutosCarroPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaFracao30Minutos">
+          <ion-item>
+            <ion-label position="floating">30 minutos</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao30MinutosCarroPequeno | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao30MinutosCarroPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaHora">
+          <ion-item>
+            <ion-label position="floating">Hora</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.HoraCarroPequeno | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.HoraCarroPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaDiaria">
+          <ion-item>
+            <ion-label position="floating">Diária</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.DiariaCarroPequeno | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.DiariaCarroPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Preços especiais
+        </ion-col>
+        <ion-col size-xs="12" (click)="utils.alerta('Minutos iniciais deconsiderados', 'Você habilitou a cobrança de minutos iniciais nas opções gerais. Os preços especiais serão considerados prioridade, por isso a opção geral será desconsiderada.')" class="subTitulo fundoAlerta" *ngIf="precosEspeciais(2).length && configuracoes.Estacionamento.UtilizaPrimeirosMinutos && configuracoes.Estacionamento.QuantidadePrimeirosMinutos">
+          <ion-icon class="iconeSubTitulo" name="warning"></ion-icon>
+          Os minutos iniciais serão desconsiderados                  
+        </ion-col>        
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12">
+          <div class="divInformativo" *ngIf="!precosEspeciais(2).length">
+            <h2>Nenhum preço especial definido</h2>
+            <ion-icon name="pricetags-outline"></ion-icon>
+            <h5>Se desejar adicione preços diferenciados</h5>
+          </div>
+          <ion-list [@listAnimation]="precosEspeciais(2).length" lines="none">
+            <ion-item-sliding *ngFor="let precoEspecial of precosEspeciais(2)">
+              <ion-item (click)="cadastrarPrecoEspecial(2, precoEspecial)">
+                <h3>Cobrar {{ precoEspecial.Valor | decimalPipe:"R$ " }} nos primeiros {{ precoEspecial.Minutos }} minutos</h3>
+              </ion-item>
+
+              <ion-item-options side="end">
+                <ion-item-option color="danger" (click)="excluirPrecoEspecial(precoEspecial)">
+                  <ion-icon slot="icon-only" name="trash"></ion-icon>
+                </ion-item-option>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ion-list>
+          <ion-button expand="block" color="success" (click)="cadastrarPrecoEspecial(2)">
+            <ion-icon slot="start" name="add-circle"></ion-icon>
+            Adicionar
+          </ion-button>
+        </ion-col>
+      </ion-row>  
+    </ion-grid>
+  </div>
+  <div *ngIf="pagina == 'veiculoMedio'">
+    <ion-grid *ngIf="configuracoes != null">
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Preços de carro médio
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaPrimeirosMinutos">
+          <ion-item>
+            <ion-label position="floating">Minutos iniciais</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.PrimeirosMinutosCarroMedio | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.PrimeirosMinutosCarroMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaFracao15Minutos">
+          <ion-item>
+            <ion-label position="floating">15 minutos</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao15MinutosCarroMedio | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao15MinutosCarroMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaFracao30Minutos">
+          <ion-item>
+            <ion-label position="floating">30 minutos</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao30MinutosCarroMedio | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao30MinutosCarroMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaHora">
+          <ion-item>
+            <ion-label position="floating">Hora</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.HoraCarroMedio | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.HoraCarroMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaDiaria">
+          <ion-item>
+            <ion-label position="floating">Diária</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.DiariaCarroMedio | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.DiariaCarroMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Preços especiais
+        </ion-col>
+        <ion-col size-xs="12" (click)="utils.alerta('Minutos iniciais deconsiderados', 'Você habilitou a cobrança de minutos iniciais nas opções gerais. Os preços especiais serão considerados prioridade, por isso a opção geral será desconsiderada.')" class="subTitulo fundoAlerta" *ngIf="precosEspeciais(3).length && configuracoes.Estacionamento.UtilizaPrimeirosMinutos && configuracoes.Estacionamento.QuantidadePrimeirosMinutos">
+          <ion-icon class="iconeSubTitulo" name="warning"></ion-icon>
+          Os minutos iniciais serão desconsiderados                  
+        </ion-col>        
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12">
+          <div class="divInformativo" *ngIf="!precosEspeciais(3).length">
+            <h2>Nenhum preço especial definido</h2>
+            <ion-icon name="pricetags-outline"></ion-icon>
+            <h5>Se desejar adicione preços diferenciados</h5>
+          </div>
+          <ion-list [@listAnimation]="precosEspeciais(3).length" lines="none">
+            <ion-item-sliding *ngFor="let precoEspecial of precosEspeciais(3)">
+              <ion-item (click)="cadastrarPrecoEspecial(3, precoEspecial)">
+                <h3>Cobrar {{ precoEspecial.Valor | decimalPipe:"R$ " }} nos primeiros {{ precoEspecial.Minutos }} minutos</h3>
+              </ion-item>
+
+              <ion-item-options side="end">
+                <ion-item-option color="danger" (click)="excluirPrecoEspecial(precoEspecial)">
+                  <ion-icon slot="icon-only" name="trash"></ion-icon>
+                </ion-item-option>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ion-list>
+          <ion-button expand="block" color="success" (click)="cadastrarPrecoEspecial(3)">
+            <ion-icon slot="start" name="add-circle"></ion-icon>
+            Adicionar
+          </ion-button>
+        </ion-col>
+      </ion-row>  
+    </ion-grid>
+  </div>
+  <div *ngIf="pagina == 'veiculoGrande'">
+    <ion-grid *ngIf="configuracoes != null">
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Preços de carro grande
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaPrimeirosMinutos">
+          <ion-item>
+            <ion-label position="floating">Minutos iniciais</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.PrimeirosMinutosCarroGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.PrimeirosMinutosCarroGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaFracao15Minutos">
+          <ion-item>
+            <ion-label position="floating">15 minutos</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao15MinutosCarroGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao15MinutosCarroGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaFracao30Minutos">
+          <ion-item>
+            <ion-label position="floating">30 minutos</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao30MinutosCarroGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao30MinutosCarroGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaHora">
+          <ion-item>
+            <ion-label position="floating">Hora</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.HoraCarroGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.HoraCarroGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size-xs="6" *ngIf="configuracoes.Estacionamento.UtilizaDiaria">
+          <ion-item>
+            <ion-label position="floating">Diária</ion-label>
+            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.DiariaCarroGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.DiariaCarroGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="settings"></ion-icon>
+          Preços especiais
+        </ion-col>
+        <ion-col size-xs="12" (click)="utils.alerta('Minutos iniciais deconsiderados', 'Você habilitou a cobrança de minutos iniciais nas opções gerais. Os preços especiais serão considerados prioridade, por isso a opção geral será desconsiderada.')" class="subTitulo fundoAlerta" *ngIf="precosEspeciais(4).length && configuracoes.Estacionamento.UtilizaPrimeirosMinutos && configuracoes.Estacionamento.QuantidadePrimeirosMinutos">
+          <ion-icon class="iconeSubTitulo" name="warning"></ion-icon>
+          Os minutos iniciais serão desconsiderados                  
+        </ion-col>        
+      </ion-row>
+      <ion-row>
+        <ion-col size-xs="12">
+          <div class="divInformativo" *ngIf="!precosEspeciais(4).length">
+            <h2>Nenhum preço especial definido</h2>
+            <ion-icon name="pricetags-outline"></ion-icon>
+            <h5>Se desejar adicione preços diferenciados</h5>
+          </div>
+          <ion-list [@listAnimation]="precosEspeciais(4).length" lines="none">
+            <ion-item-sliding *ngFor="let precoEspecial of precosEspeciais(4)">
+              <ion-item (click)="cadastrarPrecoEspecial(4, precoEspecial)">
+                <h3>Cobrar {{ precoEspecial.Valor | decimalPipe:"R$ " }} nos primeiros {{ precoEspecial.Minutos }} minutos</h3>
+              </ion-item>
+
+              <ion-item-options side="end">
+                <ion-item-option color="danger" (click)="excluirPrecoEspecial(precoEspecial)">
+                  <ion-icon slot="icon-only" name="trash"></ion-icon>
+                </ion-item-option>
+              </ion-item-options>
+            </ion-item-sliding>
+          </ion-list>
+          <ion-button expand="block" color="success" (click)="cadastrarPrecoEspecial(4)">
+            <ion-icon slot="start" name="add-circle"></ion-icon>
+            Adicionar
+          </ion-button>
+        </ion-col>
+      </ion-row>  
+    </ion-grid>
+  </div>
+</ion-content>

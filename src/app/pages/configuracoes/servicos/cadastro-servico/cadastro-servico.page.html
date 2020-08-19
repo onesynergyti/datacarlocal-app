@@ -1,7 +1,7 @@
 <app-header-modal titulo="Cadastro de serviço" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
 
 <ion-content>
-  <ion-grid>
+  <ion-grid *ngIf="configuracoes != null">
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
@@ -22,8 +22,25 @@
         Preços
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col size-xs="3">
+    <ion-row *ngIf="!configuracoes.Patio.SepararPrecosServico">
+      <ion-col size-xs="12">
+        <ion-item>
+          <ion-label position="floating">R$</ion-label>
+          <ion-input type="number" [ngModel]="servico.PrecoPadrao | decimalInputPipe" (ionInput)="servico.PrecoPadrao=utils.trataCampoNumero($event.target.value)"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="configuracoes.Patio.SepararPrecosServico">
+      <ion-col size-xs="4" *ngIf="configuracoes.Patio.CampoMotoPequena">
+        <div class="divTipoVeiculo">
+          <img src='../../../../../assets/img/veiculos/5.png' />
+        </div>
+        <ion-item>
+          <ion-label position="floating">R$</ion-label>
+          <ion-input type="number" [ngModel]="servico.PrecoMotoPequena | decimalInputPipe" (ionInput)="servico.PrecoMotoPequena=utils.trataCampoNumero($event.target.value)"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size-xs="4" *ngIf="configuracoes.Patio.CampoMoto">
         <div class="divTipoVeiculo">
           <img src='../../../../../assets/img/veiculos/1.png' />
         </div>
@@ -32,7 +49,16 @@
           <ion-input type="number" [ngModel]="servico.PrecoMoto | decimalInputPipe" (ionInput)="servico.PrecoMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
-      <ion-col size-xs="3">
+      <ion-col size-xs="4" *ngIf="configuracoes.Patio.CampoMotoGrande">
+        <div class="divTipoVeiculo">
+          <img src='../../../../../assets/img/veiculos/6.png' />
+        </div>
+        <ion-item>
+          <ion-label position="floating">R$</ion-label>
+          <ion-input type="number" [ngModel]="servico.PrecoMotoGrande | decimalInputPipe" (ionInput)="servico.PrecoMotoGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size-xs="4" *ngIf="configuracoes.Patio.CampoVeiculoPequeno">
         <div class="divTipoVeiculo">
           <img src='../../../../../assets/img/veiculos/2.png' />
         </div>
@@ -41,7 +67,7 @@
           <ion-input type="number" [ngModel]="servico.PrecoVeiculoPequeno | decimalInputPipe" (ionInput)="servico.PrecoVeiculoPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
-      <ion-col size-xs="3">
+      <ion-col size-xs="4" *ngIf="configuracoes.Patio.CampoVeiculoMedio">
         <div class="divTipoVeiculo">
           <img src='../../../../../assets/img/veiculos/3.png' />
         </div>
@@ -50,7 +76,7 @@
           <ion-input type="number" [ngModel]="servico.PrecoVeiculoMedio | decimalInputPipe" (ionInput)="servico.PrecoVeiculoMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
         </ion-item>
       </ion-col>
-      <ion-col size-xs="3">
+      <ion-col size-xs="4" *ngIf="configuracoes.Patio.CampoVeiculoGrande">
         <div class="divTipoVeiculo">
           <img src='../../../../../assets/img/veiculos/4.png' />
         </div>

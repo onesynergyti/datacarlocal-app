@@ -9,6 +9,7 @@ import { ConfiguracaoManualUso } from '../models/configuracao-manual-uso';
 import { ConfiguracaoMensagens } from '../models/configuracao-mensagens';
 import { ConfiguracaoPortal } from '../models/configuracao-portal';
 import { GlobalService } from './global.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -25,11 +26,10 @@ export class ConfiguracoesService {
     if (valor == null)
       valor = new Configuracoes()
 
+    valor.Estacionamento = new ConfiguracaoEstacionamento(valor.Estacionamento)
+
     if (valor.Recibo == null)
       valor.Recibo = new ConfiguracaoRecibo()
-
-    if (valor.Estacionamento == null)
-      valor.Estacionamento = new ConfiguracaoEstacionamento()
 
     if (valor.Estabelecimento == null)
       valor.Estabelecimento = new Estabelecimento()
@@ -55,6 +55,24 @@ export class ConfiguracoesService {
 
     if (valor.Seguranca.ExigirSenhaCadastroProdutos == null)
       valor.Seguranca.ExigirSenhaCadastroProdutos = true
+
+    if (valor.Patio.CampoVeiculoPequeno == null)
+      valor.Patio.CampoVeiculoPequeno = environment.codigoSistema in [1, 4]
+
+    if (valor.Patio.CampoVeiculoMedio == null)
+      valor.Patio.CampoVeiculoMedio = environment.codigoSistema in [1, 4]
+
+    if (valor.Patio.CampoVeiculoGrande == null)
+      valor.Patio.CampoVeiculoGrande = environment.codigoSistema in [1, 4]
+
+    if (valor.Patio.CampoMoto == null)
+      valor.Patio.CampoMoto = environment.codigoSistema in [1, 4]
+
+    if (valor.Patio.CampoMotoPequena == null)
+      valor.Patio.CampoMotoPequena = environment.codigoSistema in [1, 4]
+
+    if (valor.Patio.CampoMotoGrande == null)
+      valor.Patio.CampoMotoGrande = environment.codigoSistema in [1, 4]
 
     return valor
 }

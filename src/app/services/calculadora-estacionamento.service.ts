@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ConfiguracoesService } from './configuracoes.service';
+import { PrecoEspecial } from '../models/preco-especial';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,12 @@ export class CalculadoraEstacionamentoService {
         return precos.DiariaCarroMedio
       case 4:
         return precos.DiariaCarroGrande
+      case 5:
+        return precos.DiariaMotoPequena
+      case 6:
+        return precos.DiariaMotoGrande
+      case 7:
+        return precos.DiariaTipoGenerico
     }
   }
 
@@ -37,6 +44,12 @@ export class CalculadoraEstacionamentoService {
         return precos.Fracao15MinutosCarroMedio
       case 4:
         return precos.Fracao15MinutosCarroGrande
+      case 5:
+        return precos.Fracao15MinutosMotoPequena
+      case 6:
+        return precos.Fracao15MinutosMotoGrande
+      case 7:
+        return precos.Fracao15MinutosTipoGenerico
     }
   }
 
@@ -52,6 +65,12 @@ export class CalculadoraEstacionamentoService {
         return precos.Fracao30MinutosCarroMedio
       case 4:
         return precos.Fracao30MinutosCarroGrande
+      case 5:
+        return precos.Fracao30MinutosMotoPequena
+      case 6:
+        return precos.Fracao30MinutosMotoGrande
+      case 7:
+        return precos.Fracao30MinutosTipoGenerico
     }
   }
 
@@ -67,6 +86,12 @@ export class CalculadoraEstacionamentoService {
         return precos.HoraCarroMedio
       case 4:
         return precos.HoraCarroGrande
+      case 5:
+        return precos.HoraMotoPequena
+      case 6:
+        return precos.HoraMotoGrande
+      case 7:
+        return precos.HoraTipoGenerico
     }
   }
 
@@ -82,6 +107,12 @@ export class CalculadoraEstacionamentoService {
         return precos.PrimeirosMinutosCarroMedio
       case 4:
         return precos.PrimeirosMinutosCarroGrande
+      case 5:
+        return precos.PrimeirosMinutosMotoPequena
+      case 6:
+        return precos.PrimeirosMinutosMotoGrande
+      case 7:
+        return precos.PrimeirosMinutosTipoGenerico
     }
   }
 
@@ -116,17 +147,41 @@ export class CalculadoraEstacionamentoService {
         precoFracionado += Number(this.valorDiaria(tipoVeiculo))
       }
     }
+  
+    // Cobranca por preços especiais ou minutos iniciais
 
+    let precosEspeciais = precos.PrecosEspeciais.filter(itemAtual => itemAtual.TipoVeiculo == tipoVeiculo)
+    .sort((a, b) => a.Minutos - b.Minutos)
+
+    // Se houver preços especiais, verifica sempre do maior tempo para o menor
+    if (precosEspeciais.length) {
+      // Verifica em qual preço deve ser enquadrada a cobrança
+      let precoAvaliado = precosEspeciais[0]
+      for(let i = 0; i < precosEspeciais.length -1; i++) {
+        // Se o tempo for maior do que o item atual, então o item seguinte é o que vai ser cobrado
+        if (minutos > precosEspeciais[i].Minutos)
+          precoAvaliado = precosEspeciais[i + 1]        
+      }
+
+      alert('preco avaliado final ' + JSON.stringify(precoAvaliado))
+
+      precoFracionado += Number(precoAvaliado.Valor)
+      minutos = minutos - precoAvaliado.Minutos          
+      if (minutos < 0)
+        minutos = 0
+    }
     // Verifica a cobrança dos minutos iniciais
-    if (precos.UtilizaPrimeirosMinutos) {
-      // Se for menor que a quantidade de minutos iniciais cobrados, retorna o preço dos minutos iniciais
-      if (minutos <= precos.QuantidadePrimeirosMinutos) 
-        return Number(precoDiarias + this.valorMinutosIniciais(tipoVeiculo))
-      else {
-        precoFracionado += Number(this.valorMinutosIniciais(tipoVeiculo))
-        // Retira os minutos iniciais cobrados
-        minutos = minutos - precos.QuantidadePrimeirosMinutos
-      }      
+    else {
+      if (precos.UtilizaPrimeirosMinutos) {
+        // Se for menor que a quantidade de minutos iniciais cobrados, retorna o preço dos minutos iniciais
+        if (minutos <= precos.QuantidadePrimeirosMinutos) 
+          return Number(precoDiarias + this.valorMinutosIniciais(tipoVeiculo))
+        else {
+          precoFracionado += Number(this.valorMinutosIniciais(tipoVeiculo))
+          // Retira os minutos iniciais cobrados
+          minutos = minutos - precos.QuantidadePrimeirosMinutos
+        }      
+      }
     }
 
     // Cobranca de horas adicionais 

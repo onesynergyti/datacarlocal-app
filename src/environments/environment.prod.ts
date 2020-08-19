@@ -4,8 +4,8 @@ export const environment = {
   apiUrl: "https://onedatacarlocal-api.azurewebsites.net/api",
   whatsappSuporte: '31984601435',
   AlertDebug: false,
-  // codigoSistema: 1, // Lava jato
+   codigoSistema: 1, // Lava jato
   // codigoSistema: 2, // Troca de óleo
   // codigoSistema: 3, // Oficina
-   codigoSistema: 4, // Estacionamento
+  // codigoSistema: 4, // Estacionamento
 };

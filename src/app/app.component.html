@@ -45,6 +45,10 @@
             <ion-icon name="lock-closed"></ion-icon>
             Alterar senha
           </ion-item>
+          <ion-item (click)="navegar('tabela-estacionamento', true)" detail button>
+            <ion-icon name="settings"></ion-icon>
+            Estacionamento
+          </ion-item>
           <ion-item (click)="navegar('funcionarios', configuracoes.Seguranca.ExigirSenhaCadastroFuncionarios)" detail button>
             <ion-icon name="person"></ion-icon>
             Meus funcionários

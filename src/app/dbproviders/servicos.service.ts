@@ -44,13 +44,13 @@ export class ServicosService extends ServiceBaseService {
 
     // Caso seja inclusão
     if (servico.Id == null || servico.Id == 0) {
-      sql = 'insert into servicos (Nome, PrecoMoto, PrecoVeiculoPequeno, PrecoVeiculoMedio, PrecoVeiculoGrande) values (?, ?, ?, ?, ?)';
-      data = [servico.Nome, servico.PrecoMoto, servico.PrecoVeiculoPequeno, servico.PrecoVeiculoMedio, servico.PrecoVeiculoGrande];
+      sql = 'insert into servicos (Nome, PrecoPadrao, PrecoMotoPequena, PrecoMoto, PrecoMotoGrande, PrecoVeiculoPequeno, PrecoVeiculoMedio, PrecoVeiculoGrande) values (?, ?, ?, ?, ?, ?, ?, ?)';
+      data = [servico.Nome, servico.PrecoPadrao, servico.PrecoMotoPequena, servico.PrecoMoto, servico.PrecoMotoGrande, servico.PrecoVeiculoPequeno, servico.PrecoVeiculoMedio, servico.PrecoVeiculoGrande];
     }
     // Caso seja edição
     else {
-      sql = 'update servicos set Nome = ?, PrecoMoto = ?, PrecoVeiculoPequeno = ?, PrecoVeiculoMedio = ?, PrecoVeiculoGrande = ? where Id = ?';
-      data = [servico.Nome, servico.PrecoMoto, servico.PrecoVeiculoPequeno, servico.PrecoVeiculoMedio, servico.PrecoVeiculoGrande, servico.Id];
+      sql = 'update servicos set Nome = ?, PrecoPadrao = ?, PrecoMotoPequena = ?, PrecoMoto = ?, PrecoMotoGrande = ?, PrecoVeiculoPequeno = ?, PrecoVeiculoMedio = ?, PrecoVeiculoGrande = ? where Id = ?';
+      data = [servico.Nome, servico.PrecoPadrao, servico.PrecoMotoPequena, servico.PrecoMoto, servico.PrecoMotoGrande, servico.PrecoVeiculoPequeno, servico.PrecoVeiculoMedio, servico.PrecoVeiculoGrande, servico.Id];
     }
 
     return new Promise((resolve, reject) => {
@@ -90,7 +90,7 @@ export class ServicosService extends ServiceBaseService {
 
           for (var i = 0; i < data.rows.length; i++) {
             var servico = data.rows.item(i);
-            servicos.push(servico);
+            servicos.push(new Servico(servico));
           }
 
           resolve(servicos)

@@ -17,7 +17,7 @@
     <h2>Nenhum serviço localizado</h2>
     <ion-icon name="search-outline"></ion-icon>
   </div>
-  <ion-grid>
+  <ion-grid *ngIf="configuracoes != null">
     <ion-row>
       <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
         <ion-list [@listAnimation]="listaFiltrada.length" lines="full">
@@ -29,29 +29,46 @@
                     <h3 class="textoLimitado fontCorPrimaria espacadorCampo">{{ servico.Nome }}</h3>
                   </ion-col>
                 </ion-row>
-                <ion-row>
+                <ion-row *ngIf="!configuracoes.Patio.SepararPrecosServico">
+                  <ion-col size-xs="12">
+                    <h4>{{ servico.PrecoPadrao | decimalPipe:"R$ " }}</h4>
+                  </ion-col>
+                </ion-row>
+                <ion-row *ngIf="configuracoes.Patio.SepararPrecosServico">
                   <ion-col size-xs="12">
                     <ion-grid>
                       <ion-row>
-                        <ion-col size-xs="3" class="ion-text-center">
+                        <ion-col size-xs="4" class="ion-text-center" *ngIf="configuracoes.Patio.CampoMotoPequena">
+                          <div class="divTipoVeiculo">
+                            <img src='../../../../../assets/img/veiculos/5.png' />
+                          </div>
+                          <h5>{{ servico.PrecoMotoPequena | decimalPipe:"R$ " }}</h5>
+                        </ion-col>
+                        <ion-col size-xs="4" class="ion-text-center" *ngIf="configuracoes.Patio.CampoMoto">
                           <div class="divTipoVeiculo">
                             <img src='../../../../../assets/img/veiculos/1.png' />
                           </div>
                           <h5>{{ servico.PrecoMoto | decimalPipe:"R$ " }}</h5>
                         </ion-col>
-                        <ion-col size-xs="3" class="ion-text-center">
+                        <ion-col size-xs="4" class="ion-text-center" *ngIf="configuracoes.Patio.CampoMotoGrande">
+                          <div class="divTipoVeiculo">
+                            <img src='../../../../../assets/img/veiculos/6.png' />
+                          </div>
+                          <h5>{{ servico.PrecoMotoGrande | decimalPipe:"R$ " }}</h5>
+                        </ion-col>
+                        <ion-col size-xs="4" class="ion-text-center" *ngIf="configuracoes.Patio.CampoVeiculoPequeno">
                           <div class="divTipoVeiculo">
                             <img src='../../../../../assets/img/veiculos/2.png' />
                           </div>
                           <h5>{{ servico.PrecoVeiculoPequeno | decimalPipe:"R$ " }}</h5>
                         </ion-col>
-                        <ion-col size-xs="3" class="ion-text-center">
+                        <ion-col size-xs="4" class="ion-text-center" *ngIf="configuracoes.Patio.CampoVeiculoMedio">
                           <div class="divTipoVeiculo">
                             <img src='../../../../../assets/img/veiculos/3.png' />
                           </div>
                           <h5>{{ servico.PrecoVeiculoMedio | decimalPipe:"R$ " }}</h5>
                         </ion-col>
-                        <ion-col size-xs="3" class="ion-text-center">
+                        <ion-col size-xs="4" class="ion-text-center" *ngIf="configuracoes.Patio.CampoVeiculoGrande">
                           <div class="divTipoVeiculo">
                             <img src='../../../../../assets/img/veiculos/4.png' />
                           </div>

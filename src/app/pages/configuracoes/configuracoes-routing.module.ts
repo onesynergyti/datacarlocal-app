@@ -14,6 +14,10 @@ const routes: Routes = [
   {
     path: 'portal',
     loadChildren: () => import('./portal/portal.module').then( m => m.PortalPageModule)
+  },
+  {
+    path: 'tabela-estacionamento',
+    loadChildren: () => import('./tabela-estacionamento/tabela-estacionamento.module').then( m => m.TabelaEstacionamentoPageModule)
   }
 
 ];

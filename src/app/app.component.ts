@@ -75,12 +75,12 @@ export class AppComponent {
             this.navController.navigateRoot('home')
         })
         .catch((erro) => {
-          alert('Não foi possível iniciar o aplicativo. Tente novamente. ' + JSON.stringify(erro))
+          alert('Não foi possível iniciar o aplicativo. Tente novamente. ' + erro)
           navigator['app'].exitApp();
         })
       })
       .catch((erro) => {
-        alert('Não foi possível iniciar o aplicativo. Tente novamente. ' + JSON.stringify(erro))
+        alert('Não foi possível iniciar o aplicativo. Tente novamente. ' + erro)
         navigator['app'].exitApp();
       })
     });

@@ -145,6 +145,8 @@ OK - Definir whatsapp para suporte
 OK - Input numérico na configuração de valor fixo nos minutos e carência na tabela de estacionamento
 OK - Carregar o anúncio antes para não ter delay na exibição
 OK - Subir uma versão mínima para android
+- Recuperação de senha por email
+- Atualização dos gráficos não funciona. Utilizar um objeto único com os valores e mudar esse objeto, mantendo o objeto do gráfico em si
 - Realizar chamada de envio de remessa ao inserir um movimento e pagar atendimentos adiados
 - Não permitir excluir um movimento
 - Bluetooth para IOS na impressão

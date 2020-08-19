@@ -56,6 +56,9 @@ export class CadastroServicoPage implements OnInit {
         this.servicoVeiculo = new ServicoVeiculo()
         this.servicoVeiculo.Id = servico.Id
         this.servicoVeiculo.Nome = servico.Nome
+        this.servicoVeiculo.PrecoPadrao = servico.PrecoPadrao
+        this.servicoVeiculo.PrecoMotoGrande = servico.PrecoMotoGrande
+        this.servicoVeiculo.PrecoMotoPequena = servico.PrecoMotoPequena
         this.servicoVeiculo.PrecoMoto = servico.PrecoMoto
         this.servicoVeiculo.PrecoVeiculoPequeno = servico.PrecoVeiculoPequeno
         this.servicoVeiculo.PrecoVeiculoMedio = servico.PrecoVeiculoMedio

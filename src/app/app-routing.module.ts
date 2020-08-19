@@ -61,12 +61,15 @@ const routes: Routes = [
   {
     path: 'portal',
     loadChildren: () => import('./pages/configuracoes/portal/portal.module').then( m => m.PortalPageModule)
-  },  {
+  },
+  {
     path: 'avisos',
     loadChildren: () => import('./components/avisos/avisos.module').then( m => m.AvisosPageModule)
+  },
+  {
+    path: 'tabela-estacionamento',
+    loadChildren: () => import('./pages/configuracoes/tabela-estacionamento/tabela-estacionamento.module').then( m => m.TabelaEstacionamentoPageModule)
   }
-
-
 ];
 
 @NgModule({

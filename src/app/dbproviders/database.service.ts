@@ -38,7 +38,11 @@ export class DatabaseService extends ServiceBaseService {
         tx.executeSql('CREATE TABLE IF NOT EXISTS scripts (Id integer primary key)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS portal (IdDispositivo TEXT, Chave TEXT)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS produtos (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT NOT NULL, Preco REAL, EstoqueAtual REAL, EstoqueMinimo REAL, Codigo TEXT)', [])
-        tx.executeSql('CREATE TABLE IF NOT EXISTS servicos (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT NOT NULL, PrecoMoto REAL, PrecoVeiculoPequeno REAL, PrecoVeiculoMedio REAL, PrecoVeiculoGrande REAL)', [])
+        tx.executeSql('CREATE TABLE IF NOT EXISTS servicos (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT NOT NULL, PrecoMoto REAL, PrecoVeiculoPequeno REAL, PrecoVeiculoMedio REAL, PrecoVeiculoGrande REAL)', [], () => {
+          this.executarScriptDB('ALTER TABLE servicos ADD COLUMN PrecoMotoPequena REAL', tx, 8)
+          this.executarScriptDB('ALTER TABLE servicos ADD COLUMN PrecoMotoGrande REAL', tx, 9)
+          this.executarScriptDB('ALTER TABLE servicos ADD COLUMN PrecoPadrao REAL', tx, 10)
+        })
         tx.executeSql('CREATE TABLE IF NOT EXISTS veiculos (Id integer primary key AUTOINCREMENT NOT NULL, Placa TEXT, CodigoCartao TEXT, Modelo TEXT, TipoVeiculo integer NOT NULL, Entrada DATE NOT NULL, Saida DATE, Telefone TEXT, Nome TEXT, Observacoes TEXT, Servicos TEXT, EntregaAgendada integer, PrevisaoEntrega Date, Funcionario TEXT, Localizacao TEXT, Ativo integer, IdMensalista integer)', [], () => {
           this.executarScriptDB('ALTER TABLE veiculos ADD COLUMN Avarias TEXT', tx, 1)
           this.executarScriptDB('ALTER TABLE veiculos ADD COLUMN ImagemAvaria TEXT', tx, 3)

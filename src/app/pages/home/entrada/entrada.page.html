@@ -5,7 +5,7 @@
       <ion-icon name="car-sport" class="espacadorCampo"></ion-icon>
       Veiculo
     </ion-segment-button>
-    <ion-segment-button value="avarias" *ngIf="configuracoesService.configuracoes.Patio.CampoAvarias">
+    <ion-segment-button value="avarias" *ngIf="configuracoesService.configuracoes.Patio.CampoAvarias && configuracoesService.configuracoes.Patio.SepararPrecosServico">
       <ion-icon name="warning" class="espacadorCampo"></ion-icon>
       Avarias
     </ion-segment-button>
@@ -69,25 +69,35 @@
           </ion-row>          
         </ion-grid>
       </ion-col>
-      <ion-col size-xs="12">
+      <ion-col size-xs="12" *ngIf="configuracoesService.configuracoes.Patio.SepararPrecosServico">
         <ion-grid class="ion-no-margin ion-no-padding">
           <ion-row>
-            <ion-col size-xs="3" (click)="selecionarTipoVeiculo(1)" class="ion-no-margin ion-no-padding">
+            <ion-col (click)="selecionarTipoVeiculo(5)" class="ion-no-margin ion-no-padding" *ngIf="configuracoesService.configuracoes.Patio.CampoMotoPequena">
+              <div class="divTipoVeiculo" [ngClass]="{'tipoVeiculoSelecionado': veiculo.TipoVeiculo == 5}">
+                <img src='../../../assets/img/veiculos/5.png' />
+              </div>
+            </ion-col>
+            <ion-col (click)="selecionarTipoVeiculo(1)" class="ion-no-margin ion-no-padding" *ngIf="configuracoesService.configuracoes.Patio.CampoMoto">
               <div class="divTipoVeiculo" [ngClass]="{'tipoVeiculoSelecionado': veiculo.TipoVeiculo == 1}">
                 <img src='../../../assets/img/veiculos/1.png' />
               </div>
             </ion-col>
-            <ion-col size-xs="3" (click)="selecionarTipoVeiculo(2)" class="ion-no-margin ion-no-padding">
+            <ion-col (click)="selecionarTipoVeiculo(6)" class="ion-no-margin ion-no-padding" *ngIf="configuracoesService.configuracoes.Patio.CampoMotoGrande">
+              <div class="divTipoVeiculo" [ngClass]="{'tipoVeiculoSelecionado': veiculo.TipoVeiculo == 6}">
+                <img src='../../../assets/img/veiculos/6.png' />
+              </div>
+            </ion-col>
+            <ion-col (click)="selecionarTipoVeiculo(2)" class="ion-no-margin ion-no-padding" *ngIf="configuracoesService.configuracoes.Patio.CampoVeiculoPequeno">
               <div class="divTipoVeiculo" [ngClass]="{'tipoVeiculoSelecionado': veiculo.TipoVeiculo == 2}">
                 <img src='../../../assets/img/veiculos/2.png' />
               </div>
             </ion-col>
-            <ion-col size-xs="3" (click)="selecionarTipoVeiculo(3)" class="ion-no-margin ion-no-padding">
+            <ion-col (click)="selecionarTipoVeiculo(3)" class="ion-no-margin ion-no-padding" *ngIf="configuracoesService.configuracoes.Patio.CampoVeiculoMedio">
               <div class="divTipoVeiculo" [ngClass]="{'tipoVeiculoSelecionado': veiculo.TipoVeiculo == 3}">
                 <img src='../../../assets/img/veiculos/3.png' />
               </div>
             </ion-col>
-            <ion-col size-xs="3" (click)="selecionarTipoVeiculo(4)" class="ion-no-margin ion-no-padding">
+            <ion-col (click)="selecionarTipoVeiculo(4)" class="ion-no-margin ion-no-padding" *ngIf="configuracoesService.configuracoes.Patio.CampoVeiculoGrande">
               <div class="divTipoVeiculo" [ngClass]="{'tipoVeiculoSelecionado': veiculo.TipoVeiculo == 4}">
                 <img src='../../../assets/img/veiculos/4.png' />
               </div>
@@ -261,8 +271,7 @@
             <ion-item>
               <div class="divLinhaCompleta" (click)="cadastrarServico(servico)">
                 <h3 class="textoLimitado espacadorCampo">{{ servico.Nome }}</h3>
-                <h5 *ngIf="veiculo.TipoVeiculo && servico.Id">{{ veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h5>                
-                <h5 *ngIf="!veiculo.TipoVeiculo && servico.Id">Selecione o tipo de veículo</h5>
+                <h5 *ngIf="servico.Id">{{ veiculo.precoServico(servico) | decimalPipe:"R$ " }}</h5>                
                 <h5 *ngIf="!servico.Id">Preço calculado na saída</h5>
                 <ion-grid>
                   <ion-row class="ion-no-padding ion-no-margin">
@@ -374,7 +383,7 @@
         <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
         Telefone inválido
       </ion-col>
-      <ion-col size-xs="12" *ngIf="avaliouFormulario && !veiculo.TipoVeiculo" class="subTitulo fundoPerigo">
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && !veiculo.TipoVeiculo && this.configuracoesService.configuracoes.Patio.SepararPrecosServico" class="subTitulo fundoPerigo">
         <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
         Informe o tipo do veículo
       </ion-col>

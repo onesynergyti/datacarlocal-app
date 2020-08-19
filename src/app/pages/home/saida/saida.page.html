@@ -35,7 +35,7 @@
         <h4 class="negrito espacadorCampo">Placa: {{ movimento.Veiculos[0].Placa | placaPipe }}</h4>
         <h4 class="textoLimitado">{{ movimento.Veiculos[0].Modelo ? movimento.Veiculos[0].Modelo : 'Modelo não informado' }}</h4>
       </ion-col>
-      <ion-col size-xs="4" class="ion-text-right">
+      <ion-col size-xs="4" class="ion-text-right" *ngIf="movimento.Veiculos[0].TipoVeiculo">
         <img id="imgTipoVeiculo" src="{{ '../../../assets/img/veiculos/' + movimento.Veiculos[0].TipoVeiculo + '.png' }}" />
       </ion-col>
     </ion-row>

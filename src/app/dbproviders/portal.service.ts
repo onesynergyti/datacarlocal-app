@@ -148,6 +148,9 @@ export class PortalService extends ServiceBaseService {
         // Obtem a lista dos movimentos a enviar
         this.providerMovimento.lista(new Date('1000/01/01'), new Date('9999/01/01'), null, true)
         .then(movimentos => {
+          if (!environment.AlertDebug)
+          this.clipboard.copy(JSON.stringify(movimentos))
+
           // Se não tem movimentos pendentes não faz o envio
           if (movimentos.length == 0) {
             this.globalService.onFinalizarSincronizacao.next(true)

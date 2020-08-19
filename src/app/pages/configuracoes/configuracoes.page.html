@@ -13,9 +13,9 @@
         <ion-icon name="car-sport"></ion-icon>
         Pátio
       </ion-item>
-      <ion-item button (click)="abrirPagina('estacionamento')">
-        <ion-icon name="repeat"></ion-icon>
-        Preços de estacionamento
+      <ion-item button (click)="abrirPagina('precificacao')">
+        <ion-icon name="construct"></ion-icon>
+        Tipos de veículo
       </ion-item>
       <ion-item button (click)="abrirPagina('recibo')">
         <ion-icon name="receipt"></ion-icon>
@@ -58,6 +58,62 @@
             <ion-item>
               <ion-label position="floating">Telefone</ion-label>
               <ion-input type="tel" maxlength="15" [ngModel]="configuracoes.Estabelecimento.Telefone | telefonePipe" (ionInput)="configuracoes.Estabelecimento.Telefone = utils.somenteNumeros($event.target.value)"></ion-input>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <div *ngIf="pagina == 'precificacao'">
+    <ion-grid *ngIf="configuracoes != null">
+      <ion-row>
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="pricetag"></ion-icon>
+          Formato de preço de serviços
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col class="ion-no-padding">
+          <ion-list>
+            <ion-item>
+              <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Separar preços por tipo', 'Ative essa opção para definir o preço dos serviços conforme o tipo do veículo.')"></ion-icon>
+              <ion-label>Separar preços por tipo</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.SepararPrecosServico"></ion-toggle>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="configuracoes.Patio.SepararPrecosServico">
+        <ion-col size-xs="12" class="subTitulo fundoLight">
+          <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
+          Definição dos tipos de veículos
+        </ion-col>
+        <ion-col class="ion-no-padding">
+          <ion-list>
+            <ion-item>
+              <ion-label>Moto pequena</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoMotoPequena"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Moto média</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoMoto"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Moto grande</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoMotoGrande"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Carro pequeno</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoVeiculoPequeno"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Carro médio</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoVeiculoMedio"></ion-toggle>
+            </ion-item>
+            <ion-item>
+              <ion-label>Carro grande</ion-label>
+              <ion-toggle color="primary" [(ngModel)]="configuracoes.Patio.CampoVeiculoGrande"></ion-toggle>
             </ion-item>
           </ion-list>
         </ion-col>
@@ -215,293 +271,6 @@
               <ion-toggle color="primary" [(ngModel)]="configuracoes.Seguranca.ExigirSenhaCadastroFuncionarios"></ion-toggle>
             </ion-item>
           </ion-list>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
-
-  <div *ngIf="pagina == 'estacionamento'">
-    <ion-grid>
-      <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLight">
-          <ion-icon class="iconeSubTitulo" name="repeat"></ion-icon>
-          Tabela de estacionamento
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
-          <ion-item>
-            <ion-icon (click)="utils.alerta('Controlar estacionamento', 'Ative essa opção se quiser controlar cobrança de estacionamento por tempo dos veículos. Configure os formatos de cobrança disponíveis.')" class="iconeAjudaToggle" name="information-circle-outline"></ion-icon>
-            <ion-label>Controlar estacionamento</ion-label>
-            <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizarEstacionamento"></ion-toggle>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
-          <ion-item>
-            <ion-icon (click)="utils.alerta('Inclusão automática', 'Ative essa opção se quiser que o sistema inclua automaticamente o serviço de cobrança de estacionamento ao registrar a entrada de um veículo. Caso essa opção seja desabilitada o sistema permitirá a inclusão manualmente para cada veículo.')" class="iconeAjudaToggle" name="information-circle-outline"></ion-icon>
-            <ion-label>Inclusão automática</ion-label>
-            <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.IncluirServicoEstacionamento"></ion-toggle>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLight ion-text-center">
-          <ion-icon class="iconeSubTitulo" name="pricetags"></ion-icon>
-          Configuração de tabela de preços
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
-          <ion-item>
-            <ion-icon class="iconeAjuda" name="information-circle-outline" (click)="utils.alerta('Minutos de carência', 'Indica os minutos onde a permanência não será cobrada. Após esse período o sistema fará a cobrança computando o tempo integral, inclusive os minutos de carência. Se quiser cobrar a partir da entrada do veículo informe 0 minutos de carência.')"></ion-icon>
-            <ion-label position="floating">Minutos de carência</ion-label>
-            <ion-input autocapitalize="on" type="number" [(ngModel)]="configuracoes.Estacionamento.MinutosCarencia"></ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
-          <ion-item>
-            <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Preço fixo inicial', 'Ative essa opção para cobrar um valor fixo nos minutos iniciais de permanência. Exemplo: Cobrar R$ 10,00 nos primeiros 60 minutos.')"></ion-icon>
-            <ion-label class="fontCorPrimaria">Preço fixo inicial</ion-label>
-            <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaPrimeirosMinutos"></ion-toggle>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row *ngIf="configuracoes.Estacionamento.UtilizaPrimeirosMinutos">
-        <ion-col size-xs="12" class="ion-no-margin ion-no-padding">
-          <ion-item>
-            <ion-label position="floating">Minutos iniciais</ion-label>
-            <ion-input autocapitalize="on" type="number" [(ngModel)]="configuracoes.Estacionamento.QuantidadePrimeirosMinutos"></ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row *ngIf="configuracoes.Estacionamento.UtilizaPrimeirosMinutos">
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/1.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.PrimeirosMinutosMoto | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.PrimeirosMinutosMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/2.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.PrimeirosMinutosCarroPequeno | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.PrimeirosMinutosCarroPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/3.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.PrimeirosMinutosCarroMedio | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.PrimeirosMinutosCarroMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/4.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.PrimeirosMinutosCarroGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.PrimeirosMinutosCarroGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>    
-      <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLight ion-no-margin ion-no-padding">
-          <ion-item>
-            <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Cobrar 15 minutos', 'Ative essa opção para definir um valor cobrado a cada 15 minutos de permanência.')"></ion-icon>
-            <ion-label class="fontCorPrimaria">Cobrar 15 minutos</ion-label>
-            <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaFracao15Minutos"></ion-toggle>
-          </ion-item>                
-        </ion-col>
-      </ion-row>
-      <ion-row *ngIf="configuracoes.Estacionamento.UtilizaFracao15Minutos">
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/1.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao15MinutosMoto | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao15MinutosMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/2.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao15MinutosCarroPequeno | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao15MinutosCarroPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/3.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao15MinutosCarroMedio | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao15MinutosCarroMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/4.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao15MinutosCarroGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao15MinutosCarroGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLight ion-no-margin ion-no-padding">
-          <ion-item>
-            <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Cobrar 30 minutos', 'Ative essa opção para definir um valor cobrado a cada 30 minutos de permanência.')"></ion-icon>
-            <ion-label class="fontCorPrimaria">Cobrar 30 minutos</ion-label>
-            <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaFracao30Minutos"></ion-toggle>
-          </ion-item>                        
-        </ion-col>
-      </ion-row>
-      <ion-row *ngIf="configuracoes.Estacionamento.UtilizaFracao30Minutos">
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/1.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao30MinutosMoto | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao30MinutosMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/2.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao30MinutosCarroPequeno | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao30MinutosCarroPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/3.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao30MinutosCarroMedio | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao30MinutosCarroMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/4.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.Fracao30MinutosCarroGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.Fracao30MinutosCarroGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLight ion-no-margin ion-no-padding">
-          <ion-item>
-            <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Cobrar hora', 'Ative essa opção para definir um valor cobrado a cada hora de permanência.')"></ion-icon>
-            <ion-label class="fontCorPrimaria">Cobrar hora</ion-label>
-            <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaHora"></ion-toggle>
-          </ion-item>                                
-        </ion-col>
-      </ion-row>
-      <ion-row *ngIf="configuracoes.Estacionamento.UtilizaHora">
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/1.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.HoraMoto | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.HoraMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/2.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.HoraCarroPequeno | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.HoraCarroPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/3.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.HoraCarroMedio | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.HoraCarroMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/4.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.HoraCarroGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.HoraCarroGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size-xs="12" class="subTitulo fundoLight ion-no-margin ion-no-padding">
-          <ion-item>
-            <ion-icon class="iconeAjudaToggle" name="information-circle-outline" (click)="utils.alerta('Cobrar diária', 'Ative essa opção para definir um valor cobrado a cada diária de permanência.')"></ion-icon>
-            <ion-label class="fontCorPrimaria">Cobrar diária</ion-label>
-            <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizaDiaria"></ion-toggle>
-          </ion-item>                                        
-        </ion-col>
-      </ion-row>
-      <ion-row *ngIf="configuracoes.Estacionamento.UtilizaDiaria">
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/1.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.DiariaMoto | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.DiariaMoto=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/2.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.DiariaCarroPequeno | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.DiariaCarroPequeno=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/3.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.DiariaCarroMedio | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.DiariaCarroMedio=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
-        </ion-col>
-        <ion-col size-xs="3" class="ion-no-margin ion-no-padding">
-          <div class="divTipoVeiculo">
-            <img src='../../../../../assets/img/veiculos/4.png' />
-          </div>
-          <ion-item>
-            <ion-label position="floating">R$</ion-label>
-            <ion-input type="number" [ngModel]="configuracoes.Estacionamento.DiariaCarroGrande | decimalInputPipe" (ionInput)="configuracoes.Estacionamento.DiariaCarroGrande=utils.trataCampoNumero($event.target.value)"></ion-input>
-          </ion-item>
         </ion-col>
       </ion-row>
     </ion-grid>

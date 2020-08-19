@@ -1,0 +1,55 @@
+<ion-header>
+  <app-header-modal titulo="Preço especial" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="pricetag"></ion-icon>
+        Critérios de cobrança
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12">
+        <ion-item class="ion-no-margin ion-no-padding">
+          <ion-label position="floating">Cobrar o valor</ion-label>
+          <ion-input type="number" [ngModel]="precoEspecial.Valor | decimalInputPipe" (ionInput)="precoEspecial.Valor=utils.trataCampoNumero($event.target.value)"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size-xs="12">
+        <ion-item class="ion-no-margin ion-no-padding">
+          <ion-label position="floating">Até que atinja o tempo (minutos)</ion-label>
+          <ion-input type="number" [(ngModel)]="precoEspecial.Minutos"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && !precoEspecial.Minutos" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Informe os minutos para cobrança
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid class="ion-no-padding ion-no-margin">
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="success" (click)="concluir()">
+          <ion-icon slot="start" name="checkmark-done"></ion-icon>
+          Salvar
+        </ion-button>
+      </ion-col>
+      <ion-col size-xs="2" *ngIf="!inclusao" (click)="excluirPrecoEspecial()">
+        <ion-button expand="block" color="danger">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

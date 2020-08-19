@@ -53,7 +53,9 @@ export class EntradaPage implements OnInit {
     { TipoVeiculo: 3, Nome: 'Conversível', NomeImagem: 'conversivel_v1.png' },
     { TipoVeiculo: 4, Nome: 'SUV', NomeImagem: 'suv_v1.png' },
     { TipoVeiculo: 4, Nome: 'Pickup', NomeImagem: 'pickup_grande_v1.png' },
-    { TipoVeiculo: 4, Nome: 'Van', NomeImagem: 'van_v1.png' }
+    { TipoVeiculo: 4, Nome: 'Van', NomeImagem: 'van_v1.png' },
+    { TipoVeiculo: 5, Nome: 'Comum', NomeImagem: 'moto_padrao_v1.png' },
+    { TipoVeiculo: 6, Nome: 'Comum', NomeImagem: 'moto_padrao_v1.png' }
   ]
   
   constructor(
@@ -181,11 +183,12 @@ export class EntradaPage implements OnInit {
     this.modalCtrl.dismiss()
   }
 
-  tratarPlaca(valor: string) {    
+  tratarPlaca(valor: string) {
     if (valor != null && valor.length >= 3) {
       this.patioProvider.consultaHistoricoPlaca(valor).then(veiculo => {
         this.veiculo.Nome = veiculo.Nome
-        this.veiculo.TipoVeiculo = veiculo.TipoVeiculo
+        if (this.configuracoesService.configuracoes.Patio.SepararPrecosServico && this.configuracoesService.configuracoes.Patio.tipoVeiculoHabilitado(veiculo.TipoVeiculo))
+          this.veiculo.TipoVeiculo = veiculo.TipoVeiculo
         this.veiculo.Telefone = veiculo.Telefone
         this.veiculo.Modelo = veiculo.Modelo
       })
@@ -275,7 +278,7 @@ export class EntradaPage implements OnInit {
 
 
   async cadastrarServico(servico = null) {
-    if (!this.veiculo.TipoVeiculo) {
+    if (!this.veiculo.TipoVeiculo && this.configuracoesService.configuracoes.Patio.SepararPrecosServico) {
       this.utils.mostrarToast('Informe o tipo do veículo antes de adicionar um serviço', 'danger')    
     }
     else {
@@ -339,7 +342,7 @@ export class EntradaPage implements OnInit {
     this.avaliouFormulario = true
 
     const valido = ((this.veiculo.Placa && this.veiculo.Placa.length == 7) || (this.veiculo.CodigoCartao.length > 0)) &&
-      this.veiculo.TipoVeiculo && 
+      (this.veiculo.TipoVeiculo || !this.configuracoesService.configuracoes.Patio.SepararPrecosServico) && 
       (!this.veiculo.Modelo || this.veiculo.Modelo.length <= 30) && 
       (!this.veiculo.Nome || this.veiculo.Nome.length <= 100) && 
       (!this.veiculo.Localizacao || this.veiculo.Localizacao.length <= 50) && 
