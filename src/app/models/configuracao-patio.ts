@@ -10,13 +10,13 @@ export class ConfiguracaoPatio {
   CampoVeiculo = true
   CampoCartao = false
   CampoAvarias = true
-  SepararPrecosServico = environment.codigoSistema in [1, 4]
-  CampoVeiculoPequeno = environment.codigoSistema in [1, 4]
-  CampoVeiculoMedio = environment.codigoSistema in [1, 4]
-  CampoVeiculoGrande = environment.codigoSistema in [1, 4]
-  CampoMoto = environment.codigoSistema in [1, 4]
-  CampoMotoPequena = environment.codigoSistema in [1, 4]
-  CampoMotoGrande = environment.codigoSistema in [1, 4]
+  SepararPrecosServico = [1, 4].includes(environment.codigoSistema)
+  CampoVeiculoPequeno = [1, 4].includes(environment.codigoSistema)
+  CampoVeiculoMedio = [1, 4].includes(environment.codigoSistema)
+  CampoVeiculoGrande = [1, 4].includes(environment.codigoSistema)
+  CampoMoto = [1, 4].includes(environment.codigoSistema)
+  CampoMotoPequena = [1, 4].includes(environment.codigoSistema)
+  CampoMotoGrande = [1, 4].includes(environment.codigoSistema)
 
   constructor(configuracaoPatio: ConfiguracaoPatio = null) {
     if (configuracaoPatio != null) {
@@ -29,13 +29,13 @@ export class ConfiguracaoPatio {
       this.CampoVeiculo = configuracaoPatio.CampoVeiculo != null ? configuracaoPatio.CampoVeiculo : true
       this.CampoCartao = configuracaoPatio.CampoCartao != null ? configuracaoPatio.CampoCartao : false
       this.CampoAvarias = configuracaoPatio.CampoAvarias != null ? configuracaoPatio.CampoAvarias : true
-      this.SepararPrecosServico = configuracaoPatio.SepararPrecosServico != null ? configuracaoPatio.SepararPrecosServico : environment.codigoSistema in [1, 4]
-      this.CampoVeiculoPequeno = configuracaoPatio.CampoVeiculoPequeno != null ? configuracaoPatio.CampoVeiculoPequeno : environment.codigoSistema in [1, 4]
-      this.CampoVeiculoMedio = configuracaoPatio.CampoVeiculoMedio != null ? configuracaoPatio.CampoVeiculoMedio : environment.codigoSistema in [1, 4]
-      this.CampoVeiculoGrande = configuracaoPatio.CampoVeiculoGrande != null ? configuracaoPatio.CampoVeiculoGrande : environment.codigoSistema in [1, 4]
-      this.CampoMoto = configuracaoPatio.CampoMoto != null ? configuracaoPatio.CampoMoto : environment.codigoSistema in [1, 4]
-      this.CampoMotoPequena = configuracaoPatio.CampoMotoPequena != null ? configuracaoPatio.CampoMotoPequena : environment.codigoSistema in [1, 4]
-      this.CampoMotoGrande = configuracaoPatio.CampoMotoGrande != null ? configuracaoPatio.CampoMotoGrande : environment.codigoSistema in [1, 4]
+      this.SepararPrecosServico = configuracaoPatio.SepararPrecosServico != null ? configuracaoPatio.SepararPrecosServico : [1, 4].includes(environment.codigoSistema)
+      this.CampoVeiculoPequeno = configuracaoPatio.CampoVeiculoPequeno != null ? configuracaoPatio.CampoVeiculoPequeno : [1, 4].includes(environment.codigoSistema)
+      this.CampoVeiculoMedio = configuracaoPatio.CampoVeiculoMedio != null ? configuracaoPatio.CampoVeiculoMedio : [1, 4].includes(environment.codigoSistema)
+      this.CampoVeiculoGrande = configuracaoPatio.CampoVeiculoGrande != null ? configuracaoPatio.CampoVeiculoGrande : [1, 4].includes(environment.codigoSistema)
+      this.CampoMoto = configuracaoPatio.CampoMoto != null ? configuracaoPatio.CampoMoto : [1, 4].includes(environment.codigoSistema)
+      this.CampoMotoPequena = configuracaoPatio.CampoMotoPequena != null ? configuracaoPatio.CampoMotoPequena : [1, 4].includes(environment.codigoSistema)
+      this.CampoMotoGrande = configuracaoPatio.CampoMotoGrande != null ? configuracaoPatio.CampoMotoGrande : [1, 4].includes(environment.codigoSistema)
     }
   }
 
