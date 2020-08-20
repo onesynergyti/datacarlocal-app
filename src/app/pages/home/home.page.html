@@ -8,7 +8,7 @@
 </ion-content>
 
 <ion-content *ngIf="!carregandoVeiculos">
-  <div *ngIf="configuracoesService.configuracoes.Patio.QuantidadeVagas">
+  <div *ngIf="configuracoesService.configuracoes != null && configuracoesService.configuracoes.Patio.QuantidadeVagas">
     Vagas: {{ configuracoesService.configuracoes.Patio.QuantidadeVagas }}
     Ocupação: {{ veiculos.length }}
   </div>

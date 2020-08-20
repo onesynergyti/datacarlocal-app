@@ -27,7 +27,7 @@ export class InicioPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.configuracoes = this.configuracoesService.configuracoes
+    this.configuracoes = this.configuracoesService.configuracoesLocais
   }
 
   ionViewDidEnter() {
@@ -49,7 +49,7 @@ export class InicioPage implements OnInit {
       // Define as configurações iniciais como finalizadas
       this.configuracoes.ManualUso.ConfiguracaoInicial = true
       this.configuracoes.Seguranca.SenhaAdministrador = Md5.hashStr(environment.chaveMD5 + this.senhaNova)
-      this.configuracoesService.configuracoes = this.configuracoes
+      this.configuracoesService.configuracoesLocais = this.configuracoes
       this.navController.navigateRoot('home') 
     }
   }

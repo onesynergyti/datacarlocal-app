@@ -58,6 +58,7 @@ export class HomePage {
   ) { }
 
   ionViewWillEnter() {
+    this.configuracoesService.atualizarConfiguracoes()
     this.veiculos = []
     this.carregandoVeiculos = true
     setTimeout(() => {

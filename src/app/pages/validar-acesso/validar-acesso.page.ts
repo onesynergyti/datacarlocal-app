@@ -58,7 +58,7 @@ export class ValidarAcessoPage implements OnInit {
   }
 
   async concluir() {
-    if (this.configuracoesService.configuracoes.Seguranca.SenhaAdministrador == Md5.hashStr(environment.chaveMD5 + this.senha))
+    if (this.configuracoesService.configuracoesLocais.Seguranca.SenhaAdministrador == Md5.hashStr(environment.chaveMD5 + this.senha))
       await this.modalCtrl.dismiss(true)
     else
       this.utils.mostrarToast('Senha inválida.', 'danger')

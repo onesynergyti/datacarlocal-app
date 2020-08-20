@@ -31,11 +31,11 @@ export class PortalPage implements OnInit {
 
   ionViewWillEnter() {
     this.definirDispositivo()
-    this.configuracoes = this.configuracoesService.configuracoes
+    this.configuracoes = this.configuracoesService.configuracoesLocais
   }
 
   ionViewWillLeave() {
-    this.configuracoesService.configuracoes = this.configuracoes
+    this.configuracoesService.configuracoesLocais = this.configuracoes
   }
 
   copiar() {
@@ -47,9 +47,9 @@ export class PortalPage implements OnInit {
     this.erro = null
     this.verificandoIdDispositivo = true
     this.IdDispositivo = 'Obtendo valor'
-    this.providerPortal.obterInformacoesPortal().then(portal => {
+    this.configuracoesService.obterInformacoesPortal().then(portal => {
       if (portal.IdDispositivo == null) {
-        this.providerPortal.gerarIdDispositivo(portal).then(idDispositivo => {
+        this.configuracoesService.gerarIdDispositivo(portal).then(idDispositivo => {
           this.IdDispositivo = idDispositivo
           this.erro = false
         })

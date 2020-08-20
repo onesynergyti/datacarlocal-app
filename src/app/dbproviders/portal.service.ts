@@ -33,9 +33,9 @@ export class PortalService extends ServiceBaseService {
     private avisosService: AvisosService
   ) { 
     super(loadingController)
-
+    
     // Avalia o cadastro do dispositivo e faz um registro de comunicação
-    if (this.configuracoesService.configuracoes.Portal.SincronizarInformacoes != 'offline') {
+    if (this.configuracoesService.configuracaoPortal.SincronizarInformacoes != 'offline') {
       this.avaliaValidadeCadastroDispositivo().then((informacoes: any) => {
         if (informacoes.Premium) {
           this.comprasService.vencimentoPremium = new Date(informacoes.ProximoDia)
@@ -58,7 +58,7 @@ export class PortalService extends ServiceBaseService {
 
   public avaliaValidadeCadastroDispositivo() {
     return new Promise((resolve, reject) => {
-      this.obterInformacoesPortal().then((informacoes) => {
+      this.configuracoesService.obterInformacoesPortal().then((informacoes) => {
         const httpOptions = {
           headers: new HttpHeaders({
             'Content-Type':  'application/json',
@@ -87,61 +87,10 @@ export class PortalService extends ServiceBaseService {
     })
   }
 
-  public obterInformacoesPortal(): Promise<any> {
-    return new Promise((resolve, reject) => {              
-      const sql = 'SELECT * from portal'
-      this.database.DB.then(db => {
-        db.executeSql(sql, [])
-        .then(data => {
-          // Se possui informações inseridas, confere o Id do dispositivo e envia
-          if (data.rows.length > 0) {
-            let informacoes = data.rows.item(0)
-            if (informacoes.IdDispositivo == null) {
-              this.gerarIdDispositivo(informacoes).then(idDispositivo => {
-                resolve({Chave: informacoes.Chave, IdDispositivo: idDispositivo})
-              })
-              .catch((erro) => {
-                reject(erro)
-              })
-            } 
-            else 
-              resolve(informacoes)
-          // Se não possui, gera uma chave e um Id para o dispositivo
-          } else {
-            // Sorteia uma chave de envio para o app
-            var chave = Md5.hashStr(new DatePipe('en-US').transform(new Date(), 'yyyyMMddhhmmss') + environment.chaveMD5 + Math.floor(Math.random() * 65536)).toString()
-            const sqlGerarChave = 'insert into portal (Chave) values (?)'
-            const dataGerarChave = [chave];
-            db.executeSql(sqlGerarChave, dataGerarChave).then(() => {
-              this.gerarIdDispositivo({Chave: chave}).then(idDispositivo => {
-                resolve({Chave: chave, IdDispositivo: idDispositivo})
-              })
-              .catch((erro) => {
-                reject(erro)
-              })
-            })
-            .catch((erro) => { 
-              reject(erro) 
-            })
-          }
-        })
-        .catch((erro) => {
-          reject(erro)
-        })
-      })
-      .catch((erro) => {
-        reject(erro)
-      })
-      .finally(() => {
-        this.ocultarProcessamento()
-      })
-    })
-  }
-
   enviarRemessa(forcarEnvio = false) {
     return new Promise((resolve, reject) => {
       // Se não for configurado como híbrido, considera o envio como bem sucedido. Para forçar o envio o tem que acessar pela tela de configuração do portal
-      if (!forcarEnvio && this.configuracoesService.configuracoes.Portal.SincronizarInformacoes != 'hibrido') {
+      if (!forcarEnvio && this.configuracoesService.configuracaoPortal.SincronizarInformacoes != 'hibrido') {
         this.globalService.onFinalizarSincronizacao.next(true)
       }
       else {
@@ -157,7 +106,7 @@ export class PortalService extends ServiceBaseService {
             resolve()
           }
           else {
-            this.obterInformacoesPortal().then((informacoes) => {
+            this.configuracoesService.obterInformacoesPortal().then((informacoes) => {
               const httpOptions = {
                 headers: new HttpHeaders({
                   'Content-Type':  'application/json',
@@ -222,42 +171,4 @@ export class PortalService extends ServiceBaseService {
       }
     })
   }
-
-  gerarIdDispositivo(informacoesPortal) {
-    return new Promise((resolve, reject) => {
-      const httpOptions = {
-        headers: new HttpHeaders({
-          'Content-Type':  'application/json',
-          Authorization: 'my-auth-token',
-          ChaveApp: informacoesPortal.Chave,
-          Assinatura: Md5.hashStr(environment.chaveMD5 + informacoesPortal.Chave).toString()
-        })
-      };  
-      this.http.get(environment.apiUrl + '/ConexaoApp/idDispositivo', httpOptions)
-      .pipe(
-        retry(1),
-        finalize(() => {
-          this.ocultarProcessamento()
-        })
-      ).subscribe((retorno: any) => {
-        this.database.DB.then(db => {
-          const sqlGerarChave = 'update portal set IdDispositivo = ?'
-          const dataGerarChave = [retorno.IdDispositivo];
-          db.executeSql(sqlGerarChave, dataGerarChave)
-          .then(() => {
-            resolve(retorno.IdDispositivo)
-          })
-          .catch((erro) => {
-            reject(erro)
-          })
-        })
-        .catch(erro => {
-          reject(erro)
-        })
-      },
-      (erro) => {
-        reject(erro)
-      })
-    })
-  }  
 }

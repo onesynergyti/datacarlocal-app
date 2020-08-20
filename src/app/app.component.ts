@@ -68,7 +68,7 @@ export class AppComponent {
           // pushObject.on('notification').subscribe(res => alert(`${res.message}`))
 
           // Exige as configurações iniciais do sistema
-          if (!this.configuracoesService.configuracoes.ManualUso.ConfiguracaoInicial) {
+          if (!this.configuracoesService.configuracoesLocais.ManualUso.ConfiguracaoInicial) {
             this.navController.navigateRoot('inicio')
           }            
           else
