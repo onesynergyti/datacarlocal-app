@@ -23,20 +23,20 @@
             Meu pátio
           </ion-item>
           <ion-header>Clientes</ion-header>
-          <ion-item (click)="navegar('mensalistas', configuracoes.Seguranca.ExigirSenhaCadastroMensalistas)" detail button>
+          <ion-item (click)="navegar('clientes', configuracoesService.configuracoes.Seguranca.ExigirSenhaCadastroMensalistas)" detail button>
             <ion-icon name="people"></ion-icon>
-            Mensalistas
+            Clientes
           </ion-item>
           <ion-item (click)="navegar('pendencias')" detail button>
             <ion-icon name="wallet"></ion-icon>
             Pagamentos adiados
           </ion-item>
           <ion-header>Financeiro</ion-header>
-          <ion-item (click)="navegar('historico-veiculos', configuracoes.Seguranca.ExigirSenhaRelatoriosGerenciais)" detail button>
+          <ion-item (click)="navegar('historico-veiculos', configuracoesService.configuracoes.Seguranca.ExigirSenhaRelatoriosGerenciais)" detail button>
             <ion-icon name="stats-chart"></ion-icon>
             Histórico de veículos
           </ion-item>
-          <ion-item (click)="navegar('movimento', configuracoes.Seguranca.ExigirSenhaRelatoriosGerenciais)" detail button>
+          <ion-item (click)="navegar('movimento', configuracoesService.configuracoes.Seguranca.ExigirSenhaRelatoriosGerenciais)" detail button>
             <ion-icon name="trending-up"></ion-icon>
             Extrato
           </ion-item>
@@ -49,15 +49,15 @@
             <ion-icon name="settings"></ion-icon>
             Estacionamento
           </ion-item>
-          <ion-item (click)="navegar('funcionarios', configuracoes.Seguranca.ExigirSenhaCadastroFuncionarios)" detail button>
+          <ion-item (click)="navegar('funcionarios', configuracoesService.configuracoes.Seguranca.ExigirSenhaCadastroFuncionarios)" detail button>
             <ion-icon name="person"></ion-icon>
             Meus funcionários
           </ion-item>
-          <ion-item (click)="navegar('servicos', configuracoes.Seguranca.ExigirSenhaCadastroServicos)" detail button>
+          <ion-item (click)="navegar('servicos', configuracoesService.configuracoes.Seguranca.ExigirSenhaCadastroServicos)" detail button>
             <ion-icon name="construct"></ion-icon>
             Meus Serviços
           </ion-item>
-          <ion-item (click)="navegar('produtos', configuracoes.Seguranca.ExigirSenhaCadastroProdutos)" detail button>
+          <ion-item (click)="navegar('produtos', configuracoesService.configuracoes.Seguranca.ExigirSenhaCadastroProdutos)" detail button>
             <ion-icon name="barcode"></ion-icon>
             Meus Produtos &nbsp;
             <ion-badge *ngIf="avisosService.quantidadeMenuAlerta > 0" color="warning">{{avisosService.quantidadeMenuAlerta}}</ion-badge>

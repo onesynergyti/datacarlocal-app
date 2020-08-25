@@ -157,3 +157,5 @@ OK - Subir uma versão mínima para android
 TESTAR - Incluir validação de senha na inclusão da tela de pesquisa de funcionários e serviços
 - Imprimir observações do veículo no recibo de entrada
 - Gráfico de tipos de receita não está atualizando automaticamente. Alguns casos não funcionam, identificar quando
+- Foreing key da tabela de planos cliente com cliente, cascade ao excluir
+- Salvar a utilização do item do plano no fechamento para definir quantos já foram usados

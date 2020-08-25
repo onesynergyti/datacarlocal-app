@@ -46,6 +46,7 @@ export class DatabaseService extends ServiceBaseService {
           this.executarScriptDB('ALTER TABLE veiculos ADD COLUMN Avarias TEXT', tx, 1)
           this.executarScriptDB('ALTER TABLE veiculos ADD COLUMN ImagemAvaria TEXT', tx, 3)
           this.executarScriptDB('ALTER TABLE veiculos ADD COLUMN Produtos TEXT', tx, 5)
+          this.executarScriptDB('ALTER TABLE veiculos ADD COLUMN Categoria TEXT', tx, 11)
         })
         tx.executeSql('CREATE TABLE IF NOT EXISTS veiculosHistorico (Id integer primary key AUTOINCREMENT NOT NULL, Placa TEXT, CodigoCartao TEXT, TipoVeiculo integer, IdFuncionario integer, Valor REAL, Descontos REAL, Acrescimos REAL, Entrada Date, Saida Date, Pagamento Date)', [], () => { 
           this.executarScriptDB('ALTER TABLE veiculosHistorico ADD COLUMN Avarias TEXT', tx, 2)
@@ -54,10 +55,15 @@ export class DatabaseService extends ServiceBaseService {
         tx.executeSql('CREATE TABLE IF NOT EXISTS veiculosCadastro (Placa TEXT primary key NOT NULL, Modelo TEXT, TipoVeiculo integer NOT NULL, Telefone TEXT, Nome TEXT)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS movimentos (Id integer primary key AUTOINCREMENT NOT NULL, Data DATE, Descricao TEXT, ValorDinheiro REAL, ValorDebito REAL, ValorCredito REAL, Veiculos TEXT, IdMensalista integer, Inicio Date, Fim Date)', [], () => {
           this.executarScriptDB('ALTER TABLE movimentos ADD COLUMN DataEnvioPortal DATE', tx, 7)
+          this.executarScriptDB('ALTER TABLE movimentos ADD COLUMN PlanoCliente TEXT', tx, 12)
         })
         tx.executeSql('CREATE TABLE IF NOT EXISTS movimentosServicos (IdMovimento integer NOT NULL, IdServico integer NOT NULL, Nome TEXT NOT NULL, Valor REAL NOT NULL, Desconto REAL, Acrescimo REAL, PRIMARY KEY (IdMovimento, IdServico), FOREIGN KEY (IdMovimento) REFERENCES movimentos (Id))', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS movimentosProdutos (IdMovimento integer NOT NULL, IdProduto integer NOT NULL, Nome TEXT NOT NULL, Valor REAL NOT NULL, Desconto REAL, Acrescimo REAL, PRIMARY KEY (IdMovimento, IdProduto), FOREIGN KEY (IdMovimento) REFERENCES movimentos (Id))', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS mensalistas (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT, Documento TEXT, Telefone TEXT, Email TEXT, Ativo integer, Veiculos TEXT, IdsServicos TEXT)', [])
+        tx.executeSql('CREATE TABLE IF NOT EXISTS categorias (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT)', [])
+        tx.executeSql('CREATE TABLE IF NOT EXISTS clientes (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT, Documento TEXT, Telefone TEXT, Email TEXT, Nascimento DATE, Categoria TEXT)', [])
+        tx.executeSql('CREATE TABLE IF NOT EXISTS planosCliente (Id integer primary key AUTOINCREMENT NOT NULL, IdCliente integer, ValidadeInicial Date, ValidadeFinal Date, Servico TEXT, Quantidade integer, ValorDinheiro REAL, ValorDebito REAL, ValorCredito REAL, Placas TEXT)', [])
+        tx.executeSql('CREATE TABLE IF NOT EXISTS planosClienteUso (IdPlanoCliente integer, Data Date)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS funcionarios (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT, Documento TEXT, Telefone TEXT, Email TEXT, Ativo integer)', [])
       })
       .then(() => { resolve() })

@@ -1,0 +1,75 @@
+<ion-header>
+  <app-header titulo="Clientes" ocultarAvisos="true"></app-header>
+  <ion-searchbar autocapitalize="on" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
+</ion-header>
+
+<ion-content *ngIf="carregandoClientes">
+  <ion-spinner class="spinnerCentro"></ion-spinner>
+</ion-content>
+
+<ion-content *ngIf="!carregandoClientes">
+  <div class="divInformativo" *ngIf="clientes.length == 0">
+    <h2>Nenhum cliente cadastrado</h2>
+    <ion-icon name="person-outline"></ion-icon>
+    <h5>Utilize o botão abaixo para adicionar um cliente</h5>
+  </div>
+  <div class="divInformativo" *ngIf="clientes.length > 0 && listaFiltrada.length == 0">
+    <h2>Nenhum cliente localizado</h2>
+    <ion-icon name="search-outline"></ion-icon>
+  </div>
+
+  <ion-list [@listAnimation]="listaFiltrada.length" lines="none">
+    <ion-item-sliding *ngFor="let cliente of listaFiltrada">
+      <ion-item (click)="cadastrarCliente(cliente)">
+        <div class="cartao">
+          <ion-grid>
+            <ion-row>
+              <ion-col size-xs="12" class="tituloCartao ion-text-center"> 
+                <h3>{{ cliente.Nome }}</h3>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="(cliente.Documento != null && cliente.Documento.length > 0) || (cliente.Telefone != null && cliente.Telefone.length > 0)">
+              <ion-col size-xs="12" class="subTitulo fundoLight">
+                <ion-icon class="iconeSubTitulo" name="person"></ion-icon>
+                Dados do cliente
+              </ion-col>
+              <ion-col>
+                <h4 class="negrito">Documento</h4>
+                <h4>{{ cliente.Documento | documentoPipe }}</h4>
+              </ion-col>
+              <ion-col>
+                <h4 class="negrito">Telefone</h4>
+                <h4>{{ cliente.Telefone | telefonePipe }}</h4>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="cliente.Email != null && cliente.Email.length > 0">
+              <ion-col>
+                <h4 class="negrito">Email</h4>
+                <h4>{{ cliente.Email }}</h4>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>          
+      </ion-item>
+  
+      <ion-item-options side="start">
+        <ion-item-option color="success">
+          <ion-icon slot="icon-only" name="logo-whatsapp"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-grid class="ion-no-padding ion-no-margin">
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" color="success" (click)="cadastrarCliente()">
+          <ion-icon slot="start" name="add-circle"></ion-icon>
+          Adicionar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>  
+</ion-footer>

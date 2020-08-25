@@ -34,7 +34,8 @@ export class ConfiguracoesService extends ServiceBaseService {
     return new Promise((resolve, reject) => {
       // Se for configurações se uso local, retorna o local storage
       if (this.configuracoesLocais.Portal.SincronizarInformacoes != 'online') {
-        resolve(this.configuracoesLocais)
+        this.configuracoes = new Configuracoes(this.configuracoesLocais)
+        resolve(this.configuracoes)
       }
       // Se for configurações online, obtem as informações configuradas no servidor
       else {
@@ -58,8 +59,7 @@ export class ConfiguracoesService extends ServiceBaseService {
           ).subscribe((retorno: any) => { 
             this.utils.alertLog('o retorno ' + JSON.stringify(retorno))
             this.configuracoes = new Configuracoes(retorno)
-            this.configuracoes.Portal = this.configuracoesLocais.Portal
-            this.configuracoes.ManualUso = this.configuracoesLocais.ManualUso
+            resolve(this.configuracoes)
           },
           erro => {
             this.utils.alertLog('Deu erro para obter as informações ' + erro + JSON.stringify(erro))

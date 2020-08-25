@@ -69,7 +69,11 @@ const routes: Routes = [
   {
     path: 'tabela-estacionamento',
     loadChildren: () => import('./pages/configuracoes/tabela-estacionamento/tabela-estacionamento.module').then( m => m.TabelaEstacionamentoPageModule)
+  },  {
+    path: 'clientes',
+    loadChildren: () => import('./pages/clientes/clientes.module').then( m => m.ClientesPageModule)
   }
+
 ];
 
 @NgModule({

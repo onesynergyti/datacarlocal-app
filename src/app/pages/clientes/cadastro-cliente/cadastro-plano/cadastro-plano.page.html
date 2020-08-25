@@ -1,0 +1,127 @@
+<ion-header>
+  <app-header-modal titulo="Plano de serviço" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+
+  <ion-segment scrollable [(ngModel)]="pagina">
+    <ion-segment-button value="plano">
+      <ion-icon name="reader" class="espacadorCampo"></ion-icon>
+      Plano
+    </ion-segment-button>
+    <ion-segment-button value="veiculos">
+      <ion-icon name="car-sport" class="espacadorCampo"></ion-icon>
+      Veículos
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
+
+<ion-content *ngIf="plano != null">
+  <ion-grid *ngIf="pagina == 'plano'">
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="reader"></ion-icon>
+        Identifição do serviço
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col (click)="selecionarServico()">
+        <h4 class="negrito espacadorCampo">Serviço</h4>
+        <h3 class="textoLimitado">{{ plano.Servico != null && plano.Servico.Nome.length ? plano.Servico.Nome : 'Não informado' }}</h3>
+        <ion-icon class="editIcone" name="create-outline"></ion-icon>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="calendar"></ion-icon>
+        Período
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col (click)="selecionarDataInicial(plano.ValidadeInicial)">
+        <h4 class="negrito espacadorCampo">Início</h4>
+        <h3 class="textoLimitado">{{ plano.ValidadeInicial | date:"dd/MM/yyyy" }}</h3>
+        <ion-icon class="editIcone" name="create-outline"></ion-icon>
+      </ion-col>
+      <ion-col (click)="selecionarDataFinal(plano.ValidadeFinal)">
+        <h4 class="negrito espacadorCampo">Fim</h4>
+        <h3 class="textoLimitado">{{ plano.ValidadeFinal | date:"dd/MM/yyyy" }}</h3>
+        <ion-icon class="editIcone" name="create-outline"></ion-icon>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="wallet"></ion-icon>
+        Pagamento
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="ion-text-center">
+        <ion-icon name="cash-outline"></ion-icon>        
+        <h4>Dinheiro</h4>
+        <ion-item>
+          <ion-label position="floating">R$</ion-label>
+          <ion-input autocapitalize="on" [disabled]="!inclusao" type="number" [ngModel]="plano.ValorDinheiro | decimalInputPipe" (ionInput)="plano.ValorDinheiro=utils.trataCampoNumero($event.target.value)"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col class="ion-text-center">
+        <ion-icon name="card-outline"></ion-icon>
+        <h4>Débito</h4>
+        <ion-item>
+          <ion-label position="floating">R$</ion-label>
+          <ion-input autocapitalize="on" [disabled]="!inclusao" type="number" [ngModel]="plano.ValorDebito | decimalInputPipe" (ionInput)="plano.ValorDebito=utils.trataCampoNumero($event.target.value)"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col class="ion-text-center">
+        <ion-icon name="card-outline"></ion-icon>
+        <h4>Crédito</h4>
+        <ion-item>
+          <ion-label position="floating">R$</ion-label>
+          <ion-input autocapitalize="on" [disabled]="!inclusao" type="number" [ngModel]="plano.ValorCredito | decimalInputPipe" (ionInput)="plano.ValorCredito=utils.trataCampoNumero($event.target.value)"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>    
+  </ion-grid>
+  
+  <div *ngIf="pagina == 'veiculos'">
+    <div class="divInformativo" *ngIf="plano.Placas.length == 0">
+      <h2>Nenhum veículo cadastrado</h2>
+      <ion-icon name="car-sport-outline"></ion-icon>
+      <h5>O plano será aplicado a qualquer veículo do cliente</h5>
+    </div>
+
+    <ion-list [@listAnimation]="plano.Placas" lines="full">
+      <ion-item-sliding *ngFor="let placa of plano.Placas">
+        <ion-item (click)="cadastrarPlaca(placa)">
+          {{ placa | placaPipe }}
+        </ion-item>        
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="excluirVeiculo(placa)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </div>  
+</ion-content>
+
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && (plano.Servico == null || !plano.Servico.Nome.length)" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Informe o serviço
+      </ion-col>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && (plano.ValidadeInicial.getTime() > plano.ValidadeFinal.getTime())" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        O período é inválido
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-button *ngIf="pagina == 'veiculos'" expand="block" (click)="cadastrarPlaca()">
+    <ion-icon slot="start" name="add-circle"></ion-icon>
+    Adicionar Veiculo
+  </ion-button>
+  <ion-button expand="block" color="success" (click)="concluir()">
+    <ion-icon slot="start" name="checkmark"></ion-icon>
+    Salvar
+  </ion-button>
+</ion-footer>

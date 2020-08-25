@@ -1,6 +1,7 @@
 import { Veiculo } from './veiculo'
 import { ServicoVeiculo } from './servico-veiculo'
 import { ProdutoVeiculo } from './produto-veiculo'
+import { PlanoCliente } from './plano-cliente'
 
 export class Movimento {
   Id: number = 0
@@ -14,6 +15,7 @@ export class Movimento {
   IdMensalista: number = 0
   Inicio: Date
   Fim: Date
+  PlanoCliente: PlanoCliente
 
   constructor(movimento: Movimento = null) {
     if (movimento != null) {
@@ -32,7 +34,8 @@ export class Movimento {
       }
       this.IdMensalista = movimento.IdMensalista
       this.Inicio = movimento.Inicio != null ? new Date(movimento.Inicio) : null
-      this.Fim = movimento.Fim != null ? new Date(movimento.Fim) : null
+      this.Fim = movimento.Fim != null ? new Date(movimento.Fim) : null      
+      this.PlanoCliente = movimento.PlanoCliente != null ? new PlanoCliente(movimento.PlanoCliente) : null
     }
   }
 

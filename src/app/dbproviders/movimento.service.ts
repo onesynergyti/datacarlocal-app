@@ -6,6 +6,7 @@ import { ServiceBaseService } from '../services/service-base.service';
 import { Movimento } from '../models/movimento';
 import { DatePipe } from '@angular/common';
 import { Veiculo } from '../models/veiculo';
+import { PlanoCliente } from '../models/plano-cliente';
 
 @Injectable({
   providedIn: 'root'
@@ -61,6 +62,7 @@ export class MovimentoService extends ServiceBaseService {
               movimento.Data = movimento.Data.split('-').join('/')
               movimento.Inicio = movimento.Inicio != null ? movimento.Inicio.split('-').join('/') : null
               movimento.Fim = movimento.Fim != null ? movimento.Fim.split('-').join('/') : null
+              movimento.PlanoCliente = movimento.PlanoCliente != null ? new PlanoCliente(JSON.parse(movimento.PlanoCliente)) : null
 
               // Cria os veículos do movimento, se houver algum
               if (movimento.Veiculos != null) {

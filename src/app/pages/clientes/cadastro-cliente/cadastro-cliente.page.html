@@ -1,0 +1,156 @@
+<ion-header>
+  <app-header-modal titulo="Cadastro de cliente" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+
+  <ion-segment scrollable [(ngModel)]="pagina">
+    <ion-segment-button value="cliente">
+      <ion-icon name="person" class="espacadorCampo"></ion-icon>
+      Cadastro
+    </ion-segment-button>
+    <ion-segment-button value="planos">
+      <ion-icon name="wallet" class="espacadorCampo"></ion-icon>
+      Planos
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
+
+<ion-content *ngIf="cliente != null">
+  <ion-grid [ngClass]="{'invisivel': pagina != 'cliente'}">
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="person"></ion-icon>
+        Dados do cliente
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item class="ion-no-margin ion-no-padding">
+          <ion-label position="floating">Nome</ion-label>
+          <ion-input autocapitalize="on" type="text" [(ngModel)]="cliente.Nome"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Documento (CNPJ / CPF)</ion-label>
+          <ion-input autocapitalize="on" type="tel" [ngModel]="cliente.Documento | documentoPipe" (ionInput)="cliente.Documento = utils.somenteNumeros($event.target.value)"></ion-input>
+        </ion-item>        
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Telefone</ion-label>
+          <ion-input autocapitalize="on" type="tel" maxlength="15" [ngModel]="cliente.Telefone | telefonePipe" (ionInput)="cliente.Telefone = utils.somenteNumeros($event.target.value)"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">E-mail</ion-label>
+          <ion-input autocapitalize="on" type="text" [(ngModel)]="cliente.Email"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  
+  <div [ngClass]="{'invisivel': pagina != 'planos'}">
+    <ion-spinner *ngIf="carregandoPlanos" class="spinnerCentro"></ion-spinner>
+
+    <div class="divInformativo" *ngIf="!carregandoPlanos && planos.length == 0">
+      <h2>Nenhum plano de serviço cadastrado</h2>
+      <ion-icon name="cash-outline"></ion-icon>
+      <h5>Utilize o botão abaixo para adicionar um plano</h5>
+    </div>
+
+    <ion-list [@listAnimation]="planos.length" lines="none">
+      <ion-item-sliding *ngFor="let plano of planos">
+        <ion-item (click)="cadastrarPlano(plano)">
+          <div class="cartao">
+            <ion-grid>
+              <ion-row>
+                <ion-col size-xs="12" class="fundoPrimario tituloCartao ion-text-center"> 
+                  <h3>{{ plano.ValidadeInicial | date:"dd/MM/yyyy" }} até {{ plano.ValidadeFinal | date:"dd/MM/yyyy" }}</h3>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size-xs="12" class="subTitulo fundoLight">
+                  <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
+                  Serviço
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size-xs="8">
+                  <h4 class="espacadorCampo negrito">Nome do serviço</h4>
+                  <h4 class="textoLimitado">{{ plano.Servico.Nome }}</h4>
+                </ion-col>
+                <ion-col size-xs="4" class="ion-text-right">
+                  <h4 class="espacadorCampo negrito">Quantidade</h4>
+                  <h4 class="textoLimitado">{{ plano.Quantidade == 0 ? 'Ilimitado' : plano.Quantidade }}</h4>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size-xs="12" class="subTitulo fundoLight">
+                  <ion-icon class="iconeSubTitulo" name="car-sport"></ion-icon>
+                  Veículos
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size-xs="3" *ngFor="let placa of plano.Placas">
+                  <h4>{{ placa | placaPipe }}</h4>
+                </ion-col>
+              </ion-row>
+              <ion-row *ngIf="!plano.Placas.length">
+                <ion-col size-xs="12" class="ion-text-center">
+                  <h4>Qualquer veículo</h4>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size-xs="12" class="subTitulo fundoLight">
+                  <ion-icon class="iconeSubTitulo" name="construct"></ion-icon>
+                  Pagamento
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col class="ion-text-center">
+                  <ion-icon name="cash-outline"></ion-icon>        
+                  <h4 class="espacadorCampo negrito">Dinheiro</h4>
+                  <h4 >{{ plano.ValorDinheiro | decimalPipe:"R$ " }}</h4>
+                </ion-col>
+                <ion-col class="ion-text-center">
+                  <ion-icon name="card-outline"></ion-icon>
+                  <h4 class="espacadorCampo negrito">Dinheiro</h4>
+                  <h4 >{{ plano.ValorDebito | decimalPipe:"R$ " }}</h4>
+                </ion-col>
+                <ion-col class="ion-text-center">
+                  <ion-icon name="card-outline"></ion-icon>
+                  <h4 class="espacadorCampo negrito">Dinheiro</h4>
+                  <h4 >{{ plano.ValorCredito | decimalPipe:"R$ " }}</h4>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </ion-item>        
+      </ion-item-sliding>
+    </ion-list>
+  </div>  
+</ion-content>
+
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && (cliente.Nome == null || cliente.Nome.length == 0)" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Informe o nome do cliente
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-button *ngIf="pagina == 'planos'" expand="block" (click)="cadastrarPlano()">
+    <ion-icon slot="start" name="add-circle"></ion-icon>
+    Adicionar Plano
+  </ion-button>
+  <ion-button expand="block" color="success" (click)="concluir()">
+    <ion-icon slot="start" name="checkmark"></ion-icon>
+    Salvar
+  </ion-button>
+</ion-footer>

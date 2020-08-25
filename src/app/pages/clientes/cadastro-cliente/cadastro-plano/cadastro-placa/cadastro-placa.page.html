@@ -1,0 +1,42 @@
+<ion-header>
+  <app-header-modal titulo="Plano de serviço" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="reader"></ion-icon>
+        Identificação do veículo
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col (click)="selecionarServico()">
+        <ion-item class="ion-no-margin ion-no-padding">
+          <ion-label position="floating">Placa</ion-label>
+          <ion-input autocapitalize="on" type="text" maxlength="8" [ngModel]="placa | placaPipe" (ionInput)="placa = tratarPlaca($event.target.value)"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && placa.length != 7" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Informe uma placa válida
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-button *ngIf="pagina == 'veiculos'" expand="block" (click)="cadastrarPlaca()">
+    <ion-icon slot="start" name="add-circle"></ion-icon>
+    Adicionar Veiculo
+  </ion-button>
+  <ion-button expand="block" color="success" (click)="concluir()">
+    <ion-icon slot="start" name="checkmark"></ion-icon>
+    Salvar
+  </ion-button>
+</ion-footer>

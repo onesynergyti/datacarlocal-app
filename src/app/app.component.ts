@@ -14,6 +14,7 @@ import { PropagandasService } from './services/propagandas.service';
 import { AssinaturaPage } from './components/assinatura/assinatura.page';
 import { ComprasService } from './services/compras.service';
 import { AvisosService } from './services/avisos.service';
+import { Configuracoes } from './models/configuracoes';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +31,7 @@ export class AppComponent {
     private databaseProvider: DatabaseService,
     private modalController: ModalController,
     public utils: Utils,
-    private configuracoesService: ConfiguracoesService,
+    public configuracoesService: ConfiguracoesService,
     private push: Push,
     private clipboard: Clipboard,
     private propagandaService: PropagandasService,
@@ -50,29 +51,36 @@ export class AppComponent {
       
       this.databaseProvider.DB.then((db) => {
         this.databaseProvider.criarTabelas(db).then(() => {
-          this.splashScreen.hide()
+          this.configuracoesService.atualizarConfiguracoes().then(() => {
+            alert('chegou aqui')
+            this.splashScreen.hide()
      
-          const options: PushOptions = {
-            android: {
-              senderID: '948539553573'
+            const options: PushOptions = {
+              android: {
+                senderID: '948539553573'
+              }
             }
-          }
-       
-          const pushObject: PushObject = this.push.init(options)
-       
-          pushObject.on('registration').subscribe(res => { 
-            //alert(res.registrationId) 
-            //this.clipboard.copy(res.registrationId);
+         
+            const pushObject: PushObject = this.push.init(options)
+         
+            pushObject.on('registration').subscribe(res => { 
+              //alert(res.registrationId) 
+              //this.clipboard.copy(res.registrationId);
+            })
+         
+            // pushObject.on('notification').subscribe(res => alert(`${res.message}`))
+  
+            // Exige as configurações iniciais do sistema
+            if (!this.configuracoesService.configuracoesLocais.ManualUso.ConfiguracaoInicial) {
+              this.navController.navigateRoot('inicio')
+            }            
+            else
+              this.navController.navigateRoot('home')
           })
-       
-          // pushObject.on('notification').subscribe(res => alert(`${res.message}`))
-
-          // Exige as configurações iniciais do sistema
-          if (!this.configuracoesService.configuracoesLocais.ManualUso.ConfiguracaoInicial) {
-            this.navController.navigateRoot('inicio')
-          }            
-          else
-            this.navController.navigateRoot('home')
+          .catch((erro) => {
+            alert('Não foi possível iniciar as configurações do aplicativo. Tente novamente. ' + erro)
+            navigator['app'].exitApp();
+          })  
         })
         .catch((erro) => {
           alert('Não foi possível iniciar o aplicativo. Tente novamente. ' + erro)
@@ -88,10 +96,6 @@ export class AppComponent {
 
   abrirWhatsAppSuporte() {
     this.utils.abrirWhatsapp(environment.whatsappSuporte)
-  }
-
-  get configuracoes() {
-    return this.configuracoesService.configuracoes
   }
 
   async abrirPlanos() {
