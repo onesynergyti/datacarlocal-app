@@ -30,7 +30,6 @@ export class ConfiguracoesService extends ServiceBaseService {
   }
 
   atualizarConfiguracoes() {
-    this.utils.alertLog('Vai atualizar as configurações')
     return new Promise((resolve, reject) => {
       // Se for configurações se uso local, retorna o local storage
       if (this.configuracoesLocais.Portal.SincronizarInformacoes != 'online') {
@@ -40,7 +39,6 @@ export class ConfiguracoesService extends ServiceBaseService {
       // Se for configurações online, obtem as informações configuradas no servidor
       else {
         this.obterInformacoesPortal().then(informacoes => {
-          this.utils.alertLog('Obteve as informações do portal')
           const httpOptions = {
             headers: new HttpHeaders({
               'Content-Type':  'application/json',
@@ -57,7 +55,6 @@ export class ConfiguracoesService extends ServiceBaseService {
               this.ocultarProcessamento()
             })
           ).subscribe((retorno: any) => { 
-            this.utils.alertLog('o retorno ' + JSON.stringify(retorno))
             this.configuracoes = new Configuracoes(retorno)
             resolve(this.configuracoes)
           },

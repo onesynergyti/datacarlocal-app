@@ -31,7 +31,7 @@
   <ion-grid class="ion-no-padding ion-no-margin">
     <ion-row>
       <ion-col>
-        <ion-button color="success" expand="block" (click)="adicionar()">
+        <ion-button *ngIf="classe != null" color="success" expand="block" (click)="adicionar()">
           <ion-icon slot="start" name="add-circle"></ion-icon>
           Adicionar
         </ion-button>

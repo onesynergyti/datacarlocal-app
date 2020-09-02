@@ -6,6 +6,8 @@ import { UtilsLista } from 'src/app/utils/utils-lista';
 import { Utils } from 'src/app/utils/utils';
 import { PlanoCliente } from 'src/app/models/plano-cliente';
 import { CadastroPlanoPage } from './cadastro-plano/cadastro-plano.page';
+import { SelectPopupModalPage } from 'src/app/components/select-popup-modal/select-popup-modal.page';
+import { Categoria } from 'src/app/models/categoria';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -20,6 +22,7 @@ export class CadastroClientePage implements OnInit {
   movimentosExclusao = []
   avaliouFormulario = false
   listaPlanos = []
+  inclusao
 
   constructor(
     private alertController: AlertController,
@@ -30,6 +33,7 @@ export class CadastroClientePage implements OnInit {
     public utils: Utils
   ) {
     this.cliente = navParams.get('cliente')
+    this.inclusao = navParams.get('inclusao')
     this.atualizarPlanos()
   }
 
@@ -38,7 +42,7 @@ export class CadastroClientePage implements OnInit {
 
   async atualizarPlanos() {
     this.carregandoPlanos = true
-    this.clientesProvider.listaPlanos(this.cliente.Id).then(planos => {
+    this.clientesProvider.listaPlanos(this.cliente.Documento).then(planos => {
       this.planos = planos
       alert(JSON.stringify(this.planos))
     })
@@ -101,15 +105,42 @@ export class CadastroClientePage implements OnInit {
 
   async concluir(){
     this.avaliouFormulario = true
-    if (this.cliente.Nome != null && this.cliente.Nome.length > 0)
+    if (this.cliente.Nome != null && this.cliente.Nome.length > 0 && this.cliente.Documento != null && this.cliente.Documento.length > 0)    
     {
       await this.clientesProvider.exibirProcessamento('Salvando cliente...')
       this.clientesProvider.salvar(this.cliente, this.planos).then(() => {
         this.modalCtrl.dismiss(true)
       })
       .catch(erro => {
-        alert(JSON.stringify(erro))
+        this.utils.mostrarToast('Não foi possível inserir o cliente. Verifique se o documento já existe.', 'danger')
       })
     }
+  }
+
+  async alterarCategoria() {
+    const modal = await this.modalCtrl.create({
+      component: SelectPopupModalPage,
+      componentProps: {
+        'classe': 'categoria',
+        'titulo': 'Categorias',
+        'icone': 'grid'
+      }
+    })
+
+    modal.onWillDismiss().then((retorno) => {
+      let categoria = retorno.data
+      if (categoria != null) 
+        this.cliente.Categoria = new Categoria(categoria)
+    })
+
+    return await modal.present(); 
+  }
+
+  selecionarDataNascimento() {
+    const dataNascimento = this.cliente.Nascimento != null ? new Date(this.cliente.Nascimento) : new Date()
+    this.utils.selecionarData(dataNascimento)
+    .then(data => {
+      this.cliente.Nascimento = data
+    });
   }
 }

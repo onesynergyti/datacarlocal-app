@@ -33,7 +33,7 @@
       <ion-col>
         <ion-item>
           <ion-label position="floating">Documento (CNPJ / CPF)</ion-label>
-          <ion-input autocapitalize="on" type="tel" [ngModel]="cliente.Documento | documentoPipe" (ionInput)="cliente.Documento = utils.somenteNumeros($event.target.value)"></ion-input>
+          <ion-input autocapitalize="on" type="tel" [disabled]="!inclusao" [ngModel]="cliente.Documento | documentoPipe" (ionInput)="cliente.Documento = utils.somenteNumeros($event.target.value)"></ion-input>
         </ion-item>        
       </ion-col>
       <ion-col>
@@ -49,6 +49,29 @@
           <ion-label position="floating">E-mail</ion-label>
           <ion-input autocapitalize="on" type="text" [(ngModel)]="cliente.Email"></ion-input>
         </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="grid"></ion-icon>
+        Categoria do cliente
+      </ion-col>
+      <ion-col size-xs="12" (click)="alterarCategoria()">
+        <h4 class="negrito espacadorCampo">Categoria</h4>
+        <h3 class="textoLimitado">{{ cliente.Categoria != null ? cliente.Categoria.Nome : 'Não informado' }}</h3>
+        <ion-icon class="editIcone" name="create-outline"></ion-icon>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-xs="12" class="subTitulo fundoLight">
+        <ion-icon class="iconeSubTitulo" name="calendar"></ion-icon>
+        Data de nascimento
+      </ion-col>
+      <ion-col size-xs="12" (click)="selecionarDataNascimento()">
+        <h4 class="negrito espacadorCampo">Nascimento</h4>
+        <h3 *ngIf="cliente.Nascimento != null" class="textoLimitado">{{ cliente.Nascimento | date:"dd/MM/yyyy" }}</h3>
+        <h3 *ngIf="cliente.Nascimento == null" class="textoLimitado">Não informado</h3>
+        <ion-icon class="editIcone" name="create-outline"></ion-icon>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -141,6 +164,10 @@
       <ion-col size-xs="12" *ngIf="avaliouFormulario && (cliente.Nome == null || cliente.Nome.length == 0)" class="subTitulo fundoPerigo">
         <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
         Informe o nome do cliente
+      </ion-col>
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && (cliente.Documento == null || cliente.Documento.length == 0)" class="subTitulo fundoPerigo">
+        <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
+        Informe o documento do cliente
       </ion-col>
     </ion-row>
   </ion-grid>

@@ -9,6 +9,7 @@ import { Servico } from '../models/servico';
 import { Categoria } from '../models/categoria';
 import { Mensalista } from '../models/mensalista';
 import { DatePipe } from '@angular/common';
+import { CategoriasService } from './categorias.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,51 +19,64 @@ export class ClientesService extends ServiceBaseService {
   constructor(
     public loadingController: LoadingController,
     private utils: UtilsLista,
-    private database: DatabaseService
+    private database: DatabaseService,
+    private providerCategorias: CategoriasService
   ) { 
     super(loadingController)
   }
 
-  public lista(id = 0): Promise<any> {
+  public lista(documento = ''): Promise<any> {
     return new Promise((resolve, reject) => {
-      const sql = `SELECT * from clientes where (${id} = 0) or (${id} = Id)`;
-      const data = []
-      this.database.DB.then(db => {
-        db.executeSql(sql, data)
-        .then(data => {
-          if (data.rows.length > 0) {
-            let clientes: Cliente[] = [];
-            for (var i = 0; i < data.rows.length; i++) {
-              var cliente = data.rows.item(i);
-              clientes.push(new Cliente(cliente));
+      this.providerCategorias.lista().then(categorias => {
+        let sql = 'SELECT * from clientes'
+        if (documento != '')
+          sql = sql + ` where ${documento} like documento`;
+        const data = []
+        this.database.DB.then(db => {
+          db.executeSql(sql, data)
+          .then(data => {
+            if (data.rows.length > 0) {
+              let clientes: Cliente[] = [];
+              for (var i = 0; i < data.rows.length; i++) {
+                var cliente = data.rows.item(i);
+               
+                // Verifica a categoria do cliente
+                const categoria = categorias.find(itemAtual => itemAtual.Id == cliente.IdCategoria)
+                cliente.Categoria = categoria != null ? new Categoria(categoria) : null
+                
+                cliente.Nascimento = cliente.Nascimento != null ? cliente.Nascimento.split('-').join('/') : null
+
+                clientes.push(new Cliente(cliente));
+              }
+              resolve(clientes)
+            } else {
+              resolve([])
             }
-            resolve(clientes)
-          } else {
-            resolve([])
-          }
+          })
+          .catch((erro) => {
+            reject(erro)
+          })
         })
         .catch((erro) => {
           reject(erro)
         })
+        .finally(() => {
+          this.ocultarProcessamento()
+        })
       })
-      .catch((erro) => {
-        reject(erro)
-      })
-      .finally(() => {
-        this.ocultarProcessamento()
-      })
+      .catch(erro => reject(erro))
     })
   }
 
-  public listaPlanos(idCliente): Promise<any> {
+  public listaPlanos(documento): Promise<any> {
     return new Promise((resolve, reject) => {
-      const sql = "SELECT * from planosCliente where IdCliente = ?";
-      const data = [idCliente]
+      const sql = "SELECT * from planosCliente where Documento = ?";
+      const data = [documento]
       this.database.DB.then(db => {
         db.executeSql(sql, data)
         .then(data => {
           // Obtem o cliente para definição do objeto
-          this.lista(idCliente)
+          this.lista(documento)
           .then(clientes => {
             if (clientes.length) {
               const cliente = clientes[0]
@@ -99,67 +113,69 @@ export class ClientesService extends ServiceBaseService {
 
   public salvar(cliente: Cliente, planos: PlanoCliente[] = []) {
     return new Promise((resolve, reject) => {
-      this.database.DB.then(db => {
-        db.transaction(tx => {
+      this.lista(cliente.Documento).then(clientes => {
+        const inclusao = clientes[0] == null
 
-          let sqlMensalista
-          let dataMensalista
-      
-          alert('vai salvar')
-          // Caso seja inclusão
-          if (cliente.Id == null || cliente.Id == 0) {
-            sqlMensalista = 'insert into clientes (Nome, Documento, Telefone, Email, Categoria) values (?, ?, ?, ?, ?)'
-            dataMensalista = [cliente.Nome, cliente.Documento, cliente.Telefone, cliente.Email, cliente.Categoria != null ? JSON.stringify(cliente.Categoria) : null]
-          }
-          // Caso seja edição
-          else {
-            sqlMensalista = 'update clientes set Nome = ?, Documento = ?, Telefone = ?, Email = ?, Categoria = ? where Id = ?'
-            dataMensalista = [cliente.Nome, cliente.Documento, cliente.Telefone, cliente.Email, cliente.Categoria != null ? JSON.stringify(cliente.Categoria) : null]
-          }
-          tx.executeSql(sqlMensalista, dataMensalista, () => {
-            alert('salvou e agora vai salvar os planos')
-            let promisesTx = []
-
-            // Inclui os planos do cliente
-            planos.forEach(plano => {
-              // Se não foi definido um mensalista dono do movimento antes, insere nesse momento
-              if (plano.Cliente == null)
-                plano.Cliente = cliente
-
-              promisesTx.push(
-                new Promise((resolve, reject) => {
-                  alert(JSON.stringify(plano))
-                  // Inclusão
-                  if (plano.Id == 0) {
-                    const sqlInclusaoPlano = 'insert into planosCliente (IdCliente, ValidadeInicial, ValidadeFinal, Servico, Quantidade, ValorDinheiro, ValorDebito, ValorCredito, Placas) values (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-                    const dataInclusaoPlano = [cliente.Id, new DatePipe('en-US').transform(plano.ValidadeInicial, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(plano.ValidadeFinal, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(plano.Servico), plano.Quantidade, plano.ValorDinheiro, plano.ValorDebito, plano.ValorCredito, JSON.stringify(plano.Placas)];
-                    tx.executeSql(sqlInclusaoPlano, dataInclusaoPlano, () => { 
-                        resolve() 
-                    }, (erro) => { reject(erro) })
-                  }
-                  else {
-                    const sqlInclusaoPlano = 'update planosCliente set ValidadeInicial = ?, ValidadeFinal = ?, Servico = ?, Quantidade = ?, Placas = ? where Id = ?';
-                    const dataInclusaoPlano = [new DatePipe('en-US').transform(plano.ValidadeInicial, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(plano.ValidadeFinal, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(plano.Servico), plano.Quantidade, JSON.stringify(plano.Placas), plano.Id];
-                    tx.executeSql(sqlInclusaoPlano, dataInclusaoPlano, () => { 
-                        resolve() 
-                    }, (erro) => { reject(erro) })
-                  }
-                })
-              )      
-            });
-
-            Promise.all(promisesTx).then(() => { 
-              resolve() 
-            }, 
-            (erro) => { reject(erro) })
-          }, (erro) => { reject(erro) })
+        this.database.DB.then(db => {
+          db.transaction(tx => {
+  
+            let sqlMensalista
+            let dataMensalista
+        
+            if (inclusao) {
+              sqlMensalista = 'insert into clientes (Documento, Nome, Telefone, Email, IdCategoria, Nascimento) values (?, ?, ?, ?, ?, ?)'
+              dataMensalista = [cliente.Documento, cliente.Nome, cliente.Telefone, cliente.Email, cliente.Categoria != null && cliente.Categoria.Id ? cliente.Categoria.Id : null, cliente.Nascimento != null ? new DatePipe('en-US').transform(cliente.Nascimento, 'yyyy-MM-dd') : null]
+            }
+            else {
+              sqlMensalista = 'update clientes set Nome = ?, Telefone = ?, Email = ?, IdCategoria = ?, Nascimento = ? where Documento = ?'
+              dataMensalista = [cliente.Nome, cliente.Telefone, cliente.Email, cliente.Categoria != null && cliente.Categoria.Id ? cliente.Categoria.Id : null, cliente.Nascimento != null ? new DatePipe('en-US').transform(cliente.Nascimento, 'yyyy-MM-dd') : null, cliente.Documento]
+            }
+            tx.executeSql(sqlMensalista, dataMensalista, () => {
+              let promisesTx = []
+  
+              // Inclui os planos do cliente
+              planos.forEach(plano => {
+                // Se não foi definido um mensalista dono do movimento antes, insere nesse momento
+                if (plano.Cliente == null)
+                  plano.Cliente = cliente
+  
+                promisesTx.push(
+                  new Promise((resolve, reject) => {
+                    // Inclusão
+                    if (plano.Id == 0) {
+                      const sqlInclusaoPlano = 'insert into planosCliente (Documento, ValidadeInicial, ValidadeFinal, Servico, Quantidade, ValorDinheiro, ValorDebito, ValorCredito, Placas) values (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                      const dataInclusaoPlano = [cliente.Documento, new DatePipe('en-US').transform(plano.ValidadeInicial, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(plano.ValidadeFinal, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(plano.Servico), plano.Quantidade, plano.ValorDinheiro, plano.ValorDebito, plano.ValorCredito, JSON.stringify(plano.Placas)];
+                      tx.executeSql(sqlInclusaoPlano, dataInclusaoPlano, () => { 
+                          resolve() 
+                      }, (erro) => { reject(erro) })
+                    }
+                    else {
+                      const sqlInclusaoPlano = 'update planosCliente set ValidadeInicial = ?, ValidadeFinal = ?, Servico = ?, Quantidade = ?, Placas = ? where Id = ?';
+                      const dataInclusaoPlano = [new DatePipe('en-US').transform(plano.ValidadeInicial, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(plano.ValidadeFinal, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(plano.Servico), plano.Quantidade, JSON.stringify(plano.Placas), plano.Id];
+                      tx.executeSql(sqlInclusaoPlano, dataInclusaoPlano, () => { 
+                          resolve() 
+                      }, (erro) => { reject(erro) })
+                    }
+                  })
+                )      
+              });
+  
+              Promise.all(promisesTx).then(() => { 
+                resolve() 
+              }, 
+              (erro) => { reject(erro) })
+            }, (erro) => { reject(erro) })
+          })
+          .catch(erro => {
+            reject(erro)
+          })
         })
-        .catch(erro => {
-          reject(erro)
+        .finally(() => {
+          this.ocultarProcessamento()
         })
       })
-      .finally(() => {
-        this.ocultarProcessamento()
+      .catch(erro => {
+        reject(erro)
       })
     })
   }  

@@ -24,28 +24,46 @@
         <div class="cartao">
           <ion-grid>
             <ion-row>
-              <ion-col size-xs="12" class="tituloCartao ion-text-center"> 
+              <ion-col size-xs="12" class="tituloCartao fundoPrimario ion-text-center"> 
                 <h3>{{ cliente.Nome }}</h3>
               </ion-col>
             </ion-row>
-            <ion-row *ngIf="(cliente.Documento != null && cliente.Documento.length > 0) || (cliente.Telefone != null && cliente.Telefone.length > 0)">
+            <ion-row>
               <ion-col size-xs="12" class="subTitulo fundoLight">
                 <ion-icon class="iconeSubTitulo" name="person"></ion-icon>
                 Dados do cliente
               </ion-col>
-              <ion-col>
+              <ion-col size-xs="7">
                 <h4 class="negrito">Documento</h4>
                 <h4>{{ cliente.Documento | documentoPipe }}</h4>
               </ion-col>
-              <ion-col>
+              <ion-col size-xs="5">
                 <h4 class="negrito">Telefone</h4>
-                <h4>{{ cliente.Telefone | telefonePipe }}</h4>
+                <h4 *ngIf="cliente.Telefone.length">{{ cliente.Telefone | telefonePipe }}</h4>
+                <h4 *ngIf="cliente.Telefone == null || !cliente.Telefone.length">Não informado</h4>
               </ion-col>
             </ion-row>
-            <ion-row *ngIf="cliente.Email != null && cliente.Email.length > 0">
-              <ion-col>
+            <ion-row>
+              <ion-col size-xs="7">
                 <h4 class="negrito">Email</h4>
-                <h4>{{ cliente.Email }}</h4>
+                <h4 *ngIf="cliente.Email.length" class="textoLimitado">{{ cliente.Email }}</h4>
+                <h4 *ngIf="cliente.Email == null || !cliente.Email.length">Não informado</h4>
+              </ion-col>
+              <ion-col size-xs="5">
+                <h4 class="negrito">Nascimento</h4>
+                <h4 *ngIf="cliente.Nascimento != null">{{ cliente.Nascimento | date:"dd/MM/yyyy" }}</h4>
+                <h4 *ngIf="cliente.Nascimento == null">Não informado</h4>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size-xs="12" class="subTitulo fundoLight">
+                <ion-icon class="iconeSubTitulo" name="grid"></ion-icon>
+                Categoria
+              </ion-col>
+              <ion-col size-xs="5">
+                <h4 class="negrito">Categoria</h4>
+                <h4 *ngIf="cliente.Categoria != null">{{ cliente.Categoria.Nome }}</h4>
+                <h4 *ngIf="cliente.Categoria == null">Não informado</h4>
               </ion-col>
             </ion-row>
           </ion-grid>

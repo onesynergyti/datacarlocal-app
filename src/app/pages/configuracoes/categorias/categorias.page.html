@@ -1,0 +1,52 @@
+<ion-header>
+  <app-header titulo="Categorias" ocultarAvisos="true"></app-header>
+  <ion-searchbar autocapitalize="on" animated placeholder="Pesquisar..." [(ngModel)]="pesquisa"></ion-searchbar>
+</ion-header>
+
+<ion-content *ngIf="carregandoCategorias">
+  <ion-spinner class="spinnerCentro"></ion-spinner>
+</ion-content>
+
+<ion-content *ngIf="!carregandoCategorias">
+  <div class="divInformativo" *ngIf="categorias.length == 0">
+    <h2>Nenhuma categoria cadastrada</h2>
+    <ion-icon name="grid-outline"></ion-icon>
+    <h5>Utilize o botão abaixo para adicionar uma categoria</h5>
+  </div>
+  <div class="divInformativo" *ngIf="categorias.length > 0 && listaFiltrada.length == 0">
+    <h2>Nenhuma categoria localizada</h2>
+    <ion-icon name="search-outline"></ion-icon>
+  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-xs="12" class="ion-no-padding ion-no-margin">
+        <ion-list [@listAnimation]="listaFiltrada.length" lines="full">
+          <ion-item-sliding *ngFor="let categoria of listaFiltrada">
+            <ion-item (click)="cadastrarCategoria(categoria)">
+              <ion-grid class="ion-no-padding ion-no-margin">
+                <ion-row>
+                  <ion-col size-xs="12">
+                    <h3 class="textoLimitado">{{ categoria.Nome }}</h3>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-item>
+        
+            <ion-item-options side="end">
+              <ion-item-option color="danger" (click)="excluir(categoria)">
+                <ion-icon slot="icon-only" name="trash"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-button color="success" expand="block" (click)="cadastrarCategoria()">
+    <ion-icon slot="start" name="add-circle"></ion-icon>
+    Adicionar
+  </ion-button>
+</ion-footer>

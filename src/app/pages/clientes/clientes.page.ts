@@ -57,7 +57,7 @@ export class ClientesPage implements OnInit {
     let inseriuItem = false
     this.providerClientes.lista().then((lista: any) => {
       lista.forEach(itemAtual => {
-        if (this.clientes.find(itemExistente => itemExistente.Id === itemAtual.Id) == null) {
+        if (this.clientes.find(itemExistente => itemExistente.Documento === itemAtual.Documento) == null) {
           this.clientes.push(itemAtual)
           inseriuItem = true
         }
@@ -69,7 +69,7 @@ export class ClientesPage implements OnInit {
     })    
     // Em caso de erro
     .catch((erro) => {
-      alert(JSON.stringify('Não foi possível carregar os clientes.' + erro))
+      alert('Não foi possível carregar os clientes.' + JSON.stringify(erro))
     })
     .finally(() => {
       if (event != null)
@@ -83,7 +83,8 @@ export class ClientesPage implements OnInit {
     const modal = await this.modalController.create({
       component: CadastroClientePage,
       componentProps: {
-        'cliente': clienteEdicao
+        'cliente': clienteEdicao,
+        'inclusao': cliente == null
       }
     });
 
@@ -101,6 +102,6 @@ export class ClientesPage implements OnInit {
     if (this.pesquisa == '')
       return this.clientes
 
-    return this.clientes.filter(itemAtual => this.utils.stringPura(itemAtual.Nome).includes(this.utils.stringPura(this.pesquisa)) || this.utils.stringPura(itemAtual.Documento).includes(this.utils.stringPura(this.pesquisa)) || this.utils.stringPura(itemAtual.Telefone).includes(this.utils.stringPura(this.pesquisa)) || this.utils.stringPura(JSON.stringify(itemAtual.Veiculos)).includes(this.utils.stringPura(this.pesquisa)))
+    return this.clientes.filter(itemAtual => this.utils.stringPura(itemAtual.Nome + itemAtual.Documento).includes(this.utils.stringPura(this.pesquisa)))
   }
 }

@@ -2,6 +2,7 @@ import { ServicoVeiculo } from './servico-veiculo'
 import { Funcionario } from './funcionario'
 import { Avaria } from './avaria'
 import { ProdutoVeiculo } from './produto-veiculo'
+import { Cliente } from './cliente'
 
 export class Veiculo {
   Id: number = 0
@@ -11,8 +12,8 @@ export class Veiculo {
   Saida: Date
   TipoVeiculo: number = 0
   Observacoes: string
-  Telefone: string = ''
-  Nome: string = ''
+  Telefone: string = '' // Não é mais utilizado, mudou para o campo de cliente
+  Nome: string = '' // Não é mais utilizado, mudou para o campo de cliente
   Servicos: ServicoVeiculo[] = []
   Produtos: ProdutoVeiculo[] = []
   EntregaAgendada: boolean = false
@@ -20,10 +21,11 @@ export class Veiculo {
   Funcionario: Funcionario
   Localizacao: string = ''
   Ativo: boolean = true
-  IdMensalista: number = 0
+  IdMensalista: number = 0 // Não é mais utilizado, mudou para o campo de cliente
   CodigoCartao: string = ''
   Avarias: Avaria[] = []
   ImagemAvaria: string = ''
+  Cliente: Cliente = new Cliente()
 
   constructor(veiculo: Veiculo = null) {
     if (veiculo != null) {
@@ -51,6 +53,7 @@ export class Veiculo {
       this.EntregaAgendada = veiculo.EntregaAgendada
       this.PrevisaoEntrega = veiculo.PrevisaoEntrega != null ? new Date(veiculo.PrevisaoEntrega) : new Date()
       this.Funcionario = veiculo.Funcionario != null ? new Funcionario(veiculo.Funcionario) : null
+      this.Cliente = veiculo.Cliente != null ? new Cliente(veiculo.Cliente) : null
       this.Localizacao = veiculo.Localizacao
       this.Ativo = veiculo.Ativo
       this.IdMensalista = veiculo.IdMensalista

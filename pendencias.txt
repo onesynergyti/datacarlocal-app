@@ -145,6 +145,20 @@ OK - Definir whatsapp para suporte
 OK - Input numérico na configuração de valor fixo nos minutos e carência na tabela de estacionamento
 OK - Carregar o anúncio antes para não ter delay na exibição
 OK - Subir uma versão mínima para android
+- Foreing key da tabela de planos cliente com cliente, cascade ao excluir
+- Salvar a utilização do item do plano no fechamento para definir quantos já foram usados 
+OK - Criar o cadastro de categoria
+OK - Incluir o campo de categoria no cadastro cliente como Id
+OK - Finalizar layout na listagem de clientes
+OK - Incluir campo de documento e categoria do cliente na entrada do veículo. Ao digitar o documento o cliente deve ser carregado se existir. Ao salvar o atendimento o cliente deve ser salvo se o documento foi digitado
+OK - Permitir pesquisa um cliente no cadastro do atendimento, para obter os clientes sem documento
+OK - Um cliente só será salvo se possuir o documento, ou pode ser cadastrado manualmente
+OK - Incluir uma nova aba para o cliente separada
+OK - Incluir uma nova aba para produtos e serviços separado
+- Incluir o movimento quando incluir um novo plano para o cliente
+- Verificar se o cliente possui um plano na hora de calcular o preço
+- Migrar mensalistas para clientes
+- Permitir filtrar atendimentos pelo cliente ou placa do veículo
 - Recuperação de senha por email
 - Atualização dos gráficos não funciona. Utilizar um objeto único com os valores e mudar esse objeto, mantendo o objeto do gráfico em si
 - Realizar chamada de envio de remessa ao inserir um movimento e pagar atendimentos adiados
@@ -157,5 +171,4 @@ OK - Subir uma versão mínima para android
 TESTAR - Incluir validação de senha na inclusão da tela de pesquisa de funcionários e serviços
 - Imprimir observações do veículo no recibo de entrada
 - Gráfico de tipos de receita não está atualizando automaticamente. Alguns casos não funcionam, identificar quando
-- Foreing key da tabela de planos cliente com cliente, cascade ao excluir
-- Salvar a utilização do item do plano no fechamento para definir quantos já foram usados
+- Incluir geolocalização do cadastro de clientes

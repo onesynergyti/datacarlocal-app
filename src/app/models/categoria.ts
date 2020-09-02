@@ -2,7 +2,7 @@ export class Categoria {
   Id: number = 0
   Nome: string = ''
 
-  constructor(categoria: Categoria) {
+  constructor(categoria: Categoria = null) {
     if (categoria != null) {
       this.Id = categoria.Id
       this.Nome = categoria.Nome

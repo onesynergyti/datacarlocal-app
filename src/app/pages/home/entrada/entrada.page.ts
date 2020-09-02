@@ -16,6 +16,9 @@ import { Mensalista } from 'src/app/models/mensalista';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Avaria } from 'src/app/models/avaria';
 import { CadastroProdutoPage } from './cadastro-produto/cadastro-produto.page';
+import { ClientesService } from 'src/app/dbproviders/clientes.service';
+import { Cliente } from 'src/app/models/cliente';
+import { Categoria } from 'src/app/models/categoria';
 
 @Component({
   selector: 'app-entrada',
@@ -38,7 +41,8 @@ import { CadastroProdutoPage } from './cadastro-produto/cadastro-produto.page';
 })
 export class EntradaPage implements OnInit {
 
-  pagina = 'veiculo'
+  pagina = 'atendimento'
+  paginaVendas = 'servicos'
   pesquisa
   inclusao = false
   veiculo: Veiculo
@@ -69,6 +73,7 @@ export class EntradaPage implements OnInit {
     public configuracoesService: ConfiguracoesService,
     private providerMensalistas: MensalistasService,
     private barcodeScanner: BarcodeScanner,
+    private clienteProvider: ClientesService
   ) { 
     this.veiculo = navParams.get('veiculo')
     this.inclusao = navParams.get('inclusao')
@@ -77,8 +82,8 @@ export class EntradaPage implements OnInit {
   ngOnInit() {
   }
 
-  get imagensAvariaTipoVeiculo() {
-    return this.imagensAvaria.filter(imagemAtual => imagemAtual.TipoVeiculo == this.veiculo.TipoVeiculo)
+  get imagensAvariaTipoVeiculo() {    
+    return this.imagensAvaria.filter(imagemAtual => imagemAtual.TipoVeiculo == this.veiculo.TipoVeiculo || !this.configuracoesService.configuracoes.Patio.SepararPrecosServico)
   }
 
   caminhoImagem(imagem) {
@@ -195,6 +200,22 @@ export class EntradaPage implements OnInit {
     }
 
     return valor.toUpperCase().replace(/[^a-zA-Z0-9]/g,'')
+  }
+
+  async pesquisarCliente(abrirCaixaPesquisa = true) {
+    if (this.veiculo.Cliente.Documento != null && this.veiculo.Cliente.Documento.length >= 3) {
+      await this.clienteProvider.exibirProcessamento('pesquisando cliente...')
+      this.clienteProvider.lista(this.veiculo.Cliente.Documento).then(clientes => {        
+        if (clientes.length)
+          this.veiculo.Cliente = new Cliente(clientes[0])
+        else if (abrirCaixaPesquisa) {
+          this.selecionarCliente()
+        }
+      })
+    }
+    else if (abrirCaixaPesquisa) {
+      this.selecionarCliente()
+    }
   }
 
   async procederCadastroServico(servico) {
@@ -586,6 +607,44 @@ export class EntradaPage implements OnInit {
       this.utils.mostrarToast('O código do cartão não pode ser alterado.', 'danger')
     }
   }
+  
+  async alterarCategoria() {
+    const modal = await this.modalCtrl.create({
+      component: SelectPopupModalPage,
+      componentProps: {
+        'classe': 'categoria',
+        'titulo': 'Categorias',
+        'icone': 'grid'
+      }
+    })
+
+    modal.onWillDismiss().then((retorno) => {
+      let categoria = retorno.data
+      if (categoria != null) 
+        this.veiculo.Cliente.Categoria = new Categoria(categoria)
+    })
+
+    return await modal.present(); 
+  }
+
+  async selecionarCliente() {
+    const modal = await this.modalCtrl.create({
+      component: SelectPopupModalPage,
+      componentProps: {
+        'classe': 'cliente',
+        'titulo': 'Clientes',
+        'icone': 'person'
+      }
+    })
+
+    modal.onWillDismiss().then((retorno) => {
+      let cliente = retorno.data
+      if (cliente != null) 
+        this.veiculo.Cliente = new Cliente(cliente)
+    })
+
+    return await modal.present(); 
+  }
 
   selecionarDataPrevisao() {
     const dataPrevisao = this.veiculo.PrevisaoEntrega != null ? new Date(this.veiculo.PrevisaoEntrega) : new Date()
@@ -602,6 +661,14 @@ export class EntradaPage implements OnInit {
     this.utils.selecionarHora(dataPrevisao)
     .then(hora => {
       this.veiculo.PrevisaoEntrega = hora
+    });
+  }
+
+  selecionarDataNascimento() {
+    const dataNascimento = this.veiculo.Cliente.Nascimento != null ? new Date(this.veiculo.Cliente.Nascimento) : new Date()
+    this.utils.selecionarData(dataNascimento)
+    .then(data => {
+      this.veiculo.Cliente.Nascimento = data
     });
   }
 }

@@ -15,6 +15,12 @@ import { ProdutosService } from 'src/app/dbproviders/produtos.service';
 import { Produto } from 'src/app/models/produto';
 import { CadastroProdutoPage } from 'src/app/pages/configuracoes/produtos/cadastro-produto/cadastro-produto.page';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { CadastroCategoriaPage } from 'src/app/pages/configuracoes/categorias/cadastro-categoria/cadastro-categoria.page';
+import { Categoria } from 'src/app/models/categoria';
+import { CategoriasService } from 'src/app/dbproviders/categorias.service';
+import { Cliente } from 'src/app/models/cliente';
+import { CadastroClientePage } from 'src/app/pages/clientes/cadastro-cliente/cadastro-cliente.page';
+import { ClientesService } from 'src/app/dbproviders/clientes.service';
 
 @Component({
   selector: 'app-select-popup-modal',
@@ -52,7 +58,9 @@ export class SelectPopupModalPage {
     private utils: Utils,
     private providerFuncionarios: FuncionariosService,
     private providerServicos: ServicosService,
+    private providerCategorias: CategoriasService,
     private providerProdutos: ProdutosService,
+    private providerClientes: ClientesService,
     private utilsLista: UtilsLista,
     public configuracoesService: ConfiguracoesService,
     private barcodeScanner: BarcodeScanner
@@ -78,6 +86,14 @@ export class SelectPopupModalPage {
           this.atualizarProdutos()
           break
         }
+        case 'categoria': {
+          this.atualizarCategorias()
+          break
+        }
+        case 'cliente': {
+          this.atualizarClientes()
+          break
+        }
       }
     }      
 
@@ -101,6 +117,55 @@ export class SelectPopupModalPage {
         this.adicionarProduto()
         break
       }
+      case 'categoria': {
+        this.adicionarCategoria()
+        break
+      }
+      case 'cliente': {
+        this.adicionarCliente()
+        break
+      }
+    }
+  }
+
+  async procederAdicionarCliente() {
+    let clienteEdicao = new Cliente()
+    const modal = await this.modalCtrl.create({
+      component: CadastroClientePage,
+      componentProps: {
+        'cliente': clienteEdicao,
+        'inclusao': true
+      }
+    });
+
+    modal.onWillDismiss().then((retorno) => {
+      if (retorno.data != null) {
+        if (retorno.data.Operacao == 'cadastro')
+          this.utilsLista.atualizarLista(this.lista, retorno.data.Cliente, true)
+      }      
+    })
+
+    return await modal.present(); 
+  }
+
+  async adicionarCliente() {
+    if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaCadastroMensalistas) {
+      this.procederAdicionarCliente()
+    }
+    else {
+      const modal = await this.modalCtrl.create({
+        component: ValidarAcessoPage,
+        componentProps: {
+          'mensagem': 'Informe a senha de administrador para inserir um cliente.'
+        }  
+      });
+
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data == true)
+          this.procederAdicionarCliente()
+      })
+
+      return await modal.present(); 
     }
   }
 
@@ -186,6 +251,46 @@ export class SelectPopupModalPage {
     }
   }
 
+  async procederAdicionarCategoria() {
+    let categoriaEdicao = new Categoria()
+
+    const modal = await this.modalCtrl.create({
+      component: CadastroCategoriaPage,
+      componentProps: {
+        'categoria': categoriaEdicao,
+        'inclusao': true
+      }
+    });
+
+    modal.onWillDismiss().then((retorno) => {
+      if (retorno.data != null) {
+        this.utilsLista.atualizarLista(this.lista, retorno.data.Categoria)
+      }
+    })
+
+    return await modal.present(); 
+  }
+
+  async adicionarCategoria() {
+    if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaCadastroMensalistas) {
+      this.procederAdicionarCategoria()
+    }
+    else {
+      const modal = await this.modalCtrl.create({
+        component: ValidarAcessoPage,
+        componentProps: {
+          'mensagem': 'Informe a senha de administrador para inserir uma categoria.'
+        }  
+      });
+
+      modal.onWillDismiss().then((retorno) => {
+        if (retorno.data == true)
+          this.procederAdicionarCategoria()
+      })
+
+      return await modal.present(); 
+    }
+  }
 
   async procederAdicionarProduto() {
     let produtoEdicao = new Produto()
@@ -207,6 +312,7 @@ export class SelectPopupModalPage {
     return await modal.present(); 
   }
 
+  
   async adicionarProduto() {
     if (!this.configuracoesService.configuracoes.Seguranca.ExigirSenhaCadastroProdutos) {
       this.procederAdicionarProduto()
@@ -233,6 +339,26 @@ export class SelectPopupModalPage {
     this.carregandoLista = true
     this.providerFuncionarios.lista().then(funcionarios => {
       this.lista = funcionarios
+    })
+    .finally(() => {
+      this.carregandoLista = false
+    })
+  }
+
+  atualizarCategorias() {
+    this.carregandoLista = true
+    this.providerCategorias.lista().then(categorias => {
+      this.lista = categorias
+    })
+    .finally(() => {
+      this.carregandoLista = false
+    })
+  }
+
+  atualizarClientes() {
+    this.carregandoLista = true
+    this.providerClientes.lista().then(clientes => {
+      this.lista = clientes
     })
     .finally(() => {
       this.carregandoLista = false
