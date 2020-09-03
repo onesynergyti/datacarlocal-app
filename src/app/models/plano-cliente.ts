@@ -3,6 +3,7 @@ import { Cliente } from './cliente'
 
 export class PlanoCliente {
   Id: number = 0
+  Documento: string
   Cliente: Cliente
   Servico: Servico
   ValidadeInicial: Date = new Date()
@@ -16,6 +17,7 @@ export class PlanoCliente {
   constructor(planoCliente: PlanoCliente = null) {
     if (planoCliente != null) {
       this.Id = planoCliente.Id
+      this.Documento = planoCliente.Documento
       this.Cliente = new Cliente(planoCliente.Cliente)
       this.Servico = new Servico(planoCliente.Servico)
       this.ValidadeInicial = new Date(planoCliente.ValidadeInicial)

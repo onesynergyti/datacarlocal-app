@@ -19,6 +19,7 @@ import { CadastroProdutoPage } from './cadastro-produto/cadastro-produto.page';
 import { ClientesService } from 'src/app/dbproviders/clientes.service';
 import { Cliente } from 'src/app/models/cliente';
 import { Categoria } from 'src/app/models/categoria';
+import { PlanoCliente } from 'src/app/models/plano-cliente';
 
 @Component({
   selector: 'app-entrada',
@@ -191,10 +192,8 @@ export class EntradaPage implements OnInit {
   tratarPlaca(valor: string) {
     if (valor != null && valor.length >= 3) {
       this.patioProvider.consultaHistoricoPlaca(valor).then(veiculo => {
-        this.veiculo.Nome = veiculo.Nome
         if (this.configuracoesService.configuracoes.Patio.SepararPrecosServico && this.configuracoesService.configuracoes.Patio.tipoVeiculoHabilitado(veiculo.TipoVeiculo))
           this.veiculo.TipoVeiculo = veiculo.TipoVeiculo
-        this.veiculo.Telefone = veiculo.Telefone
         this.veiculo.Modelo = veiculo.Modelo
       })
     }
@@ -325,14 +324,15 @@ export class EntradaPage implements OnInit {
     }
   }
 
-  async confirmarSaida(operacao) {
+  async confirmarEntrada(operacao) {
     await this.patioProvider.exibirProcessamento('Registrando entrada...')
 
     this.patioProvider.lista(true, false, this.veiculo.Placa).then(veiculos => {
       // Não permite cadastro de veículo ativo com mesma placa          
       if (!this.inclusao || veiculos.length == 0) {
-        this.providerMensalistas.validarMensalista(this.veiculo.Entrada, this.veiculo.Placa).then((mensalistaValido: Mensalista) => {
-          this.veiculo.IdMensalista = mensalistaValido != null ? mensalistaValido.Id : 0
+        this.clienteProvider.validarPlanos(this.veiculo.Entrada, this.veiculo.Placa, this.veiculo).then((planos: PlanoCliente[]) => {
+          this.veiculo.Planos = planos
+          alert(JSON.stringify(planos))
 
           this.patioProvider.salvar(this.veiculo)
           .then((veiculo) => {
@@ -342,6 +342,7 @@ export class EntradaPage implements OnInit {
             alert('Não foi possível inserir o veículo. ' + JSON.stringify(erro))
           })
         })
+        .catch(erro => {alert(JSON.stringify(erro) + erro)})
         .finally(() => {
           this.patioProvider.ocultarProcessamento()
         })        
@@ -386,7 +387,7 @@ export class EntradaPage implements OnInit {
                 this.veiculo.Servicos.forEach(servicoAtual => {
                   servicoAtual.Executado = true
                 })
-                this.confirmarSaida(operacao)
+                this.confirmarEntrada(operacao)
               }
             }
           ]  
@@ -396,7 +397,7 @@ export class EntradaPage implements OnInit {
       }
       // Edição ou inclusão
       else if (operacao != 'excluir') {
-        this.confirmarSaida(operacao)
+        this.confirmarEntrada(operacao)
       }
       // Exclusão
       else {

@@ -112,6 +112,7 @@ export class CadastroClientePage implements OnInit {
         this.modalCtrl.dismiss(true)
       })
       .catch(erro => {
+        alert(erro + JSON.stringify(erro))
         this.utils.mostrarToast('Não foi possível inserir o cliente. Verifique se o documento já existe.', 'danger')
       })
     }

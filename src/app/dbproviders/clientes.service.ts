@@ -10,6 +10,8 @@ import { Categoria } from '../models/categoria';
 import { Mensalista } from '../models/mensalista';
 import { DatePipe } from '@angular/common';
 import { CategoriasService } from './categorias.service';
+import { Veiculo } from '../models/veiculo';
+import { PlanoClienteUso } from '../models/plano-cliente-uso';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +32,7 @@ export class ClientesService extends ServiceBaseService {
       this.providerCategorias.lista().then(categorias => {
         let sql = 'SELECT * from clientes'
         if (documento != '')
-          sql = sql + ` where ${documento} like documento`;
+          sql = sql + ` where '${documento}' like documento`;
         const data = []
         this.database.DB.then(db => {
           db.executeSql(sql, data)
@@ -111,9 +113,40 @@ export class ClientesService extends ServiceBaseService {
     })
   }
 
+  public listaUsoPlano(idPlano): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const sql = "SELECT * from planosClienteUso where Id = ?";
+      const data = [idPlano]
+      this.database.DB.then(db => {
+        db.executeSql(sql, data)
+        .then(data => {
+          // Obtem as datas de utilização
+          let planoClienteUsos: PlanoClienteUso[] = [];
+          for (var i = 0; i < data.rows.length; i++) {
+            let uso = data.rows.item(i)
+            uso.Data = uso.Data != null ? uso.Data.split('-').join('/') : null
+            uso.Data = new Servico(JSON.parse(uso.Servico))
+            planoClienteUsos.push(new PlanoClienteUso(uso))
+          }
+        })
+        .catch((erro) => {
+          reject(erro)
+        })
+      })
+      .catch((erro) => {
+        reject(erro)
+      })
+      .finally(() => {
+        this.ocultarProcessamento()
+      })
+    })
+  }
+
   public salvar(cliente: Cliente, planos: PlanoCliente[] = []) {
     return new Promise((resolve, reject) => {
+      alert(JSON.stringify(cliente))
       this.lista(cliente.Documento).then(clientes => {
+        alert(JSON.stringify(clientes))
         const inclusao = clientes[0] == null
 
         this.database.DB.then(db => {
@@ -135,18 +168,25 @@ export class ClientesService extends ServiceBaseService {
   
               // Inclui os planos do cliente
               planos.forEach(plano => {
-                // Se não foi definido um mensalista dono do movimento antes, insere nesse momento
-                if (plano.Cliente == null)
-                  plano.Cliente = cliente
+                alert(JSON.stringify(plano))
+                // Se não foi definido o documento do cliente antes, insere nesse momento
+                if (plano.Documento == null)
+                  plano.Documento = cliente.Documento
   
                 promisesTx.push(
                   new Promise((resolve, reject) => {
                     // Inclusão
                     if (plano.Id == 0) {
                       const sqlInclusaoPlano = 'insert into planosCliente (Documento, ValidadeInicial, ValidadeFinal, Servico, Quantidade, ValorDinheiro, ValorDebito, ValorCredito, Placas) values (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-                      const dataInclusaoPlano = [cliente.Documento, new DatePipe('en-US').transform(plano.ValidadeInicial, 'yyyy-MM-dd HH:mm:ss'), new DatePipe('en-US').transform(plano.ValidadeFinal, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(plano.Servico), plano.Quantidade, plano.ValorDinheiro, plano.ValorDebito, plano.ValorCredito, JSON.stringify(plano.Placas)];
+                      const dataInclusaoPlano = [cliente.Documento, new DatePipe('en-US').transform(plano.ValidadeInicial, 'yyyy-MM-dd'), new DatePipe('en-US').transform(plano.ValidadeFinal, 'yyyy-MM-dd HH:mm:ss'), JSON.stringify(plano.Servico), plano.Quantidade, plano.ValorDinheiro, plano.ValorDebito, plano.ValorCredito, JSON.stringify(plano.Placas)];
                       tx.executeSql(sqlInclusaoPlano, dataInclusaoPlano, () => { 
-                          resolve() 
+                          // Insere o movimento no caixa quando for um novo plano
+                          const sqlInclusaoMovimento = 'insert into movimentos (Data, Descricao, ValorDinheiro, ValorDebito, ValorCredito, PlanoCliente) values (?, ?, ?, ?, ?, ?)'
+                          const dataMovimento = [new DatePipe('en-US').transform(new Date(), 'yyyy-MM-dd HH:mm'), 'Plano de serviço', plano.ValorDinheiro, plano.ValorDebito, plano.ValorCredito, JSON.stringify(plano)]
+                          tx.executeSql(sqlInclusaoMovimento, dataMovimento, () => {
+                            resolve() 
+                          }, 
+                          (erro) => { reject(erro) })
                       }, (erro) => { reject(erro) })
                     }
                     else {
@@ -180,32 +220,32 @@ export class ClientesService extends ServiceBaseService {
     })
   }  
 
-  validarMensalista(dataReferencia = null, placa = null) {
+  validarPlanos(dataReferencia, placa, veiculo: Veiculo) {
     return new Promise((resolve, reject) => {
-      if (placa == null || dataReferencia == null) {
+      if (placa == '' || dataReferencia == '') {
         this.ocultarProcessamento()
         resolve(true)
       }
       else {
         this.database.DB.then(db => {
           // Obtem um mensalista
-          const sql = `SELECT mov.* from mensalistas men 
-            join movimentos mov on mov.IdMensalista = men.Id
-            where men.Ativo = 'true' and men.Veiculos like '%${placa}%'
-            and Date(?) between Date(mov.Inicio) and Date(mov.Fim)`
+          const sql = `SELECT * from planosCliente pc
+            where ((pc.quantidade = 0) or ((select count(IdPlanoCliente) from planosClienteUso pcu where pcu.IdPlanoCliente = pc.Id and IdVeiculo <> ${veiculo.Id}) <= pc.Quantidade))
+            and ((pc.Placas like '%${placa}%') or (pc.Documento like '${veiculo.Cliente.Documento}' and pc.Placas like '[]'))
+            and Date(?) between Date(pc.ValidadeInicial) and Date(pc.ValidadeFinal)`
           const data = [new DatePipe('en-US').transform(dataReferencia, 'yyyy-MM-dd')]
           db.executeSql(sql, data)
-          .then(data => {            
-            if (data.rows.length > 0) {
-              this.lista(data.rows.item(0).IdMensalista).then(mensalistas => {
-                if (mensalistas.length > 0)
-                  resolve(new Mensalista(mensalistas[0]))
-                else
-                  resolve()
-              })
+          .then(data => {
+            let planosCliente: PlanoCliente[] = [];
+            for (var i = 0; i < data.rows.length; i++) {
+              let plano = data.rows.item(i)
+              plano.Servico = new Servico(JSON.parse(plano.Servico))
+              plano.Cliente = new Cliente(veiculo.Cliente)
+              plano.Placas = JSON.parse(plano.Placas)
+              planosCliente.push(new PlanoCliente(plano))
             }
-            else 
-              resolve()
+
+            resolve(planosCliente)
           })
           .catch((erro) => {
             reject(erro)

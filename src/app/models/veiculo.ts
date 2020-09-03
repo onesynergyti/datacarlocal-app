@@ -3,6 +3,7 @@ import { Funcionario } from './funcionario'
 import { Avaria } from './avaria'
 import { ProdutoVeiculo } from './produto-veiculo'
 import { Cliente } from './cliente'
+import { PlanoCliente } from './plano-cliente'
 
 export class Veiculo {
   Id: number = 0
@@ -26,6 +27,7 @@ export class Veiculo {
   Avarias: Avaria[] = []
   ImagemAvaria: string = ''
   Cliente: Cliente = new Cliente()
+  Planos: PlanoCliente[]
 
   constructor(veiculo: Veiculo = null) {
     if (veiculo != null) {
@@ -62,6 +64,12 @@ export class Veiculo {
       if (veiculo.Avarias != null) {
         veiculo.Avarias.forEach(avariaAtual => {
           this.Avarias.push(new Avaria(avariaAtual))
+        })
+      }
+      this.Planos = []
+      if (veiculo.Planos != null) {
+        veiculo.Planos.forEach(planoAtual => {
+          this.Planos.push(new PlanoCliente(planoAtual))
         })
       }
       this.ImagemAvaria = veiculo.ImagemAvaria

@@ -49,6 +49,7 @@ export class DatabaseService extends ServiceBaseService {
           this.executarScriptDB('ALTER TABLE veiculos ADD COLUMN Categoria TEXT', tx, 11)
           this.executarScriptDB('ALTER TABLE veiculos ADD COLUMN Cliente TEXT', tx, 13)
           this.executarScriptDB('ALTER TABLE veiculos ADD COLUMN IdCliente TEXT', tx, 14)
+          this.executarScriptDB('ALTER TABLE veiculos ADD COLUMN Planos TEXT', tx, 15)
         })
         tx.executeSql('CREATE TABLE IF NOT EXISTS veiculosHistorico (Id integer primary key AUTOINCREMENT NOT NULL, Placa TEXT, CodigoCartao TEXT, TipoVeiculo integer, IdFuncionario integer, Valor REAL, Descontos REAL, Acrescimos REAL, Entrada Date, Saida Date, Pagamento Date)', [], () => { 
           this.executarScriptDB('ALTER TABLE veiculosHistorico ADD COLUMN Avarias TEXT', tx, 2)
@@ -65,7 +66,7 @@ export class DatabaseService extends ServiceBaseService {
         tx.executeSql('CREATE TABLE IF NOT EXISTS categorias (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS clientes (Documento TEXT primary key NOT NULL, Nome TEXT, Telefone TEXT, Email TEXT, Nascimento DATE, IdCategoria integer)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS planosCliente (Id integer primary key AUTOINCREMENT NOT NULL, Documento TEXT NOT NULL, ValidadeInicial Date, ValidadeFinal Date, Servico TEXT, Quantidade integer, ValorDinheiro REAL, ValorDebito REAL, ValorCredito REAL, Placas TEXT)', [])
-        tx.executeSql('CREATE TABLE IF NOT EXISTS planosClienteUso (IdPlanoCliente integer, Data Date)', [])
+        tx.executeSql('CREATE TABLE IF NOT EXISTS planosClienteUso (IdPlanoCliente integer, IdVeiculo integer, Data Date, Placa TEXT)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS funcionarios (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT, Documento TEXT, Telefone TEXT, Email TEXT, Ativo integer)', [])
       })
       .then(() => { resolve() })

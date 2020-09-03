@@ -5,6 +5,7 @@ import { Utils } from 'src/app/utils/utils';
 import { SelectPopupModalPage } from 'src/app/components/select-popup-modal/select-popup-modal.page';
 import { PlanoCliente } from 'src/app/models/plano-cliente';
 import { CadastroPlacaPage } from './cadastro-placa/cadastro-placa.page';
+import { ClientesService } from 'src/app/dbproviders/clientes.service';
 
 @Component({
   selector: 'app-cadastro-plano',
@@ -13,6 +14,8 @@ import { CadastroPlacaPage } from './cadastro-placa/cadastro-placa.page';
 })
 export class CadastroPlanoPage implements OnInit {
 
+  carregamentoHistorico
+  historicoUso = []
   pagina = 'plano'
   plano: PlanoCliente
   inclusao
@@ -23,13 +26,26 @@ export class CadastroPlanoPage implements OnInit {
     private modalCtrl: ModalController,
     public navParams: NavParams,
     private utilsLista: UtilsLista,
-    public utils: Utils
+    public utils: Utils,
+    private providerCliente: ClientesService
   ) {
     this.plano = navParams.get('plano')
     this.inclusao = navParams.get('inclusao')
+    this.atualizarHistorico()
   }
 
   ngOnInit() {
+  }
+
+  atualizarHistorico() {
+    this.carregamentoHistorico = null 
+    this.providerCliente.listaUsoPlano(this.plano.Id).then(planos => {
+      this.historicoUso = planos
+      this.carregamentoHistorico = true
+    })
+    .catch(() => { 
+      this.carregamentoHistorico = false
+    })
   }
 
   cancelar() {
@@ -133,23 +149,28 @@ export class CadastroPlanoPage implements OnInit {
   }
 
   async selecionarServico() {
-    const modal = await this.modalCtrl.create({
-      component: SelectPopupModalPage,
-      componentProps: {
-        'classe': 'servico',
-        'keyField': 'Nome',
-        'titulo': 'Serviços',
-        'icone': 'construct'
-      }
-    })
-
-    modal.onWillDismiss().then((retorno) => {
-      let servico = retorno.data
-      if (servico != null)
-        this.plano.Servico = servico
-    })
-
-    return await modal.present(); 
+    if (!this.inclusao) {
+      this.utils.mostrarToast('O serviço não pode ser alterado.', 'danger')
+    }
+    else {
+      const modal = await this.modalCtrl.create({
+        component: SelectPopupModalPage,
+        componentProps: {
+          'classe': 'servico',
+          'keyField': 'Nome',
+          'titulo': 'Serviços',
+          'icone': 'construct'
+        }
+      })
+  
+      modal.onWillDismiss().then((retorno) => {
+        let servico = retorno.data
+        if (servico != null)
+          this.plano.Servico = servico
+      })
+  
+      return await modal.present(); 
+    }
   }
 
   selecionarDataInicial(dataAtual) {
@@ -164,5 +185,13 @@ export class CadastroPlanoPage implements OnInit {
     .then(data => {
       this.plano.ValidadeFinal = data
     });
+  }
+
+  get quantidadeLimitada() {
+    return !this.plano.Quantidade
+  }
+
+  set quantidadeLimitada(limitada) {    
+    this.plano.Quantidade = limitada ? 1 : 0
   }
 }

@@ -10,11 +10,15 @@
       <ion-icon name="car-sport" class="espacadorCampo"></ion-icon>
       Veículos
     </ion-segment-button>
+    <ion-segment-button value="historico">
+      <ion-icon name="reader" class="espacadorCampo"></ion-icon>
+      Histórico
+    </ion-segment-button>
   </ion-segment>
 </ion-header>
 
 <ion-content *ngIf="plano != null">
-  <ion-grid *ngIf="pagina == 'plano'">
+  <ion-grid [ngClass]="{'invisivel': pagina != 'plano'}">
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="reader"></ion-icon>
@@ -26,6 +30,13 @@
         <h4 class="negrito espacadorCampo">Serviço</h4>
         <h3 class="textoLimitado">{{ plano.Servico != null && plano.Servico.Nome.length ? plano.Servico.Nome : 'Não informado' }}</h3>
         <ion-icon class="editIcone" name="create-outline"></ion-icon>
+      </ion-col>
+      <ion-col size-xs="5">
+        <ion-item>
+          <ion-icon class="iconeAjuda" name="information-circle-outline" (click)="utils.alerta('Limite', 'Informe a quantidade de serviços permitidos no período. Informe zero para permitir utilização ilimitada.')"></ion-icon>
+          <ion-label position="floating">Quantidade</ion-label>
+          <ion-input type="number" [(ngModel)]="plano.Quantidade"></ion-input>
+        </ion-item>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -80,7 +91,7 @@
     </ion-row>    
   </ion-grid>
   
-  <div *ngIf="pagina == 'veiculos'">
+  <div [ngClass]="{'invisivel': pagina != 'veiculos'}">
     <div class="divInformativo" *ngIf="plano.Placas.length == 0">
       <h2>Nenhum veículo cadastrado</h2>
       <ion-icon name="car-sport-outline"></ion-icon>
@@ -100,6 +111,22 @@
       </ion-item-sliding>
     </ion-list>
   </div>  
+
+  <div [ngClass]="{'invisivel': pagina != 'historico'}">
+    <div class="divInformativo" *ngIf="historicoUso.length == 0">
+      <h2>Nenhum histórico de utilização</h2>
+      <ion-icon name="reader-outline"></ion-icon>
+      <h5>Quando o cliente utilizar o plano será exibido aqui</h5>
+    </div>
+
+    <ion-list [@listAnimation]="historicoUso.length" lines="full">
+      <ion-item-sliding *ngFor="let historico of historicoUso">
+        <ion-item>
+          {{ historico.placa | placaPipe }}
+        </ion-item>        
+      </ion-item-sliding>
+    </ion-list>
+  </div>
 </ion-content>
 
 <ion-footer>
