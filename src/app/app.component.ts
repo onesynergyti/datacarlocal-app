@@ -15,6 +15,7 @@ import { AssinaturaPage } from './components/assinatura/assinatura.page';
 import { ComprasService } from './services/compras.service';
 import { AvisosService } from './services/avisos.service';
 import { Configuracoes } from './models/configuracoes';
+import { GlobalService } from './services/global.service';
 
 @Component({
   selector: 'app-root',
@@ -52,7 +53,6 @@ export class AppComponent {
       this.databaseProvider.DB.then((db) => {
         this.databaseProvider.criarTabelas(db).then(() => {
           this.configuracoesService.atualizarConfiguracoes().then(() => {
-            alert('chegou aqui')
             this.splashScreen.hide()
      
             const options: PushOptions = {
@@ -75,7 +75,7 @@ export class AppComponent {
               this.navController.navigateRoot('inicio')
             }            
             else
-              this.navController.navigateRoot('home')
+              this.navController.navigateRoot('home')            
           })
           .catch((erro) => {
             alert('Não foi possível iniciar as configurações do aplicativo. Tente novamente. ' + erro)
@@ -92,6 +92,11 @@ export class AppComponent {
         navigator['app'].exitApp();
       })
     });
+  }
+
+  ionViewDidEnter() {
+    // Atualiza novamente as opções de configurações ao entrar na tela inicial
+    this.configuracoesService.atualizarConfiguracoes()
   }
 
   abrirWhatsAppSuporte() {
@@ -117,7 +122,10 @@ export class AppComponent {
     if (!validar) {
       this.navController.navigateForward(url) 
     }
-    else {
+    else if (this.configuracoesService.configuracoesLocais.Portal.SincronizarInformacoes == 'online') {
+      this.utils.mostrarToast('Você não possui acesso a esse recurso. Verifique com o administrador.', 'danger')
+    }
+    else{
       const modal = await this.modalController.create({
         component: ValidarAcessoPage,
         componentProps: {

@@ -79,14 +79,14 @@
   <div [ngClass]="{'invisivel': pagina != 'planos'}">
     <ion-spinner *ngIf="carregandoPlanos" class="spinnerCentro"></ion-spinner>
 
-    <div class="divInformativo" *ngIf="!carregandoPlanos && planos.length == 0">
+    <div class="divInformativo" *ngIf="!carregandoPlanos && cliente.Planos.length == 0">
       <h2>Nenhum plano de serviço cadastrado</h2>
       <ion-icon name="cash-outline"></ion-icon>
       <h5>Utilize o botão abaixo para adicionar um plano</h5>
     </div>
 
-    <ion-list [@listAnimation]="planos.length" lines="none">
-      <ion-item-sliding *ngFor="let plano of planos">
+    <ion-list [@listAnimation]="cliente.Planos.length" lines="none">
+      <ion-item-sliding *ngFor="let plano of cliente.Planos">
         <ion-item (click)="cadastrarPlano(plano)">
           <div class="cartao">
             <ion-grid>

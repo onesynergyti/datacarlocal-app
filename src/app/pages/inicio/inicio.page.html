@@ -3,7 +3,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid *ngIf="configuracoes != null">
+  <ion-grid *ngIf="configuracoesService.configuracoes != null">
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoPrimario">
         Bem vindo ao sistema
@@ -23,19 +23,19 @@
         <ion-list>
           <ion-item>
             <ion-label position="floating">Documento (CNPJ / CPF)</ion-label>
-            <ion-input autocapitalize="on" type="tel" [ngModel]="configuracoes.Estabelecimento.Documento | documentoPipe" (ionInput)="configuracoes.Estabelecimento.Documento = utils.somenteNumeros($event.target.value)"></ion-input>
+            <ion-input autocapitalize="on" type="tel" [ngModel]="configuracoesService.configuracoes.Estabelecimento.Documento | documentoPipe" (ionInput)="configuracoesService.configuracoes.Estabelecimento.Documento = utils.somenteNumeros($event.target.value)"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating">Nome do estabelecimento</ion-label>
-            <ion-input autocapitalize="on" type="text" [(ngModel)]="configuracoes.Estabelecimento.Nome"></ion-input>
+            <ion-input autocapitalize="on" type="text" [(ngModel)]="configuracoesService.configuracoes.Estabelecimento.Nome"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating">Endereco</ion-label>
-            <ion-input autocapitalize="on" type="text" [(ngModel)]="configuracoes.Estabelecimento.Endereco"></ion-input>
+            <ion-input autocapitalize="on" type="text" [(ngModel)]="configuracoesService.configuracoes.Estabelecimento.Endereco"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating">Telefone</ion-label>
-            <ion-input autocapitalize="on" type="tel" maxlength="15" [ngModel]="configuracoes.Estabelecimento.Telefone | telefonePipe" (ionInput)="configuracoes.Estabelecimento.Telefone = utils.somenteNumeros($event.target.value)"></ion-input>
+            <ion-input autocapitalize="on" type="tel" maxlength="15" [ngModel]="configuracoesService.configuracoes.Estabelecimento.Telefone | telefonePipe" (ionInput)="configuracoesService.configuracoes.Estabelecimento.Telefone = utils.somenteNumeros($event.target.value)"></ion-input>
           </ion-item>
         </ion-list>
       </ion-col>
@@ -51,12 +51,12 @@
         <ion-item>
           <ion-icon (click)="utils.alerta('Controlar estacionamento', 'Ative essa opção se quiser controlar cobrança de estacionamento por tempo dos veículos. Configure os formatos de cobrança disponíveis.')" class="iconeAjudaToggle" name="information-circle-outline"></ion-icon>
           <ion-label>Controlar estacionamento</ion-label>
-          <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.UtilizarEstacionamento"></ion-toggle>
+          <ion-toggle color="primary" [(ngModel)]="configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento"></ion-toggle>
         </ion-item>
-        <ion-item *ngIf="configuracoes.Estacionamento.UtilizarEstacionamento">
+        <ion-item *ngIf="configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento">
           <ion-icon (click)="utils.alerta('Inclusão automática', 'Ative essa opção se quiser que o sistema inclua automaticamente o serviço de cobrança de estacionamento ao registrar a entrada de um veículo. Caso essa opção seja desabilitada o sistema permitirá a inclusão manualmente para cada veículo.')" class="iconeAjudaToggle" name="information-circle-outline"></ion-icon>
           <ion-label>Inclusão automática</ion-label>
-          <ion-toggle color="primary" [(ngModel)]="configuracoes.Estacionamento.IncluirServicoEstacionamento"></ion-toggle>
+          <ion-toggle color="primary" [(ngModel)]="configuracoesService.configuracoes.Estacionamento.IncluirServicoEstacionamento"></ion-toggle>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -70,7 +70,7 @@
       <ion-col class="ion-no-padding">
         <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">E-mail do administrador</ion-label>
-          <ion-input autocapitalize="on" type="email" [(ngModel)]="configuracoes.Seguranca.EmailAdministrador"></ion-input>
+          <ion-input autocapitalize="on" type="email" [(ngModel)]="configuracoesService.configuracoes.Seguranca.EmailAdministrador"></ion-input>
         </ion-item>
         <ion-item class="ion-no-margin ion-no-padding">
           <ion-label position="floating">Senha</ion-label>

@@ -1,5 +1,6 @@
 import { Servico } from './servico'
 import { Cliente } from './cliente'
+import { PlanoClienteUso } from './plano-cliente-uso'
 
 export class PlanoCliente {
   Id: number = 0
@@ -13,6 +14,7 @@ export class PlanoCliente {
   ValorDebito: number = 0
   ValorCredito: number = 0
   Placas: string[] = []
+  Uso: PlanoClienteUso[] = []
 
   constructor(planoCliente: PlanoCliente = null) {
     if (planoCliente != null) {
@@ -27,6 +29,11 @@ export class PlanoCliente {
       this.ValorDebito = planoCliente.ValorDebito
       this.ValorCredito = planoCliente.ValorCredito
       this.Placas = planoCliente.Placas != null ? planoCliente.Placas.slice() : []
+      if (planoCliente.Uso != null) {
+        planoCliente.Uso.forEach(usoAtual => {
+          this.Uso.push(new PlanoClienteUso(usoAtual))
+        })
+      }
     }
     else {
       this.Cliente = new Cliente()

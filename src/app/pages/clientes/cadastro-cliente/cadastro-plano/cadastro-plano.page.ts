@@ -6,6 +6,7 @@ import { SelectPopupModalPage } from 'src/app/components/select-popup-modal/sele
 import { PlanoCliente } from 'src/app/models/plano-cliente';
 import { CadastroPlacaPage } from './cadastro-placa/cadastro-placa.page';
 import { ClientesService } from 'src/app/dbproviders/clientes.service';
+import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 
 @Component({
   selector: 'app-cadastro-plano',
@@ -15,7 +16,6 @@ import { ClientesService } from 'src/app/dbproviders/clientes.service';
 export class CadastroPlanoPage implements OnInit {
 
   carregamentoHistorico
-  historicoUso = []
   pagina = 'plano'
   plano: PlanoCliente
   inclusao
@@ -27,7 +27,8 @@ export class CadastroPlanoPage implements OnInit {
     public navParams: NavParams,
     private utilsLista: UtilsLista,
     public utils: Utils,
-    private providerCliente: ClientesService
+    private providerCliente: ClientesService,
+    private configuracoesService: ConfiguracoesService
   ) {
     this.plano = navParams.get('plano')
     this.inclusao = navParams.get('inclusao')
@@ -38,14 +39,16 @@ export class CadastroPlanoPage implements OnInit {
   }
 
   atualizarHistorico() {
-    this.carregamentoHistorico = null 
-    this.providerCliente.listaUsoPlano(this.plano.Id).then(planos => {
-      this.historicoUso = planos
-      this.carregamentoHistorico = true
-    })
-    .catch(() => { 
-      this.carregamentoHistorico = false
-    })
+    if (this.configuracoesService.configuracoesLocais.Portal.SincronizarInformacoes != 'online') {
+      this.carregamentoHistorico = null 
+      this.providerCliente.listaUsoPlano(this.plano.Id).then(planos => {
+        this.plano.Uso = planos
+        this.carregamentoHistorico = true
+      })
+      .catch(() => { 
+        this.carregamentoHistorico = false
+      })
+    }
   }
 
   cancelar() {

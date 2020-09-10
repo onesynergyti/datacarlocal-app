@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   whatsappSuporte: '31984601435',
-  apiUrl: "https://onedatacarlocal-api.azurewebsites.net/api",
+  apiUrl: "https://datacarlocal-teste-api.azurewebsites.net/api",
   chaveMD5: '15181AS9819F8W1F9W81F98E1F9E8F19EW38G193W8G13G198G149THTYJ5YU5UIKL5IUL1RETREG1FEW189EFW918FEW1',
   AlertDebug: true,
   // codigoSistema: 1, // Lava jato

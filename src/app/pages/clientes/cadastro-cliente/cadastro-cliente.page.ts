@@ -8,6 +8,7 @@ import { PlanoCliente } from 'src/app/models/plano-cliente';
 import { CadastroPlanoPage } from './cadastro-plano/cadastro-plano.page';
 import { SelectPopupModalPage } from 'src/app/components/select-popup-modal/select-popup-modal.page';
 import { Categoria } from 'src/app/models/categoria';
+import { ConfiguracoesService } from 'src/app/services/configuracoes.service';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -17,7 +18,6 @@ import { Categoria } from 'src/app/models/categoria';
 export class CadastroClientePage implements OnInit {
   pagina = 'cliente'
   cliente: Cliente
-  planos: PlanoCliente[] = []
   carregandoPlanos = false
   movimentosExclusao = []
   avaliouFormulario = false
@@ -30,7 +30,8 @@ export class CadastroClientePage implements OnInit {
     public navParams: NavParams,
     private clientesProvider: ClientesService,
     private utilsLista: UtilsLista,
-    public utils: Utils
+    public utils: Utils,
+    private configuracoesService: ConfiguracoesService
   ) {
     this.cliente = navParams.get('cliente')
     this.inclusao = navParams.get('inclusao')
@@ -41,14 +42,15 @@ export class CadastroClientePage implements OnInit {
   }
 
   async atualizarPlanos() {
-    this.carregandoPlanos = true
-    this.clientesProvider.listaPlanos(this.cliente.Documento).then(planos => {
-      this.planos = planos
-      alert(JSON.stringify(this.planos))
-    })
-    .finally(() => {
-      this.carregandoPlanos = false
-    })
+    if (this.configuracoesService.configuracoesLocais.Portal.SincronizarInformacoes != 'online') {
+      this.carregandoPlanos = true
+      this.clientesProvider.listaPlanos(this.cliente.Documento).then(planos => {
+        this.cliente.Planos = planos
+      })
+      .finally(() => {
+        this.carregandoPlanos = false
+      })
+    }
   }
 
   async cadastrarPlano(plano = null) {
@@ -69,28 +71,28 @@ export class CadastroClientePage implements OnInit {
       if (retorno.data != null) {
         const planoRetorno = retorno.data.Plano
         if (retorno.data.Operacao == 'excluir') {
-          this.utilsLista.excluirDaLista(this.planos, planoRetorno)
+          this.utilsLista.excluirDaLista(this.cliente.Planos, planoRetorno)
         }
         else {          
           if (!planoRetorno.Id) {
             // Se for uma inclusão verifica se já existe um plano com o serviço informado
             if (plano == null) {              
-              if (!this.planos.find(itemAtual => !itemAtual.Id && itemAtual.Servico.Id == planoRetorno.Servico.Id))
-                this.planos.unshift(planoRetorno)
+              if (!this.cliente.Planos.find(itemAtual => !itemAtual.Id && itemAtual.Servico.Id == planoRetorno.Servico.Id))
+                this.cliente.Planos.unshift(planoRetorno)
               else {
                 this.utils.mostrarToast('Já existe um plano com esse serviço.', 'danger')
               }
             }
             else {
-              const index = this.planos.findIndex(itemAtual => !itemAtual.Id && itemAtual.Servico.Id == planoRetorno.Servico.Id)
+              const index = this.cliente.Planos.findIndex(itemAtual => !itemAtual.Id && itemAtual.Servico.Id == planoRetorno.Servico.Id)
               if (index)
-                this.planos[index] = planoRetorno
+                this.cliente.Planos[index] = planoRetorno
               else
                 this.utils.mostrarToast('Não foi possível alterar o plano.', 'danger')
             }
           }
           else {
-            this.utilsLista.atualizarLista(this.planos, planoRetorno)
+            this.utilsLista.atualizarLista(this.cliente.Planos, planoRetorno)
           }
         }
       }
@@ -108,8 +110,8 @@ export class CadastroClientePage implements OnInit {
     if (this.cliente.Nome != null && this.cliente.Nome.length > 0 && this.cliente.Documento != null && this.cliente.Documento.length > 0)    
     {
       await this.clientesProvider.exibirProcessamento('Salvando cliente...')
-      this.clientesProvider.salvar(this.cliente, this.planos).then(() => {
-        this.modalCtrl.dismiss(true)
+      this.clientesProvider.salvar(this.cliente).then((cliente) => {
+        this.modalCtrl.dismiss(cliente)
       })
       .catch(erro => {
         alert(erro + JSON.stringify(erro))

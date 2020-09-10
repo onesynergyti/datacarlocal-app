@@ -25,11 +25,10 @@ import { UtilsLista } from 'src/app/utils/utils-lista';
 })
 export class TabelaEstacionamentoPage implements OnInit {
 
-  configuracoes: Configuracoes
   pagina = 'geral'
 
   constructor(
-    private configuracoesService: ConfiguracoesService,
+    public configuracoesService: ConfiguracoesService,
     public utils: Utils,
     private modalController: ModalController,
     private alertController: AlertController
@@ -38,12 +37,8 @@ export class TabelaEstacionamentoPage implements OnInit {
   ngOnInit() {
   }
 
-  ionViewWillEnter() {
-    this.configuracoes = this.configuracoesService.configuracoes
-  }
-
-  ionViewWillLeave() {
-    this.configuracoesService.configuracoes = this.configuracoes
+  ionViewWillLeave() {    
+    this.configuracoesService.salvarConfiguracoes()
   }
 
   async cadastrarPrecoEspecial(tipoVeiculo, precoEspecial = null) {
@@ -63,17 +58,17 @@ export class TabelaEstacionamentoPage implements OnInit {
           // Edição
           if (precoEspecial != null) {
             // Obtem o índice do cadastro que será editado
-            let index = this.configuracoes.Estacionamento.PrecosEspeciais.findIndex(itemAtual => itemAtual.Minutos === precoEspecial.Minutos && itemAtual.TipoVeiculo === tipoVeiculo)
+            let index = this.configuracoesService.configuracoes.Estacionamento.PrecosEspeciais.findIndex(itemAtual => itemAtual.Minutos === precoEspecial.Minutos && itemAtual.TipoVeiculo === tipoVeiculo)
             // Confere se não existe um outro cadastro com o mesmo tempo informado na edição
-            if (this.configuracoes.Estacionamento.PrecosEspeciais.findIndex(itemAtual => itemAtual.Minutos === retorno.data.Operacao.Minutos && itemAtual.Minutos !== precoEspecial.Minutos && itemAtual.TipoVeiculo === tipoVeiculo) < 0) {
-              this.configuracoes.Estacionamento.PrecosEspeciais[index] = retorno.data.PrecoEspecial
+            if (this.configuracoesService.configuracoes.Estacionamento.PrecosEspeciais.findIndex(itemAtual => itemAtual.Minutos === retorno.data.Operacao.Minutos && itemAtual.Minutos !== precoEspecial.Minutos && itemAtual.TipoVeiculo === tipoVeiculo) < 0) {
+              this.configuracoesService.configuracoes.Estacionamento.PrecosEspeciais[index] = retorno.data.PrecoEspecial
             }
           }
           // Inclusão
           else {
-            let index = this.configuracoes.Estacionamento.PrecosEspeciais.findIndex(itemAtual => itemAtual.Minutos === retorno.data.PrecoEspecial.Minutos && itemAtual.TipoVeiculo === tipoVeiculo)
+            let index = this.configuracoesService.configuracoes.Estacionamento.PrecosEspeciais.findIndex(itemAtual => itemAtual.Minutos === retorno.data.PrecoEspecial.Minutos && itemAtual.TipoVeiculo === tipoVeiculo)
             if (index < 0) {
-              this.configuracoes.Estacionamento.PrecosEspeciais.push(retorno.data.PrecoEspecial)
+              this.configuracoesService.configuracoes.Estacionamento.PrecosEspeciais.push(retorno.data.PrecoEspecial)
             }
             else 
               this.utils.mostrarToast('Já existe um preço especial com esse tempo.', 'danger')
@@ -89,9 +84,9 @@ export class TabelaEstacionamentoPage implements OnInit {
   }
 
   confirmarExclusaoPrecoEspecial(precoEspecial: PrecoEspecial) {
-    let index = this.configuracoes.Estacionamento.PrecosEspeciais.findIndex(itemAtual => itemAtual.Minutos == precoEspecial.Minutos && itemAtual.TipoVeiculo == precoEspecial.TipoVeiculo)
+    let index = this.configuracoesService.configuracoes.Estacionamento.PrecosEspeciais.findIndex(itemAtual => itemAtual.Minutos == precoEspecial.Minutos && itemAtual.TipoVeiculo == precoEspecial.TipoVeiculo)
     if (index >= 0) 
-      this.configuracoes.Estacionamento.PrecosEspeciais.splice(index, 1)
+      this.configuracoesService.configuracoes.Estacionamento.PrecosEspeciais.splice(index, 1)
   }
 
   async excluirPrecoEspecial(precoEspecial) {

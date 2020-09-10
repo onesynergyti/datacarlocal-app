@@ -113,16 +113,16 @@
   </div>  
 
   <div [ngClass]="{'invisivel': pagina != 'historico'}">
-    <div class="divInformativo" *ngIf="historicoUso.length == 0">
+    <div class="divInformativo" *ngIf="plano.Uso.length == 0">
       <h2>Nenhum histórico de utilização</h2>
       <ion-icon name="reader-outline"></ion-icon>
       <h5>Quando o cliente utilizar o plano será exibido aqui</h5>
     </div>
 
-    <ion-list [@listAnimation]="historicoUso.length" lines="full">
-      <ion-item-sliding *ngFor="let historico of historicoUso">
-        <ion-item>
-          {{ historico.placa | placaPipe }}
+    <ion-list [@listAnimation]="plano.Uso.length" lines="full">
+      <ion-item-sliding *ngFor="let historico of plano.Uso">
+        <ion-item class="ion-text-center">
+          <h3>{{ historico.Placa | placaPipe }} - {{ historico.Data | date:"dd/MM/yyyy" }}</h3>
         </ion-item>        
       </ion-item-sliding>
     </ion-list>

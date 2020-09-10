@@ -64,7 +64,7 @@ export class DatabaseService extends ServiceBaseService {
         tx.executeSql('CREATE TABLE IF NOT EXISTS movimentosProdutos (IdMovimento integer NOT NULL, IdProduto integer NOT NULL, Nome TEXT NOT NULL, Valor REAL NOT NULL, Desconto REAL, Acrescimo REAL, PRIMARY KEY (IdMovimento, IdProduto), FOREIGN KEY (IdMovimento) REFERENCES movimentos (Id))', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS mensalistas (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT, Documento TEXT, Telefone TEXT, Email TEXT, Ativo integer, Veiculos TEXT, IdsServicos TEXT)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS categorias (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT)', [])
-        tx.executeSql('CREATE TABLE IF NOT EXISTS clientes (Documento TEXT primary key NOT NULL, Nome TEXT, Telefone TEXT, Email TEXT, Nascimento DATE, IdCategoria integer)', [])
+        tx.executeSql('CREATE TABLE IF NOT EXISTS clientes (Id integer primary key NOT NULL, Documento TEXT, Nome TEXT, Telefone TEXT, Email TEXT, Nascimento DATE, IdCategoria integer)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS planosCliente (Id integer primary key AUTOINCREMENT NOT NULL, Documento TEXT NOT NULL, ValidadeInicial Date, ValidadeFinal Date, Servico TEXT, Quantidade integer, ValorDinheiro REAL, ValorDebito REAL, ValorCredito REAL, Placas TEXT)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS planosClienteUso (IdPlanoCliente integer, IdVeiculo integer, Data Date, Placa TEXT)', [])
         tx.executeSql('CREATE TABLE IF NOT EXISTS funcionarios (Id integer primary key AUTOINCREMENT NOT NULL, Nome TEXT, Documento TEXT, Telefone TEXT, Email TEXT, Ativo integer)', [])

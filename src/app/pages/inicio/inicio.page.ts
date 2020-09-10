@@ -13,7 +13,6 @@ import { environment } from 'src/environments/environment';
 })
 export class InicioPage implements OnInit {
 
-  configuracoes: Configuracoes
   senhaNova = ''
   senhaConfirmacao = ''
 
@@ -26,20 +25,16 @@ export class InicioPage implements OnInit {
   ngOnInit() {
   }
 
-  ionViewWillEnter() {
-    this.configuracoes = this.configuracoesService.configuracoesLocais
-  }
-
   ionViewDidEnter() {
     this.utils.alerta('BEM VINDO', 'Antes de iniciar o aplicativo vamos definir as configurações básicas.')
   }
 
   concluir() {
-    if (this.configuracoes.Estabelecimento.Nome.length <= 0)
+    if (this.configuracoesService.configuracoes.Estabelecimento.Nome.length <= 0)
       this.utils.mostrarToast('Informe o nome do estabelecimento.', 'danger')
-    else if (!this.utils.telefoneValido(this.configuracoes.Estabelecimento.Telefone))
+    else if (!this.utils.telefoneValido(this.configuracoesService.configuracoes.Estabelecimento.Telefone))
       this.utils.mostrarToast('Informe um telefone válido.', 'danger')
-    else if (!this.utils.emailValido(this.configuracoes.Seguranca.EmailAdministrador, false))
+    else if (!this.utils.emailValido(this.configuracoesService.configuracoes.Seguranca.EmailAdministrador, false))
       this.utils.mostrarToast('Informe um e-mail de administrador válido.', 'danger')
     else if (this.senhaNova.length < 4)
       this.utils.mostrarToast('Informe uma senha com no mínimo 4 dígitos.', 'danger')
@@ -47,9 +42,9 @@ export class InicioPage implements OnInit {
       this.utils.mostrarToast('A confirmação da senha não está correta.', 'danger')
     else {
       // Define as configurações iniciais como finalizadas
-      this.configuracoes.ManualUso.ConfiguracaoInicial = true
-      this.configuracoes.Seguranca.SenhaAdministrador = Md5.hashStr(environment.chaveMD5 + this.senhaNova)
-      this.configuracoesService.configuracoesLocais = this.configuracoes
+      this.configuracoesService.configuracoes.ManualUso.ConfiguracaoInicial = true
+      this.configuracoesService.configuracoes.Seguranca.SenhaAdministrador = Md5.hashStr(environment.chaveMD5 + this.senhaNova)
+      this.configuracoesService.salvarConfiguracoes
       this.navController.navigateRoot('home') 
     }
   }

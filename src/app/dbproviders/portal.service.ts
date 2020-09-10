@@ -35,14 +35,19 @@ export class PortalService extends ServiceBaseService {
     super(loadingController)
     
     // Avalia o cadastro do dispositivo e faz um registro de comunicação
-    if (this.configuracoesService.configuracaoPortal.SincronizarInformacoes != 'offline') {
+    if (this.configuracoesService.configuracoesLocais.Portal.SincronizarInformacoes != 'offline') {
       this.avaliaValidadeCadastroDispositivo().then((informacoes: any) => {
+        alert(JSON.stringify(informacoes))
         if (informacoes.Premium) {
           this.comprasService.vencimentoPremium = new Date(informacoes.ProximoDia)
           this.globalService.onAssinarPremium.next({})
         }
         else
           this.comprasService.vencimentoPremium = null
+
+        // Confirma a sincronização no caso de comunicação online
+        if (this.configuracoesService.configuracoesLocais.Portal.SincronizarInformacoes == 'online')
+          this.globalService.onFinalizarSincronizacao.next({})
       })
       .catch((erro) => {
         this.globalService.onErroSincronizacao.next(erro)
@@ -90,7 +95,7 @@ export class PortalService extends ServiceBaseService {
   enviarRemessa(forcarEnvio = false) {
     return new Promise((resolve, reject) => {
       // Se não for configurado como híbrido, considera o envio como bem sucedido. Para forçar o envio o tem que acessar pela tela de configuração do portal
-      if (!forcarEnvio && this.configuracoesService.configuracaoPortal.SincronizarInformacoes != 'hibrido') {
+      if (!forcarEnvio && this.configuracoesService.configuracoesLocais.Portal.SincronizarInformacoes != 'hibrido') {
         this.globalService.onFinalizarSincronizacao.next(true)
       }
       else {

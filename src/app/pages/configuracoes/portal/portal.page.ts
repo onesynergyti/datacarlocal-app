@@ -13,15 +13,15 @@ import { ComprasService } from 'src/app/services/compras.service';
 })
 export class PortalPage implements OnInit {
 
+  configuracoesLocais
   IdDispositivo
   verificandoIdDispositivo = false
   erro
-  configuracoes: Configuracoes
 
   constructor(
     private providerPortal: PortalService,
     private clipboard: Clipboard,
-    private configuracoesService: ConfiguracoesService,
+    public configuracoesService: ConfiguracoesService,
     public utils: Utils,
     public comprasService: ComprasService
   ) { }
@@ -31,11 +31,11 @@ export class PortalPage implements OnInit {
 
   ionViewWillEnter() {
     this.definirDispositivo()
-    this.configuracoes = this.configuracoesService.configuracoesLocais
+    this.configuracoesLocais = this.configuracoesService.configuracoesLocais
   }
 
   ionViewWillLeave() {
-    this.configuracoesService.configuracoesLocais = this.configuracoes
+    this.configuracoesService.configuracoesLocais = this.configuracoesLocais
   }
 
   copiar() {

@@ -132,7 +132,7 @@ export class PatioService extends ServiceBaseService {
                 if (veiculo.Servicos.find(servicoAtual => servicoAtual.Id == planoAtual.Servico.Id)) {
                   promisesTx.push(
                     new Promise((resolve, reject) => {
-                      const sqlInclusaoUsoPlano = 'insert into planosClienteUso (IdPlanoCliente, IdVeiculo, Data, Placa) values (?, ?, ?)';
+                      const sqlInclusaoUsoPlano = 'insert into planosClienteUso (IdPlanoCliente, IdVeiculo, Data, Placa) values (?, ?, ?, ?)';
                       const dataInclusaoUsoPlano = [planoAtual.Id, veiculo.Id, new DatePipe('en-US').transform(veiculo.Entrada, 'yyyy-MM-dd HH:mm:ss'), veiculo.Placa];
                       tx.executeSql(sqlInclusaoUsoPlano, dataInclusaoUsoPlano, () => { resolve() }, (erro) => { reject(erro) })
                     })

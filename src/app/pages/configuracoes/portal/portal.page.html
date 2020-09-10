@@ -3,7 +3,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid *ngIf="configuracoes != null">
+  <ion-grid *ngIf="configuracoesService.configuracoes != null">
     <ion-row>
       <ion-col size-xs="12" class="subTitulo fundoLight">
         <ion-icon class="iconeSubTitulo" name="phone-portrait"></ion-icon>
@@ -44,10 +44,10 @@
         Opções do Portal Reuz
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="configuracoes != null">
+    <ion-row *ngIf="configuracoesLocais != null">
       <ion-col>
         <ion-list>
-          <ion-radio-group [(ngModel)]="configuracoes.Portal.SincronizarInformacoes">
+          <ion-radio-group [(ngModel)]="configuracoesLocais.Portal.SincronizarInformacoes">
             <ion-item>
               <div>
                 <ion-radio slot="start" value="offline"></ion-radio>

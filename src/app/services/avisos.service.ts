@@ -75,6 +75,12 @@ export class AvisosService {
       }
     })
 
+    this.globalService.onSalvarConfiguracoes.subscribe((configuracoesLocais: Configuracoes) => {
+      // Apenas a opção híbrido gera erro de sincronização
+      if (configuracoesLocais != null && configuracoesLocais.Portal.SincronizarInformacoes != 'hibrido')
+        this.excluirTipoAviso(this._tipoAvisoErroSincronizacao)
+    })
+
     const avisos = localStorage.getItem('avisos')
     if (avisos != null)
       this._avisos = JSON.parse(avisos)

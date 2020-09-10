@@ -27,6 +27,7 @@ export class ConfiguracoesService extends ServiceBaseService {
     private utils: Utils
   ) { 
     super(loadingController)
+    this.globalService.onSalvarConfiguracoes.next(this.configuracoes)
   }
 
   atualizarConfiguracoes() {
@@ -34,6 +35,7 @@ export class ConfiguracoesService extends ServiceBaseService {
       // Se for configurações se uso local, retorna o local storage
       if (this.configuracoesLocais.Portal.SincronizarInformacoes != 'online') {
         this.configuracoes = new Configuracoes(this.configuracoesLocais)
+        this.globalService.onSalvarConfiguracoes.next(this.configuracoes)
         resolve(this.configuracoes)
       }
       // Se for configurações online, obtem as informações configuradas no servidor
@@ -56,6 +58,7 @@ export class ConfiguracoesService extends ServiceBaseService {
             })
           ).subscribe((retorno: any) => { 
             this.configuracoes = new Configuracoes(retorno)
+            this.globalService.onSalvarConfiguracoes.next(this.configuracoes)
             resolve(this.configuracoes)
           },
           erro => {
@@ -70,21 +73,20 @@ export class ConfiguracoesService extends ServiceBaseService {
     })
   }
 
-  get configuracoesLocais() {
-    return new Configuracoes(JSON.parse(localStorage.getItem('configuracoes')))
+  salvarConfiguracoes() {
+    if (this.configuracoesLocais.Portal.SincronizarInformacoes != 'online') {
+      localStorage.setItem('configuracoes', JSON.stringify(this.configuracoes))
+      this.globalService.onSalvarConfiguracoes.next(this.configuracoes)
+    }
   }
 
   set configuracoesLocais(configuracoes) {
     localStorage.setItem('configuracoes', JSON.stringify(configuracoes))
-    this.globalService.onSalvarConfiguracoes.next(configuracoes)
+    this.globalService.onSalvarConfiguracoes.next(this.configuracoes)
   }
 
-  get configuracaoPortal() {
-    return new Configuracoes(JSON.parse(localStorage.getItem('configuracoes'))).Portal
-  }
-
-  get manualUso() {
-    return new Configuracoes(JSON.parse(localStorage.getItem('configuracoes'))).ManualUso
+  get configuracoesLocais() {
+    return new Configuracoes(JSON.parse(localStorage.getItem('configuracoes')))
   }
 
   gerarIdDispositivo(informacoesPortal) {
