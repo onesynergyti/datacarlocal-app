@@ -155,8 +155,8 @@ export class MovimentoPage implements OnInit {
 
   atualizarSaldoPeriodo() {
     this.saldoPeriodo = null
-    this.providerMovimentos.saldoPeriodo(this.dataInicio, this.dataFim).then(saldos => {
-      this.saldoPeriodo = saldos.ValorCredito + saldos.ValorDebito + saldos.ValorDinheiro
+    this.providerMovimentos.saldoPeriodo(this.dataInicio, this.dataFim).then(saldo => {
+      this.saldoPeriodo = saldo
     })
   }
 

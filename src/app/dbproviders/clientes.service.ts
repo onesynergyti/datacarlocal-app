@@ -56,8 +56,11 @@ export class ClientesService extends ServiceBaseService {
               this.ocultarProcessamento()
             })
           ).subscribe((clientes: Cliente[]) => {
-            alert(JSON.stringify(clientes))
-            resolve(clientes)
+            let clientesRetorno = []
+            clientes.forEach(cliente => {
+              clientesRetorno.push(new Cliente(cliente))
+            })
+            resolve(clientesRetorno)
           },
           (erro) => {
             reject(erro)
