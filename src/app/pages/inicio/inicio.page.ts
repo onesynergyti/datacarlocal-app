@@ -15,6 +15,7 @@ export class InicioPage implements OnInit {
 
   senhaNova = ''
   senhaConfirmacao = ''
+  configuracoes: Configuracoes
 
   constructor(
     private navController: NavController,
@@ -26,6 +27,7 @@ export class InicioPage implements OnInit {
   }
 
   ionViewDidEnter() {
+    this.configuracoes = this.configuracoesService.configuracoesLocais
     this.utils.alerta('BEM VINDO', 'Antes de iniciar o aplicativo vamos definir as configurações básicas.')
   }
 
@@ -42,9 +44,9 @@ export class InicioPage implements OnInit {
       this.utils.mostrarToast('A confirmação da senha não está correta.', 'danger')
     else {
       // Define as configurações iniciais como finalizadas
-      this.configuracoesService.configuracoes.ManualUso.ConfiguracaoInicial = true
-      this.configuracoesService.configuracoes.Seguranca.SenhaAdministrador = Md5.hashStr(environment.chaveMD5 + this.senhaNova)
-      this.configuracoesService.salvarConfiguracoes
+      this.configuracoes.ManualUso.ConfiguracaoInicial = true
+      this.configuracoes.Seguranca.SenhaAdministrador = Md5.hashStr(environment.chaveMD5 + this.senhaNova)
+      this.configuracoesService.configuracoesLocais = this.configuracoes
       this.navController.navigateRoot('home') 
     }
   }

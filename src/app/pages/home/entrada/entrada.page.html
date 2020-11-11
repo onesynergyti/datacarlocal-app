@@ -78,7 +78,7 @@
           </ion-item>
         </ion-col>
         <ion-col size-xs="2" (click)="utils.abrirWhatsapp(veiculo.Telefone)">
-          <ion-icon class="iconeLinha" [ngClass]="{'fontCorLight': veiculo.Telefone == null || veiculo.Telefone.length < 10, 'fontCorSucesso': veiculo.Telefone != null && veiculo.Telefone.length >= 10}" name="logo-whatsapp"></ion-icon>
+          <ion-icon class="iconeLinha" [ngClass]="{'fontCorLight': veiculo.Cliente.Telefone == null || veiculo.Cliente.Telefone.length < 10, 'fontCorSucesso': veiculo.Cliente.Telefone != null && veiculo.Cliente.Telefone.length >= 10}" name="logo-whatsapp"></ion-icon>
         </ion-col>
         <ion-col size-xs="12">
           <ion-item class="ion-no-margin ion-no-padding">
@@ -417,7 +417,7 @@
         <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
         A localização deve ter até 50 caracteres
       </ion-col>
-      <ion-col size-xs="12" *ngIf="avaliouFormulario && veiculo.Telefone && veiculo.Telefone.length > 0 && (veiculo.Telefone.length < 10 || veiculo.Telefone.length > 11)" class="subTitulo fundoPerigo">
+      <ion-col size-xs="12" *ngIf="avaliouFormulario && veiculo.Cliente.Telefone && veiculo.Cliente.Telefone.length > 0 && (veiculo.Cliente.Telefone.length < 10 || veiculo.Cliente.Telefone.length > 11)" class="subTitulo fundoPerigo">
         <ion-icon class="iconeSubTitulo" name="close-circle"></ion-icon>
         Telefone inválido
       </ion-col>

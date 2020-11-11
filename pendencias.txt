@@ -155,6 +155,8 @@ OK - Incluir uma nova aba para o cliente separada
 OK - Incluir uma nova aba para produtos e serviços separado
 OK - Incluir o movimento quando incluir um novo plano para o cliente
 OK - Salvar a utilização do item do plano no fechamento para definir quantos já foram usados 
+- Informação do cliente está vindo com valor zero no aplicativo híbrido
+- Atualizar campos de telefone e nome para o objeto do cliente no banco de dados na atualização. Pode também carregar no objeto quando for obter a listagem do banco, definindo um objeto do cliente se não existir e carregando os valores
 - Criar o ambiente de administrador, mantendo o aplicativo liberado até que o cliente saia do modo administrador por opção
 - Verificar o acesso das opções do aplicativo pelas configurações, sem necessidade de senha. Nesse caso apenas abre se houver permissão.
 - Reavaliar inclusão e atualização de informações do cliente. Ao incluir um atendimento e pesquisar um cliente, esse deve ser atualizado com base no documento, obtendo o Id e salvando. Se não encontrar o documento, o Id será zero, sendo automaticamente uma inclusão. A edição sempre será baseada no Id, não permitindo a alteração do documento.

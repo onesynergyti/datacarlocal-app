@@ -174,7 +174,7 @@ export class PatioService extends ServiceBaseService {
     })
   }
 
-  registrarSaida(movimento: Movimento, valorServicos: number) {
+  registrarSaida(movimento: Movimento, valorTotal: number) {
     return new Promise((resolve, reject) => {
       this.database.DB.then(db => {
         db.transaction(tx => {
@@ -187,12 +187,12 @@ export class PatioService extends ServiceBaseService {
           });
 
           // Abate a sobra no valor em dinheiro, que seria o troco
-          const sobra = movimento.ValorCredito + movimento.ValorDebito + movimento.ValorDinheiro - valorServicos
+          const sobra = movimento.ValorCredito + movimento.ValorDebito + movimento.ValorDinheiro - valorTotal
           if (sobra < 0 || sobra > movimento.ValorDinheiro) {
             reject('Valor pago inválido')
             return
           }
-          else if (valorServicos < 0) {
+          else if (valorTotal < 0) {
             reject('Valor dos serviços não pode ser negativo')
             return
           }
