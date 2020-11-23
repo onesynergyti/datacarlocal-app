@@ -49,7 +49,6 @@
     "cordova-plugin-device": "2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.0.5",
     "cordova-plugin-ionic-webview": "^5.0.0",
-    "cordova-plugin-purchase": "git+https://github.com/j3k0/cordova-plugin-purchase.git#v9",
     "cordova-plugin-splashscreen": "5.0.2",
     "cordova-plugin-statusbar": "2.4.2",
     "cordova-plugin-whitelist": "1.3.3",
@@ -83,6 +82,7 @@
     "cordova-plugin-androidx": "^2.0.0",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
+    "cordova-plugin-purchase": "git+https://github.com/j3k0/cordova-plugin-purchase.git#v9",
     "cordova-plugin-splashscreen": "^5.0.2",
     "cordova-plugin-statusbar": "^2.4.2",
     "cordova-plugin-whitelist": "^1.3.3",
@@ -123,10 +123,9 @@
       },
       "cordova-clipboard": {},
       "cordova-plugin-purchase": {
-        "BILLING_KEY": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAprWmCwwpKTe7Oxy3mZKbTsk0CcUbHL3e8dhQQnVtwrai7lJfabIQwiVpLF/3lxmkD3943uzHDh5kGA4Y2ziAibd64x62XzrirnbUo2Z6Sm8QqE3gYtVAwf+Dgo50f6zL1org7Wlm4xwAqTD2pAsEPCoWKQMq+eF95cIUd0IseiAWLcGhNXKbxUKovktVJDNUc5x/oH4cwgcSXcmP2Vy5gOAOOG7XLV559kQ/HeqP3QUqiLWkGfXRv724ydqn684HmOcF07C8WYNEP35fCAW4CsR+yXVRdcpb/845itQT0XdHoB2RoRBZLix3TY1Cm3M/iiLvgaz42TRIU4NZWWhLsQIDAQAB"
+        "BILLING_KEY": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjuRoiLdolA6wc2Z/+7CTPKM98P8A6hrH+cz/+LmDbybsEfMGxjg32wlq/uqWEdDLt5lQjfTvFBLH6NaJ5pzgm0yQoelntQa9PPfmvAchlIEnSwKOZBCb/wChcBzH+DgndUTpbjLj+ovIOLmQI96thBprWeBhZXuIi0dItcLCYmnM/tAQ9ye98sSdcSxWGvAcc1XbtQuW2JnjRtUpJCh4COKNZTgS2AB0E7HKl0k+9UR0wNS/FFXUxIeoFrA2kkP6Ivkhc1XbiZVtFMANrb63a6VsDNlFBo/FdPjWvbiO1E8axLe4vKeL4NWKrmd/5rMBocUkEDPXdRIa8cM0dZ4JRwIDAQAB"
       },
-      "cordova-plugin-androidx": {},
-      "cordova-plugin-androidx-adapter": {}
+      "cordova-plugin-androidx": {}
     },
     "platforms": [
       "browser",

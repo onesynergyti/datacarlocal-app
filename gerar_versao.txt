@@ -9,7 +9,7 @@ VERIFICAÇÕES PARA A GERAÇÃO
 4. Descrição do aplicativo
 5. Ícones e splashs do aplicativo
 
---ENVERONMENTS
+--ENVIRONMENTS
 1. Código do aplicativo
 
 -- PACKAGE.JSON
@@ -27,5 +27,5 @@ Senha: O_t_u_j6_1_7_
 // Compacta o arquivo bundle
 "C:\Users\Claudio Camargos\AppData\Local\Android\Sdk\build-tools\29.0.2\zipalign" -v 4 "C:\Users\Claudio Camargos\Documents\Projetos\datacarlocal-app\platforms\android\app\build\outputs\bundle\release\app-release.aab" "C:\Users\Claudio Camargos\Documents\Projetos\datacarlocal-app\platforms\android\app\build\outputs\bundle\release\datacarlocal.aab"
 
-// O arquivo byndle é gerado em
+// O arquivo bundle é gerado em
 C:\Users\Claudio Camargos\Documents\Projetos\datacarlocal-app\platforms\android\app\build\outputs\bundle\release\datacarlocal.aab
