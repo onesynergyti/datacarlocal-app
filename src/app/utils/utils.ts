@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AlertController, ToastController } from '@ionic/angular';
+import { ModalController, AlertController, ToastController } from '@ionic/angular';
 import { DatePicker } from '@ionic-native/date-picker/ngx';
 import { environment } from 'src/environments/environment';
+import { SqlClientComponent } from 'src/app/pages/sql-client/sql-client.component';
 
 @Injectable({
     providedIn: 'root'
@@ -9,11 +10,22 @@ import { environment } from 'src/environments/environment';
   
 export class Utils {
 
+  production = false
+
   constructor (
+    private modalCtrl: ModalController,
     private alertCtrl: AlertController,
     public toastController: ToastController,
     private datePicker: DatePicker
-  ) { }
+  ) { 
+    this.production = environment.production
+  }
+
+  async abrirSqlClient() {
+    const modal = await this.modalCtrl.create({
+      component: SqlClientComponent});
+    return await modal.present();
+  }
 
   alertLog(mensagem) {
     if (environment.AlertDebug)

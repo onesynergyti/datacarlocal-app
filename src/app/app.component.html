@@ -2,13 +2,17 @@
   <ion-menu side="end" menuId="first" contentId="principal">
     <ion-header>
       <ion-toolbar color="primary">
-        <ion-title class="ion-text-center">Menu Principal</ion-title>              
+        <ion-title class="ion-text-center">Menu Principal</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-no-margin ion-no-padding">
       <ion-list class="ion-no-margin ion-no-padding">
         <ion-menu-toggle color="secondary">
           <ion-header>Planos</ion-header>
+          <ion-item *ngIf="!utils.production" (click)="utils.abrirSqlClient()" detail button>
+            <ion-icon name="wine"></ion-icon>
+              Administrador
+          </ion-item>
           <ion-item *ngIf="!comprasService.usuarioPremium" (click)="abrirPlanos()" detail button>
             <ion-icon name="ribbon"></ion-icon>
             Seja um usuário premium
