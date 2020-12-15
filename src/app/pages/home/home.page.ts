@@ -17,6 +17,7 @@ import { MensalistasService } from 'src/app/dbproviders/mensalistas.service';
 import { ServicosService } from 'src/app/dbproviders/servicos.service';
 import { ValidarAcessoPage } from '../validar-acesso/validar-acesso.page';
 import { PortalService } from 'src/app/dbproviders/portal.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -165,10 +166,21 @@ export class HomePage {
     })
   }
 
-  async procederCadastroEntrada(veiculo) {
+  async procederCadastroEntrada(veiculo) { 
     this.propagandaService.hideBanner()
     this.propagandaService.prepareInterstitialAds()
     this.propagandaService.prepareBannerAd()
+
+    // verifica bloqueio e alerta por não exibir propagandas.
+    if (veiculo == null) {
+      if (this.propagandaService.getPropagandasPerdidas() >= environment.bloqueioPropagandasPerdidas) {
+        alert('bloqueado')
+        return
+      }
+      else if (this.propagandaService.getPropagandasPerdidas() >= environment.alertaPropagandasPerdidas) {
+        alert('ligue a internet, vai bloquear')
+      }
+    }
 
     let inclusao = false
     let veiculoEdicao: Veiculo
@@ -178,7 +190,7 @@ export class HomePage {
       // Trata mensagens e ações quando for ateração ou inclusão de novo veículo
       inclusao = true
 
-      veiculoEdicao = new Veiculo()      
+      veiculoEdicao = new Veiculo()
 
       // Define serviços de estacionamento se for configurado para incluir automaticamente
       if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento && this.configuracoesService.configuracoes.Estacionamento.IncluirServicoEstacionamento) {
@@ -189,7 +201,7 @@ export class HomePage {
       }      
     }
     else 
-      veiculoEdicao = new Veiculo(veiculo)    
+      veiculoEdicao = new Veiculo(veiculo)
 
     const modal = await this.modalController.create({
       component: EntradaPage,
