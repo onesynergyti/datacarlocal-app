@@ -3,6 +3,7 @@ import { ModalController, AlertController, ToastController } from '@ionic/angula
 import { DatePicker } from '@ionic-native/date-picker/ngx';
 import { environment } from 'src/environments/environment';
 import { SqlClientComponent } from 'src/app/pages/sql-client/sql-client.component';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
@@ -19,6 +20,7 @@ export class Utils {
     private datePicker: DatePicker
   ) { 
     this.production = environment.production
+
   }
 
   async abrirSqlClient() {
@@ -47,7 +49,7 @@ export class Utils {
       subHeader: titulo,
       buttons: ['Ok']
       });
-      await alert.present(); 
+      await alert.present();
   }
 
   async mostrarToast(mensagem, cor, tempo = 2000) {
@@ -150,4 +152,21 @@ export class Utils {
     const numeros = valor.toString().replace(/\D/g, "")
     return Number(numeros) / 100
   }
+
+  verificarOnline() {
+    let http: HttpClient
+    let isConnected: boolean = true;
+
+    http.get<any>('http://google.com/').subscribe({
+        next: data => {
+            isConnected = true
+        },
+        error: error => {
+            isConnected = false         
+        }
+    })
+
+    return isConnected
+  }
+
 }

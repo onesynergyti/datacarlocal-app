@@ -255,6 +255,30 @@ export class HomePage {
   }
 
   async cadastrarEntrada(veiculo = null) {
+    /*
+    let connected: boolean
+
+    this.connectionCheck.monitor().subscribe({
+      next: v => connected = v
+    })
+
+
+    if (connected)
+      alert('connected')
+    else
+      alert('NOT connected')
+    return
+*/
+ 
+  
+    
+    if (this.utils.verificarOnline())
+      alert('connected')
+    else
+      alert('NOT connected')
+    return
+
+
     this.verificarConfiguracoesPendentes().then(() => {
       this.procederCadastroEntrada(veiculo)
     })

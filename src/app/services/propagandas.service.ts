@@ -30,7 +30,7 @@ export class PropagandasService {
         // Prepara se não estiver pronto
         if (!ready) {
           let interstitialConfig: AdMobFreeInterstitialConfig = {
-            isTesting: false,  //ccs
+            isTesting: true,  //ccs
             autoShow: false,
             id: "ca-app-pub-2818472978128447/7475351211"
           };

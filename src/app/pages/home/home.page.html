@@ -135,8 +135,6 @@
     </ion-row>
   </ion-grid>
 
-  <ion-content *ngIf="utils.production"> //ccs
-    <ion-label>{{ propagandaService.getPropagandasPerdidas() }}</ion-label>
-  </ion-content>
-  
+  <ion-label *ngIf="!utils.production"> {{ propagandaService.getPropagandasPerdidas() }}</ion-label> 
+
 </ion-footer>
