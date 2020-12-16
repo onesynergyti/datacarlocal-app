@@ -12,6 +12,9 @@ VERIFICAÇÕES PARA A GERAÇÃO
 --ENVIRONMENTS
 1. Código do aplicativo
 
+-- PROPAGANDAS.SERVICE.TS
+1. No método prepareInterstitialAds: "isTesting: true"
+
 -- PACKAGE.JSON
 1. Assinatura para compras no APP
 

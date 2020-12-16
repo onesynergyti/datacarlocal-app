@@ -30,7 +30,7 @@ export class PropagandasService {
         // Prepara se não estiver pronto
         if (!ready) {
           let interstitialConfig: AdMobFreeInterstitialConfig = {
-            isTesting: true,  //ccs
+            isTesting: true,  
             autoShow: false,
             id: "ca-app-pub-2818472978128447/7475351211"
           };
@@ -44,11 +44,7 @@ export class PropagandasService {
   showInterstitialAds(){
     if (!this.comprasService.usuarioPremium) {
       this.admobFree.interstitial.isReady().then(ready => {
-        this.admobFree.interstitial.show().then(p => {
-          //this.zerarPropagandasPerdidas()
-        }).catch(e => {
-          //this.incrementarPropagandasPerdidas()
-        })
+        this.admobFree.interstitial.show().then(p => { })
       })
     }
   }
