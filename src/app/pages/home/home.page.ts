@@ -269,13 +269,17 @@ export class HomePage {
       alert('NOT connected')
     return
 */
- 
   
-    
+    let i = 0
+    i = verificaOnline2()
+
+    alert(this.utils.verificaOnline2())
+    /*
     if (this.utils.verificarOnline())
       alert('connected')
     else
       alert('NOT connected')
+*/
     return
 
 

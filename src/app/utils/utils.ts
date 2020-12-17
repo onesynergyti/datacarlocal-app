@@ -12,6 +12,9 @@ import { HttpClient } from '@angular/common/http';
 export class Utils {
 
   production = false
+  online = 0
+  totalAngularPackages = ''
+  errorMessage = ''
 
   constructor (
     private modalCtrl: ModalController,
@@ -155,17 +158,37 @@ export class Utils {
 
   verificarOnline() {
     let http: HttpClient
-    let isConnected: boolean = true;
+    let isConnected = 0;
 
     http.get<any>('http://google.com/').subscribe({
         next: data => {
-            isConnected = true
+            isConnected = 1
         },
         error: error => {
-            isConnected = false         
+            isConnected = 2
         }
     })
 
+    return isConnected
+  }
+
+  verificaOnline2() {
+    let http: HttpClient
+    let isConnected = 0;
+
+    http.get<any>('https://api.npms.io/v2/invalid-url').subscribe({
+      next: data => {
+          this.totalAngularPackages = data.total;
+          isConnected = 1
+      },
+      error: error => {
+          this.errorMessage = error.message;
+          console.error('There was an error!', error);
+          isConnected = 2
+      }
+    })
+
+    this.online = isConnected
     return isConnected
   }
 
