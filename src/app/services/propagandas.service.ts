@@ -75,7 +75,7 @@ export class PropagandasService {
     return localStorage.getItem('propagandasPerdidas') != null ? parseInt(localStorage.getItem('propagandasPerdidas')) : 0
   }
 
-  private incrementarPropagandasPerdidas() {
+  incrementarPropagandasPerdidas() {
     localStorage.setItem('propagandasPerdidas', this.getPropagandasPerdidas() + 1)
   }
 

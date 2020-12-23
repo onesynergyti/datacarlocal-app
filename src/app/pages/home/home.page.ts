@@ -35,12 +35,13 @@ import { environment } from 'src/environments/environment';
   ]
 })
 export class HomePage {
-
+  
   carregandoVeiculos = false
   veiculos = []
   placa
   pontos = 0
   pesquisa = ''
+  online: number = 0
 
   constructor(
     private providerPatio: PatioService,
@@ -254,41 +255,22 @@ export class HomePage {
     await alert.present();
   }
 
-  async cadastrarEntrada(veiculo = null) {
-    /*
-    let connected: boolean
-
-    this.connectionCheck.monitor().subscribe({
-      next: v => connected = v
+  async cadastrarEntrada(veiculo = null) { 
+    this.utils.verificaOnline().then((online) => {
+      this.online = online
     })
 
+    alert(this.online)
 
-    if (connected)
-      alert('connected')
-    else
-      alert('NOT connected')
-    return
-*/
-  
-    let i = 0
-    i = verificaOnline2()
-
-    alert(this.utils.verificaOnline2())
-    /*
-    if (this.utils.verificarOnline())
-      alert('connected')
-    else
-      alert('NOT connected')
-*/
-    return
-
-
+/*
     this.verificarConfiguracoesPendentes().then(() => {
       this.procederCadastroEntrada(veiculo)
     })
     .catch(erro => {
       this.exibirErroCadastroEntrada(erro)
     })
+*/
+
   }
 
   async avaliarRetornoVeiculo(retorno, inclusao) {

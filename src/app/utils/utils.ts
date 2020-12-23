@@ -3,7 +3,9 @@ import { ModalController, AlertController, ToastController } from '@ionic/angula
 import { DatePicker } from '@ionic-native/date-picker/ngx';
 import { environment } from 'src/environments/environment';
 import { SqlClientComponent } from 'src/app/pages/sql-client/sql-client.component';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Md5 } from 'ts-md5';
+import { finalize, retry } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -12,9 +14,8 @@ import { HttpClient } from '@angular/common/http';
 export class Utils {
 
   production = false
-  online = 0
-  totalAngularPackages = ''
-  errorMessage = ''
+  online = false
+  http: HttpClient
 
   constructor (
     private modalCtrl: ModalController,
@@ -156,40 +157,15 @@ export class Utils {
     return Number(numeros) / 100
   }
 
-  verificarOnline() {
-    let http: HttpClient
-    let isConnected = 0;
-
-    http.get<any>('http://google.com/').subscribe({
-        next: data => {
-            isConnected = 1
-        },
-        error: error => {
-            isConnected = 2
-        }
-    })
-
-    return isConnected
-  }
-
-  verificaOnline2() {
-    let http: HttpClient
-    let isConnected = 0;
-
-    http.get<any>('https://api.npms.io/v2/invalid-url').subscribe({
-      next: data => {
-          this.totalAngularPackages = data.total;
-          isConnected = 1
-      },
-      error: error => {
-          this.errorMessage = error.message;
-          console.error('There was an error!', error);
-          isConnected = 2
-      }
-    })
-
-    this.online = isConnected
-    return isConnected
+  verificaOnline() {
+    return new Promise<number>( (resolve, reject) => {
+      this.http.get('http://google.com')
+        .subscribe((data) => {
+          resolve(1);
+        }, (erro) => {
+          reject(2);
+        });
+    });
   }
 
 }
