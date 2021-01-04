@@ -41,7 +41,7 @@ export class HomePage {
   placa
   pontos = 0
   pesquisa = ''
-  online: number = 0
+  simularOnline = false
 
   constructor(
     private providerPatio: PatioService,
@@ -172,17 +172,27 @@ export class HomePage {
     this.propagandaService.prepareInterstitialAds()
     this.propagandaService.prepareBannerAd()
 
+/*
     // verifica bloqueio e alerta por não exibir propagandas.
     if (veiculo == null) {
       if (this.propagandaService.getPropagandasPerdidas() >= environment.bloqueioPropagandasPerdidas) {
-        alert('bloqueado')
-        return
-      }
-      else if (this.propagandaService.getPropagandasPerdidas() >= environment.alertaPropagandasPerdidas) {
-        alert('ligue a internet, vai bloquear')
+        this.utils.verificaOnline2(this.simularOnline).then((online) => {
+          if (!online) {
+            alert('bloqueado')
+            return
+          }
+        })
       }
     }
-
+    else if (this.propagandaService.getPropagandasPerdidas() >= environment.alertaPropagandasPerdidas) {
+      this.utils.verificaOnline2(this.simularOnline).then((online) => {
+        if (!online) {
+          alert('ligue a internet, vai bloquear')
+          return
+        }
+      })    
+    }
+*/
     let inclusao = false
     let veiculoEdicao: Veiculo
 
@@ -256,21 +266,12 @@ export class HomePage {
   }
 
   async cadastrarEntrada(veiculo = null) { 
-    this.utils.verificaOnline().then((online) => {
-      this.online = online
-    })
-
-    alert(this.online)
-
-/*
     this.verificarConfiguracoesPendentes().then(() => {
       this.procederCadastroEntrada(veiculo)
     })
     .catch(erro => {
       this.exibirErroCadastroEntrada(erro)
     })
-*/
-
   }
 
   async avaliarRetornoVeiculo(retorno, inclusao) {

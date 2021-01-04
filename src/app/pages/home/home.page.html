@@ -135,6 +135,7 @@
     </ion-row>
   </ion-grid>
 
-  <ion-label *ngIf="!utils.production"> {{ propagandaService.getPropagandasPerdidas() }}</ion-label> 
+  <ion-label *ngIf="!utils.production">Prop Perd: {{ propagandaService.getPropagandasPerdidas() }} - Online</ion-label>
+  <ion-toggle *ngIf="!utils.production" color="primary" [(ngModel)]="simularOnline"></ion-toggle>
 
 </ion-footer>

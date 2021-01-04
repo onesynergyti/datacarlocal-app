@@ -3,9 +3,7 @@ import { ModalController, AlertController, ToastController } from '@ionic/angula
 import { DatePicker } from '@ionic-native/date-picker/ngx';
 import { environment } from 'src/environments/environment';
 import { SqlClientComponent } from 'src/app/pages/sql-client/sql-client.component';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Md5 } from 'ts-md5';
-import { finalize, retry } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
@@ -158,13 +156,24 @@ export class Utils {
   }
 
   verificaOnline() {
-    return new Promise<number>( (resolve, reject) => {
+    return new Promise<boolean>((resolve, reject) => {
       this.http.get('http://google.com')
         .subscribe((data) => {
-          resolve(1);
+          resolve(true);
         }, (erro) => {
-          reject(2);
+          reject(false);
         });
+    });
+  }
+
+  verificaOnline2(i: boolean) {
+    return new Promise<boolean>((resolve, reject) => {
+      if (i) {
+        resolve(true)
+      }
+      else {
+        reject(false)
+      }
     });
   }
 
