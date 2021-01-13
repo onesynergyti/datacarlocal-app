@@ -16,6 +16,7 @@ import { Mensalista } from 'src/app/models/mensalista';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Avaria } from 'src/app/models/avaria';
 import { CadastroProdutoPage } from './cadastro-produto/cadastro-produto.page';
+import { PropagandasService } from 'src/app/services/propagandas.service';
 
 @Component({
   selector: 'app-entrada',
@@ -69,6 +70,7 @@ export class EntradaPage implements OnInit {
     public configuracoesService: ConfiguracoesService,
     private providerMensalistas: MensalistasService,
     private barcodeScanner: BarcodeScanner,
+    public propagandaService: PropagandasService,
   ) { 
     this.veiculo = navParams.get('veiculo')
     this.inclusao = navParams.get('inclusao')

@@ -3,7 +3,8 @@ import { ModalController, AlertController, ToastController } from '@ionic/angula
 import { DatePicker } from '@ionic-native/date-picker/ngx';
 import { environment } from 'src/environments/environment';
 import { SqlClientComponent } from 'src/app/pages/sql-client/sql-client.component';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { retry } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -13,13 +14,13 @@ export class Utils {
 
   production = false
   online = false
-  http: HttpClient
 
   constructor (
     private modalCtrl: ModalController,
     private alertCtrl: AlertController,
     public toastController: ToastController,
-    private datePicker: DatePicker
+    private datePicker: DatePicker,
+    private http: HttpClient,
   ) { 
     this.production = environment.production
 
@@ -155,25 +156,27 @@ export class Utils {
     return Number(numeros) / 100
   }
 
-  verificaOnline() {
+  verificarOnline() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };  
+    
     return new Promise<boolean>((resolve, reject) => {
-      this.http.get('http://google.com')
-        .subscribe((data) => {
+      this.http.get(environment.apiUrl + '/ConexaoApp/teste')
+        .pipe(
+          retry(1)
+        )
+        .subscribe((data: any) => {
           resolve(true);
         }, (erro) => {
           reject(false);
-        });
-    });
-  }
-
-  verificaOnline2(i: boolean) {
-    return new Promise<boolean>((resolve, reject) => {
-      if (i) {
-        resolve(true)
-      }
-      else {
-        reject(false)
-      }
+        })
+        
+    })
+    .catch(erro => {
+      return false 
     });
   }
 

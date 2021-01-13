@@ -41,7 +41,6 @@ export class HomePage {
   placa
   pontos = 0
   pesquisa = ''
-  simularOnline = false
 
   constructor(
     private providerPatio: PatioService,
@@ -172,27 +171,30 @@ export class HomePage {
     this.propagandaService.prepareInterstitialAds()
     this.propagandaService.prepareBannerAd()
 
-/*
-    // verifica bloqueio e alerta por não exibir propagandas.
+    // Verifica bloqueio e alerta por não exibir propagandas.
+    let alerta: string = ''
+    let fim = false
     if (veiculo == null) {
       if (this.propagandaService.getPropagandasPerdidas() >= environment.bloqueioPropagandasPerdidas) {
-        this.utils.verificaOnline2(this.simularOnline).then((online) => {
+        await this.utils.verificarOnline().then((online) => {
           if (!online) {
-            alert('bloqueado')
-            return
+            alerta = 'Você está bloqueado. Ative a internet e tente novamente para desbloquear.'
+            fim = true
           }
         })
       }
+      else if (this.propagandaService.getPropagandasPerdidas() >= environment.alertaPropagandasPerdidas) {
+        alerta = 'Ative a internet, vai bloquear.'
+      }
     }
-    else if (this.propagandaService.getPropagandasPerdidas() >= environment.alertaPropagandasPerdidas) {
-      this.utils.verificaOnline2(this.simularOnline).then((online) => {
-        if (!online) {
-          alert('ligue a internet, vai bloquear')
-          return
-        }
-      })    
+
+    if (alerta != '') {
+      this.utils.mostrarToast(alerta, 'danger', 3000)
+      if (fim)
+        return
     }
-*/
+
+    //
     let inclusao = false
     let veiculoEdicao: Veiculo
 

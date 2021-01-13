@@ -399,7 +399,7 @@
       <ion-col>
         <ion-button expand="block" color="success" (click)="concluir()">
           <ion-icon slot="start" name="checkmark"></ion-icon>
-          Salvar
+          Salvar 
         </ion-button>
       </ion-col>
       <ion-col size-xs="5" *ngIf="!inclusao">        
@@ -414,5 +414,12 @@
         </ion-button>
       </ion-col>
     </ion-row>
+    
+    <ion-row *ngIf="!utils.production">
+      <ion-col>
+        <ion-label>(ccs) Prop Perd: {{ propagandaService.getPropagandasPerdidas() }} </ion-label> 
+      </ion-col> 
+    </ion-row>
+    
   </ion-grid>
 </ion-footer>
