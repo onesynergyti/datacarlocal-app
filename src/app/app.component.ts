@@ -14,6 +14,7 @@ import { PropagandasService } from './services/propagandas.service';
 import { AssinaturaPage } from './components/assinatura/assinatura.page';
 import { ComprasService } from './services/compras.service';
 import { AvisosService } from './services/avisos.service';
+import { Configuracoes } from 'src/app/models/configuracoes';
 
 @Component({
   selector: 'app-root',
@@ -70,9 +71,20 @@ export class AppComponent {
           // Exige as configurações iniciais do sistema
           if (!this.configuracoesService.configuracoes.ManualUso.ConfiguracaoInicial) {
             this.navController.navigateRoot('inicio')
-          }            
-          else
+          }
+          else {
+            // Se já fez as configurações iniciais anteriormente então seta a data de início do uso do app como 30 dias antes da data atual.
+            if (this.configuracoesService.configuracoes.ManualUso.DataInicioUsoApp == null) {
+              let configuracoes: Configuracoes
+              let myPastDate: Date = new Date()
+              configuracoes = this.configuracoesService.configuracoes
+              myPastDate.setDate(new Date().getDate() - 30);
+              configuracoes.ManualUso.DataInicioUsoApp = myPastDate
+              this.configuracoesService.configuracoes = configuracoes
+            }
+            
             this.navController.navigateRoot('home')
+          }
         })
         .catch((erro) => {
           alert('Não foi possível iniciar o aplicativo. Tente novamente. ' + erro)

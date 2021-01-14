@@ -171,27 +171,30 @@ export class HomePage {
     this.propagandaService.prepareInterstitialAds()
     this.propagandaService.prepareBannerAd()
 
-    // Verifica bloqueio e alerta por não exibir propagandas.
-    let alerta: string = ''
-    let fim = false
+    // Verifica bloqueio e alerta por não exibir propagandas. 
     if (veiculo == null) {
-      if (this.propagandaService.getPropagandasPerdidas() >= environment.bloqueioPropagandasPerdidas) {
-        await this.utils.verificarOnline().then((online) => {
-          if (!online) {
-            alerta = 'Você está bloqueado. Ative a internet e tente novamente para desbloquear.'
-            fim = true
-          }
-        })
-      }
-      else if (this.propagandaService.getPropagandasPerdidas() >= environment.alertaPropagandasPerdidas) {
-        alerta = 'Ative a internet, vai bloquear.'
-      }
-    }
+      let d1: Date = new Date()
+      d1.setMonth(d1.getMonth() - 1)
 
-    if (alerta != '') {
-      this.utils.mostrarToast(alerta, 'danger', 3000)
-      if (fim)
+      // Só faz essa verificação se o usuário utiliza app há mais de um mês.
+      if (this.configuracoesService.configuracoes.ManualUso.DataInicioUsoApp <= d1) {
+        alert('validar prop')
+        let fim = false
+        if (this.propagandaService.getPropagandasPerdidas() >= environment.bloqueioPropagandasPerdidas) {
+          await this.utils.verificarOnline().then((online) => {
+            if (!online) {
+              this.utils.alerta('Aviso', 'Essa funcionalidade está bloqueada. Ative a internet e tente novamente para desbloquear.')
+              fim = true
+            }
+          })
+        }
+        else if (this.propagandaService.getPropagandasPerdidas() >= environment.alertaPropagandasPerdidas) {
+          this.utils.mostrarToast('Ative a internet para evitar o bloqueio de novas entradas.', 'danger', 3000)
+        }
+  
+        if (fim)
         return
+      }
     }
 
     //

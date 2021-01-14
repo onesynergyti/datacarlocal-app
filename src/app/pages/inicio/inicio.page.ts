@@ -48,6 +48,7 @@ export class InicioPage implements OnInit {
     else {
       // Define as configurações iniciais como finalizadas
       this.configuracoes.ManualUso.ConfiguracaoInicial = true
+      this.configuracoes.ManualUso.DataInicioUsoApp = new Date()
       this.configuracoes.Seguranca.SenhaAdministrador = Md5.hashStr(environment.chaveMD5 + this.senhaNova)
       this.configuracoesService.configuracoes = this.configuracoes
       this.navController.navigateRoot('home') 
