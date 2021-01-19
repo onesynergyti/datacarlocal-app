@@ -14,6 +14,7 @@ import { ConfiguracoesService } from '../services/configuracoes.service';
 import { ComprasService } from '../services/compras.service';
 import { Md5 } from 'ts-md5';
 import { AvisosService } from '../services/avisos.service';
+import { UsuarioApp } from '../models/usuario-app';
 
 @Injectable({
   providedIn: 'root'
@@ -223,6 +224,64 @@ export class PortalService extends ServiceBaseService {
     })
   }
 
+  enviarDadosUsuario(sucesso: boolean /* ccs */) {
+    return new Promise((resolve, reject) => {
+      if (this.configuracoesService.configuracoes.ManualUso.EnviouDadosUsuario) {
+        this.globalService.onFinalizarSincronizacao.next(true)
+      }
+      else {
+        this.obterInformacoesPortal().then((informacoes) => {
+          const httpOptions = {
+            headers: new HttpHeaders({
+              'Content-Type':  'application/json',
+              ChaveApp: informacoes.Chave,
+              IdDispositivo: informacoes.IdDispositivo,
+              CodigoSistema: environment.codigoSistema.toString(),
+              Assinatura: Md5.hashStr(environment.chaveMD5 + informacoes.Chave + informacoes.IdDispositivo).toString()
+            })
+          };
+
+          let usuarioApp: UsuarioApp = new UsuarioApp()
+          usuarioApp.Documento = this.configuracoesService.configuracoes.Estabelecimento.Documento
+          usuarioApp.NomeEstabelecimento = this.configuracoesService.configuracoes.Estabelecimento.Nome
+          usuarioApp.Endereco = this.configuracoesService.configuracoes.Estabelecimento.Endereco
+          usuarioApp.Telefone = this.configuracoesService.configuracoes.Estabelecimento.Telefone
+          usuarioApp.EmailAdministrador = this.configuracoesService.configuracoes.Seguranca.EmailAdministrador
+          usuarioApp.Premmium = this.comprasService.usuarioPremium
+  
+          if (!sucesso) //ccs
+            usuarioApp = null //ccs
+
+          this.http.post(environment.apiUrl + '/ConexaoApp/usuarioApp', usuarioApp, httpOptions)
+          .pipe(
+            retry(1),
+            finalize(() => {
+              this.ocultarProcessamento()
+            })
+          ).subscribe(
+            (retorno: any) => {
+              if (retorno.Resposta) {
+                this.configuracoesService.configuracoes.ManualUso.EnviouDadosUsuario = true /// ccs - Forçar gravar essa informação
+              }
+              else {
+                this.globalService.onErroSincronizacao.next(retorno.Mensagem)
+                reject(retorno)
+              }
+            },
+            (erro) => { 
+              this.globalService.onErroSincronizacao.next(erro.error.Mensagem != null ? erro.error.Mensagem : erro.message != null ? erro.message : JSON.stringify(erro))
+              reject(erro.error.Mensagem != null ? erro.error.Mensagem : erro.message != null ? erro.message : JSON.stringify(erro)) 
+            }
+          )
+        })
+        .catch((erro) => {
+          this.globalService.onErroSincronizacao.next(JSON.stringify(erro))
+          reject(erro)
+        })        
+      }
+    })
+  }
+  
   gerarIdDispositivo(informacoesPortal) {
     return new Promise((resolve, reject) => {
       const httpOptions = {
