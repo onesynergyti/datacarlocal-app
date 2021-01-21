@@ -108,7 +108,10 @@ export class AppComponent {
 
   async abrirPlanos() {
     const modal = await this.modalController.create({
-      component: AssinaturaPage
+      component: AssinaturaPage,
+      componentProps: {
+        'entradaBloqueada': false
+      }  
     });
 
     return await modal.present(); 

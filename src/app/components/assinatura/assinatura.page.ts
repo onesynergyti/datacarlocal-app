@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ComprasService } from 'src/app/services/compras.service';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavParams } from '@ionic/angular';
 import { GlobalService } from 'src/app/services/global.service';
 import { Subscription } from 'rxjs';
 import { Utils } from 'src/app/utils/utils';
@@ -12,6 +12,7 @@ import { Utils } from 'src/app/utils/utils';
 })
 export class AssinaturaPage implements OnInit, OnDestroy {
 
+  entradaBloqueiada = false
   usuarioPremium = null
   doAssinarPremium: Subscription
 
@@ -19,8 +20,11 @@ export class AssinaturaPage implements OnInit, OnDestroy {
     public modalCtrl: ModalController,
     public comprasService: ComprasService,
     private globalService: GlobalService,
-    private utils: Utils
+    private utils: Utils,
+    public navParams: NavParams,
   ) { 
+    this.entradaBloqueiada = navParams.get('entradaBloqueiada')
+
     // Mantem a avaliação de assinatura constante enquanto a janela de assinatura está aberta
     setInterval(() => {
       this.usuarioPremium = this.comprasService.usuarioPremium

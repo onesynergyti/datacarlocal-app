@@ -18,6 +18,7 @@ import { ServicosService } from 'src/app/dbproviders/servicos.service';
 import { ValidarAcessoPage } from '../validar-acesso/validar-acesso.page';
 import { PortalService } from 'src/app/dbproviders/portal.service';
 import { environment } from 'src/environments/environment';
+import { AssinaturaPage } from '../../components/assinatura/assinatura.page';
 
 @Component({
   selector: 'app-home',
@@ -41,6 +42,7 @@ export class HomePage {
   placa
   pontos = 0
   pesquisa = ''
+  entradaEnabled = true
 
   constructor(
     private providerPatio: PatioService,
@@ -166,73 +168,97 @@ export class HomePage {
     })
   }
 
-  async procederCadastroEntrada(veiculo) { 
-    this.propagandaService.hideBanner()
-    this.propagandaService.prepareInterstitialAds()
-    this.propagandaService.prepareBannerAd()
+  async enviarDadosUsuario(sucesso: boolean){
+    this.providerPortal.enviarDadosUsuario(sucesso).then()
+  }
 
-    // Verifica bloqueio e alerta por não exibir propagandas. 
-    if (veiculo == null) {
-      let d1: Date = new Date()
-      d1.setMonth(d1.getMonth() - 1)
-
-      // Só faz essa verificação se o usuário utiliza app há mais de um mês.
-      if (this.configuracoesService.configuracoes.ManualUso.DataInicioUsoApp <= d1) {
-        alert('validar prop')
-        let fim = false
-        if (this.propagandaService.getPropagandasPerdidas() >= environment.bloqueioPropagandasPerdidas) {
-          await this.utils.verificarOnline().then((online) => {
-            if (!online) {
-              this.utils.alerta('Aviso', 'Essa funcionalidade está bloqueada. Ative a internet e tente novamente para desbloquear.')
-              fim = true
-            }
-          })
-        }
-        else if (this.propagandaService.getPropagandasPerdidas() >= environment.alertaPropagandasPerdidas) {
-          this.utils.mostrarToast('Ative a internet para evitar o bloqueio de novas entradas.', 'danger', 3000)
-        }
-  
-        if (fim)
-        return
-      }
-    }
-
-    //
-    let inclusao = false
-    let veiculoEdicao: Veiculo
-
-    // Define os parâmetros iniciais se não houver veículo indicado para edição
-    if (veiculo == null) {
-      // Trata mensagens e ações quando for ateração ou inclusão de novo veículo
-      inclusao = true
-
-      veiculoEdicao = new Veiculo()
-
-      // Define serviços de estacionamento se for configurado para incluir automaticamente
-      if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento && this.configuracoesService.configuracoes.Estacionamento.IncluirServicoEstacionamento) {
-        let servico = new ServicoVeiculo()
-        servico.Id = 0
-        servico.Nome = 'Estacionamento'
-        veiculoEdicao.Servicos.push(servico)
-      }      
-    }
-    else 
-      veiculoEdicao = new Veiculo(veiculo)
-
+  async abrirPlanos() {
     const modal = await this.modalController.create({
-      component: EntradaPage,
+      component: AssinaturaPage,
       componentProps: {
-        'veiculo': veiculoEdicao,
-        'inclusao': inclusao
-      }
+        'entradaBloqueada': true
+      }  
     });
 
-    modal.onWillDismiss().then((retorno) => {
-      this.propagandaService.showBannerAd()
-      this.avaliarRetornoVeiculo(retorno, inclusao)
-    })
-
     return await modal.present(); 
+  }
+
+  async procederCadastroEntrada(veiculo) { 
+    try {
+      this.entradaEnabled = false
+
+      this.propagandaService.hideBanner()
+      this.propagandaService.prepareInterstitialAds()
+      this.propagandaService.prepareBannerAd()
+  
+      // Verifica bloqueio e alerta por não exibir propagandas. 
+      if (veiculo == null) {
+        let d1: Date = new Date()
+        d1.setMonth(d1.getMonth() - 1)
+
+        // Só faz essa verificação se o usuário utiliza app há mais de um mês.
+        // ccs if (this.configuracoesService.configuracoes.ManualUso.DataInicioUsoApp <= d1) 
+        {
+          let fim = false
+          if (this.propagandaService.getPropagandasPerdidas() >= environment.bloqueioPropagandasPerdidas) {
+            await this.utils.verificarOnline().then((online) => {
+              if (this.propagandaService.alertas) //ccs
+                alert('online: ' + online) //ccs
+              fim = !online
+            })
+          }
+          else if (this.propagandaService.getPropagandasPerdidas() >= environment.alertaPropagandasPerdidas) {
+            this.utils.mostrarToast('Ative a internet para evitar o bloqueio de novas entradas.', 'danger', 2500)
+          }
+
+          if ((fim) && (this.propagandaService.getPropagandasPerdidas() >= environment.bloqueioPropagandasPerdidas)) {            
+            this.abrirPlanos()
+            return
+          }
+        }
+      }
+  
+      //
+      let inclusao = false
+      let veiculoEdicao: Veiculo
+  
+      // Define os parâmetros iniciais se não houver veículo indicado para edição
+      if (veiculo == null) {
+        // Trata mensagens e ações quando for ateração ou inclusão de novo veículo
+        inclusao = true
+  
+        veiculoEdicao = new Veiculo()
+  
+        // Define serviços de estacionamento se for configurado para incluir automaticamente
+        if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento && this.configuracoesService.configuracoes.Estacionamento.IncluirServicoEstacionamento) {
+          let servico = new ServicoVeiculo()
+          servico.Id = 0
+          servico.Nome = 'Estacionamento'
+          veiculoEdicao.Servicos.push(servico)
+        }      
+      }
+      else 
+        veiculoEdicao = new Veiculo(veiculo)
+  
+      const modal = await this.modalController.create({
+        component: EntradaPage,
+        componentProps: {
+          'veiculo': veiculoEdicao,
+          'inclusao': inclusao
+        }
+      });
+  
+      modal.onWillDismiss().then((retorno) => {
+        this.propagandaService.showBannerAd()
+        this.avaliarRetornoVeiculo(retorno, inclusao)
+      })
+  
+      return await modal.present();
+    }
+    finally {
+      this.entradaEnabled = true
+    }
+
   }
 
   async exibirErroCadastroEntrada(erro) {

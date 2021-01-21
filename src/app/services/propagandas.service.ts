@@ -10,6 +10,7 @@ import { Utils } from '../utils/utils'
 export class PropagandasService {
 
   bannerOk = false
+  alertas = false //ccs
 
   constructor(
     private admobFree: AdMobFree,
@@ -23,15 +24,24 @@ export class PropagandasService {
     // propagandas perdidas. Se está com conexão então considera que não há problema por ação do usuário e 
     // zera este contador.
     this.utils.verificarOnline().then((online) => {
-      if (online)
+      if (online) {
         this.zerarPropagandasPerdidas()
-      else
+        if (this.alertas)
+          alert("ONline: zerou")
+      }
+      else {
         this.incrementarPropagandasPerdidas()
+        if (this.alertas)
+          alert("OFFline: incrementou")
+      }
+        
     })
   });
 
   interstitial = this.admobFree.on(this.admobFree.events.INTERSTITIAL_LOAD).subscribe((value) => {
     this.zerarPropagandasPerdidas()
+    if (this.alertas)
+      alert("carregou: zerou")
   })
 
   prepareInterstitialAds(){
@@ -65,6 +75,8 @@ export class PropagandasService {
 
   prepareBannerAd() {
     if (!this.comprasService.usuarioPremium && !this.bannerOk) {
+      if (this.alertas)
+        alert('tentando preparar')
       this.bannerOk = true
       let bannerConfig: AdMobFreeBannerConfig = {
         isTesting: false,

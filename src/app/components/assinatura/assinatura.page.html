@@ -1,8 +1,14 @@
 <ion-header>
-  <app-header-modal titulo="Planos Premium" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+  <app-header-modal *ngIf="!entradaBloqueada" titulo="Planos Premium" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
+  <app-header-modal *ngIf="entradaBloqueada" titulo="Bloqueio" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>  
 </ion-header>
 
 <ion-content *ngIf="!usuarioPremium">
+
+  <div *ngIf="entradaBloqueada" class="divInformativo fundoPerigo">
+    <h3 class="negrito">Você está há muito tempo utilizando o aplicativo sem acesso à Internet e por isso novas entradas estão bloqueadas. Ative uma conexão de rede no seu dispositivo ou assine um plano Premmium abaixo para continuar utilizando o aplicativo normalmente.</h3>
+  </div>
+
   <div class="divInformativo fundoPrimario">
     <h2 class="negrito ion-text-uppercase">Seja um usuário premium</h2>
     <ion-icon class="fontCorSucesso" name="ribbon-outline"></ion-icon>
