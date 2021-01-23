@@ -21,8 +21,8 @@
     <ion-row>
       <ion-col>
         <ion-item>
-          <ion-label position="floating">Documento (CNPJ / CPF)</ion-label>
-          <ion-input autocapitalize="on" type="tel" [ngModel]="funcionario.Documento | documentoPipe" (ionInput)="funcionario.Documento = utils.somenteNumeros($event.target.value)"></ion-input>
+          <ion-label position="floating">Documento (CPF)</ion-label>
+          <ion-input autocapitalize="on" type="tel" maxlength="11" [ngModel]="funcionario.Documento | documentoPipe" (ionInput)="funcionario.Documento = utils.somenteNumeros($event.target.value)"></ion-input>
         </ion-item>        
       </ion-col>
       <ion-col>
