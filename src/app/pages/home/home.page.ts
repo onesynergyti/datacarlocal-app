@@ -60,6 +60,10 @@ export class HomePage {
     private providerPortal: PortalService
   ) { }
 
+  ngOnInit() {
+    this.providerPortal.enviarDadosUsuario().then()
+  }
+
   ionViewWillEnter() {
     this.veiculos = []
     this.carregandoVeiculos = true
@@ -166,10 +170,6 @@ export class HomePage {
         })
       }
     })
-  }
-
-  async enviarDadosUsuario(sucesso: boolean){
-    this.providerPortal.enviarDadosUsuario(sucesso).then()
   }
 
   async abrirPlanos() {

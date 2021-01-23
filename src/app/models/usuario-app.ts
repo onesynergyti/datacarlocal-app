@@ -13,7 +13,6 @@ export class UsuarioApp {
         this.Endereco = usuarioApp.Endereco
         this.Telefone = usuarioApp.Telefone
         this.EmailAdministrador = usuarioApp.EmailAdministrador
-        this.Premmium = usuarioApp.Premmium
       }
     }
   }

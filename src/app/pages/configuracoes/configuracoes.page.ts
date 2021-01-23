@@ -7,6 +7,7 @@ import { NavController, ModalController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { SenhaAdministradorPage } from '../senha-administrador/senha-administrador.page';
 import { ValidarAcessoPage } from '../validar-acesso/validar-acesso.page';
+import { PortalService } from 'src/app/dbproviders/portal.service';
 
 @Component({
   selector: 'app-configuracoes',
@@ -37,7 +38,8 @@ export class ConfiguracoesPage implements OnInit {
     public utils: Utils,
     private navController: NavController,
     private route: ActivatedRoute,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private portalService: PortalService,
   ) { }
 
   ngOnInit() {
@@ -54,6 +56,7 @@ export class ConfiguracoesPage implements OnInit {
 
   ionViewWillLeave() {
     this.configuracoesService.configuracoes = this.configuracoes
+    this.portalService.enviarDadosUsuario()
   }
 
   abrirPagina(pagina) {

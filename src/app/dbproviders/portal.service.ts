@@ -224,16 +224,16 @@ export class PortalService extends ServiceBaseService {
     })
   }
 
-  enviarDadosUsuario(sucesso: boolean /* ccs */) {
+  enviarDadosUsuario() {
     return new Promise((resolve, reject) => {
-      if (this.configuracoesService.configuracoes.ManualUso.EnviouDadosUsuario) {
+      if (localStorage.getItem('EnviouDadosUsuario') == 'sim') {
         this.globalService.onFinalizarSincronizacao.next(true)
       }
       else {
         this.obterInformacoesPortal().then((informacoes) => {
           const httpOptions = {
             headers: new HttpHeaders({
-              'Content-Type':  'application/json',
+              'Content-Type': 'application/json',
               ChaveApp: informacoes.Chave,
               IdDispositivo: informacoes.IdDispositivo,
               CodigoSistema: environment.codigoSistema.toString(),
@@ -247,10 +247,6 @@ export class PortalService extends ServiceBaseService {
           usuarioApp.Endereco = this.configuracoesService.configuracoes.Estabelecimento.Endereco
           usuarioApp.Telefone = this.configuracoesService.configuracoes.Estabelecimento.Telefone
           usuarioApp.EmailAdministrador = this.configuracoesService.configuracoes.Seguranca.EmailAdministrador
-          usuarioApp.Premmium = this.comprasService.usuarioPremium
-  
-          if (!sucesso) //ccs
-            usuarioApp = null //ccs
 
           this.http.post(environment.apiUrl + '/ConexaoApp/usuarioApp', usuarioApp, httpOptions)
           .pipe(
@@ -261,7 +257,7 @@ export class PortalService extends ServiceBaseService {
           ).subscribe(
             (retorno: any) => {
               if (retorno.Resposta) {
-                this.configuracoesService.configuracoes.ManualUso.EnviouDadosUsuario = true /// ccs - Forçar gravar essa informação
+                localStorage.setItem('EnviouDadosUsuario', 'sim')
               }
               else {
                 this.globalService.onErroSincronizacao.next(retorno.Mensagem)

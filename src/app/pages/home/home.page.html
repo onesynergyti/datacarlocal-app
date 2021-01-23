@@ -135,9 +135,7 @@
     </ion-row>
   </ion-grid>
 
-  <ion-label *ngIf="!utils.production">Prop Perd: {{ propagandaService.getPropagandasPerdidas() }}</ion-label>
-  <!-- ion-button *ngIf="!utils.production" (click)="enviarDadosUsuario(0)">Enviar Erro</ion-button>
-  <ion-button *ngIf="!utils.production" (click)="enviarDadosUsuario(1)">Enviar Sucesso</ion-button -->
-  <ion-toggle *ngIf="!utils.production" [(ngModel)]="propagandaService.alertas">Alertas</ion-toggle>
+  <ion-label *ngIf="!utils.production">Prop Perd: {{ propagandaService.getPropagandasPerdidas() }}  - Alertas</ion-label>
+  <ion-toggle *ngIf="!utils.production" [(ngModel)]="propagandaService.alertas"><ion-label></ion-label></ion-toggle>
 
 </ion-footer>
