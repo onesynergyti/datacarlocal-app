@@ -85,13 +85,13 @@ export class FuncionariosPage implements OnInit {
   }
 
   async confirmarExclusao(funcionario) {
-    await this.providerFuncionarios.exibirProcessamento('Excluindo veículo...')
+    await this.providerFuncionarios.exibirProcessamento('Excluindo funcionário...')
     this.providerFuncionarios.excluir(funcionario.Id)
     .then(() => {
       this.utilsLista.excluirDaLista(this.funcionarios, funcionario)
     })
     .catch(() => {
-      this.utils.mostrarToast('Não foi possível excluir o serviço.', 'danger')
+      this.utils.mostrarToast('Não foi possível excluir o funcionário.', 'danger')
     })
   }
 
