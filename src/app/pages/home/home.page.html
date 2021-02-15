@@ -121,7 +121,7 @@
   <ion-grid class="ion-no-padding ion-no-margin">
     <ion-row>
       <ion-col size-xs="6">
-        <ion-button color="success" expand="block" [disabled]="!entradaEnabled" (click)="cadastrarEntrada()">
+        <ion-button color="success" expand="block" (click)="cadastrarEntrada()">
           <ion-icon slot="start" name="add-circle"></ion-icon>
           Entrada
         </ion-button>
@@ -136,6 +136,5 @@
   </ion-grid>
 
   <ion-label *ngIf="!utils.production">Prop Perd: {{ propagandaService.getPropagandasPerdidas() }}  - Alertas</ion-label>
-  <ion-toggle *ngIf="!utils.production" [(ngModel)]="propagandaService.alertas"><ion-label></ion-label></ion-toggle>
 
 </ion-footer>

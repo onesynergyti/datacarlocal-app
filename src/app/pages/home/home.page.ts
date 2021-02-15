@@ -19,6 +19,7 @@ import { ValidarAcessoPage } from '../validar-acesso/validar-acesso.page';
 import { PortalService } from 'src/app/dbproviders/portal.service';
 import { environment } from 'src/environments/environment';
 import { AssinaturaPage } from '../../components/assinatura/assinatura.page';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -42,7 +43,7 @@ export class HomePage {
   placa
   pontos = 0
   pesquisa = ''
-  entradaEnabled = true
+  private loading
 
   constructor(
     private providerPatio: PatioService,
@@ -57,7 +58,8 @@ export class HomePage {
     private navController: NavController,
     private alertController: AlertController,
     private providerServicos: ServicosService,
-    private providerPortal: PortalService
+    private providerPortal: PortalService,
+    public loadingController: LoadingController,
   ) { }
 
   ngOnInit() {
@@ -173,6 +175,8 @@ export class HomePage {
   }
 
   async abrirPlanos() {
+    this.providerMensalistas.ocultarProcessamento()
+
     const modal = await this.modalController.create({
       component: AssinaturaPage,
       componentProps: {
@@ -184,81 +188,75 @@ export class HomePage {
   }
 
   async procederCadastroEntrada(veiculo) { 
-    try {
-      this.entradaEnabled = false
+    this.providerMensalistas.exibirProcessamento('Aguarde...')
 
-      this.propagandaService.hideBanner()
-      this.propagandaService.prepareInterstitialAds()
-      this.propagandaService.prepareBannerAd()
-  
-      // Verifica bloqueio e alerta por não exibir propagandas. 
-      if (veiculo == null) {
-        let d1: Date = new Date()
-        d1.setMonth(d1.getMonth() - 1)
+    this.propagandaService.hideBanner()
+    this.propagandaService.prepareInterstitialAds()
+    this.propagandaService.prepareBannerAd()
 
-        // Só faz essa verificação se o usuário utiliza app há mais de um mês.
-        // ccs if (this.configuracoesService.configuracoes.ManualUso.DataInicioUsoApp <= d1) 
-        {
-          let fim = false
-          if (this.propagandaService.getPropagandasPerdidas() >= environment.bloqueioPropagandasPerdidas) {
-            await this.utils.verificarOnline().then((online) => {
-              if (this.propagandaService.alertas) //ccs
-                alert('online: ' + online) //ccs
-              fim = !online
-            })
-          }
-          else if (this.propagandaService.getPropagandasPerdidas() >= environment.alertaPropagandasPerdidas) {
-            this.utils.mostrarToast('Ative a internet para evitar o bloqueio de novas entradas.', 'danger', 2500)
-          }
+    // Verifica bloqueio e alerta por não exibir propagandas. 
+    if (veiculo == null) {
+      let d1: Date = new Date()
+      d1.setMonth(d1.getMonth() - 1)
 
-          if ((fim) && (this.propagandaService.getPropagandasPerdidas() >= environment.bloqueioPropagandasPerdidas)) {            
-            this.abrirPlanos()
-            return
-          }
+      // Só faz essa verificação se o usuário utiliza app há mais de um mês.
+      // ccs if (this.configuracoesService.configuracoes.ManualUso.DataInicioUsoApp <= d1) 
+      {
+        let fim = false
+        if (this.propagandaService.getPropagandasPerdidas() >= environment.bloqueioPropagandasPerdidas) {
+          await this.utils.verificarOnline().then((online) => {
+            fim = !online
+          })
+        }
+        else if (this.propagandaService.getPropagandasPerdidas() >= environment.alertaPropagandasPerdidas) {
+          this.utils.mostrarToast('Ative a internet para evitar o bloqueio de novas entradas.', 'danger', 2500)
+        }
+
+        if ((fim) && (this.propagandaService.getPropagandasPerdidas() >= environment.bloqueioPropagandasPerdidas)) {
+          this.abrirPlanos()
+          return
         }
       }
-  
-      //
-      let inclusao = false
-      let veiculoEdicao: Veiculo
-  
-      // Define os parâmetros iniciais se não houver veículo indicado para edição
-      if (veiculo == null) {
-        // Trata mensagens e ações quando for ateração ou inclusão de novo veículo
-        inclusao = true
-  
-        veiculoEdicao = new Veiculo()
-  
-        // Define serviços de estacionamento se for configurado para incluir automaticamente
-        if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento && this.configuracoesService.configuracoes.Estacionamento.IncluirServicoEstacionamento) {
-          let servico = new ServicoVeiculo()
-          servico.Id = 0
-          servico.Nome = 'Estacionamento'
-          veiculoEdicao.Servicos.push(servico)
-        }      
-      }
-      else 
-        veiculoEdicao = new Veiculo(veiculo)
-  
-      const modal = await this.modalController.create({
-        component: EntradaPage,
-        componentProps: {
-          'veiculo': veiculoEdicao,
-          'inclusao': inclusao
-        }
-      });
-  
-      modal.onWillDismiss().then((retorno) => {
-        this.propagandaService.showBannerAd()
-        this.avaliarRetornoVeiculo(retorno, inclusao)
-      })
-  
-      return await modal.present();
-    }
-    finally {
-      this.entradaEnabled = true
     }
 
+    //
+    let inclusao = false
+    let veiculoEdicao: Veiculo
+
+    // Define os parâmetros iniciais se não houver veículo indicado para edição
+    if (veiculo == null) {
+      // Trata mensagens e ações quando for ateração ou inclusão de novo veículo
+      inclusao = true
+
+      veiculoEdicao = new Veiculo()
+
+      // Define serviços de estacionamento se for configurado para incluir automaticamente
+      if (this.configuracoesService.configuracoes.Estacionamento.UtilizarEstacionamento && this.configuracoesService.configuracoes.Estacionamento.IncluirServicoEstacionamento) {
+        let servico = new ServicoVeiculo()
+        servico.Id = 0
+        servico.Nome = 'Estacionamento'
+        veiculoEdicao.Servicos.push(servico)
+      }      
+    }
+    else 
+      veiculoEdicao = new Veiculo(veiculo)
+
+    this.providerMensalistas.ocultarProcessamento()
+    
+    const modal = await this.modalController.create({
+      component: EntradaPage,
+      componentProps: {
+        'veiculo': veiculoEdicao,
+        'inclusao': inclusao
+      }
+    });
+
+    modal.onWillDismiss().then((retorno) => {
+      this.propagandaService.showBannerAd()
+      this.avaliarRetornoVeiculo(retorno, inclusao)
+    })
+
+    return await modal.present();
   }
 
   async exibirErroCadastroEntrada(erro) {

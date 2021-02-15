@@ -4,6 +4,7 @@ import { ModalController, NavParams } from '@ionic/angular';
 import { GlobalService } from 'src/app/services/global.service';
 import { Subscription } from 'rxjs';
 import { Utils } from 'src/app/utils/utils';
+import { MensalistasService } from 'src/app/dbproviders/mensalistas.service';
 
 @Component({
   selector: 'app-assinatura',
@@ -22,6 +23,7 @@ export class AssinaturaPage implements OnInit, OnDestroy {
     private globalService: GlobalService,
     private utils: Utils,
     public navParams: NavParams,
+    private providerMensalistas: MensalistasService,
   ) { 
     this.entradaBloqueiada = navParams.get('entradaBloqueiada')
 
@@ -46,6 +48,7 @@ export class AssinaturaPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.providerMensalistas.ocultarProcessamento()
   }
 
   cancelar() {
