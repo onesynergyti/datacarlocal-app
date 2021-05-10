@@ -35,8 +35,23 @@ export class ComprasService {
       type: this.iap2.CONSUMABLE
     });    
 
+    this.iap2.register({
+      id: 'pacote_vitalicio',
+      type: this.iap2.CONSUMABLE
+    });    
+
     this.planoMensal = this.iap2.get('pacote_mensal');
     this.planoAnual = this.iap2.get('pacote_anual');
+    this.planoAnual = this.iap2.get('pacote_vitalicio');
+
+    // Define a ação de aprovação de cada produto
+    this.iap2.when('pacote_vitalicio').approved((produto: IAPProduct) => {
+      const dataProduto = new Date(JSON.parse(produto.transaction.receipt).purchaseTime)
+      const data = new Date(dataProduto.setMonth(dataProduto.getMonth() + 1200))
+      this.vencimentoPremium = data
+      produto.finish();
+      this.globalService.onAssinarPremium.next(produto)
+    });
 
     // Define a ação de aprovação de cada produto
     this.iap2.when('pacote_mensal').approved((produto: IAPProduct) => {

@@ -13,7 +13,7 @@ import { MensalistasService } from 'src/app/dbproviders/mensalistas.service';
 })
 export class AssinaturaPage implements OnInit, OnDestroy {
 
-  entradaBloqueiada = false
+  entradaBloqueada = false
   usuarioPremium = null
   doAssinarPremium: Subscription
 
@@ -25,16 +25,12 @@ export class AssinaturaPage implements OnInit, OnDestroy {
     public navParams: NavParams,
     private providerMensalistas: MensalistasService,
   ) { 
-    this.entradaBloqueiada = navParams.get('entradaBloqueiada')
+    this.entradaBloqueada = navParams.get('entradaBloqueada')
 
-    // Mantem a avaliação de assinatura constante enquanto a janela de assinatura está aberta
+/*    // Mantem a avaliação de assinatura constante enquanto a janela de assinatura está aberta
     setInterval(() => {
       this.usuarioPremium = this.comprasService.usuarioPremium
-      if (this.comprasService.planoAnual == null || this.comprasService.planoAnual.priceMicros == 0) {
-        this.utils.mostrarToast('Não foi possível obter os planos. Verifique sua internet e tente novamente.', 'danger')
-        this.modalCtrl.dismiss()
-      }      
-    }, 2500)
+    }, 2500) */
 
     this.comprasService.atualizarProdutos()
 
@@ -53,11 +49,6 @@ export class AssinaturaPage implements OnInit, OnDestroy {
 
   cancelar() {
     this.modalCtrl.dismiss()
-  }
-
-  cancelarPacote() {
-    this.comprasService.cancelarAssinatura()
-    this.usuarioPremium = false
   }
 
   comprarProduto(idProduto) {
