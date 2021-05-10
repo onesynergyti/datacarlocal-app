@@ -4,7 +4,7 @@ import { DatePicker } from '@ionic-native/date-picker/ngx';
 import { environment } from 'src/environments/environment';
 import { SqlClientComponent } from 'src/app/pages/sql-client/sql-client.component';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { retry } from 'rxjs/operators';
+import { retry, timeout } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -166,7 +166,7 @@ export class Utils {
     return new Promise<boolean>((resolve, reject) => {
       this.http.get(environment.apiUrl + '/ConexaoApp/teste')
         .pipe(
-          retry(1)
+          timeout(1500)
         )
         .subscribe((data: any) => {
           resolve(true);

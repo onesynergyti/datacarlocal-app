@@ -1,54 +1,40 @@
 <ion-header>
-  <app-header-modal *ngIf="!entradaBloqueada" titulo="Planos Premium" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>
   <app-header-modal *ngIf="entradaBloqueada" titulo="Bloqueio" ocultarConclusao="true" (onCancelar)="cancelar()"></app-header-modal>  
 </ion-header>
 
 <ion-content *ngIf="!usuarioPremium">
 
   <div *ngIf="entradaBloqueada" class="divInformativo fundoPerigo">
-    <h3 class="negrito">Você está há muito tempo utilizando o aplicativo sem acesso à Internet e por isso novas entradas estão bloqueadas. Ative uma conexão de rede no seu dispositivo ou assine um plano Premmium abaixo para continuar utilizando o aplicativo normalmente.</h3>
+    <h3 class="negrito">Você precisa de internet para utilizar a versão gratuita.</h3>
   </div>
 
   <div class="divInformativo fundoPrimario">
     <h2 class="negrito ion-text-uppercase">Seja um usuário premium</h2>
     <ion-icon class="fontCorSucesso" name="ribbon-outline"></ion-icon>
-    <h3 class="negrito">Receba benefícios exclusivos</h3>
+    <h3 class="negrito">Pagamento único!</h3>
     <h4 *ngIf="comprasService.vencimentoPremium != null">Seu plano venceu em: {{ comprasService.vencimentoPremium | date:"dd/MM/yyyy" }}</h4>
   </div>
 
   <div class="divItens">
     <p class="fontCorPrimaria"><ion-icon name="mic-off-outline"></ion-icon>Utilize o aplicativo sem anúncios</p>
-    <p class="fontCorPrimaria"><ion-icon name="call-outline"></ion-icon>Acesse o suporte prioritário</p>
+    <p class="fontCorPrimaria"><ion-icon name="cloud-offline-outline"></ion-icon>Funcionamento 100% offline</p>
     <!-- <p class="fontCorPrimaria"><ion-icon name="cloud-upload-outline"></ion-icon>Garanta armazenamento de backup nas nuvens</p> -->
   </div>
 
   <div class="divInformativo fundoPrimario">
     <h3 class="negrito ion-text-uppercase">Tudo por um preço justo</h3>
-    <h4 class="negrito ion-text-uppercase">Sem fidelidade</h4>
+    <h4 class="negrito ion-text-uppercase">Licença vitalícia</h4>
   </div>
 
   <ion-grid class="ion-text-center">
     <ion-row>
       <ion-col>
-        <h3 class="negrito ion-text-uppercase fontCorPrimaria">Valor mensal</h3>
-      </ion-col>
-      <ion-col>
-        <h3 class="negrito ion-text-uppercase fontCorPrimaria">Valor anual</h3>
+        <h3 class="negrito ion-text-uppercase fontCorPrimaria">Valor único</h3>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <h3 class="fontCorPrimaria">{{ comprasService.planoMensal.priceMicros / 1000000 | decimalPipe:"R$ " }}</h3>
-      </ion-col>
-      <ion-col>
-        <h3 class="fontCorPrimaria">{{ comprasService.planoAnual.priceMicros / 1000000 | decimalPipe:"R$ " }}</h3>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-      </ion-col>
-      <ion-col>
-        <h4 class="fontCorSucesso">Economize {{ economia }}%</h4>
+        <h3 class="fontCorPrimaria">{{ 89.90 | decimalPipe:"R$ " }}</h3>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -65,9 +51,9 @@
 <ion-footer>
   <ion-grid class="ion-no-margin ion-no-padding" *ngIf="!usuarioPremium">
     <ion-row>
-      <ion-col size-xs="6"><ion-button expand="block" (click)="comprarProduto('pacote_mensal')" color="success">Assinar por 1 mês</ion-button></ion-col>
-      <ion-col size-xs="6"><ion-button expand="block" (click)="comprarProduto('pacote_anual')" color="success">Assinar por 1 ano</ion-button></ion-col>
+      <ion-col size-xs="6"><ion-button expand="block" (click)="comprarProduto('pacote_vitalicio')" color="success">Comprar</ion-button></ion-col>
+      <ion-col size-xs="6"><ion-button expand="block" (click)="cancelar()" color="danger">Depois</ion-button></ion-col>
     </ion-row>
   </ion-grid>
-  <!--<ion-button *ngIf="usuarioPremium" expand="block" (click)="cancelarPacote()" color="success">Cancelar</ion-button>-->
+  <ion-button *ngIf="usuarioPremium" expand="block" (click)="cancelar()" color="success">Ok</ion-button>
 </ion-footer>
